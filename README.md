@@ -5,6 +5,10 @@
 [![pypi licence       ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
 [![pypi version       ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 
 
+[![pypi licence       ](https://img.shields.io/pypi/l/MetaCHIP.svg)](https://opensource.org/licenses/gpl-3.0.html)
+[![pypi  licence  ](https://img.shields.io/pypi/l/HgtSIM.svg)](https://opensource.org/licenses/gpl-3.0.html)
+[![pypi  licence  ](https://img.shields.io/pypi/l/Binning_refiner.svg)](https://opensource.org/licenses/gpl-3.0.html)
+
 
 Contact
 ---
