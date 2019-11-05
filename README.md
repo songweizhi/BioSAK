@@ -8,6 +8,7 @@
 [![pypi licence       ](https://img.shields.io/pypi/l/MetaCHIP.svg)](https://opensource.org/licenses/gpl-3.0.html)
 [![pypi  licence  ](https://img.shields.io/pypi/l/HgtSIM.svg)](https://opensource.org/licenses/gpl-3.0.html)
 [![pypi  licence  ](https://img.shields.io/pypi/l/Binning_refiner.svg)](https://opensource.org/licenses/gpl-3.0.html)
+[![pypi  licence  ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
 
 
 Contact
