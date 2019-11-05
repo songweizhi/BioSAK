@@ -1,0 +1,59 @@
+1.18.6
+- supports gene depth info for COG2014, KEGG and dbCAN annotation
+
+1.17.23
+- bug fixing
+
+1.17.0
+- new module added: dbCAN
+
+1.16.0
+- new module added: download_GenBank_genome
+
+1.15.0
+- new module added: select_seq
+
+1.14.0
+- new module added: COG2014
+
+1.13.0
+- new module added: gbk2fa, gbk2ffn, gbk2faa, ffn2faa and get_rc
+
+1.12.0
+- new module added: label_tree
+
+1.11.0
+- new module added: convert_align_format
+
+1.10.0
+- new module added: iTOL_wrapper
+
+1.9.1
+- new module added: CheckM_op_parser
+
+1.7.1
+- new module added: CheckM_Runner
+
+1.6.1
+- new module added: get_SCG_tree
+
+1.5.0
+- new module added: SankeyTaxon
+
+1.4.2
+- help information updated
+
+1.4.0
+- Prodigal_Runner, COG_annot and KEGG_annot multiprocessed
+
+1.3.0
+- new module added: COG2003
+
+1.2.0
+- new module added: KEGG
+
+1.1.0
+- new module added: Prodigal_Runner
+
+1.0.0
+- initial release

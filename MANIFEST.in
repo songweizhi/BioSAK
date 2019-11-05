@@ -1,0 +1,7 @@
+include README.md
+include BioSAK/VERSION
+include BioSAK/cdd2cog.pl
+include BioSAK/select_contig.pl
+include BioSAK/get_fasta_stats.pl
+include BioSAK/get_sankey_plot.R
+include BioSAK/MetaCHIP_phylo.hmm
