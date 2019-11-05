@@ -1,0 +1,5 @@
+biopython
+matplotlib
+numpy
+scipy
+itolapi
