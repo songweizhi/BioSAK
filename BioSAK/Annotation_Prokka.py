@@ -18,10 +18,10 @@ Prodigal_parser_usage = '''
 ==================== Prodigal_Runner example commands ====================
 
 # for completed genome
-MyBioTools Prodigal_Runner -i genome_folder -x fa -p KelpGenome -t 6
+BioSAK Prodigal_Runner -i genome_folder -x fa -p KelpGenome -t 6
 
 # for metagenome-assembled genomes (MAGs) 
-MyBioTools Prodigal_Runner -i bin_folder -x fa -p KelpBins -t 6 -meta
+BioSAK Prodigal_Runner -i bin_folder -x fa -p KelpBins -t 6 -meta
 
 Software dependencies:
 module load python/3.5.2

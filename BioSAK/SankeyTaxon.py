@@ -6,10 +6,10 @@ SankeyTaxon_parser_usage ='''
 ===================================== SankeyTaxon example commands ====================================
 
 # Visualize taxonomic classification at phylum, class and genus level
-MyBioTools SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pcg -p KelpBins
+BioSAK SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pcg -p KelpBins
 
 # Visualize taxonomic classification at phylum and genus level, with unclear classifications excluded 
-MyBioTools SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pg -p KelpBins -ec
+BioSAK SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pg -p KelpBins -ec
 
 =======================================================================================================
 '''
@@ -18,11 +18,11 @@ MyBioTools SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pg -p KelpBins -ec
 module load python/3.5.2
 module load R
 
-MyBioTools SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pcof -p KelpBins
-MyBioTools SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pcof -p KelpBins -ec
+BioSAK SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pcof -p KelpBins
+BioSAK SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pcof -p KelpBins -ec
 
-python3 ~/PycharmProjects/MyBioTools/MyBioTools/SankeyTaxonClassification.py -taxon KelpBins_gtdbtk.tsv -r pcof -p KelpBins
-python3 ~/PycharmProjects/MyBioTools/MyBioTools/SankeyTaxonClassification.py -taxon KelpBins_gtdbtk.tsv -r pcof -p KelpBins -ec
+python3 ~/PycharmProjects/BioSAK/BioSAK/SankeyTaxonClassification.py -taxon KelpBins_gtdbtk.tsv -r pcof -p KelpBins
+python3 ~/PycharmProjects/BioSAK/BioSAK/SankeyTaxonClassification.py -taxon KelpBins_gtdbtk.tsv -r pcof -p KelpBins -ec
 '''
 
 

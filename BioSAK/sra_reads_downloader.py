@@ -8,7 +8,7 @@ sra_reads_downloader_usage = '''
 ============================ sra_reads_downloader example commands =============================
 
 module load sratoolkit/2.9.6-1
-MyBioTools sra_reads_downloader -in prokaryotes.csv
+BioSAK sra_reads_downloader -in prokaryotes.csv
 
 ================================================================================================
 '''

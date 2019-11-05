@@ -6,7 +6,7 @@ from Bio import SeqIO
 from datetime import datetime
 from Bio.SeqRecord import SeqRecord
 import multiprocessing as mp
-from MyBioTools.MyBioTools_config import config_dict
+from BioSAK.BioSAK_config import config_dict
 
 
 COG_parser_usage = '''
@@ -18,12 +18,12 @@ module load perl/5.20.1
 module load blast+/2.6.0
 
 # annotate protein sequences
-MyBioTools COG2003 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i recipient.faa
-MyBioTools COG2003 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i faa_files -x faa
+BioSAK COG2003 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i recipient.faa
+BioSAK COG2003 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i faa_files -x faa
 
 # annotate DNA sequences
-MyBioTools COG2003 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i recipient.ffn
-MyBioTools COG2003 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i ffn_files -x ffn
+BioSAK COG2003 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i recipient.ffn
+BioSAK COG2003 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i ffn_files -x ffn
 
 # DB files:
 rpsblast db : ftp://ftp.ncbi.nih.gov/pub/mmdb/cdd/little_endian/Cog_LE.tar.gz (decompress before use)       

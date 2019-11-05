@@ -12,18 +12,18 @@ from Bio.SeqFeature import SeqFeature
 from Bio.SeqFeature import FeatureLocation
 import multiprocessing as mp
 from datetime import datetime
-from MyBioTools.global_functions import time_format
-from MyBioTools.global_functions import force_create_folder
+from BioSAK.global_functions import time_format
+from BioSAK.global_functions import force_create_folder
 
 
 Prodigal_parser_usage = '''
 ==================== Prodigal_Runner example commands ====================
 
 # for completed genome
-MyBioTools Prodigal_Runner -i genome_folder -x fa -p KelpGenome -t 6
+BioSAK Prodigal_Runner -i genome_folder -x fa -p KelpGenome -t 6
 
 # for metagenome-assembled genomes (MAGs) 
-MyBioTools Prodigal_Runner -i bin_folder -x fa -p KelpBins -t 6 -meta
+BioSAK Prodigal_Runner -i bin_folder -x fa -p KelpBins -t 6 -meta
 
 Software dependencies:
 module load python/3.5.2

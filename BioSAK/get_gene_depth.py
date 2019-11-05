@@ -1,14 +1,14 @@
 import argparse
 from Bio import SeqIO
-from MyBioTools.global_functions import sep_path_basename_ext
+from BioSAK.global_functions import sep_path_basename_ext
 
 
 get_gene_depth_parser_usage = '''
 ========================== get_gene_depth example commands ==========================
 
 # Get gene depth by contig depth (together with gbk file)
-MyBioTools get_gene_depth -gbk test.gbk -ctg_depth contig_depth.txt
-MyBioTools get_gene_depth -gbk test.gbk -ctg_depth contig_depth.txt -skip_header
+BioSAK get_gene_depth -gbk test.gbk -ctg_depth contig_depth.txt
+BioSAK get_gene_depth -gbk test.gbk -ctg_depth contig_depth.txt -skip_header
 
 # Contig depth file format (one contig per line, tab separated)
 contig_1   30.16

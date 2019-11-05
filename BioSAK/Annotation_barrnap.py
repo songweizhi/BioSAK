@@ -24,7 +24,7 @@ module load bedtools/2.27.1
 module load barrnap/0.9
 
 # for completed genome
-MyBioTools Barrnap_Runner -i genome_folder -x fna -t 6
+BioSAK Barrnap_Runner -i genome_folder -x fna -t 6
 
 
 barrnap MBAD.fna > barrnap_MBAD.gff3

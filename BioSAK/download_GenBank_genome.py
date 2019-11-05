@@ -15,10 +15,10 @@ download_GenBank_genome_parser_usage = '''
 # 4. provide the downloaded csv file with '-csv'
 
 # Download all genomes in file prokaryotes.csv
-MyBioTools dwnld_GenBank_genome -csv prokaryotes.csv
+BioSAK dwnld_GenBank_genome -csv prokaryotes.csv
 
 # Only download genomes with provided accessions in accessions.txt
-MyBioTools dwnld_GenBank_genome -csv prokaryotes.csv -id accessions.txt
+BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -id accessions.txt
 
 # accessions.txt file format 
 # one accession per line, accessions can be found from the 6th column of the prokaryotes.csv file.

@@ -14,16 +14,16 @@ from Bio import SeqFeature as SF
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, FeatureLocation
 import multiprocessing as mp
-from MyBioTools.MyBioTools_config import config_dict
+from BioSAK.BioSAK_config import config_dict
 
 get_SCG_tree_usage = '''
 ===================================== get SCG tree example commands =====================================
 
 # for completed genome
-MyBioTools get_SCG_tree -i genomes -p NorthSea -x fasta -t 4 -nonmeta
+BioSAK get_SCG_tree -i genomes -p NorthSea -x fasta -t 4 -nonmeta
 
 # for metagenome-assembled genomes (MAGs) 
-MyBioTools get_SCG_tree -i genomes -p NorthSea -x fasta -t 4
+BioSAK get_SCG_tree -i genomes -p NorthSea -x fasta -t 4
 
 Software dependencies:
 module load python/3.7.3
@@ -527,7 +527,7 @@ def hmmalign_worker(argument_list):
     os.system('rm %s' % pwd_aln_out_tmp)
 
 
-config_file_path = '/Users/songweizhi/PycharmProjects/MyBioTools/MyBioTools'
+config_file_path = '/Users/songweizhi/PycharmProjects/BioSAK/BioSAK'
 
 config_dict = {'prodigal'         : 'prodigal',
                'hmmsearch'        : 'hmmsearch',

@@ -11,14 +11,14 @@ from Bio.Alphabet import generic_dna
 sequence_manipulator_usage = '''
 ================================ Sequence manipulator example commands ===============================
 
-MyBioTools gbk2fa -gbk bin_1.gbk
-MyBioTools gbk2ffn -gbk bin_1.gbk
-MyBioTools gbk2faa -gbk bin_1.gbk
-MyBioTools ffn2faa -ffn bin_1.ffn
+BioSAK gbk2fa -gbk bin_1.gbk
+BioSAK gbk2ffn -gbk bin_1.gbk
+BioSAK gbk2faa -gbk bin_1.gbk
+BioSAK ffn2faa -ffn bin_1.ffn
 
 # get reverse complement sequence(s) for single and multiple sequence(s)
-MyBioTools get_rc -seq AAAAATTTTTGGGGGCCCCC
-MyBioTools get_rc -seq bin_1.ffn
+BioSAK get_rc -seq AAAAATTTTTGGGGGCCCCC
+BioSAK get_rc -seq bin_1.ffn
 
 ======================================================================================================
 '''
@@ -28,7 +28,7 @@ convert_align_format_usage = '''
 ================================ convert_align_format example commands ===============================
 
 # convert alignment in fasta format to phylip-relaxed format
-MyBioTools convert_align_format -in NorthSea.aln -inf fasta -out NorthSea.phylip -outf phylip-relaxed
+BioSAK convert_align_format -in NorthSea.aln -inf fasta -out NorthSea.phylip -outf phylip-relaxed
 
 # Alignment format:
   clustal, emboss, fasta, fasta-m10, ig, maf, mauve, nexus, 

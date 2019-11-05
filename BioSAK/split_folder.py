@@ -7,7 +7,7 @@ import argparse
 split_folder_parser_usage = '''
 ===================================== split_folder example commands =====================================
 
-MyBioTools split_folder -in downloaded_genomes -x fasta -n 10
+BioSAK split_folder -in downloaded_genomes -x fasta -n 10
 
 =========================================================================================================
 '''

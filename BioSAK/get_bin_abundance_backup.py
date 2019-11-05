@@ -9,7 +9,7 @@ get_bin_abundance_usage = '''
 ==================== get_bin_abundance example commands ====================
 
 # Example command
-MyBioTools get_bin_abundance -d ctg_lt2500_depth.txt -b bin_files -x fasta -p Refined_bins
+BioSAK get_bin_abundance -d ctg_lt2500_depth.txt -b bin_files -x fasta -p Refined_bins
 
 # Software dependencies:
 module load python/3.7.3

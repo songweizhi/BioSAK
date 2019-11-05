@@ -5,10 +5,10 @@ from Bio import SeqIO
 import multiprocessing as mp
 from datetime import datetime
 from Bio.SeqRecord import SeqRecord
-from MyBioTools.global_functions import time_format
-from MyBioTools.global_functions import force_create_folder
-from MyBioTools.global_functions import sep_path_basename_ext
-from MyBioTools.global_functions import AnnotateNorm
+from BioSAK.global_functions import time_format
+from BioSAK.global_functions import force_create_folder
+from BioSAK.global_functions import sep_path_basename_ext
+from BioSAK.global_functions import AnnotateNorm
 
 
 dbCAN_parser_usage = '''
@@ -18,14 +18,14 @@ dbCAN_parser_usage = '''
 module load hmmer/3.2.1
 
 # annotate protein sequences
-MyBioTools dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i recipient.faa 
-MyBioTools dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i recipient.faa -depth recipient.depth
-MyBioTools dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i faa_files -x faa
-MyBioTools dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i faa_files -x faa -depth depth_files
+BioSAK dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i recipient.faa 
+BioSAK dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i recipient.faa -depth recipient.depth
+BioSAK dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i faa_files -x faa
+BioSAK dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i faa_files -x faa -depth depth_files
 
 # annotate DNA sequences
-MyBioTools dbCAN -m N -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i recipient.ffn
-MyBioTools dbCAN -m N -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i ffn_files -x ffn
+BioSAK dbCAN -m N -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i recipient.ffn
+BioSAK dbCAN -m N -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN -i ffn_files -x ffn
 
 # Depth file format (one gene per line, tab separated)
 gene_1	30

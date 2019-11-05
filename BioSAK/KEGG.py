@@ -5,11 +5,11 @@ from Bio import SeqIO
 from time import sleep
 import multiprocessing as mp
 from datetime import datetime
-from MyBioTools.global_functions import time_format
-from MyBioTools.global_functions import force_create_folder
-from MyBioTools.global_functions import sep_path_basename_ext
-from MyBioTools.global_functions import get_gene_list_TotalDepth
-from MyBioTools.global_functions import AnnotateNorm
+from BioSAK.global_functions import time_format
+from BioSAK.global_functions import force_create_folder
+from BioSAK.global_functions import sep_path_basename_ext
+from BioSAK.global_functions import get_gene_list_TotalDepth
+from BioSAK.global_functions import AnnotateNorm
 
 
 KEGG_parser_usage = '''
@@ -21,16 +21,16 @@ module load blast+/2.6.0
 module load diamond/0.9.24
 
 # annotation with NCBI blastp (default, for small dataset)
-MyBioTools KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6 -seq_in input.faa -depth input.depth
-MyBioTools KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6 -seq_in faa_files -x faa -depth depth_files
+BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6 -seq_in input.faa -depth input.depth
+BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6 -seq_in faa_files -x faa -depth depth_files
 
 # annotation with Diamond blastp (for big dataset)
-MyBioTools KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 12 -diamond -seq_in input.faa
-MyBioTools KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 12 -diamond -seq_in faa_folder -x faa
+BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 12 -diamond -seq_in input.faa
+BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 12 -diamond -seq_in faa_folder -x faa
 
 # get summary for BlastKOALA/GhostKOALA produced results
-MyBioTools KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 9 -ko_in user_ko.txt
-MyBioTools KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 9 -ko_in user_ko_folder -x txt
+BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 9 -ko_in user_ko.txt
+BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 9 -ko_in user_ko_folder -x txt
 
 # Depth file format (one gene per line, tab separated)
 gene_1	30
