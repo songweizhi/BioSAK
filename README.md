@@ -1,7 +1,7 @@
 
 ## BioSAK (A Swiss Army Knife for Biologists)
 
-[![pypi licence       ](https://img.shields.io/pypi/l/MetaCHIP.svg)](https://opensource.org/licenses/gpl-3.0.html)
+[![pypi licence       ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
 [![pypi version       ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 
 
 
@@ -23,9 +23,7 @@ Installation
 
 + BioSAK is implemented in python3, you can install it with:
 
-        pip3 install BioSAK
-
-
+      pip3 install BioSAK
 + For UNSW Katana users
 
         ############################## install BioSAK ##############################
@@ -41,6 +39,7 @@ Installation
         
         # to upgrade
         pip3 install --upgrade BioSAK
+        
         
         ################################ run BioSAK ################################
 

@@ -12,18 +12,16 @@ from Bio.SeqFeature import SeqFeature
 from Bio.SeqFeature import FeatureLocation
 import multiprocessing as mp
 from datetime import datetime
-from MyBioTools.global_functions import time_format
-from MyBioTools.global_functions import force_create_folder
 
 
 Prodigal_parser_usage = '''
 ==================== Prodigal_Runner example commands ====================
 
 # for completed genome
-MyBioTools Prodigal_Runner -i genome_folder -x fa -p KelpGenome -t 6
+BioSAK Prodigal_Runner -i genome_folder -x fa -p KelpGenome -t 6
 
 # for metagenome-assembled genomes (MAGs) 
-MyBioTools Prodigal_Runner -i bin_folder -x fa -p KelpBins -t 6 -meta
+BioSAK Prodigal_Runner -i bin_folder -x fa -p KelpBins -t 6 -meta
 
 Software dependencies:
 module load python/3.5.2
@@ -31,6 +29,18 @@ module load prodigal/2.6.3
 
 ==========================================================================
 '''
+
+
+def force_create_folder(folder_to_create):
+    if os.path.isdir(folder_to_create):
+        shutil.rmtree(folder_to_create)
+        if os.path.isdir(folder_to_create):
+            shutil.rmtree(folder_to_create)
+            if os.path.isdir(folder_to_create):
+                shutil.rmtree(folder_to_create)
+                if os.path.isdir(folder_to_create):
+                    shutil.rmtree(folder_to_create)
+    os.mkdir(folder_to_create)
 
 
 def export_dna_record(gene_seq, gene_id, gene_description, output_handle):
@@ -252,11 +262,11 @@ if __name__ == "__main__":
     # Annotation modules
     Prodigal_parser = subparsers.add_parser('Prodigal_Runner', description='Wrapper for running Prodigal',usage=Prodigal_parser_usage)
 
-    Prodigal_parser.add_argument('-i',          required=True,                          help='input genome folder')
-    Prodigal_parser.add_argument('-x',          required=False, default='fasta',        help='file extension')
-    Prodigal_parser.add_argument('-p',          required=True,                          help='output prefix')
-    Prodigal_parser.add_argument('-meta',       required=False, action="store_true",    help='annotation mode for metagenome assembled genomes (MAGs)')
-    Prodigal_parser.add_argument('-t',          required=False, type=int, default=1,    help='number of threads')
+    Prodigal_parser.add_argument('-i',          required=True,  help='input genome folder')
+    Prodigal_parser.add_argument('-x',          required=False, default='fasta', help='file extension')
+    Prodigal_parser.add_argument('-p',          required=True,  help='output prefix')
+    Prodigal_parser.add_argument('-meta',       required=False, action="store_true", help='annotation mode for metagenome assembled genomes (MAGs)')
+    Prodigal_parser.add_argument('-t',          required=False, type=int, default=1, help='number of threads')
 
     args = vars(parser.parse_args())
 

@@ -51,7 +51,7 @@ gunzip prot2003-2014.fa.gz
 # Note!!!
 If you run COG2014 for multiple files in a batch manner and want to have their depth info incorporated into the results, 
 you need to provide a folder containing individual depth files for each of your input sequence file.
-Name of the depth file needs to be exactly the same as its corresponding sequence file, except the extension which is ".depth".
+Name of the depth file needs to be exactly the same as its corresponding sequence file, except the extension is ".depth".
 
 ====================================================================================================
 '''

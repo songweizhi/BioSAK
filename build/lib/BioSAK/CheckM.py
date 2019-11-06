@@ -9,8 +9,8 @@ CheckM_Runner_usage = '''
 =================================== CheckM_Runner example commands ===================================
 
 # Example command
-MyBioTools CheckM_Runner -i bin_folder -x fasta -qsub
-MyBioTools CheckM_Runner -i bin_folder -x fasta -js_header checkm_js_header.sh -qsub (to be added)
+BioSAK CheckM_Runner -i bin_folder -x fasta -qsub
+BioSAK CheckM_Runner -i bin_folder -x fasta -js_header checkm_js_header.sh -qsub (to be added)
 
 ======================================================================================================
 '''
@@ -20,15 +20,15 @@ CheckM_output_parser_usage = '''
 ================================ CheckM_output_parser example commands ===============================
 
 # only parse quality file
-MyBioTools CheckM_output_parser -i combined_qualities.txt -o bin_qualities.txt
+BioSAK CheckM_output_parser -i combined_qualities.txt -o bin_qualities.txt
 
 # get the quality of qualified bins 
-MyBioTools CheckM_output_parser -i combined_qualities.txt -complete 99 -o bin_qualities_complete99.txt
-MyBioTools CheckM_output_parser -i combined_qualities.txt -complete 99 -contain 5 -o bin_qualities_complete99_contain5.txt
+BioSAK CheckM_output_parser -i combined_qualities.txt -complete 99 -o bin_qualities_complete99.txt
+BioSAK CheckM_output_parser -i combined_qualities.txt -complete 99 -contain 5 -o bin_qualities_complete99_contain5.txt
 
 # get the quality of qualified bins and copy them into a separate folder
-MyBioTools CheckM_output_parser -i combined_qualities.txt -bin bin_folder -x fasta -complete 99 -o bin_qualities_complete99.txt
-MyBioTools CheckM_output_parser -i combined_qualities.txt -bin bin_folder -x fasta -complete 99 -contain 5 -o bin_qualities_complete99_contain5.txt
+BioSAK CheckM_output_parser -i combined_qualities.txt -bin bin_folder -x fasta -complete 99 -o bin_qualities_complete99.txt
+BioSAK CheckM_output_parser -i combined_qualities.txt -bin bin_folder -x fasta -complete 99 -contain 5 -o bin_qualities_complete99_contain5.txt
 
 ======================================================================================================
 '''

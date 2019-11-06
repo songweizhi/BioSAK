@@ -25,19 +25,17 @@ BioSAK COG2003 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i faa_files -x
 BioSAK COG2003 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i recipient.ffn
 BioSAK COG2003 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i ffn_files -x ffn
 
-# DB files:
-rpsblast db : ftp://ftp.ncbi.nih.gov/pub/mmdb/cdd/little_endian/Cog_LE.tar.gz (decompress before use)       
-cddid.tbl   : ftp://ftp.ncbi.nlm.nih.gov/pub/mmdb/cdd/cddid.tbl.gz (decompress before use)
-fun.txt     : ftp://ftp.ncbi.nih.gov/pub/COG/COG/fun.txt
-whog        : ftp://ftp.ncbi.nih.gov/pub/COG/COG/whog
+# Prepare DB files:
+cd $db_dir
+wget ftp://ftp.ncbi.nih.gov/pub/mmdb/cdd/little_endian/Cog_LE.tar.gz
+wget ftp://ftp.ncbi.nlm.nih.gov/pub/mmdb/cdd/cddid.tbl.gz
+wget ftp://ftp.ncbi.nih.gov/pub/COG/COG/fun.txt
+wget ftp://ftp.ncbi.nih.gov/pub/COG/COG/whog
+gunzip Cog_LE.tar.gz
+gunzip cddid.tbl.gz
 
 # How it works:
 https://github.com/aleimba/bac-genomics-scripts/tree/master/cdd2cog
-
-# DB on my Mac:    /Users/songweizhi/COG_DB
-
-# ko2cog
-https://www.genome.jp/kegg/files/ko2cog.xl
 
 ======================================================================================================
 '''

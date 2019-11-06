@@ -8,7 +8,7 @@ iTol_wrapper_usage = '''
 ===================================== iTol_wrapper example commands =====================================
 
 # for completed genome
-MyBioTools iTOL_wrapper -tree NorthSea.tree -label labels.txt -color colors_tol.txt -collapse collapse.txt -range ranges.txt
+BioSAK iTOL_wrapper -tree NorthSea.tree -label labels.txt -color colors_tol.txt -collapse collapse.txt -range ranges.txt
 
 =========================================================================================================
 '''

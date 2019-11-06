@@ -61,12 +61,8 @@ gene_3	10.58
    Remember to request sufficient memory (e.g. 90 or 120gb) in your job script and specify a small number (e.g. -t 6) 
    of jobs executing in parallel. Otherwise, you may see some of your query genomes with no gene been annotated.
 
-# ko2cog and ko2cazy
-https://www.genome.jp/kegg/files/ko2cog.xl
-https://www.genome.jp/kegg/files/ko2cazy.xl
 # To do:
 1. level C stats: separate stats for Pathway, Brite and the rests
-2. Add total gene number to data matrix
 
 ======================================================================================================
 '''

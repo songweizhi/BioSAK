@@ -7,18 +7,18 @@ import numpy as np
 
 '''
 
-Python3 ~/PycharmProjects/MyBioTools/MyBioTools/boxplot_matrix_COG.py -in Kelp_dRep_fun_stats -out Kelp_dRep_fun_stats.txt -in_percent 
-Python3 ~/PycharmProjects/MyBioTools/MyBioTools/boxplot_matrix_COG.py -in Tara_NM_fun_stats -out Tara_NM_fun_stats.txt -in_percent
+Python3 ~/PycharmProjects/BioSAK/BioSAK/boxplot_matrix_COG.py -in Kelp_dRep_fun_stats -out Kelp_dRep_fun_stats.txt -in_percent 
+Python3 ~/PycharmProjects/BioSAK/BioSAK/boxplot_matrix_COG.py -in Tara_NM_fun_stats -out Tara_NM_fun_stats.txt -in_percent
 
-Rscript ~/PycharmProjects/MyBioTools/MyBioTools/COG_boxplot_last1row.R -i Kelp_dRep_fun_stats.txt -o Kelp_dRep_fun_stats.png
-Rscript ~/PycharmProjects/MyBioTools/MyBioTools/COG_boxplot_last1row.R -i Tara_NM_fun_stats.txt -o Tara_NM_fun_stats.png
+Rscript ~/PycharmProjects/BioSAK/BioSAK/COG_boxplot_last1row.R -i Kelp_dRep_fun_stats.txt -o Kelp_dRep_fun_stats.png
+Rscript ~/PycharmProjects/BioSAK/BioSAK/COG_boxplot_last1row.R -i Tara_NM_fun_stats.txt -o Tara_NM_fun_stats.png
 
 cd /Users/songweizhi/Desktop/555
-python3 ~/PycharmProjects/MyBioTools/MyBioTools/boxplot_matrix_COG.py -in Kelp_and_HGT_COG_func_stats -out Kelp_and_HGT_COG_func_stats_num.txt -skip_1st_row
-python3 ~/PycharmProjects/MyBioTools/MyBioTools/boxplot_matrix_COG.py -in Tara_NM_and_HGT_COG_func_stats -out Tara_NM_and_HGT_COG_func_stats_num.txt -skip_1st_row
+python3 ~/PycharmProjects/BioSAK/BioSAK/boxplot_matrix_COG.py -in Kelp_and_HGT_COG_func_stats -out Kelp_and_HGT_COG_func_stats_num.txt -skip_1st_row
+python3 ~/PycharmProjects/BioSAK/BioSAK/boxplot_matrix_COG.py -in Tara_NM_and_HGT_COG_func_stats -out Tara_NM_and_HGT_COG_func_stats_num.txt -skip_1st_row
 
-python3 ~/PycharmProjects/MyBioTools/MyBioTools/boxplot_matrix_COG.py -in test -out test.txt -skip_1st_row
-python3 ~/PycharmProjects/MyBioTools/MyBioTools/boxplot_matrix_COG.py -in test -out test.txt -skip_1st_row -with_functional_description
+python3 ~/PycharmProjects/BioSAK/BioSAK/boxplot_matrix_COG.py -in test -out test.txt -skip_1st_row
+python3 ~/PycharmProjects/BioSAK/BioSAK/boxplot_matrix_COG.py -in test -out test.txt -skip_1st_row -with_functional_description
 
 '''
 

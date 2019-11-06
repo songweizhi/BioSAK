@@ -1,4 +1,7 @@
-1.18.7
+1.19.0
+- new module added: get_gene_depth
+
+1.18.9
 - supports gene depth info for COG2014, KEGG and dbCAN annotation
 
 1.17.23

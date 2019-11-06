@@ -20,7 +20,7 @@
 import sys
 import warnings
 import argparse
-from BioSAK import Annotation_Prodigal
+from BioSAK import Prodigal
 from BioSAK import KEGG
 from BioSAK import COG2003, COG2014
 from BioSAK import dbCAN
@@ -30,7 +30,7 @@ from BioSAK import keep_best_hit
 from BioSAK import get_SCG_tree
 from BioSAK import SankeyTaxon
 from BioSAK import get_bin_abundance
-from BioSAK import CheckM_Runner
+from BioSAK import CheckM
 from BioSAK import download_GenBank_genome
 from BioSAK import sra_reads_downloader
 from BioSAK import iTOL_wrapper
@@ -55,9 +55,9 @@ def print_main_help():
                  ...::: BioSAK v%s :::...
 
     Annotation modules
-       Prodigal_Runner        ->   Wrapper for running Prodigal
-       Barrnap_Runner         ->   [to be added] Wrapper for running Barrnap 
-       CheckM_Runner          ->   Wrapper for running CheckM
+       Prodigal               ->   Wrapper for running Prodigal
+       Barrnap                ->   [to be added] Wrapper for running Barrnap 
+       CheckM                 ->   Wrapper for running CheckM
        CheckM_op_parser       ->   Parse (combined) CheckM outputs
        COG2003                ->   Wrapper for COG annotation (v2003, by rpsblast)
        COG2014                ->   Wrapper for COG annotation (v2014, by blastp/diamond)
@@ -125,10 +125,10 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(help="--", dest='subparser_name')
 
     # Annotation modules
-    Prodigal_parser =                   subparsers.add_parser('Prodigal_Runner',            description='Wrapper for running Prodigal',                         usage=Annotation_Prodigal.Prodigal_parser_usage)
+    Prodigal_parser =                   subparsers.add_parser('Prodigal_Runner', description='Wrapper for running Prodigal', usage=Prodigal.Prodigal_parser_usage)
     Barrnap_parser =                    subparsers.add_parser('Barrnap_Runner',             description='Wrapper for running Barrnap',                          usage='')
-    CheckM_parser =                     subparsers.add_parser('CheckM_Runner',              description='Wrapper for running CheckM',                           usage=CheckM_Runner.CheckM_Runner_usage)
-    CheckM_output_parser =              subparsers.add_parser('CheckM_op_parser',           description='Parse combined CheckM outputs',                        usage=CheckM_Runner.CheckM_output_parser_usage)
+    CheckM_parser =                     subparsers.add_parser('CheckM_Runner', description='Wrapper for running CheckM', usage=CheckM.CheckM_Runner_usage)
+    CheckM_output_parser =              subparsers.add_parser('CheckM_op_parser', description='Parse combined CheckM outputs', usage=CheckM.CheckM_output_parser_usage)
     COG2003_parser =                    subparsers.add_parser('COG2003',                    description='Wrapper for COG annotation (v2003)',                   usage=COG2003.COG_parser_usage)
     COG2014_parser =                    subparsers.add_parser('COG2014',                    description='Wrapper for COG annotation (v2014)',                   usage=COG2014.COG2014_parser_usage)
     KEGG_parser =                       subparsers.add_parser('KEGG',                       description='Wrapper for KEGG annotation',                          usage=KEGG.KEGG_parser_usage)
@@ -253,7 +253,8 @@ if __name__ == '__main__':
     get_rc_parser.add_argument('-seq',                  required=True,                                  help='input sequence(s)')
 
     # add arguments for get_gene_depth
-    get_gene_depth_parser.add_argument('-gbk',          required=True,                                  help='gbk file')
+    get_gene_depth_parser.add_argument('-gbk',          required=False, default=None,                   help='gbk file')
+    get_gene_depth_parser.add_argument('-gff',          required=False, default=None,                   help='gff file')
     get_gene_depth_parser.add_argument('-ctg_depth',    required=True,                                  help='contig depth file')
     get_gene_depth_parser.add_argument('-id_column',    required=False, default=1, type=int,            help='contig id column, default is 1')
     get_gene_depth_parser.add_argument('-depth_column', required=False, default=2, type=int,            help='contig depth column, default is 2')
@@ -343,7 +344,7 @@ if __name__ == '__main__':
 
     # run corresponding function
     if args['subparser_name'] == 'Prodigal_Runner':
-        Annotation_Prodigal.Annotation_Prodigal(args)
+        Prodigal.Annotation_Prodigal(args)
 
     elif args['subparser_name'] == 'COG2003':
         COG2003.COG2003(args, config_dict)
@@ -358,10 +359,10 @@ if __name__ == '__main__':
         dbCAN.dbCAN(args)
 
     elif args['subparser_name'] == 'CheckM_Runner':
-        CheckM_Runner.CheckM_Runner(args)
+        CheckM.CheckM_Runner(args)
 
     elif args['subparser_name'] == 'CheckM_op_parser':
-        CheckM_Runner.CheckM_output_parser(args)
+        CheckM.CheckM_output_parser(args)
 
     elif args['subparser_name'] == 'SankeyTaxon':
         SankeyTaxon.SankeyTaxon(args)

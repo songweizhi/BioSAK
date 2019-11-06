@@ -1,6 +1,6 @@
 import os
 import argparse
-from MyBioTools.MyBioTools_config import config_dict
+from BioSAK.BioSAK_config import config_dict
 
 
 label_tree_usage = '''
@@ -9,11 +9,11 @@ label_tree_usage = '''
 module load R
 
 # label tree with customized grouping file
-MyBioTools label_tree -tree NorthSea.tree -label labels.txt 
+BioSAK label_tree -tree NorthSea.tree -label labels.txt 
 
 # label tree by taxonomic classification at phylum and class levels
-MyBioTools label_tree -tree NorthSea.tree -taxon GTDB_output.tsv -rank p
-MyBioTools label_tree -tree NorthSea.tree -taxon GTDB_output.tsv -rank c
+BioSAK label_tree -tree NorthSea.tree -taxon GTDB_output.tsv -rank p
+BioSAK label_tree -tree NorthSea.tree -taxon GTDB_output.tsv -rank c
 
 # label file format:
 label_A,leaf_1
@@ -125,5 +125,5 @@ if __name__ == '__main__':
 #             'tree':'/Users/songweizhi/Desktop/222/NS_SCG_tree.newick',
 #             'taxon':'/Users/songweizhi/Desktop/222/NorthSea_GTDB.tsv',
 #             'rank':'p'},
-#            {'label_tree_R':'/Users/songweizhi/PycharmProjects/MyBioTools/MyBioTools/label_tree.R'})
+#            {'label_tree_R':'/Users/songweizhi/PycharmProjects/BioSAK/BioSAK/label_tree.R'})
 

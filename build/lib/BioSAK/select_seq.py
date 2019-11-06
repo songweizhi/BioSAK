@@ -9,10 +9,10 @@ select_seq_usage = '''
 =================== select_seq example commands ===================
 
 # Extract sequences with provided id in seq_id.txt
-MyBioTools select_seq -seq ctg.fasta -id seq_id.txt -option 1
+BioSAK select_seq -seq ctg.fasta -id seq_id.txt -option 1
 
 # Extract sequences except those in seq_id.txt
-MyBioTools select_seq -seq ctg.fasta -id seq_id.txt -option 0
+BioSAK select_seq -seq ctg.fasta -id seq_id.txt -option 0
 
 # seq_id.txt file format: one id per line
 

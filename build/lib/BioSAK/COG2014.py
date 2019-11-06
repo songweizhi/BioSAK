@@ -1,16 +1,15 @@
 import os
 import glob
-import shutil
 import argparse
 from Bio import SeqIO
 import multiprocessing as mp
 from datetime import datetime
 from Bio.SeqRecord import SeqRecord
-from MyBioTools.global_functions import time_format
-from MyBioTools.global_functions import force_create_folder
-from MyBioTools.global_functions import sep_path_basename_ext
-from MyBioTools.global_functions import AnnotateNorm
-from MyBioTools.global_functions import get_gene_list_TotalDepth
+from BioSAK.global_functions import time_format
+from BioSAK.global_functions import force_create_folder
+from BioSAK.global_functions import sep_path_basename_ext
+from BioSAK.global_functions import AnnotateNorm
+from BioSAK.global_functions import get_gene_list_TotalDepth
 
 
 COG2014_parser_usage = '''
@@ -19,21 +18,21 @@ COG2014_parser_usage = '''
 # module needed
 module load python/3.7.3
 module load blast+/2.6.0
+module load diamond/0.9.24
 
 # annotate protein sequences
-MyBioTools COG2014 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2014 -i recipient.faa 
-MyBioTools COG2014 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2014 -i faa_files -x faa -depth depth_files
+BioSAK COG2014 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2014 -i recipient.faa 
+BioSAK COG2014 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2014 -i faa_files -x faa -depth depth_files
 
 # annotate DNA sequences (ORFs)
-MyBioTools COG2014 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2014 -i recipient.ffn -depth recipient.depth
-MyBioTools COG2014 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2014 -i ffn_files -x ffn
+BioSAK COG2014 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2014 -i recipient.ffn -depth recipient.depth
+BioSAK COG2014 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2014 -i ffn_files -x ffn
 
 # Depth file format (one gene per line, tab separated)
 gene_1	30
 gene_2	10.58
-gene_3	5.58
 
-# DB files (decompress prot2003-2014.fa.gz before use):
+# Prepare DB files:
 cd $db_dir
 wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/prot2003-2014.fa.gz
 wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/prot2003-2014.tab
@@ -41,10 +40,6 @@ wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/cog2003-2014.csv
 wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/cognames2003-2014.tab
 wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/fun2003-2014.tab        
 gunzip prot2003-2014.fa.gz
- 
-# Files in DB folder
-cog2003-2014.csv,  cognames2003-2014.tab,     fun2003-2014.tab,   genomes2003-2014.tab, 
-prot2003-2014.fa,  prot2003-2014.gi2gbk.tab,  prot2003-2014.tab,  Readme.201610.txt
 
 # How it works:
 1. COG2014 module uses Blast+/Diamond to get the best hits of query genes in the database 
@@ -56,10 +51,7 @@ prot2003-2014.fa,  prot2003-2014.gi2gbk.tab,  prot2003-2014.tab,  Readme.201610.
 # Note!!!
 If you run COG2014 for multiple files in a batch manner and want to have their depth info incorporated into the results, 
 you need to provide a folder containing individual depth files for each of your input sequence file.
-Name of the depth file needs to be exactly the same as its corresponding sequence file, except the extension which is ".depth".
-
-# DB on my Mac: /Users/songweizhi/DB/COG2014
-# ko2cog: https://www.genome.jp/kegg/files/ko2cog.xl
+Name of the depth file needs to be exactly the same as its corresponding sequence file, except the extension is ".depth".
 
 ====================================================================================================
 '''
