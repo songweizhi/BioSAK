@@ -62,8 +62,6 @@ def print_main_help():
        rename_ctg             ->   rename contigs in a file
        select_seq             ->   select sequences by id
        get_gene_depth         ->   Get gene depth by contig depth
-
-    Alignment manipulator
        convert_align_format   ->   Convert alignment format
 
     Tree manipulator
@@ -71,14 +69,10 @@ def print_main_help():
        label_tree             ->   Add labels to tree leaves
        subset_tree            ->   Subset tree
        iTOL_wrapper           ->   Plot tree with iTOL
-        
-    Plot modules
-       SankeyTaxon            ->   Plot taxonomic classification with Sankey plot
-       
-    File/folder manipulator
-       split_folder           ->   Split folder
-       
+                      
     Other modules
+       split_folder           ->   Split folder
+       SankeyTaxon            ->   Plot taxonomic classification with Sankey plot
        BestHit                ->   Keep Best Hits only (blast outfmt 6)
        get_bin_abundance      ->   Calculate bin abundance according to MetaBAT depth file
        sra_reads_downloader   ->   download SRA read files
@@ -96,7 +90,7 @@ def print_main_help():
 
 if __name__ == '__main__':
 
-    ############################################## initialize subparsers ###############################################
+    ########################################################################################### initialize subparsers ############################################################################################
 
     # initialize the options parser
     parser = argparse.ArgumentParser()
@@ -112,9 +106,6 @@ if __name__ == '__main__':
     KEGG_parser =                       subparsers.add_parser('KEGG',                       description='Wrapper for KEGG annotation',                          usage=KEGG.KEGG_parser_usage)
     dbCAN_parser =                      subparsers.add_parser('dbCAN',                      description='Wrapper for running dbCAN',                            usage=dbCAN.dbCAN_parser_usage)
 
-    # Sequencing reads manipulator
-    subsample_reads_parser =            subparsers.add_parser('subsample_reads',            description='Wrapper for running Prodigal',                         epilog='Example: BioSAK Prodigal_Runner -h')
-
     # Sequence file manipulator
     gbk2fa_parser =                     subparsers.add_parser('gbk2fa',                     description='gbk to fasta',                                         usage=format_converter.sequence_manipulator_usage)
     gbk2ffn_parser =                    subparsers.add_parser('gbk2ffn',                    description='gbk to ffn',                                           usage=format_converter.sequence_manipulator_usage)
@@ -122,41 +113,36 @@ if __name__ == '__main__':
     ffn2faa_parser =                    subparsers.add_parser('ffn2faa',                    description='ffn to faa',                                           usage=format_converter.sequence_manipulator_usage)
     get_rc_parser =                     subparsers.add_parser('get_rc',                     description='get reverse complement sequence',                      usage=format_converter.sequence_manipulator_usage)
     select_seq_parser =                 subparsers.add_parser('select_seq',                 description='select sequences by id',                               usage=select_seq.select_seq_usage)
-    get_total_len_parser =              subparsers.add_parser('get_total_len',              description='Wrapper for running Prodigal',                         epilog='Example: BioSAK Prodigal_Runner -h')
-    get_fasta_stats_parser =            subparsers.add_parser('get_fasta_stats',            description='Wrapper for running Prodigal',                         epilog='Example: BioSAK Prodigal_Runner -h')
-    FastaSplitler_parser =              subparsers.add_parser('FastaSplitler',              description='Wrapper for running Prodigal',                         epilog='Example: BioSAK Prodigal_Runner -h')
-    get_gene_depth_parser =             subparsers.add_parser('get_gene_depth',             description='Get gene depth from gbk and contig depth files',       usage=get_gene_depth.get_gene_depth_parser_usage)
+    get_total_len_parser =              subparsers.add_parser('get_total_len',              description='Wrapper for running Prodigal',                         usage='')
+    get_fasta_stats_parser =            subparsers.add_parser('get_fasta_stats',            description='Wrapper for running Prodigal',                         usage='')
+    FastaSplitler_parser =              subparsers.add_parser('FastaSplitler',              description='Wrapper for running Prodigal',                         usage='')
+    get_gene_depth_parser =             subparsers.add_parser('get_gene_depth',             description='Get gene depth by contig depth',                       usage=get_gene_depth.get_gene_depth_parser_usage)
     rename_ctg_parser =                 subparsers.add_parser('rename_ctg',                 description='rename contigs in a file',                             usage=rename_ctg.rename_ctg_usage)
-
-    # Alignment file manipulator
     convert_align_fmt_parser =          subparsers.add_parser('convert_align_format',       description='Convert alignment format',                             usage=format_converter.convert_align_format_usage)
 
     # Sam file manipulator
-    extract_sam_reads_parser =          subparsers.add_parser('Extract_sam_reads',          description='Extract reads from SAM file',                          epilog='Example: BioSAK Prodigal_Runner -h')
-    plot_sam_depth_parser =             subparsers.add_parser('Plot_sam_depth',             description='Wrapper for running Prodigal',                         epilog='Example: BioSAK Prodigal_Runner -h')
+    extract_sam_reads_parser =          subparsers.add_parser('Extract_sam_reads',          description='Extract reads from SAM file',                          usage='')
+    plot_sam_depth_parser =             subparsers.add_parser('Plot_sam_depth',             description='Wrapper for running Prodigal',                         usage='')
 
     # Tree file manipulator
     get_SCG_tree_parser =               subparsers.add_parser('get_SCG_tree',               description='get SCG tree',                                         usage=get_SCG_tree.get_SCG_tree_usage)
     subset_tree_parser =                subparsers.add_parser('subset_tree',                description='Subset tree',                                          usage=Subset_tree.subset_tree_parser_usage)
-    plot_tree_parser =                  subparsers.add_parser('Plot_tree',                  description='Plot tree in Newick format',                           epilog='Example: BioSAK Prodigal_Runner -h')
+    plot_tree_parser =                  subparsers.add_parser('Plot_tree',                  description='Plot tree in Newick format',                           usage='')
     iTOL_wrapper_parser =               subparsers.add_parser('iTOL_wrapper',               description='Plot tree with iTOL',                                  usage=iTOL_wrapper.iTol_wrapper_usage)
     label_tree_parser =                 subparsers.add_parser('label_tree',                 description='Add labels to tree leaves',                            usage=label_tree.label_tree_usage)
 
-    # Plot modules
-    SankeyTaxon_parser =                subparsers.add_parser('SankeyTaxon',                description='Visualize taxonomic classification with Sankey plot',  usage=SankeyTaxon.SankeyTaxon_parser_usage)
-
-    # File/folder manipulator
-    split_folder_parser =               subparsers.add_parser('split_folder',               description='Split folder',                                         usage=split_folder.split_folder_parser_usage)
-
     # Other modules
+    split_folder_parser =               subparsers.add_parser('split_folder',               description='Split folder',                                         usage=split_folder.split_folder_parser_usage)
+    SankeyTaxon_parser =                subparsers.add_parser('SankeyTaxon',                description='Visualize GTDB output with Sankey diagram',            usage=SankeyTaxon.SankeyTaxon_parser_usage)
     BestHit_parser =                    subparsers.add_parser('BestHit',                    description='Keep blast hits with highest bit score',               usage=split_folder.split_folder_parser_usage)
-    get_bin_abundance_parser =          subparsers.add_parser('get_bin_abundance',          description='Get bin abundance according to MetaBAT depth file',    usage=get_bin_abundance.get_bin_abundance_usage)
+    get_bin_abundance_parser =          subparsers.add_parser('get_bin_abundance',          description='Get bin abundance from MetaBAT depth file',            usage=get_bin_abundance.get_bin_abundance_usage)
     sra_reads_downloader_parser =       subparsers.add_parser('sra_reads_downloader',       description='Download SRA read files',                              usage=sra_reads_downloader.sra_reads_downloader_usage)
     dwnld_GenBank_genome_parser =       subparsers.add_parser('dwnld_GenBank_genome',       description='Batch download GenBank genomes',                       usage=download_GenBank_genome.download_GenBank_genome_parser_usage)
     get_Pfam_hmms_parser =              subparsers.add_parser('get_Pfam_hmms',              description='Get Pfam profiles by id',                              usage=get_Pfam_hmms.get_Pfam_hmms_usage)
+    subsample_reads_parser =            subparsers.add_parser('subsample_reads',            description='Wrapper for running Prodigal',                         usage='')
 
 
-    ######################################### define arguments for subparsers ##########################################
+    ###################################################################################### define arguments for subparsers #######################################################################################
 
     # add arguments for Prodigal_parser
     Prodigal_parser.add_argument('-i',                  required=True,                                  help='input genome folder')
@@ -315,13 +301,13 @@ if __name__ == '__main__':
     rename_ctg_parser.add_argument('-n',                required=True, type=int,                        help='the number of columns to keep')
 
 
-    ############################## parse provided arguments and run corresponding function #############################
+    ############################################################ parse provided arguments and run corresponding function ###########################################################
 
     # disable warning message
     warnings.filterwarnings('ignore')
 
     # parse options
-    if (len(sys.argv) == 1) or (sys.argv[1] == '-h') or (sys.argv[1] == '-help') or (sys.argv[1] == '--help'):
+    if (len(sys.argv) == 1) or (sys.argv[1] in ['-h', '-help', '--help']):
         print_main_help()
         sys.exit(0)
     else:
