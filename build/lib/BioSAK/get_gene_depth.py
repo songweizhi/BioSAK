@@ -1,3 +1,4 @@
+import os
 import argparse
 from Bio import SeqIO
 from datetime import datetime
@@ -9,15 +10,14 @@ get_gene_depth_parser_usage = '''
 ========================== get_gene_depth example commands ==========================
 
 # Get gene depth by contig depth, together with gbk or gff (prefered) file
-
 BioSAK get_gene_depth -gff test.gff -ctg_depth contig_depth.txt
 BioSAK get_gene_depth -gff test.gff -ctg_depth contig_depth.txt -skip_header
 BioSAK get_gene_depth -gbk test.gbk -ctg_depth contig_depth.txt -skip_header
 
 # Contig depth file format (one contig per line, tab separated)
-contig_1   30.16
-contig_2   26
-contig_3   0.726
+contig_1    30.16
+contig_2    26
+contig_3    0.726
 
 =====================================================================================
 '''
@@ -31,7 +31,8 @@ def get_gene_depth(args):
     depth_column =              args['depth_column']
     skip_depth_file_header =    args['skip_header']
 
-    # check input file
+    ################################################# check input file #################################################
+
     annotation_file = None
     if (gbk_file is None) and (gff_file is None):
         print(datetime.now().strftime(time_format) + 'Please provide either a gbk file or a gff file, program exited!')
@@ -47,13 +48,14 @@ def get_gene_depth(args):
     if (gbk_file is None) and (gff_file is not None):
         annotation_file = gff_file
 
-
     # define output gene deptp file name
     annotation_file_path, annotation_file_basename, annotation_file_extension = sep_path_basename_ext(annotation_file)
     pwd_gene_depth_file = '%s/%s.depth' % (annotation_file_path, annotation_file_basename)
+    if os.path.isfile(pwd_gene_depth_file) is True:
+        pwd_gene_depth_file = '%s/%s.depth.txt' % (annotation_file_path, annotation_file_basename)
 
+    ################################################ read in ctg depth #################################################
 
-    # read in ctg depth
     ctg_depth_dict = {}
     line = 0
     for ctg in open(ctg_depth_file):
@@ -67,8 +69,8 @@ def get_gene_depth(args):
 
         line += 1
 
+    ########################################### get gene depth with gbk file ###########################################
 
-    # get gene depth with gbk file
     if annotation_file == gbk_file:
         gene_depth_file_handle = open(pwd_gene_depth_file, 'w')
         for seq_record in SeqIO.parse(gbk_file, 'genbank'):
@@ -81,8 +83,8 @@ def get_gene_depth(args):
                     gene_depth_file_handle.write(for_out)
         gene_depth_file_handle.close()
 
+    ########################################### get gene depth with gff file ###########################################
 
-    # get gene depth with gff file
     if annotation_file == gff_file:
         gene_depth_file_handle = open(pwd_gene_depth_file, 'w')
         for each_line in open(gff_file):
@@ -96,8 +98,8 @@ def get_gene_depth(args):
                     gene_depth_file_handle.write(for_out)
         gene_depth_file_handle.close()
 
+    ###################################################### report ######################################################
 
-    # report
     print(datetime.now().strftime(time_format) + 'Gene depth exported to %s' % pwd_gene_depth_file)
     print(datetime.now().strftime(time_format) + 'Done!')
 
@@ -117,4 +119,3 @@ if __name__ == '__main__':
     args = vars(get_gene_depth_parser.parse_args())
 
     get_gene_depth(args)
-

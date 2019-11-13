@@ -11,11 +11,8 @@ check.packages <- function(pkg){
 packages<-c("optparse", "ggplot2")
 invisible(suppressMessages(check.packages(packages)))
 
-
 ############################################### Usage example ##############################################
 
-# !!! COG annotation results for the HGTs must be in the last one row
-# Rscript ~/Dropbox/R_scripts/for_plot/COG_summary_boxplot_last1row.R -i matrix.csv -o plot.png
 
 ############################################################################################################
 
@@ -37,7 +34,7 @@ opt = parse_args(opt_parser);
 
 ############################################### read in data ###############################################
 
-my_data = read.csv(opt$input, row.names = 1)
+my_data = read.csv(opt$input, row.names = 1, sep = '\t')
 
 # remove columns with all zero values
 my_data = my_data[, colSums(my_data != 0) > 0]

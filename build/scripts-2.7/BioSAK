@@ -20,25 +20,18 @@
 import sys
 import warnings
 import argparse
-from BioSAK import Prodigal
-from BioSAK import KEGG
-from BioSAK import COG2003, COG2014
-from BioSAK import dbCAN
-from BioSAK import Subset_tree
-from BioSAK import split_folder
-from BioSAK import keep_best_hit
-from BioSAK import get_SCG_tree
-from BioSAK import SankeyTaxon
-from BioSAK import get_bin_abundance
-from BioSAK import CheckM
-from BioSAK import download_GenBank_genome
-from BioSAK import sra_reads_downloader
-from BioSAK import iTOL_wrapper
-from BioSAK import format_converter
-from BioSAK import label_tree
-from BioSAK import select_seq
-from BioSAK import get_Pfam_hmms
+from BioSAK import Prodigal, CheckM
+from BioSAK import COG2003, COG2014, KEGG, dbCAN
+from BioSAK import get_SCG_tree, Subset_tree, label_tree, iTOL_wrapper
+from BioSAK import sra_reads_downloader, download_GenBank_genome
+from BioSAK import select_seq, rename_ctg
 from BioSAK import get_gene_depth
+from BioSAK import keep_best_hit
+from BioSAK import get_bin_abundance
+from BioSAK import split_folder
+from BioSAK import SankeyTaxon
+from BioSAK import format_converter
+from BioSAK import get_Pfam_hmms
 from BioSAK.BioSAK_config import config_dict
 
 
@@ -56,7 +49,6 @@ def print_main_help():
 
     Annotation modules
        Prodigal               ->   Wrapper for running Prodigal
-       Barrnap                ->   [to be added] Wrapper for running Barrnap 
        CheckM                 ->   Wrapper for running CheckM
        CheckM_op_parser       ->   Parse (combined) CheckM outputs
        COG2003                ->   Wrapper for COG annotation (v2003, by rpsblast)
@@ -65,7 +57,6 @@ def print_main_help():
        dbCAN                  ->   Wrapper for running dbCAN
     
     Reads manipulator
-       subsample_reads        ->   [to be added] Subsample_reads 
        reads_simulator        ->   simulate NGS reads
        
     Sequence manipulator
@@ -74,25 +65,17 @@ def print_main_help():
        gbk2faa                ->   gbk to faa
        ffn2faa                ->   ffn to faa
        get_rc                 ->   get reverse complement sequence
+       rename_ctg             ->   rename contigs
        select_seq             ->   select sequences by id
        get_gene_depth         ->   Get gene depth by contig depth
-       get_total_length       ->   [to be added] get total length of one/multiple sequence files
-       get_fasta_stats        ->   [to be added]
-       FastaSplitler          ->   [to be added] Split fasta file by sequence length/number 
 
     Alignment manipulator
        convert_align_format   ->   Convert alignment format
-       trim_msa               ->   [to be added]
-    
-    Sam manipulator
-       extract_sam_reads      ->   [to be added] Extract reads from SAM file
-       plot_sam_depth         ->   [to be added] Plot depth for reference sequences in SAM file
 
     Tree manipulator
        get_SCG_tree           ->   construct SCG tree for query genomes
        label_tree             ->   Add labels to tree leaves
        subset_tree            ->   Subset tree
-       compare_tree           ->   [to be added] Compare tree similarity
        iTOL_wrapper           ->   Plot tree with iTOL
         
     Plot modules
@@ -125,10 +108,10 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(help="--", dest='subparser_name')
 
     # Annotation modules
-    Prodigal_parser =                   subparsers.add_parser('Prodigal_Runner', description='Wrapper for running Prodigal', usage=Prodigal.Prodigal_parser_usage)
+    Prodigal_parser =                   subparsers.add_parser('Prodigal_Runner',            description='Wrapper for running Prodigal',                         usage=Prodigal.Prodigal_parser_usage)
     Barrnap_parser =                    subparsers.add_parser('Barrnap_Runner',             description='Wrapper for running Barrnap',                          usage='')
-    CheckM_parser =                     subparsers.add_parser('CheckM_Runner', description='Wrapper for running CheckM', usage=CheckM.CheckM_Runner_usage)
-    CheckM_output_parser =              subparsers.add_parser('CheckM_op_parser', description='Parse combined CheckM outputs', usage=CheckM.CheckM_output_parser_usage)
+    CheckM_parser =                     subparsers.add_parser('CheckM_Runner',              description='Wrapper for running CheckM',                           usage=CheckM.CheckM_Runner_usage)
+    CheckM_output_parser =              subparsers.add_parser('CheckM_op_parser',           description='Parse combined CheckM outputs',                        usage=CheckM.CheckM_output_parser_usage)
     COG2003_parser =                    subparsers.add_parser('COG2003',                    description='Wrapper for COG annotation (v2003)',                   usage=COG2003.COG_parser_usage)
     COG2014_parser =                    subparsers.add_parser('COG2014',                    description='Wrapper for COG annotation (v2014)',                   usage=COG2014.COG2014_parser_usage)
     KEGG_parser =                       subparsers.add_parser('KEGG',                       description='Wrapper for KEGG annotation',                          usage=KEGG.KEGG_parser_usage)

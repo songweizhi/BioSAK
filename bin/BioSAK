@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import sys
 import warnings
 import argparse
@@ -24,7 +23,7 @@ from BioSAK import Prodigal, CheckM
 from BioSAK import COG2003, COG2014, KEGG, dbCAN
 from BioSAK import get_SCG_tree, Subset_tree, label_tree, iTOL_wrapper
 from BioSAK import sra_reads_downloader, download_GenBank_genome
-from BioSAK import select_seq
+from BioSAK import select_seq, rename_ctg
 from BioSAK import get_gene_depth
 from BioSAK import keep_best_hit
 from BioSAK import get_bin_abundance
@@ -36,9 +35,7 @@ from BioSAK.BioSAK_config import config_dict
 
 
 def version(config_dict):
-
     version_file = open('%s/VERSION' % config_dict['config_file_path'])
-
     return version_file.readline().strip()
 
 
@@ -56,15 +53,13 @@ def print_main_help():
        KEGG                   ->   Wrapper for KEGG annotation
        dbCAN                  ->   Wrapper for running dbCAN
     
-    Reads manipulator
-       reads_simulator        ->   simulate NGS reads
-       
     Sequence manipulator
        gbk2fa                 ->   gbk to fasta
        gbk2ffn                ->   gbk to ffn
        gbk2faa                ->   gbk to faa
        ffn2faa                ->   ffn to faa
        get_rc                 ->   get reverse complement sequence
+       rename_ctg             ->   rename contigs in a file
        select_seq             ->   select sequences by id
        get_gene_depth         ->   Get gene depth by contig depth
 
@@ -89,8 +84,9 @@ def print_main_help():
        sra_reads_downloader   ->   download SRA read files
        dwnld_GenBank_genome   ->   Batch download GenBank genomes
        get_Pfam_hmms          ->   get Pfam profiles by id
- 
-    # for module specific help
+       reads_simulator        ->   simulate NGS reads
+       
+    # for module specific help info
     BioSAK <ModuleName> -h
     
     ''' % version(config_dict)
@@ -130,6 +126,7 @@ if __name__ == '__main__':
     get_fasta_stats_parser =            subparsers.add_parser('get_fasta_stats',            description='Wrapper for running Prodigal',                         epilog='Example: BioSAK Prodigal_Runner -h')
     FastaSplitler_parser =              subparsers.add_parser('FastaSplitler',              description='Wrapper for running Prodigal',                         epilog='Example: BioSAK Prodigal_Runner -h')
     get_gene_depth_parser =             subparsers.add_parser('get_gene_depth',             description='Get gene depth from gbk and contig depth files',       usage=get_gene_depth.get_gene_depth_parser_usage)
+    rename_ctg_parser =                 subparsers.add_parser('rename_ctg',                 description='rename contigs in a file',                             usage=rename_ctg.rename_ctg_usage)
 
     # Alignment file manipulator
     convert_align_fmt_parser =          subparsers.add_parser('convert_align_format',       description='Convert alignment format',                             usage=format_converter.convert_align_format_usage)
@@ -311,6 +308,12 @@ if __name__ == '__main__':
     get_Pfam_hmms_parser.add_argument('-pfam',          required=True,                                  help='Pfam db file, normally with name Pfam-A.hmm')
     get_Pfam_hmms_parser.add_argument('-id',            required=True,                                  help='ids of profiles need to be extracted, one id per line')
 
+    # add arguments for rename_ctg
+    rename_ctg_parser.add_argument('-i',                required=True,                                  help='input sequence file')
+    rename_ctg_parser.add_argument('-si',               required=True,                                  help='separator for input sequences')
+    rename_ctg_parser.add_argument('-so',               required=False, default=None,                   help='separator for output sequences, default: same as si')
+    rename_ctg_parser.add_argument('-n',                required=True, type=int,                        help='the number of columns to keep')
+
 
     ############################## parse provided arguments and run corresponding function #############################
 
@@ -399,6 +402,9 @@ if __name__ == '__main__':
 
     elif args['subparser_name'] == 'get_gene_depth':
         get_gene_depth.get_gene_depth(args)
+
+    elif args['subparser_name'] == 'rename_ctg':
+        rename_ctg.rename_ctg(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

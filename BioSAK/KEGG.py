@@ -22,11 +22,9 @@ module load diamond/0.9.24
 
 # annotation with NCBI blastp (default, for small dataset)
 BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6 -seq_in input.faa -depth input.depth
-BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6 -seq_in faa_files -x faa -depth depth_files
 
 # annotation with Diamond blastp (for big dataset)
-BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 12 -diamond -seq_in input.faa
-BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 12 -diamond -seq_in faa_folder -x faa
+BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 12 -seq_in faa_folder -x faa -depth depth_files -diamond
 
 # get summary for BlastKOALA/GhostKOALA produced results
 BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 9 -ko_in user_ko.txt
@@ -35,7 +33,6 @@ BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 9 -ko_in user_ko
 # Depth file format (one gene per line, tab separated)
 gene_1	30
 gene_2	10.58
-gene_3	10.58
 
 # Files needed in db_dir:
 1. Sequence file, only needed for "-seq_in" mode, DECOMPRESS and RENAME to kegg_db_seq.fasta
@@ -46,8 +43,7 @@ gene_3	10.58
    https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
 
 # How it works:
-1. KEGG module uses Blast+/Diamond to get the best hits of query genes in the database 
-   with users defined e-value cutoff (default 0.001).
+1. KEGG module uses Blast+/Diamond to get the best hits of query genes in the database with user defined e-value cutoff (default 0.001).
 2. The TotalDepth of a KO is calculated by summing up the depth of all genes assigned to it.
 3. The percentage of GeneNumber/TotalDepth of genes assigned to a KO is calculated by dividing them 
    by the total number/depth of genes with KO assignment (default) or all query genes in a file (if "-pct_by_all" specified). 
@@ -56,8 +52,7 @@ gene_3	10.58
 1. If you run KEGG annotation for multiple files in a batch manner and want to have their depth info incorporated into the results, 
    you need to provide a folder containing individual depth files for each of your input sequence file.
    Name of the depth file needs to be exactly the same as its corresponding sequence file, except the extension which is ".depth".
-
-2. Diamond requires quite a lot of memory for sequence comparison, especially when the db file is big (like KEGG db).
+2. Diamond requires quite a lot of memory for sequence comparison, especially for huge db file (e.g. KEGG db).
    Remember to request sufficient memory (e.g. 90 or 120gb) in your job script and specify a small number (e.g. -t 6) 
    of jobs executing in parallel. Otherwise, you may see some of your query genomes with no gene been annotated.
 
@@ -136,6 +131,30 @@ def run_blast_worker(argument_list):
         keep_blast_hit_with_highest_bit_score(blast_results, blast_results_best_hit)
 
 
+def write_out_stats_GeneNumber(identified_ko_list, ko_to_gene_member_dict, ko_description_dict, stats_file_GeneNumber):
+
+    stats_file_GeneNumber_handle = open(stats_file_GeneNumber, 'w')
+    stats_file_GeneNumber_handle.write('KO\tGeneNumber\tDescription\n')
+    for ko in identified_ko_list:
+        ko_GeneNumber = len(ko_to_gene_member_dict[ko])
+        stats_file_GeneNumber_handle.write('%s\t%s\t%s\n' % (ko[2:], ko_GeneNumber, ko_description_dict[ko[2:]]))
+    stats_file_GeneNumber_handle.close()
+
+
+def write_out_stats_TotalDepth(identified_ko_list, ko_to_gene_member_dict, gene_depth_dict, ko_description_dict, stats_file_TotalDepth):
+
+    stats_file_TotalDepth_handle = open(stats_file_TotalDepth, 'w')
+    stats_file_TotalDepth_handle.write('KO\tTotalDepth\tDescription\n')
+    for ko in identified_ko_list:
+        ko_gene_total_depth = 0
+        for each_gene in ko_to_gene_member_dict[ko]:
+            each_gene_depth = gene_depth_dict[each_gene]
+            ko_gene_total_depth += each_gene_depth
+        ko_TotalDepth = float("{0:.2f}".format(ko_gene_total_depth))
+        stats_file_TotalDepth_handle.write('%s\t%s\t%s\n' % (ko[2:], ko_TotalDepth, ko_description_dict[ko[2:]]))
+    stats_file_TotalDepth_handle.close()
+
+
 def parse_blast_op_worker(argument_list):
 
     pwd_input_file =        argument_list[0]
@@ -188,13 +207,6 @@ def parse_blast_op_worker(argument_list):
     stats_file_C_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_C_TotalDepth_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
     stats_file_D_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_D_TotalDepth_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
 
-    ko_level = 'A'
-    stats_file_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_%s_GeneNumber.txt'               % (op_dir, in_file_basename, in_file_basename, ko_level)
-    stats_file_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_%s_TotalDepth.txt'               % (op_dir, in_file_basename, in_file_basename, ko_level)
-    stats_file_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_%s_GeneNumber_pct.txt'           % (op_dir, in_file_basename, in_file_basename, ko_level)
-    stats_file_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_%s_TotalDepth_pct.txt'           % (op_dir, in_file_basename, in_file_basename, ko_level)
-    stats_file_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_%s_GeneNumber_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename, ko_level)
-    stats_file_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_%s_TotalDepth_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename, ko_level)
 
     ################################################# parse blast results ##################################################
 
@@ -297,12 +309,13 @@ def parse_blast_op_worker(argument_list):
 
     # get total number and depth of all genes in one file
     total_depth_for_all_query_genes = 0
+    genes_with_ko_TotalDepth = 0
     if depth_file is not None:
         for gene in query_seq_id_all:
             gene_depth = gene_depth_dict[gene]
             total_depth_for_all_query_genes += gene_depth
 
-    genes_with_ko_TotalDepth = get_gene_list_TotalDepth(genes_with_ko, gene_depth_dict)
+        genes_with_ko_TotalDepth = get_gene_list_TotalDepth(genes_with_ko, gene_depth_dict)
 
     identified_ko_A_list = []
     identified_ko_B_list = []
@@ -361,129 +374,44 @@ def parse_blast_op_worker(argument_list):
                         ko_D_to_gene_member_dict[query_ko_D].append(query_id)
 
 
-    #################### KO_A GeneNumber ####################
+    #################### write out GeneNumber and TotalDepth stats ####################
 
-    stats_file_A_GeneNumber_handle = open(stats_file_A_GeneNumber, 'w')
-    stats_file_A_GeneNumber_handle.write('KO\tGeneNumber\tDescription\n')
-    for ko_A in identified_ko_A_list:
-        ko_A_GeneNumber = len(ko_A_to_gene_member_dict[ko_A])
-        stats_file_A_GeneNumber_handle.write('%s\t%s\t%s\n' % (ko_A[2:], ko_A_GeneNumber, As_description_dict[ko_A[2:]]))
-    stats_file_A_GeneNumber_handle.close()
-
-
-    #################### KO_A TotalDepth ####################
-
+    write_out_stats_GeneNumber(identified_ko_A_list, ko_A_to_gene_member_dict, As_description_dict, stats_file_A_GeneNumber)
+    write_out_stats_GeneNumber(identified_ko_B_list, ko_B_to_gene_member_dict, Bs_description_dict, stats_file_B_GeneNumber)
+    write_out_stats_GeneNumber(identified_ko_C_list, ko_C_to_gene_member_dict, Cs_description_dict, stats_file_C_GeneNumber)
+    write_out_stats_GeneNumber(identified_ko_D_list, ko_D_to_gene_member_dict, Ds_description_dict, stats_file_D_GeneNumber)
     if depth_file is not None:
-        stats_file_A_TotalDepth_handle = open(stats_file_A_TotalDepth, 'w')
-        stats_file_A_TotalDepth_handle.write('KO\tTotalDepth\tDescription\n')
-        for ko_A in identified_ko_A_list:
-            ko_A_gene_total_depth = 0
-            for each_gene in ko_A_to_gene_member_dict[ko_A]:
-                each_gene_depth = gene_depth_dict[each_gene]
-                ko_A_gene_total_depth += each_gene_depth
-            ko_A_TotalDepth = float("{0:.2f}".format(ko_A_gene_total_depth))
-            stats_file_A_TotalDepth_handle.write('%s\t%s\t%s\n' % (ko_A[2:], ko_A_TotalDepth, As_description_dict[ko_A[2:]]))
-        stats_file_A_TotalDepth_handle.close()
+        write_out_stats_TotalDepth(identified_ko_A_list, ko_A_to_gene_member_dict, gene_depth_dict, As_description_dict, stats_file_A_GeneNumber)
+        write_out_stats_TotalDepth(identified_ko_B_list, ko_B_to_gene_member_dict, gene_depth_dict, Bs_description_dict, stats_file_B_GeneNumber)
+        write_out_stats_TotalDepth(identified_ko_C_list, ko_C_to_gene_member_dict, gene_depth_dict, Cs_description_dict, stats_file_C_GeneNumber)
+        write_out_stats_TotalDepth(identified_ko_D_list, ko_D_to_gene_member_dict, gene_depth_dict, Ds_description_dict, stats_file_D_GeneNumber)
 
 
-    #################### KO_B GeneNumber ####################
-
-    stats_file_B_GeneNumber_handle = open(stats_file_B_GeneNumber, 'w')
-    stats_file_B_GeneNumber_handle.write('KO\tGeneNumber\tDescription\n')
-    for ko_B in identified_ko_B_list:
-        ko_B_GeneNumber = len(ko_B_to_gene_member_dict[ko_B])
-        stats_file_B_GeneNumber_handle.write('%s\t%s\t%s\n' % (ko_B[2:], ko_B_GeneNumber, Bs_description_dict[ko_B[2:]]))
-    stats_file_B_GeneNumber_handle.close()
-
-
-    #################### KO_B TotalDepth ####################
-
-    if depth_file is not None:
-        stats_file_B_TotalDepth_handle = open(stats_file_B_TotalDepth, 'w')
-        stats_file_B_TotalDepth_handle.write('KO\tTotalDepth\tDescription\n')
-        for ko_B in identified_ko_B_list:
-            ko_B_gene_total_depth = 0
-            for each_gene in ko_B_to_gene_member_dict[ko_B]:
-                each_gene_depth = gene_depth_dict[each_gene]
-                ko_B_gene_total_depth += each_gene_depth
-            ko_B_TotalDepth = float("{0:.2f}".format(ko_B_gene_total_depth))
-            stats_file_B_TotalDepth_handle.write('%s\t%s\t%s\n' % (ko_B[2:], ko_B_TotalDepth, Bs_description_dict[ko_B[2:]]))
-        stats_file_B_TotalDepth_handle.close()
-
-    #################### KO_C GeneNumber ####################
-
-    stats_file_C_GeneNumber_handle = open(stats_file_C_GeneNumber, 'w')
-    stats_file_C_GeneNumber_handle.write('KO\tGeneNumber\tDescription\n')
-    for ko_C in identified_ko_C_list:
-        ko_C_GeneNumber = len(ko_C_to_gene_member_dict[ko_C])
-        stats_file_C_GeneNumber_handle.write('%s\t%s\t%s\n' % (ko_C[2:], ko_C_GeneNumber, Cs_description_dict[ko_C[2:]]))
-    stats_file_C_GeneNumber_handle.close()
-
-
-    #################### KO_C TotalDepth ####################
-
-    if depth_file is not None:
-        stats_file_C_TotalDepth_handle = open(stats_file_C_TotalDepth, 'w')
-        stats_file_C_TotalDepth_handle.write('KO\tTotalDepth\tDescription\n')
-        for ko_C in identified_ko_C_list:
-            ko_C_gene_total_depth = 0
-            for each_gene in ko_C_to_gene_member_dict[ko_C]:
-                each_gene_depth = gene_depth_dict[each_gene]
-                ko_C_gene_total_depth += each_gene_depth
-            ko_C_TotalDepth = float("{0:.2f}".format(ko_C_gene_total_depth))
-            stats_file_C_TotalDepth_handle.write('%s\t%s\t%s\n' % (ko_C[2:], ko_C_TotalDepth, Cs_description_dict[ko_C[2:]]))
-        stats_file_C_TotalDepth_handle.close()
-
-
-    #################### KO_D GeneNumber ####################
-
-    stats_file_D_GeneNumber_handle = open(stats_file_D_GeneNumber, 'w')
-    stats_file_D_GeneNumber_handle.write('KO\tGeneNumber\tDescription\n')
-    for ko_D in identified_ko_D_list:
-        ko_D_GeneNumber = len(ko_D_to_gene_member_dict[ko_D])
-        stats_file_D_GeneNumber_handle.write('%s\t%s\t%s\n' % (ko_D[2:], ko_D_GeneNumber, Ds_description_dict[ko_D[2:]]))
-    stats_file_D_GeneNumber_handle.close()
-
-
-    #################### KO_D TotalDepth ####################
-
-    if depth_file is not None:
-        stats_file_D_TotalDepth_handle = open(stats_file_D_TotalDepth, 'w')
-        stats_file_D_TotalDepth_handle.write('KO\tTotalDepth\tDescription\n')
-        for ko_D in identified_ko_D_list:
-            ko_D_gene_total_depth = 0
-            for each_gene in ko_D_to_gene_member_dict[ko_D]:
-                each_gene_depth = gene_depth_dict[each_gene]
-                ko_D_gene_total_depth += each_gene_depth
-            ko_D_TotalDepth = float("{0:.2f}".format(ko_D_gene_total_depth))
-            stats_file_D_TotalDepth_handle.write('%s\t%s\t%s\n' % (ko_D[2:], ko_D_TotalDepth, Ds_description_dict[ko_D[2:]]))
-        stats_file_D_TotalDepth_handle.close()
-
-
-    #################### get pct files ####################
+    #################### write out GeneNumber and TotalDepth stats (pct) ####################
 
     AnnotateNorm(stats_file_A_GeneNumber, True, 2, len(genes_with_ko), stats_file_A_GeneNumber_pct, 'KO\tGeneNumber_pct\tDescription\n')
     AnnotateNorm(stats_file_B_GeneNumber, True, 2, len(genes_with_ko), stats_file_B_GeneNumber_pct, 'KO\tGeneNumber_pct\tDescription\n')
     AnnotateNorm(stats_file_C_GeneNumber, True, 2, len(genes_with_ko), stats_file_C_GeneNumber_pct, 'KO\tGeneNumber_pct\tDescription\n')
     AnnotateNorm(stats_file_D_GeneNumber, True, 2, len(genes_with_ko), stats_file_D_GeneNumber_pct, 'KO\tGeneNumber_pct\tDescription\n')
+    if depth_file is not None:
+        AnnotateNorm(stats_file_A_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_A_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
+        AnnotateNorm(stats_file_B_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_B_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
+        AnnotateNorm(stats_file_C_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_C_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
+        AnnotateNorm(stats_file_D_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_D_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
+
+
+    #################### write out GeneNumber and TotalDepth stats (pct_by_all) ####################
+
     if pct_by_all is True:
         AnnotateNorm(stats_file_A_GeneNumber, True, 2, len(query_seq_id_all), stats_file_A_GeneNumber_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
         AnnotateNorm(stats_file_B_GeneNumber, True, 2, len(query_seq_id_all), stats_file_B_GeneNumber_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
         AnnotateNorm(stats_file_C_GeneNumber, True, 2, len(query_seq_id_all), stats_file_C_GeneNumber_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
         AnnotateNorm(stats_file_D_GeneNumber, True, 2, len(query_seq_id_all), stats_file_D_GeneNumber_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
-
-
-    #################### get pct_by_all files ####################
-
-    AnnotateNorm(stats_file_A_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_A_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-    AnnotateNorm(stats_file_B_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_B_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-    AnnotateNorm(stats_file_C_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_C_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-    AnnotateNorm(stats_file_D_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_D_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-    if pct_by_all is True:
-        AnnotateNorm(stats_file_A_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_A_TotalDepth_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
-        AnnotateNorm(stats_file_B_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_B_TotalDepth_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
-        AnnotateNorm(stats_file_C_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_C_TotalDepth_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
-        AnnotateNorm(stats_file_D_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_D_TotalDepth_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
+        if depth_file is not None:
+            AnnotateNorm(stats_file_A_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_A_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
+            AnnotateNorm(stats_file_B_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_B_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
+            AnnotateNorm(stats_file_C_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_C_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
+            AnnotateNorm(stats_file_D_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_D_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
 
 
 def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, annotation_df_pct, annotation_df_pct_by_all, with_depth, pct_by_all):
@@ -607,7 +535,7 @@ def Annotation_KEGG(args):
     elif (input_file_faa is None) and (input_file_user_ko is not None):
         run_blast = False
     else:
-        print(datetime.now().strftime(time_format) + 'Please provide input file with either "-seq_in" or "-ko_in", do not provide the two options at the same time')
+        print(datetime.now().strftime(time_format) + 'Please provide input file with either "-seq_in" or "-ko_in", do not provide both')
         exit()
 
     if run_blast is True:
@@ -621,7 +549,7 @@ def Annotation_KEGG(args):
         exit()
 
     if run_blast is True:
-        print(datetime.now().strftime(time_format) + 'Input sequence file detected, will run blastp/diamond against KEGG database at first')
+        print(datetime.now().strftime(time_format) + 'Input sequence file detected, will run blastp/diamond first')
         sleep(0.5)
     else:
         print(datetime.now().strftime(time_format) + 'Annotation results provided, blastp/diamond skipped')
@@ -649,23 +577,28 @@ def Annotation_KEGG(args):
                 print(datetime.now().strftime(time_format) + '%s not found, program exited' % KEGG_DB_seq)
                 exit()
 
+    ########################################### check whether blast+ db exist ##########################################
+
+    if (run_blast is True) and (run_diamond is False):
+
+        unfound_db_index_file = []
+        for db_index in ['phr', 'pin', 'pnd', 'pni', 'pog', 'psd', 'psi', 'psq']:
+            pwd_db_index = '%s/kegg_db_seq.fasta.%s' % (KEGG_DB_folder, db_index)
+            if not os.path.isfile(pwd_db_index):
+                unfound_db_index_file.append(db_index)
+        if len(unfound_db_index_file) > 0:
+            print(datetime.now().strftime(time_format) + 'blast db index not found, runing makeblastdb first')
+            makeblastdb_cmd = 'makeblastdb -in %s -dbtype prot -parse_seqids -logfile %s.log' % (KEGG_DB_seq, KEGG_DB_seq)
+            os.system(makeblastdb_cmd)
+            print(datetime.now().strftime(time_format) + 'makeblastdb finished')
+
 
     ######################################### Run blastp with multiprocessing ##########################################
 
     # check whether the input file is a file or folder
     if os.path.isfile(input_file_folder) is True:
-
         input_file_path, input_file_basename, input_file_ext = sep_path_basename_ext(input_file_folder)
-
-        run_blast_worker([input_file_folder,
-                          run_blast,
-                          run_diamond,
-                          KEGG_DB_seq,
-                          KEGG_DB_seq_diamond,
-                          input_file_path,
-                          evalue_cutoff,
-                          num_threads])
-
+        run_blast_worker([input_file_folder, run_blast, run_diamond, KEGG_DB_seq, KEGG_DB_seq_diamond, input_file_path, evalue_cutoff, num_threads])
 
     if os.path.isdir(input_file_folder) is True:
 
@@ -683,21 +616,12 @@ def Annotation_KEGG(args):
 
         # run blastp with multiprocessing
         if run_blast is True:
-            print(datetime.now().strftime(time_format) + 'Running Blast/Diamond annotation for %s input files with %s cores' % (len(input_file_name_list), num_threads))
+            print(datetime.now().strftime(time_format) + 'Running Blast/Diamond for %s input files with %s cores' % (len(input_file_name_list), num_threads))
 
         list_for_multiple_arguments_blast = []
         for input_file in input_file_name_list:
-
             pwd_input_file = '%s/%s' % (input_file_folder, input_file)
-
-            list_for_multiple_arguments_blast.append([pwd_input_file,
-                                                     run_blast,
-                                                     run_diamond,
-                                                     KEGG_DB_seq,
-                                                     KEGG_DB_seq_diamond,
-                                                     output_folder,
-                                                     evalue_cutoff,
-                                                     1])
+            list_for_multiple_arguments_blast.append([pwd_input_file, run_blast, run_diamond, KEGG_DB_seq, KEGG_DB_seq_diamond, output_folder, evalue_cutoff, 1])
 
         # run blastp with multiprocessing
         pool = mp.Pool(processes=num_threads)
@@ -714,11 +638,9 @@ def Annotation_KEGG(args):
     Cs_description_dict = {}
     Ds_description_dict = {}
     D2ABCD_dict = {}
-
     current_A = ''
     current_B = ''
     current_C = ''
-
     for each_line in open(KEGG_DB_ko):
         if each_line[0] in ['A', 'B', 'C', 'D']:
             each_line_split = each_line.strip().split(' ')
@@ -752,31 +674,6 @@ def Annotation_KEGG(args):
                 elif (current_D_id in D2ABCD_dict) and (ABCD_value not in D2ABCD_dict[current_D_id]):
                     D2ABCD_dict[current_D_id].append(ABCD_value)
 
-    # get D2A, D2B and D2C dict
-    D2A_dict = {}
-    D2B_dict = {}
-    D2C_dict = {}
-    for each_D in D2ABCD_dict:
-        ABCD_list = D2ABCD_dict[each_D]
-        Current_As = []
-        Current_Bs = []
-        Current_Cs = []
-        for each_ABCD in ABCD_list:
-            each_ABCD_split = each_ABCD.split('|')
-
-            if each_ABCD_split[0] not in Current_As:
-                Current_As.append(each_ABCD_split[0])
-
-            if each_ABCD_split[1] not in Current_Bs:
-                Current_Bs.append(each_ABCD_split[1])
-
-            if each_ABCD_split[2] not in Current_Cs:
-                Current_Cs.append(each_ABCD_split[2])
-
-        D2A_dict[each_D] = Current_As
-        D2B_dict[each_D] = Current_Bs
-        D2C_dict[each_D] = Current_Cs
-
     # get db_seq_to_KO_dict
     db_seq_to_KO_dict = {}
     if run_blast is True:
@@ -800,20 +697,9 @@ def Annotation_KEGG(args):
                 exit()
 
         print(datetime.now().strftime(time_format) + 'Running KEGG annotation for 1 file with %s cores' % (num_threads))
-
         input_file_path, input_file_basename, input_file_ext = sep_path_basename_ext(input_file_folder)
+        parse_blast_op_worker([input_file_folder, run_blast, As_description_dict, Bs_description_dict, Cs_description_dict, Ds_description_dict, D2ABCD_dict, db_seq_to_KO_dict, input_file_path, depth_file, pct_by_all])
 
-        parse_blast_op_worker([input_file_folder,
-                               run_blast,
-                               As_description_dict,
-                               Bs_description_dict,
-                               Cs_description_dict,
-                               Ds_description_dict,
-                               D2ABCD_dict,
-                               db_seq_to_KO_dict,
-                               input_file_path,
-                               depth_file,
-                               pct_by_all])
 
     if os.path.isdir(input_file_folder) is True:
 
@@ -826,11 +712,11 @@ def Annotation_KEGG(args):
             if os.path.isfile(depth_file) is True:
                 print(datetime.now().strftime(
                     time_format) + 'please provide the folder containing individual depth files (with extension .depth) for each of your input sequence file.')
-                print(datetime.now().strftime(time_format) + 'a single file (not folder) detected, program exited!')
+                print(datetime.now().strftime(time_format) + 'single depth file (not folder) detected, program exited!')
                 exit()
 
             if os.path.isdir(depth_file) is False:
-                print(datetime.now().strftime(time_format) + 'provided depth folder not found, program exited!')
+                print(datetime.now().strftime(time_format) + 'specified depth folder not found, program exited!')
                 exit()
 
             if os.path.isdir(depth_file) is True:
@@ -853,10 +739,9 @@ def Annotation_KEGG(args):
         if '/' in input_file_folder:
             input_folder_name = input_file_folder.split('/')[-1]
 
-
         # parse blast results with multiprocessing
         if run_blast is True:
-            print(datetime.now().strftime(time_format) + 'Parsing blast results for %s input files with %s cores' % (len(input_file_name_list), num_threads))
+            print(datetime.now().strftime(time_format) + 'Parsing Blast/Diamond results for %s input files with %s cores' % (len(input_file_name_list), num_threads))
 
         list_for_multiple_arguments_parse_blast_op = []
         for input_file in input_file_name_list:
@@ -870,17 +755,7 @@ def Annotation_KEGG(args):
             else:
                 input_file_depth = '%s/%s.depth' % (depth_file, input_file_basename)
 
-            list_for_multiple_arguments_parse_blast_op.append([pwd_input_file,
-                                                                run_blast,
-                                                                As_description_dict,
-                                                                Bs_description_dict,
-                                                                Cs_description_dict,
-                                                                Ds_description_dict,
-                                                                D2ABCD_dict,
-                                                                db_seq_to_KO_dict,
-                                                                output_folder,
-                                                                input_file_depth,
-                                                                pct_by_all])
+            list_for_multiple_arguments_parse_blast_op.append([pwd_input_file, run_blast, As_description_dict, Bs_description_dict, Cs_description_dict, Ds_description_dict, D2ABCD_dict, db_seq_to_KO_dict, output_folder, input_file_depth, pct_by_all])
 
         # parse blast results with multiprocessing
         pool = mp.Pool(processes=num_threads)
@@ -888,12 +763,12 @@ def Annotation_KEGG(args):
         pool.close()
         pool.join()
 
+
         ######################################################### get dataframe #########################################################
 
         print(datetime.now().strftime(time_format) + 'Data matrix exported to:')
 
-        ko_level_list = ['A', 'B', 'C', 'D']
-        for ko_level in ko_level_list:
+        for ko_level in ['A', 'B', 'C', 'D']:
             annotation_df_GeneNumber =            '%s/%s_%s_GeneNumber.txt'            % (output_folder, input_folder_name, ko_level)
             annotation_df_GeneNumber_pct =        '%s/%s_%s_GeneNumber_pct.txt'        % (output_folder, input_folder_name, ko_level)
             annotation_df_GeneNumber_pct_by_all = '%s/%s_%s_GeneNumber_pct_by_all.txt' % (output_folder, input_folder_name, ko_level)
@@ -901,18 +776,26 @@ def Annotation_KEGG(args):
             annotation_df_TotalDepth_pct =        '%s/%s_%s_TotalDepth_pct.txt'        % (output_folder, input_folder_name, ko_level)
             annotation_df_TotalDepth_pct_by_all = '%s/%s_%s_TotalDepth_pct_by_all.txt' % (output_folder, input_folder_name, ko_level)
 
+
+            #################### get GeneNumber df and report ####################
+
             get_KEGG_annot_df(output_folder, ko_level, annotation_df_GeneNumber, annotation_df_GeneNumber_pct, annotation_df_GeneNumber_pct_by_all, with_depth=False, pct_by_all=pct_by_all)
-            if pct_by_all is False:
-                print(datetime.now().strftime(time_format) + '%s and %s' % (annotation_df_GeneNumber.split('/')[-1], annotation_df_GeneNumber_pct.split('/')[-1]))
-            else:
-                print(datetime.now().strftime(time_format) + '%s, %s and %s' % (annotation_df_GeneNumber.split('/')[-1], annotation_df_GeneNumber_pct.split('/')[-1], annotation_df_GeneNumber_pct_by_all.split('/')[-1]))
+
+            print(annotation_df_GeneNumber.split('/')[-1])
+            print(annotation_df_GeneNumber_pct.split('/')[-1])
+            if pct_by_all is True:
+                print(annotation_df_GeneNumber_pct_by_all.split('/')[-1])
+
+
+            #################### get TotalDepth df and report ####################
 
             if depth_file is not None:
                 get_KEGG_annot_df(output_folder, ko_level, annotation_df_TotalDepth, annotation_df_TotalDepth_pct, annotation_df_TotalDepth_pct_by_all, with_depth=True, pct_by_all=pct_by_all)
-                if pct_by_all is False:
-                    print(datetime.now().strftime(time_format) + '%s and %s' % (annotation_df_TotalDepth.split('/')[-1], annotation_df_TotalDepth_pct.split('/')[-1]))
-                else:
-                    print(datetime.now().strftime(time_format) + '%s, %s and %s' % (annotation_df_TotalDepth.split('/')[-1], annotation_df_TotalDepth_pct.split('/')[-1], annotation_df_TotalDepth_pct_by_all.split('/')[-1]))
+
+                print(annotation_df_TotalDepth.split('/')[-1])
+                print(annotation_df_TotalDepth_pct.split('/')[-1])
+                if pct_by_all is True:
+                    print(annotation_df_TotalDepth_pct_by_all.split('/')[-1])
 
 
     ################################################## Final report ####################################################
@@ -923,7 +806,6 @@ def Annotation_KEGG(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
-
     parser.add_argument('-seq_in',      required=False,                            help='faa file')
     parser.add_argument('-ko_in',       required=False,                            help='annotation results from BlastKOALA/GhostKOALA, normally with name user_ko.txt')
     parser.add_argument('-x',           required=False,                            help='file extension')
@@ -935,5 +817,4 @@ if __name__ == "__main__":
     parser.add_argument('-evalue',      required=False, default=0.001, type=float, help='evalue cutoff, default: 0.001')
 
     args = vars(parser.parse_args())
-
     Annotation_KEGG(args)

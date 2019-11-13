@@ -73,6 +73,23 @@ Sample_3  7  8  9          Sample_3  8  7  9
 
 ########################################################################################################################
 
+import os
+import numpy as np
+import pandas as pd
+from scipy import stats
+import Kelp_HGT_config
+
+
+def transpose_csv(file_in, file_out, sep_symbol, column_name_pos, row_name_pos):
+
+    csv = pd.read_csv(file_in, sep=sep_symbol, header=column_name_pos, index_col=row_name_pos)
+    df_csv = pd.DataFrame(data=csv)
+    transposed_csv = df_csv.T
+    transposed_csv.to_csv(file_out, sep=sep_symbol)
+
+
+########################################################################################################################
+
 import math
 
 print(int(math.ceil(11/float(3))))    # 4

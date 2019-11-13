@@ -297,12 +297,13 @@ def parse_blast_op_worker(argument_list):
 
     # get total number and depth of all genes in one file
     total_depth_for_all_query_genes = 0
+    genes_with_ko_TotalDepth = 0
     if depth_file is not None:
         for gene in query_seq_id_all:
             gene_depth = gene_depth_dict[gene]
             total_depth_for_all_query_genes += gene_depth
 
-    genes_with_ko_TotalDepth = get_gene_list_TotalDepth(genes_with_ko, gene_depth_dict)
+        genes_with_ko_TotalDepth = get_gene_list_TotalDepth(genes_with_ko, gene_depth_dict)
 
     identified_ko_A_list = []
     identified_ko_B_list = []
@@ -475,15 +476,16 @@ def parse_blast_op_worker(argument_list):
 
     #################### get pct_by_all files ####################
 
-    AnnotateNorm(stats_file_A_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_A_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-    AnnotateNorm(stats_file_B_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_B_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-    AnnotateNorm(stats_file_C_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_C_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-    AnnotateNorm(stats_file_D_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_D_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-    if pct_by_all is True:
-        AnnotateNorm(stats_file_A_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_A_TotalDepth_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
-        AnnotateNorm(stats_file_B_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_B_TotalDepth_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
-        AnnotateNorm(stats_file_C_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_C_TotalDepth_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
-        AnnotateNorm(stats_file_D_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_D_TotalDepth_pct_by_all, 'KO\tGeneNumber_pct_by_all\tDescription\n')
+    if depth_file is not None:
+        AnnotateNorm(stats_file_A_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_A_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
+        AnnotateNorm(stats_file_B_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_B_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
+        AnnotateNorm(stats_file_C_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_C_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
+        AnnotateNorm(stats_file_D_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_D_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
+        if pct_by_all is True:
+            AnnotateNorm(stats_file_A_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_A_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
+            AnnotateNorm(stats_file_B_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_B_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
+            AnnotateNorm(stats_file_C_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_C_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
+            AnnotateNorm(stats_file_D_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_D_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
 
 
 def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, annotation_df_pct, annotation_df_pct_by_all, with_depth, pct_by_all):
@@ -648,6 +650,21 @@ def Annotation_KEGG(args):
             else:
                 print(datetime.now().strftime(time_format) + '%s not found, program exited' % KEGG_DB_seq)
                 exit()
+
+    ########################################### check whether blast+ db exist ##########################################
+
+    if (run_blast is True) and (run_diamond is False):
+
+        unfound_db_index_file = []
+        for db_index in ['phr', 'pin', 'pnd', 'pni', 'pog', 'psd', 'psi', 'psq']:
+            pwd_db_index = '%s/kegg_db_seq.fasta.%s' % (KEGG_DB_folder, db_index)
+            if not os.path.isfile(pwd_db_index):
+                unfound_db_index_file.append(db_index)
+        if len(unfound_db_index_file) > 0:
+            print(datetime.now().strftime(time_format) + 'DB index files not found, runing makeblastdb first')
+            makeblastdb_cmd = 'makeblastdb -in %s -dbtype prot -parse_seqids -logfile %s.log' % (KEGG_DB_seq, KEGG_DB_seq)
+            os.system(makeblastdb_cmd)
+            print(datetime.now().strftime(time_format) + 'makeblastdb finished')
 
 
     ######################################### Run blastp with multiprocessing ##########################################
