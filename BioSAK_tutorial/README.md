@@ -88,18 +88,12 @@ will be stored in separate folders within BioSAK_db.
 
 1. Download demo data
 
+       zID="z5039045"
        cd /srv/scratch/$zID
        wget https://www.dropbox.com/s/jdhqw697kecekik/BioSAK_demo.tar.gz
        tar -xzvf BioSAK_demo.tar.gz
        cd BioSAK_demo
-
-1. Activate Python virtual environment and load needed modules
-
-       module load python/3.7.3
-       source ~/mypython3env_BioSAK/bin/activate
-       module load diamond/0.9.24
-       module load hmmer/3.2.1
-       zID="z5039045"
+       
         
 1. Predict genes from assemblies with Prokka
 
@@ -127,7 +121,9 @@ will be stored in separate folders within BioSAK_db.
        cp Metagenomic_assemblies_Prokka/*/*.gff Metagenomic_assemblies_gff      
 
 1. get gene depth according to the depth of the contig they sit in 
-        
+    
+       module load python/3.7.3
+       source ~/mypython3env_BioSAK/bin/activate
        BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Kelp.gff -ctg_depth Metagenomic_assemblies_depth/Kelp_ctg.depth -skip_header
        BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Sponge.gff -ctg_depth Metagenomic_assemblies_depth/Sponge_ctg.depth -skip_header
        BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Seawater.gff -ctg_depth Metagenomic_assemblies_depth/Seawater_ctg.depth -skip_header
@@ -137,7 +133,10 @@ will be stored in separate folders within BioSAK_db.
        mv Metagenomic_assemblies_gff/*.depth Metagenomic_assemblies_faa_depth/
 
 1. run COG, KEGG and CAZy annotation
-	   
+
+       module load diamond/0.9.24
+       module load hmmer/3.2.1
+       	   
        BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
        
        BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
@@ -153,10 +152,21 @@ will be stored in separate folders within BioSAK_db.
 + jgi_summarize_bam_contig_depths: https://bitbucket.org/berkeleylab/metabat/issues/36/how-the-depth-of-contig-was-calculated-why
 
 
-### Get contig depth
+### Steps for getting contig depth with MetaBAT's jgi_summarize_bam_contig_depths
 
-1. Mapping reads back to assemblies and get their depth with MetaBAT's jgi_summarize_bam_contig_depths
+       # Mapping filtered reads back to their assemblies
+       module load bowtie/2.3.4.2
+       bowtie2-build -f Seawater.fa Seawater
+       bowtie2 -x Seawater -1 Seawater_R1_Q25_P.fastq -2 Seawater_R2_Q25_P.fastq -S Seawater.sam -p 6 -q
 
-       module load metabat/0.32.4
-       jgi_summarize_bam_contig_depths --outputDepth Ctg_depth.txt sample_1.bam
-        
+       # turn SAM file into BAM file
+       module load samtools/1.9
+       samtools view -bS Seawater.sam -o Seawater.bam
+       samtools sort Seawater.bam -o Seawater_sorted.bam
+       samtools index Seawater_sorted.bam
+       rm Seawater.sam
+       rm Seawater.bam
+
+       # get contig depth from BAM file
+       module load metabat/2.12.1
+       jgi_summarize_bam_contig_depths --outputDepth Seawater_ctg.depth Seawater_sorted.bam
