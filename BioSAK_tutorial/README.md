@@ -1,8 +1,8 @@
 
 ## Tutorial for running BioSAK on Katana
 
-[![pypi   licence        ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
-[![pypi   version        ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 
+[![pypi licence ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
+[![pypi version ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 
 
 
 ### Setup Python virtual environment
@@ -28,14 +28,20 @@
   
        # for later updating
        pip3 install --upgrade BioSAK
-
+       
+       # to leave Python's virtual environment
+       deactivate 
+       
+       
 1. get help information of BioSAK
 
        BioSAK -h
        BioSAK KEGG -h
 
 
-### Prepare database files for COG, KEGG and CAZy (dbCAN) annotation
+### Prepare database files for COG, KEGG and CAZy (dbCAN) annotation 
+
+1. Skip this section if you have done the qsub_prepare_DB.sh
 
 1. Create a DB folder in your scratch, all database files needed for COG, KEGG and CAZy annotation 
 will be stored in separate folders within BioSAK_db.
@@ -64,7 +70,7 @@ will be stored in separate folders within BioSAK_db.
        https://www.kegg.jp/kegg/download/Readme/README.fasta
        
        # ko00001.keg
-       wget https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
+       https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
  
 1. Prepare dbCAN database files
 
@@ -77,26 +83,31 @@ will be stored in separate folders within BioSAK_db.
 
 ### Run BioSAK
 
-1. Download demo dataset
+1. Download demo data
 
-    https://www.dropbox.com/sh/cllqvy6uuw7e3oj/AAA-WqNhAcNwsALKXdVnby8qa?dl=0
+       cd /srv/scratch/zID
+       wget https://www.dropbox.com/s/2w741hucazbboy7/BioSAK_demo.zip
+       unzip BioSAK_demo.zip
+       cd BioSAK_demo
 
+1. Activate Python3 virtual environment and load needed modules
+
+       module load python/3.7.3
+       source ~/mypython3env_BioSAK/bin/activate
+       module load diamond/0.9.24
+       module load hmmer/3.2.1
+        
 1. COG annotation
 
-       module load diamond/0.9.24
        BioSAK COG2014 -db_dir /srv/scratch/zID/BioSAK_db/COG2014 -m P -t 4 -i faa_files -x faa -diamond -depth FiveGenomes_depth
         
 1. KEGG annotation
 
-       module load diamond/0.9.24
        BioSAK KEGG -db_dir /srv/scratch/zID/BioSAK_db/KEGG -t 4 -seq_in faa_files -x faa -diamond -depth FiveGenomes_depth
         
-       # or, if you already have you proteins annotated with BlastKOALA/GhostKOALA
-       BioSAK KEGG -db_dir /srv/scratch/zID/BioSAK_db/KEGG -t 4 -ko_in ko_files -x faa -diamond -depth FiveGenomes_depth
 
 1. CAZy annotation
 
-       module load hmmer/3.2.1
        BioSAK dbCAN -db_dir /srv/scratch/zID/BioSAK_db/dbCAN -m P -t 4 -i faa_files -x faa -depth FiveGenomes_depth
         
     
