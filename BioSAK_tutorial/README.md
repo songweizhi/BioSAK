@@ -39,7 +39,9 @@
        BioSAK KEGG -h
 
 
-### Prepare database files for COG, KEGG and CAZy (dbCAN) annotation 
+### Prepare database files for COG, KEGG and CAZy (dbCAN) annotation
+
+Refers to [qsub_prepare_DB.sh]()
 
 1. Skip this section if you have done the qsub_prepare_DB.sh
 
@@ -154,10 +156,10 @@ will be stored in separate folders within BioSAK_db.
     # turn SAM file into BAM file
     module load samtools/1.9
     samtools view -bS Seawater.sam -o Seawater.bam
-    samtools sort Seawater.bam -o Seawater_sorted.bam
-    samtools index Seawater_sorted.bam
     rm Seawater.sam
+    samtools sort Seawater.bam -o Seawater_sorted.bam
     rm Seawater.bam
+    samtools index Seawater_sorted.bam
 
     # get contig depth from BAM file
     module load metabat/2.12.1
