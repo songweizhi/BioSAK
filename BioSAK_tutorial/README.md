@@ -35,13 +35,21 @@
        
 1. get help information of BioSAK
 
+       module load python/3.7.3
+       source ~/mypython3env_BioSAK/bin/activate
        BioSAK -h
-       BioSAK KEGG -h
 
 
 ### Prepare database files
 
-Refers to [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh)
+1. Download [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh)
+
+1. change the email address in line 5 to your own.
+
+1. Upload it to your Katana Scratch and submit it with qsub
+
+       cd /srv/scratch/$zID
+       qsub qsub_prepare_DB.sh
 
 
 ### Run BioSAK
