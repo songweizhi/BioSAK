@@ -46,6 +46,7 @@
 1. Create a DB folder in your scratch, all database files needed for COG, KEGG and CAZy annotation 
 will be stored in separate folders within BioSAK_db.
         
+       # change the number to your own zID
        zID="z5039045"
        
        cd /srv/scratch/$zID
@@ -103,17 +104,19 @@ will be stored in separate folders within BioSAK_db.
 1. COG annotation
 
        BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i faa_files -x faa -diamond
-       BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i faa_files -x faa -diamond -depth FiveGenomes_depth
+       BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i faa_files -x faa -diamond -depth gene_depth_files
  
 1. KEGG annotation
 
-       BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in faa_files -x faa -diamond -depth FiveGenomes_depth
-        
+       BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in faa_files -x faa -diamond
+       BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in faa_files -x faa -diamond -depth gene_depth_files
+ 
 1. CAZy annotation
 
-       BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i faa_files -x faa -depth FiveGenomes_depth
+       BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i faa_files -x faa
+       BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i faa_files -x faa -depth gene_depth_files
         
-    
+         
 ### References and online resources:
 
 + WebMGA: http://weizhong-lab.ucsd.edu/webMGA/server/cog/

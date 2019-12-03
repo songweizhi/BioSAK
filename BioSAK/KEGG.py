@@ -381,10 +381,10 @@ def parse_blast_op_worker(argument_list):
     write_out_stats_GeneNumber(identified_ko_C_list, ko_C_to_gene_member_dict, Cs_description_dict, stats_file_C_GeneNumber)
     write_out_stats_GeneNumber(identified_ko_D_list, ko_D_to_gene_member_dict, Ds_description_dict, stats_file_D_GeneNumber)
     if depth_file is not None:
-        write_out_stats_TotalDepth(identified_ko_A_list, ko_A_to_gene_member_dict, gene_depth_dict, As_description_dict, stats_file_A_GeneNumber)
-        write_out_stats_TotalDepth(identified_ko_B_list, ko_B_to_gene_member_dict, gene_depth_dict, Bs_description_dict, stats_file_B_GeneNumber)
-        write_out_stats_TotalDepth(identified_ko_C_list, ko_C_to_gene_member_dict, gene_depth_dict, Cs_description_dict, stats_file_C_GeneNumber)
-        write_out_stats_TotalDepth(identified_ko_D_list, ko_D_to_gene_member_dict, gene_depth_dict, Ds_description_dict, stats_file_D_GeneNumber)
+        write_out_stats_TotalDepth(identified_ko_A_list, ko_A_to_gene_member_dict, gene_depth_dict, As_description_dict, stats_file_A_TotalDepth)
+        write_out_stats_TotalDepth(identified_ko_B_list, ko_B_to_gene_member_dict, gene_depth_dict, Bs_description_dict, stats_file_B_TotalDepth)
+        write_out_stats_TotalDepth(identified_ko_C_list, ko_C_to_gene_member_dict, gene_depth_dict, Cs_description_dict, stats_file_C_TotalDepth)
+        write_out_stats_TotalDepth(identified_ko_D_list, ko_D_to_gene_member_dict, gene_depth_dict, Ds_description_dict, stats_file_D_TotalDepth)
 
 
     #################### write out GeneNumber and TotalDepth stats (pct) ####################
