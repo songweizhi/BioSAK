@@ -39,7 +39,7 @@
        BioSAK KEGG -h
 
 
-### Prepare database files for COG, KEGG and CAZy (dbCAN) annotation
+### Prepare database files
 
 Refers to [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh)
 
