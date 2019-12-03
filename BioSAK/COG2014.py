@@ -470,16 +470,17 @@ def COG2014(args):
         exit()
 
     # check whether db index esixt
-    unfound_db_index_file = []
-    for db_index in ['phr', 'pin', 'pnd', 'pni', 'pog', 'psd', 'psi', 'psq']:
-        pwd_db_index = '%s/prot2003-2014.fa.%s' % (DB_dir, db_index)
-        if not os.path.isfile(pwd_db_index):
-            unfound_db_index_file.append(db_index)
-    if len(unfound_db_index_file) > 0:
-        print(datetime.now().strftime(time_format) + 'DB index files not found, runing makeblastdb first')
-        makeblastdb_cmd = 'makeblastdb -in %s -dbtype prot -parse_seqids -logfile %s.log' % (pwd_prot2003_2014, pwd_prot2003_2014)
-        os.system(makeblastdb_cmd)
-        print(datetime.now().strftime(time_format) + 'makeblastdb finished')
+    if run_diamond is False:
+        unfound_db_index_file = []
+        for db_index in ['phr', 'pin', 'pnd', 'pni', 'pog', 'psd', 'psi', 'psq']:
+            pwd_db_index = '%s/prot2003-2014.fa.%s' % (DB_dir, db_index)
+            if not os.path.isfile(pwd_db_index):
+                unfound_db_index_file.append(db_index)
+        if len(unfound_db_index_file) > 0:
+            print(datetime.now().strftime(time_format) + 'DB index files not found, runing makeblastdb first')
+            makeblastdb_cmd = 'makeblastdb -in %s -dbtype prot -parse_seqids -logfile %s.log' % (pwd_prot2003_2014, pwd_prot2003_2014)
+            os.system(makeblastdb_cmd)
+            print(datetime.now().strftime(time_format) + 'makeblastdb finished')
 
     if run_diamond is True:
         if os.path.isfile(pwd_prot2003_2014_diamond) is False:

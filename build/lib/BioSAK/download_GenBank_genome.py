@@ -114,6 +114,10 @@ def download_GenBank_genome(args):
 
     time_format = '[%Y-%m-%d %H:%M:%S] '
 
+    if (get_fna is False) and (get_faa is False) and (get_gbff is False):
+        print(datetime.now().strftime(time_format) + 'Please specify at least one file type to download, program exited')
+        exit()
+
     in_file_path, in_file_basename, in_file_extension = sep_path_basename_ext(csv_file)
     downloaded_genome_folder = '%s_genomes' % in_file_basename
     force_create_folder(downloaded_genome_folder)
