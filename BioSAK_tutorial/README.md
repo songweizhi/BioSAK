@@ -112,7 +112,7 @@ will be stored in separate folders within BioSAK_db.
        prokka --force --metagenome --prefix Seawater --locustag Seawater --outdir Metagenomic_assemblies_Prokka/Seawater Metagenomic_assemblies/Seawater_ctg.fa
        prokka --force --metagenome --prefix Sediment --locustag Sediment --outdir Metagenomic_assemblies_Prokka/Sediment Metagenomic_assemblies/Sediment_ctg.fa
 
-1. copy faa and gff files into a separate folders
+1. copy faa and gff files into separate folders
 
        mkdir Metagenomic_assemblies_faa
        cp Metagenomic_assemblies_Prokka/*/*.faa Metagenomic_assemblies_faa
@@ -142,7 +142,28 @@ will be stored in separate folders within BioSAK_db.
        BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
        
        BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i Metagenomic_assemblies_faa -x faa -depth Metagenomic_assemblies_faa_depth
-       
+
+
+### Steps for getting contig depth with MetaBAT's jgi_summarize_bam_contig_depths
+
+    # Mapping filtered reads back to their assemblies
+    module load bowtie/2.3.4.2
+    bowtie2-build -f Seawater.fa Seawater
+    bowtie2 -x Seawater -1 Seawater_R1_Q25_P.fastq -2 Seawater_R2_Q25_P.fastq -S Seawater.sam -p 6 -q
+
+    # turn SAM file into BAM file
+    module load samtools/1.9
+    samtools view -bS Seawater.sam -o Seawater.bam
+    samtools sort Seawater.bam -o Seawater_sorted.bam
+    samtools index Seawater_sorted.bam
+    rm Seawater.sam
+    rm Seawater.bam
+
+    # get contig depth from BAM file
+    module load metabat/2.12.1
+    jgi_summarize_bam_contig_depths --outputDepth Seawater_ctg.depth Seawater_sorted.bam
+
+
 ### References and online resources:
 
 + WebMGA: http://weizhong-lab.ucsd.edu/webMGA/server/cog/
@@ -150,23 +171,3 @@ will be stored in separate folders within BioSAK_db.
 + GhostKOALA: https://www.kegg.jp/ghostkoala/
 + dnCAN2: http://bcb.unl.edu/dbCAN2/blast.php
 + jgi_summarize_bam_contig_depths: https://bitbucket.org/berkeleylab/metabat/issues/36/how-the-depth-of-contig-was-calculated-why
-
-
-### Steps for getting contig depth with MetaBAT's jgi_summarize_bam_contig_depths
-
-       # Mapping filtered reads back to their assemblies
-       module load bowtie/2.3.4.2
-       bowtie2-build -f Seawater.fa Seawater
-       bowtie2 -x Seawater -1 Seawater_R1_Q25_P.fastq -2 Seawater_R2_Q25_P.fastq -S Seawater.sam -p 6 -q
-
-       # turn SAM file into BAM file
-       module load samtools/1.9
-       samtools view -bS Seawater.sam -o Seawater.bam
-       samtools sort Seawater.bam -o Seawater_sorted.bam
-       samtools index Seawater_sorted.bam
-       rm Seawater.sam
-       rm Seawater.bam
-
-       # get contig depth from BAM file
-       module load metabat/2.12.1
-       jgi_summarize_bam_contig_depths --outputDepth Seawater_ctg.depth Seawater_sorted.bam
