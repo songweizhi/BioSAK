@@ -58,3 +58,22 @@ get_boxplot(num_lol, label_list, label_rotation, output_plot)
 
 
 ########################################################################################################################
+
+def get_categorical_scatter_plot(num_list, label_list, label_rotation, output_plot):
+
+    num_index = list(range(1, len(num_list) + 1))
+
+    plt.scatter(num_index, num_list)
+    plt.xticks(num_index, label_list, rotation=label_rotation)
+    plt.margins(0.2)
+    plt.subplots_adjust(bottom=0.15)
+    plt.tight_layout()
+    plt.savefig(output_plot, dpi=300)
+    plt.close()
+
+
+num_list = [1, 2, 4, 3]
+label_list = ['Frogs', 'Hogs', 'Bogs', 'Slogs']
+get_categorical_scatter_plot(num_list, label_list, 0, '/Users/songweizhi/Desktop/categorical_scatter_plot.png')
+
+

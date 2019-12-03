@@ -144,21 +144,18 @@ if __name__ == '__main__':
 
     ###################################################################################### define arguments for subparsers #######################################################################################
 
-    # add arguments for Prodigal_parser
     Prodigal_parser.add_argument('-i',                  required=True,                                  help='input genome folder')
     Prodigal_parser.add_argument('-x',                  required=False, default='fasta',                help='file extension')
     Prodigal_parser.add_argument('-p',                  required=True,                                  help='output prefix')
     Prodigal_parser.add_argument('-meta',               required=False, action="store_true",            help='annotation mode for metagenome assembled genomes (MAGs)')
     Prodigal_parser.add_argument('-t',                  required=False, type=int, default=1,            help='number of threads')
 
-    # add arguments for COG_parser
     COG2003_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
     COG2003_parser.add_argument('-x',                   required=False,                                 help='file extension')
     COG2003_parser.add_argument('-m',                   required=True,                                  help='The type of input sequences, "N" for "nucleotide", "P" for "protein"')
     COG2003_parser.add_argument('-db_dir',              required=True,                                  help='folder holds whog, fun.txt, cddid.tbl and Cog.* files')
     COG2003_parser.add_argument('-t',                   required=False, type=int, default=1,            help='number of threads')
 
-    # add arguments for COG2014_parser
     COG2014_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
     COG2014_parser.add_argument('-x',                   required=False,                                 help='file extension')
     COG2014_parser.add_argument('-m',                   required=True,                                  help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
@@ -166,10 +163,9 @@ if __name__ == '__main__':
     COG2014_parser.add_argument('-pct_by_all',          required=False, action='store_true',            help='normalize by all query genes, rather than those with COG assignment')
     COG2014_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
     COG2014_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
-    COG2014_parser.add_argument('-t',                   required=False, type=int, default=1,            help='number of threads')
+    COG2014_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
     COG2014_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
 
-    # add arguments for KEGG_parser
     KEGG_parser.add_argument('-seq_in',                 required=False,                                 help='faa file')
     KEGG_parser.add_argument('-ko_in',                  required=False,                                 help='annotation results from BlastKOALA/GhostKOALA, normally with name user_ko.txt')
     KEGG_parser.add_argument('-x',                      required=False,                                 help='file extension')
@@ -177,10 +173,9 @@ if __name__ == '__main__':
     KEGG_parser.add_argument('-pct_by_all',             required=False, action='store_true',            help='normalize by all query genes, rather than those with ko assignment')
     KEGG_parser.add_argument('-db_dir',                 required=True,                                  help='folder holds sequence, seq2ko and ko00001.keg files')
     KEGG_parser.add_argument('-diamond',                required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
-    KEGG_parser.add_argument('-t',                      required=False, default=1, type=int,            help='number of threads, default: 1')
+    KEGG_parser.add_argument('-t',                      required=False, default=1,     type=int,        help='number of threads, default: 1')
     KEGG_parser.add_argument('-evalue',                 required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
 
-    # add arguments for dbCAN_parser
     dbCAN_parser.add_argument('-i',                     required=True,                                  help='path to input sequences (in multi-fasta format)')
     dbCAN_parser.add_argument('-x',                     required=False,                                 help='file extension')
     dbCAN_parser.add_argument('-m',                     required=False, default='P',                    help='The type of input sequences, "N/n" for "nucleotide", "P/p" for "protein"')
@@ -188,7 +183,6 @@ if __name__ == '__main__':
     dbCAN_parser.add_argument('-db_dir',                required=True,                                  help='db folder')
     dbCAN_parser.add_argument('-t',                     required=False, type=int, default=1,            help='number of threads')
 
-    # add arguments for CheckM_Runner
     CheckM_parser.add_argument('-i',                    required=True,                                  help='input bin folder')
     CheckM_parser.add_argument('-x',                    required=True,                                  help='bin file extension')
     CheckM_parser.add_argument('-e',                    required=False,                                 help='your email address')
@@ -202,7 +196,6 @@ if __name__ == '__main__':
     CheckM_parser.add_argument('-prodigal',             required=False, default='prodigal/2.6.3',       help='prodigal version (default: prodigal/2.6.3)')
     CheckM_parser.add_argument('-qsub',                 action="store_true",                            help='submit generated PBS job scripts')
 
-    # add arguments for CheckM_output_parser
     CheckM_output_parser.add_argument('-i',             required=True,                                  help='input quality file')
     CheckM_output_parser.add_argument('-bin',           required=False,                                 help='bin folder')
     CheckM_output_parser.add_argument('-x',             required=False, default='fasta',                help='bin file extension')
@@ -210,14 +203,12 @@ if __name__ == '__main__':
     CheckM_output_parser.add_argument('-contain',       required=False, type=float,                     help='contamination cutoff (0-100)')
     CheckM_output_parser.add_argument('-o',             required=True,                                  help='output quality file')
 
-    # add arguments for gbk2fa, gbk2ffn, gbk2faa, ffn2faa and get_rc
     gbk2fa_parser.add_argument('-gbk',                  required=True,                                  help='input gbk file')
     gbk2ffn_parser.add_argument('-gbk',                 required=True,                                  help='input gbk file')
     gbk2faa_parser.add_argument('-gbk',                 required=True,                                  help='input gbk file')
     ffn2faa_parser.add_argument('-ffn',                 required=True,                                  help='input ffn file')
     get_rc_parser.add_argument('-seq',                  required=True,                                  help='input sequence(s)')
 
-    # add arguments for get_gene_depth
     get_gene_depth_parser.add_argument('-gbk',          required=False, default=None,                   help='gbk file')
     get_gene_depth_parser.add_argument('-gff',          required=False, default=None,                   help='gff file')
     get_gene_depth_parser.add_argument('-ctg_depth',    required=True,                                  help='contig depth file')
@@ -225,25 +216,21 @@ if __name__ == '__main__':
     get_gene_depth_parser.add_argument('-depth_column', required=False, default=2, type=int,            help='contig depth column, default is 2')
     get_gene_depth_parser.add_argument('-skip_header',  required=False, action='store_true',            help='skip the 1st line in contig depth file')
 
-    # add arguments for get_SCG_tree
     get_SCG_tree_parser.add_argument('-i',              required=True,                                  help='input genome folder')
     get_SCG_tree_parser.add_argument('-p',              required=True,                                  help='output prefix')
     get_SCG_tree_parser.add_argument('-x',              required=False, default='fasta',                help='file extension')
     get_SCG_tree_parser.add_argument('-nonmeta',        required=False, action="store_true",            help='annotate Non-metagenome-assembled genomes (Non-MAGs)')
     get_SCG_tree_parser.add_argument('-t',              required=False, type=int, default=1,            help='number of threads, default: 1')
 
-    # add arguments for label_tree
     label_tree_parser.add_argument('-tree',             required=True,                                  help='tree file in newick format')
     label_tree_parser.add_argument('-label',            required=False,  default=None,                  help='label file (label,leaf)')
     label_tree_parser.add_argument('-taxon',            required=False,  default=None,                  help='taxonomic classification')
     label_tree_parser.add_argument('-rank',             required=False,  default=None,                  help='taxonomic rank to label')
 
-    # add arguments for subset_GTDB_tree
     subset_tree_parser.add_argument('-tree',            required=True,                                  help='input tree file')
     subset_tree_parser.add_argument('-taxon',           required=True,                                  help='A file containing list of nodes to keep, one node per line')
     subset_tree_parser.add_argument('-out',             required=True,                                  help='Output tree file')
 
-    # add arguments for iTOL_wrapper_parser
     iTOL_wrapper_parser.add_argument('-tree',           required=True,                                  help='tree file in newick format')
     iTOL_wrapper_parser.add_argument('-label',          required=False,                                 help='label')
     iTOL_wrapper_parser.add_argument('-color',          required=False,                                 help='color')
@@ -251,7 +238,6 @@ if __name__ == '__main__':
     iTOL_wrapper_parser.add_argument('-range',          required=False,                                 help='range')
     iTOL_wrapper_parser.add_argument('-heatmap',        required=False,                                 help='heatmap')
 
-    # add arguments for SankeyTaxon
     SankeyTaxon_parser.add_argument('-taxon',           required=True,                                  help='taxon classification results')
     SankeyTaxon_parser.add_argument('-r',               required=True,                                  help='taxon ranks to plot, e.g. dpcofgs, pco, pcf, cfs')
     SankeyTaxon_parser.add_argument('-p',               required=True,                                  help='output prefix')
@@ -259,49 +245,43 @@ if __name__ == '__main__':
     SankeyTaxon_parser.add_argument('-x',               required=False, type=int,                       help='plot width')
     SankeyTaxon_parser.add_argument('-y',               required=False, type=int,                       help='plot height')
 
-    # add arguments for convert_align_format
     convert_align_fmt_parser.add_argument('-in',        required=True,                                  help='input alignment')
     convert_align_fmt_parser.add_argument('-inf',       required=True,                                  help='format of input alignment')
     convert_align_fmt_parser.add_argument('-out',       required=True,                                  help='output alignment')
     convert_align_fmt_parser.add_argument('-outf',      required=True,                                  help='format of output alignment')
 
-    # add arguments for split_folder
     split_folder_parser.add_argument('-in',             required=True,                                  help='file folder')
     split_folder_parser.add_argument('-x',              required=True,                                  help='file extension')
     split_folder_parser.add_argument('-n',              required=False, type=int,                       help='number of subfolder')
 
-    # add arguments for BestHit
     BestHit_parser.add_argument('-i',                   required=True,                                  help='input blast results (outfmt: 6)')
     BestHit_parser.add_argument('-o',                   required=True,                                  help='output file')
 
-    # add arguments for get_bin_abundance_parser
     get_bin_abundance_parser.add_argument('-d',         required=True,                                  help='MetaBAT produced depth file')
     get_bin_abundance_parser.add_argument('-b',         required=True,                                  help='bin folder')
     get_bin_abundance_parser.add_argument('-x',         required=False, default='fasta',                help='file extension')
     get_bin_abundance_parser.add_argument('-p',         required=False, default='OUTPUT',               help='output prefix')
 
-    # add arguments for GenBank_genome_downloader
     dwnld_GenBank_genome_parser.add_argument('-csv',    required=True,                                  help='csv file from NCBI genome_browse')
-    dwnld_GenBank_genome_parser.add_argument('-id',     required=False, default=None,                   help='assembly accessions, one per line')
+    dwnld_GenBank_genome_parser.add_argument('-fna',    required=False, action="store_true",            help='download gna file')
+    dwnld_GenBank_genome_parser.add_argument('-faa',    required=False, action="store_true",            help='download faa file')
+    dwnld_GenBank_genome_parser.add_argument('-gbff',   required=False, action="store_true",            help='download gbff file')
+    dwnld_GenBank_genome_parser.add_argument('-name',   required=False, action="store_true",            help='include genome name in the downloaded files')
     dwnld_GenBank_genome_parser.add_argument('-t',      required=False, default=1, type=int,            help='number of threads')
 
-    # add arguments for select_seq
     select_seq_parser.add_argument('-seq',              required=True,                                  help='sequence file')
     select_seq_parser.add_argument('-id',               required=True,                                  help='sequence id file, one id per line')
     select_seq_parser.add_argument('-option',           required=True,  type=int,                       help='select option, either 1 or 0')
 
-    # add arguments for select_seq
     get_Pfam_hmms_parser.add_argument('-pfam',          required=True,                                  help='Pfam db file, normally with name Pfam-A.hmm')
     get_Pfam_hmms_parser.add_argument('-id',            required=True,                                  help='ids of profiles need to be extracted, one id per line')
 
-    # add arguments for rename_ctg
     rename_ctg_parser.add_argument('-i',                required=True,                                  help='input sequence file')
     rename_ctg_parser.add_argument('-si',               required=True,                                  help='separator for input sequences')
     rename_ctg_parser.add_argument('-so',               required=False, default=None,                   help='separator for output sequences, default: same as si')
-    rename_ctg_parser.add_argument('-n',                required=True, type=int,                        help='the number of columns to keep')
+    rename_ctg_parser.add_argument('-n',                required=True,  type=int,                       help='the number of columns to keep')
 
-
-    ############################################################ parse provided arguments and run corresponding function ###########################################################
+    ###################################################### parse provided arguments and run corresponding function #####################################################
 
     # disable warning message
     warnings.filterwarnings('ignore')

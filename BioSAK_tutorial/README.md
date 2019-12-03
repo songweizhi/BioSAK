@@ -43,14 +43,14 @@
 will be stored in separate folders within DB.
         
         cd /srv/scratch/zID
-        mkdir DB
-        mkdir DB/COG2014
-        mkdir DB/KEGG
-        mkdir DB/dbCAN
+        mkdir DB_BioSAK
+        mkdir DB_BioSAK/COG2014
+        mkdir DB_BioSAK/KEGG
+        mkdir DB_BioSAK/dbCAN
  
 1. Prepare COG2014 database files
 
-        cd /srv/scratch/zID/DB/COG2014
+        cd /srv/scratch/zID/DB_BioSAK/COG2014
         wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/prot2003-2014.fa.gz
         wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/prot2003-2014.tab
         wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/cog2003-2014.csv
@@ -60,7 +60,7 @@ will be stored in separate folders within DB.
         
 1. Prepare KEGG database files
 
-        cd /srv/scratch/zID/DB/KEGG
+        cd /srv/scratch/zID/DB_BioSAK/KEGG
         
         # prokaryotes.pep.gz and prokaryotes.dat.gz (not free)
         https://www.kegg.jp/kegg/download/Readme/README.fasta
@@ -70,7 +70,7 @@ will be stored in separate folders within DB.
  
 1. Prepare dbCAN database files
 
-        cd /srv/scratch/zID/DB/dbCAN
+        cd /srv/scratch/zID/DB_BioSAK/dbCAN
         wget http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/hmmscan-parser.sh
         wget http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/dbCAN-fam-HMMs.txt
         wget http://bcb.unl.edu/dbCAN2/download/Databases/CAZyDB.07312019.fam-activities.txt
@@ -111,20 +111,20 @@ will be stored in separate folders within DB.
 1. COG annotation
 
         module load diamond/0.9.24
-        BioSAK COG2014 -db_dir /srv/scratch/zID/DB/COG2014 -m P -t 4 -i faa_files -x faa -diamond -depth FiveGenomes_depth
+        BioSAK COG2014 -db_dir /srv/scratch/zID/DB_BioSAK/COG2014 -m P -t 4 -i faa_files -x faa -diamond -depth FiveGenomes_depth
         
 1. KEGG annotation
 
         module load diamond/0.9.24
-        BioSAK KEGG -db_dir /srv/scratch/zID/DB/KEGG -t 4 -seq_in faa_files -x faa -diamond -depth FiveGenomes_depth
+        BioSAK KEGG -db_dir /srv/scratch/zID/DB_BioSAK/KEGG -t 4 -seq_in faa_files -x faa -diamond -depth FiveGenomes_depth
         
         # or, if you already have you proteins annotated with BlastKOALA/GhostKOALA
-        BioSAK KEGG -db_dir /srv/scratch/zID/DB/KEGG -t 4 -ko_in ko_files -x faa -diamond -depth FiveGenomes_depth
+        BioSAK KEGG -db_dir /srv/scratch/zID/DB_BioSAK/KEGG -t 4 -ko_in ko_files -x faa -diamond -depth FiveGenomes_depth
 
 1. CAZy annotation
 
         module load hmmer/3.2.1
-        BioSAK dbCAN -db_dir /srv/scratch/zID/DB/dbCAN -m P -t 4 -i faa_files -x faa -depth FiveGenomes_depth
+        BioSAK dbCAN -db_dir /srv/scratch/zID/DB_BioSAK/dbCAN -m P -t 4 -i faa_files -x faa -depth FiveGenomes_depth
         
     
 ### References and online resources:

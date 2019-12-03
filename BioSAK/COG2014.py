@@ -299,13 +299,13 @@ def COG2014_worker(argument_list):
     #################### get pct files ####################
 
     AnnotateNorm(file_in=pwd_cog_stats_GeneNumber,  skip_header=True, value_column=2, Divisor_value=len(genes_with_cog), file_out=pwd_cog_stats_GeneNumber_pct,  file_out_header='Category\tGeneNumber_pct\tDescription\n')
-    AnnotateNorm(file_in=pwd_func_stats_GeneNumber, skip_header=True, value_column=2, Divisor_value=len(genes_with_cog), file_out=pwd_func_stats_GeneNumber_pct, file_out_header='Category\tTotalDepth_pct\tDescription\n')
+    AnnotateNorm(file_in=pwd_func_stats_GeneNumber, skip_header=True, value_column=2, Divisor_value=len(genes_with_cog), file_out=pwd_func_stats_GeneNumber_pct, file_out_header='Category\tGeneNumber_pct\tDescription\n')
     if depth_file is not None:
         AnnotateNorm(file_in=pwd_cog_stats_TotalDepth,  skip_header=True, value_column=2, Divisor_value=genes_with_cog_TotalDepth, file_out=pwd_cog_stats_TotalDepth_pct,  file_out_header='Category\tTotalDepth_pct\tDescription\n')
         AnnotateNorm(file_in=pwd_func_stats_TotalDepth, skip_header=True, value_column=2, Divisor_value=genes_with_cog_TotalDepth, file_out=pwd_func_stats_TotalDepth_pct, file_out_header='Category\tTotalDepth_pct\tDescription\n')
     if pct_by_all is True:
         AnnotateNorm(file_in=pwd_cog_stats_GeneNumber,  skip_header=True, value_column=2, Divisor_value=len(query_seq_list), file_out=pwd_cog_stats_GeneNumber_pct_by_all,  file_out_header='Category\tGeneNumber_pct_by_all\tDescription\n')
-        AnnotateNorm(file_in=pwd_func_stats_GeneNumber, skip_header=True, value_column=2, Divisor_value=len(query_seq_list), file_out=pwd_func_stats_GeneNumber_pct_by_all, file_out_header='Category\tTotalDepth_pct_by_all\tDescription\n')
+        AnnotateNorm(file_in=pwd_func_stats_GeneNumber, skip_header=True, value_column=2, Divisor_value=len(query_seq_list), file_out=pwd_func_stats_GeneNumber_pct_by_all, file_out_header='Category\tGeneNumber_pct_by_all\tDescription\n')
         if depth_file is not None:
             AnnotateNorm(file_in=pwd_cog_stats_TotalDepth,  skip_header=True, value_column=2, Divisor_value=total_depth_for_all_query_genes, file_out=pwd_cog_stats_TotalDepth_pct_by_all,  file_out_header='Category\tTotalDepth_pct_by_all\tDescription\n')
             AnnotateNorm(file_in=pwd_func_stats_TotalDepth, skip_header=True, value_column=2, Divisor_value=total_depth_for_all_query_genes, file_out=pwd_func_stats_TotalDepth_pct_by_all, file_out_header='Category\tTotalDepth_pct_by_all\tDescription\n')

@@ -3,7 +3,7 @@ from Bio import SeqIO
 from BioSAK.global_functions import sep_path_basename_ext
 
 
-COG2014_parser_usage = '''
+rename_ctg_usage = '''
 ========================= rename_ctg example commands =========================
 
 # rename "NODE_941_length_17600_cov_52.7123" to "NODE_941"

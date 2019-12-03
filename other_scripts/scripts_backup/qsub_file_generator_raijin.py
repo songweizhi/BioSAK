@@ -11,7 +11,7 @@ memory = 120
 walltime_needed = '47:59:00'
 email = 'wythe1987@163.com'
 #email = 'weizhi.song@student.unsw.edu.au'
-modules_needed = ['spades/3.9.0']
+modules_needed = [/3.9.0']
 
 wd = '/Users/songweizhi/Desktop'
 outputs_folder = 'qsub_6_idba_ud'

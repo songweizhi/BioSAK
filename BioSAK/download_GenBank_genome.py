@@ -3,104 +3,127 @@ import shutil
 import argparse
 from datetime import datetime
 import multiprocessing as mp
+from BioSAK.global_functions import force_create_folder
+from BioSAK.global_functions import sep_path_basename_ext
 
 
 download_GenBank_genome_parser_usage = '''
 ================================== dwnld_GenBank_genome example commands ==================================
 
 # Usage:
-# 1. Go to https://www.ncbi.nlm.nih.gov/genome/browse#!/overview/
-# 2. Search genomes you want to download (e.g. prokaryotes, proteobacteria or psychrobacter)
+# 1. Go to https://www.ncbi.nlm.nih.gov/genome/browse#!/prokaryotes/refseq_category:reference
+# 2. Search genomes you want to download (e.g. prokaryotes, proteobacteria, psychrobacter)
 # 3. Click "Download" on the right side
 # 4. provide the downloaded csv file with '-csv'
 
 # Download all genomes in file prokaryotes.csv
-BioSAK dwnld_GenBank_genome -csv prokaryotes.csv
-
-# Only download genomes with provided accessions in accessions.txt
-BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -id accessions.txt
-
-# accessions.txt file format 
-# one accession per line, accessions can be found from the 6th column of the prokaryotes.csv file.
-GCA_000265385.1
-GCA_900176135
-GCA_900107535.1
+BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -fna
+BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -fna -faa -gbff -name
 
 ===========================================================================================================
 '''
 
 
-def force_create_folder(folder_to_create):
-    if os.path.isdir(folder_to_create):
-        shutil.rmtree(folder_to_create, ignore_errors=True)
-        if os.path.isdir(folder_to_create):
-            shutil.rmtree(folder_to_create, ignore_errors=True)
-            if os.path.isdir(folder_to_create):
-                shutil.rmtree(folder_to_create, ignore_errors=True)
-                if os.path.isdir(folder_to_create):
-                    shutil.rmtree(folder_to_create, ignore_errors=True)
-    os.mkdir(folder_to_create)
-
-
-def sep_path_basename_ext(file_in):
-
-    # separate path and file name
-    file_path, file_name = os.path.split(file_in)
-    if file_path == '':
-        file_path = '.'
-
-    # separate file basename and extension
-    file_basename, file_extension = os.path.splitext(file_name)
-
-    return file_path, file_basename, file_extension
-
-
 def genome_download_worker(argument_list):
 
-    genome_record_split = argument_list[0]
-    downloaded_genome_folder = argument_list[1]
+    genome_record_split =       argument_list[0]
+    downloaded_genome_folder =  argument_list[1]
+    get_fna =                   argument_list[2]
+    get_faa =                   argument_list[3]
+    get_gbff =                   argument_list[4]
+    with_name =                  argument_list[5]
+
+    genome_name = genome_record_split[0][1:-1]
+    genome_name_no_space = '_'.join(genome_name.split(' '))
+    if ('(' in genome_name_no_space) and (')' in genome_name_no_space):
+        genome_name_no_space_no_parenthesis_tmp = genome_name_no_space.replace('(', '_')
+        genome_name_no_space = genome_name_no_space_no_parenthesis_tmp.replace(')', '')
+
+
     GenBank_FTP = genome_record_split[-2][1:-1]
     GenBank_FTP_id = GenBank_FTP.strip().split('/')[-1]
     assembly_id = genome_record_split[5]
 
-    # download
-    wget_cmd = 'wget %s/%s_genomic.fna.gz -P %s -q' % (GenBank_FTP, GenBank_FTP_id, downloaded_genome_folder)
-    os.system(wget_cmd)
+    # prepare cmds
+    fna_file =                  '%s_genomic.fna.gz'                     % (GenBank_FTP_id)
+    faa_file =                  '%s_protein.faa.gz'                     % (GenBank_FTP_id)
+    gbff_file =                 '%s_genomic.gbff.gz'                    % (GenBank_FTP_id)
+    pwd_fna_file =              '%s/%s'                                 % (downloaded_genome_folder, fna_file)
+    pwd_faa_file =              '%s/%s'                                 % (downloaded_genome_folder, faa_file)
+    pwd_gbff_file =             '%s/%s'                                 % (downloaded_genome_folder, gbff_file)
+    ftp_fna_file =              '%s/%s'                                 % (GenBank_FTP, fna_file)
+    ftp_faa_file =              '%s/%s'                                 % (GenBank_FTP, faa_file)
+    ftp_gbff_file =             '%s/%s'                                 % (GenBank_FTP, gbff_file)
+    wget_fna_cmd =              'wget %s -P %s -q'                      % (ftp_fna_file, downloaded_genome_folder)
+    wget_faa_cmd =              'wget %s -P %s -q'                      % (ftp_faa_file, downloaded_genome_folder)
+    wget_gbff_cmd =             'wget %s -P %s -q'                      % (ftp_gbff_file, downloaded_genome_folder)
+    gunzip_fna_cmd =            'gunzip %s'                             % (pwd_fna_file)
+    gunzip_faa_cmd =            'gunzip %s'                             % (pwd_faa_file)
+    gunzip_gbff_cmd =           'gunzip %s'                             % (pwd_gbff_file)
+    rename_fna_cmd =            'mv %s/%s_genomic.fna %s/%s.fna'        % (downloaded_genome_folder, GenBank_FTP_id, downloaded_genome_folder, assembly_id)
+    rename_faa_cmd =            'mv %s/%s_protein.faa %s/%s.faa'        % (downloaded_genome_folder, GenBank_FTP_id, downloaded_genome_folder, assembly_id)
+    rename_gbff_cmd =           'mv %s/%s_genomic.gbff %s/%s.gbff'      % (downloaded_genome_folder, GenBank_FTP_id, downloaded_genome_folder, assembly_id)
+    rename_fna_cmd_with_name =  'mv %s/%s_genomic.fna %s/%s_%s.fna'     % (downloaded_genome_folder, GenBank_FTP_id, downloaded_genome_folder, assembly_id, genome_name_no_space)
+    rename_faa_cmd_with_name =  'mv %s/%s_protein.faa %s/%s_%s.faa'     % (downloaded_genome_folder, GenBank_FTP_id, downloaded_genome_folder, assembly_id, genome_name_no_space)
+    rename_gbff_cmd_with_name = 'mv %s/%s_genomic.gbff %s/%s_%s.gbff'   % (downloaded_genome_folder, GenBank_FTP_id, downloaded_genome_folder, assembly_id, genome_name_no_space)
 
-    # decompress
-    os.system('gunzip %s/%s_genomic.fna.gz' % (downloaded_genome_folder, GenBank_FTP_id))
+    # download, decompress and rename
+    if get_fna is True:
+        os.system(wget_fna_cmd)
+        if os.path.isfile(pwd_fna_file) is True:
+            os.system(gunzip_fna_cmd)
+            if with_name is False:
+                os.system(rename_fna_cmd)
+            else:
+                os.system(rename_fna_cmd_with_name)
+        else:
+            print('fna file not found in: %s/' % (GenBank_FTP))
 
-    # rename
-    os.system('mv %s/%s_genomic.fna %s/%s.fna' % (downloaded_genome_folder, GenBank_FTP_id, downloaded_genome_folder, assembly_id))
+
+    if get_faa is True:
+        os.system(wget_faa_cmd)
+        if os.path.isfile(pwd_faa_file) is True:
+            os.system(gunzip_faa_cmd)
+            if with_name is False:
+                os.system(rename_faa_cmd)
+            else:
+                os.system(rename_faa_cmd_with_name)
+        else:
+            print('faa file not found in: %s/' % (GenBank_FTP))
+
+    if get_gbff is True:
+        os.system(wget_gbff_cmd)
+        if os.path.isfile(pwd_gbff_file) is True:
+            os.system(gunzip_gbff_cmd)
+            if with_name is False:
+                os.system(rename_gbff_cmd)
+            else:
+                os.system(rename_gbff_cmd_with_name)
+        else:
+            print('gbff file not found in: %s/' % (GenBank_FTP))
 
 
 def download_GenBank_genome(args):
 
-    assembly_id_file = args['id']
-    csv_file = args['csv']
-    num_threads = args['t']
+    csv_file =      args['csv']
+    get_fna =       args['fna']
+    get_faa =       args['faa']
+    get_gbff =      args['gbff']
+    with_name =     args['name']
+    num_threads =   args['t']
+
     time_format = '[%Y-%m-%d %H:%M:%S] '
+
+    if (get_fna is False) and (get_faa is False) and (get_gbff is False):
+        print(datetime.now().strftime(time_format) + 'Please specify at least one file type to download, program exited')
+        exit()
 
     in_file_path, in_file_basename, in_file_extension = sep_path_basename_ext(csv_file)
     downloaded_genome_folder = '%s_genomes' % in_file_basename
     force_create_folder(downloaded_genome_folder)
 
-    genomes_to_download = []
-    if (assembly_id_file is not None) and (os.path.isfile(assembly_id_file) is True):
-
-        # get id list to download
-        for each_id in open(assembly_id_file):
-            each_id = each_id.strip()
-            each_id_no_version = each_id
-            if '.' in each_id:
-                each_id_no_version = each_id.split('.')[0]
-            genomes_to_download.append(each_id_no_version)
-
     # report
-    if (assembly_id_file is not None) and (os.path.isfile(assembly_id_file) is True):
-        print(datetime.now().strftime(time_format) + 'Downloading %s genomes with %s cores' % (len(genomes_to_download), num_threads))
-    else:
-        print(datetime.now().strftime(time_format) + 'Downloading genomes with %s cores' % (num_threads))
+    print(datetime.now().strftime(time_format) + 'Downloading genomes with %s cores' % (num_threads))
 
     # download genome with multiprocessing
     list_for_multiple_arguments_download_worker = []
@@ -108,14 +131,7 @@ def download_GenBank_genome(args):
 
         if not genome_record.startswith('#Organism Name'):
             genome_record_split = genome_record.strip().split(',')
-            assembly_id = genome_record_split[5]
-            assembly_id_no_version = assembly_id.split('.')[0][1:]
-
-            if (assembly_id_file is not None) and (os.path.isfile(assembly_id_file) is True):
-                if assembly_id_no_version in genomes_to_download:
-                    list_for_multiple_arguments_download_worker.append([genome_record_split, downloaded_genome_folder])
-            else:
-                list_for_multiple_arguments_download_worker.append([genome_record_split, downloaded_genome_folder])
+            list_for_multiple_arguments_download_worker.append([genome_record_split, downloaded_genome_folder, get_fna, get_faa, get_gbff, with_name])
 
     # run COG annotaion files with multiprocessing
     pool = mp.Pool(processes=num_threads)
@@ -128,9 +144,12 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-csv', required=True,                          help='csv file from NCBI genome_browse')
-    parser.add_argument('-id',  required=False, default=None,           help='assembly accessions, one per line')
-    parser.add_argument('-t',   required=False, default=1, type=int,    help='number of threads')
+    parser.add_argument('-csv',  required=True,                       help='csv file downloaded from NCBI genome_browse')
+    parser.add_argument('-fna',  required=False, action="store_true", help='download gna file')
+    parser.add_argument('-faa',  required=False, action="store_true", help='download faa file')
+    parser.add_argument('-gbff', required=False, action="store_true", help='download gbff file')
+    parser.add_argument('-name', required=False, action="store_true", help='include genome name in the downloaded files')
+    parser.add_argument('-t',    required=False, default=1, type=int, help='number of threads')
 
     args = vars(parser.parse_args())
 

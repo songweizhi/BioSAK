@@ -27,6 +27,7 @@ BioSAK/boxplot_matrix_KEGG.py
 BioSAK/cdd2cog.pl
 BioSAK/dbCAN.py
 BioSAK/download_GenBank_genome.py
+BioSAK/download_GenBank_genome2.py
 BioSAK/format_converter.py
 BioSAK/fq2fa.py
 BioSAK/gbk_to_ffn_faa.py
