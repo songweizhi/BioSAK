@@ -41,49 +41,7 @@
 
 ### Prepare database files for COG, KEGG and CAZy (dbCAN) annotation
 
-Refers to [qsub_prepare_DB.sh]()
-
-1. Skip this section if you have done the qsub_prepare_DB.sh
-
-1. Create a DB folder in your scratch, all database files needed for COG, KEGG and CAZy annotation 
-will be stored in separate folders within BioSAK_db.
-        
-       # change the number to your own zID
-       zID="z5039045"
-       
-       cd /srv/scratch/$zID
-       mkdir BioSAK_db
-       mkdir BioSAK_db/COG2014
-       mkdir BioSAK_db/KEGG
-       mkdir BioSAK_db/dbCAN
- 
-1. Prepare COG2014 database files
-
-       cd /srv/scratch/$zID/BioSAK_db/COG2014
-       wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/prot2003-2014.fa.gz
-       wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/prot2003-2014.tab
-       wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/cog2003-2014.csv
-       wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/cognames2003-2014.tab
-       wget ftp://ftp.ncbi.nlm.nih.gov//pub/COG/COG2014/data/fun2003-2014.tab        
-       gunzip prot2003-2014.fa.gz
-        
-1. Prepare KEGG database files
-
-       cd /srv/scratch/$zID/BioSAK_db/KEGG
-        
-       # prokaryotes.pep.gz and prokaryotes.dat.gz (not free)
-       https://www.kegg.jp/kegg/download/Readme/README.fasta
-       
-       # ko00001.keg
-       https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
- 
-1. Prepare dbCAN database files
-
-       cd /srv/scratch/$zID/BioSAK_db/dbCAN
-       wget http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/hmmscan-parser.sh
-       wget http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/dbCAN-fam-HMMs.txt
-       wget http://bcb.unl.edu/dbCAN2/download/Databases/CAZyDB.07312019.fam-activities.txt
-       mv CAZyDB.07312019.fam-activities.txt CAZyDB.fam-activities.txt
+Refers to [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh)
 
 
 ### Run BioSAK
