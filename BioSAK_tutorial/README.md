@@ -138,13 +138,10 @@ will be stored in separate folders within BioSAK_db.
 
 1. run COG, KEGG and CAZy annotation
 	   
-	   # COG
        BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
- 
-	   # KEGG
+       
        BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
- 
-	   # CAZy 
+       
        BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i Metagenomic_assemblies_faa -x faa -depth Metagenomic_assemblies_faa_depth
        
 ### References and online resources:
