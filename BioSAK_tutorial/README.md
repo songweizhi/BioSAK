@@ -80,6 +80,11 @@
        prokka --force --metagenome --prefix Seawater --locustag Seawater --outdir Metagenomic_assemblies_Prokka/Seawater Metagenomic_assemblies/Seawater_ctg.fa
        prokka --force --metagenome --prefix Sediment --locustag Sediment --outdir Metagenomic_assemblies_Prokka/Sediment Metagenomic_assemblies/Sediment_ctg.fa
 
+    note:
+    --metagenome       Improve gene predictions for highly fragmented genomes
+    --locustag         Locus tag prefix (prefix of gene id)
+    --prefix [X]       Filename output prefix
+
 1. copy faa and gff files into separate folders
 
        mkdir Metagenomic_assemblies_faa
