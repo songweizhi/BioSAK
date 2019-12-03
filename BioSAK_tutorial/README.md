@@ -44,9 +44,9 @@
 
 1. Download [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh)
 
-1. change the email address in line 5 to your own.
+1. Change the email address in line 5 to your own
 
-1. Upload it to your Katana Scratch and submit it with qsub
+1. Upload it to your Katana Scratch and submit with qsub
 
        cd /srv/scratch/$zID
        qsub qsub_prepare_DB.sh
@@ -58,7 +58,7 @@
 
        zID="z5039045"
        cd /srv/scratch/$zID
-       wget https://www.dropbox.com/s/jdhqw697kecekik/BioSAK_demo.tar.gz
+       wget https://www.dropbox.com/s/ah99bsqi1cb7592/BioSAK_demo.tar.gz
        tar -xzvf BioSAK_demo.tar.gz
        cd BioSAK_demo
        
