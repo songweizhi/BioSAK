@@ -89,11 +89,11 @@ will be stored in separate folders within BioSAK_db.
 1. Download demo data
 
        cd /srv/scratch/$zID
-       wget https://www.dropbox.com/s/2w741hucazbboy7/BioSAK_demo.zip
-       unzip BioSAK_demo.zip
+       wget https://www.dropbox.com/s/jdhqw697kecekik/BioSAK_demo.tar.gz
+       tar -xzvf BioSAK_demo.tar.gz
        cd BioSAK_demo
 
-1. Activate Python3 virtual environment and load needed modules
+1. Activate Python virtual environment and load needed modules
 
        module load python/3.7.3
        source ~/mypython3env_BioSAK/bin/activate
@@ -101,39 +101,7 @@ will be stored in separate folders within BioSAK_db.
        module load hmmer/3.2.1
        zID="z5039045"
         
-1. COG annotation
-
-       BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i faa_files -x faa -diamond
-       BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i faa_files -x faa -diamond -depth gene_depth_files
- 
-1. KEGG annotation
-
-       BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in faa_files -x faa -diamond
-       BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in faa_files -x faa -diamond -depth gene_depth_files
- 
-1. CAZy annotation
-
-       BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i faa_files -x faa
-       BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i faa_files -x faa -depth gene_depth_files
-        
-         
-### References and online resources:
-
-+ WebMGA: http://weizhong-lab.ucsd.edu/webMGA/server/cog/
-+ BlastKOALA: https://www.kegg.jp/blastkoala/
-+ GhostKOALA: https://www.kegg.jp/ghostkoala/
-+ dnCAN2: http://bcb.unl.edu/dbCAN2/blast.php
-+ jgi_summarize_bam_contig_depths: https://bitbucket.org/berkeleylab/metabat/issues/36/how-the-depth-of-contig-was-calculated-why
-
-
-### Get gene depth
-
-1. Mapping reads back to assemblies and get their depth with MetaBAT's jgi_summarize_bam_contig_depths
-
-       module load metabat/0.32.4
-       jgi_summarize_bam_contig_depths --outputDepth Ctg_depth.txt sample_1.bam
-        
-2. Predict genes from assemblies with Prokka
+1. Predict genes from assemblies with Prokka
 
        module load perl/5.28.0
        module load infernal/1.1.2 
@@ -144,9 +112,55 @@ will be stored in separate folders within BioSAK_db.
        module load parallel/20190522 
        module load aragorn/1.2.38 
        module load prokka/1.13.3
-       prokka --force --metagenome --prefix Sample_1 --locustag Sample_1 --outdir Sample_1 Sample1_ctgs.fa
+       mkdir Metagenomic_assemblies_Prokka
+       prokka --force --metagenome --prefix Kelp --locustag Kelp --outdir Metagenomic_assemblies_Prokka/Kelp Metagenomic_assemblies/Kelp_ctg.fa
+       prokka --force --metagenome --prefix Sponge --locustag Sponge --outdir Metagenomic_assemblies_Prokka/Sponge Metagenomic_assemblies/Sponge_ctg.fa
+       prokka --force --metagenome --prefix Seawater --locustag Seawater --outdir Metagenomic_assemblies_Prokka/Seawater Metagenomic_assemblies/Seawater_ctg.fa
+       prokka --force --metagenome --prefix Sediment --locustag Sediment --outdir Metagenomic_assemblies_Prokka/Sediment Metagenomic_assemblies/Sediment_ctg.fa
 
-3. Get gene depth according to contig depth (together with gbk file)
+1. copy faa and gff files into a separate folders
 
-       BioSAK get_gene_depth -gbk Sample_1.gbk -ctg_depth Ctg_depth.txt -skip_header
+       mkdir Metagenomic_assemblies_faa
+       cp Metagenomic_assemblies_Prokka/*/*.faa Metagenomic_assemblies_faa
+       
+       mkdir Metagenomic_assemblies_gff
+       cp Metagenomic_assemblies_Prokka/*/*.gff Metagenomic_assemblies_gff      
+
+1. get gene depth according to the depth of the contig they sit in 
+        
+       BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Kelp.gff -ctg_depth Metagenomic_assemblies_depth/Kelp_ctg.depth -skip_header
+       BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Sponge.gff -ctg_depth Metagenomic_assemblies_depth/Sponge_ctg.depth -skip_header
+       BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Seawater.gff -ctg_depth Metagenomic_assemblies_depth/Seawater_ctg.depth -skip_header
+       BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Sediment.gff -ctg_depth Metagenomic_assemblies_depth/Sediment_ctg.depth -skip_header
+
+       # move generated protein depth files into a separate folder
+       mv Metagenomic_assemblies_gff/*.depth Metagenomic_assemblies_faa_depth/
+
+1. COG annotation
+
+       BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
+ 
+1. KEGG annotation
+
+       BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
+ 
+1. CAZy annotation
+
+       BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i Metagenomic_assemblies_faa -x faa -depth Metagenomic_assemblies_faa_depth
+       
+### References and online resources:
+
++ WebMGA: http://weizhong-lab.ucsd.edu/webMGA/server/cog/
++ BlastKOALA: https://www.kegg.jp/blastkoala/
++ GhostKOALA: https://www.kegg.jp/ghostkoala/
++ dnCAN2: http://bcb.unl.edu/dbCAN2/blast.php
++ jgi_summarize_bam_contig_depths: https://bitbucket.org/berkeleylab/metabat/issues/36/how-the-depth-of-contig-was-calculated-why
+
+
+### Get contig depth
+
+1. Mapping reads back to assemblies and get their depth with MetaBAT's jgi_summarize_bam_contig_depths
+
+       module load metabat/0.32.4
+       jgi_summarize_bam_contig_depths --outputDepth Ctg_depth.txt sample_1.bam
         
