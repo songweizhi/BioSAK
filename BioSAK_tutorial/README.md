@@ -5,7 +5,7 @@
 [![pypi version ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 
 
 
-### Setup Python virtual environment
+### Install BioSAK with Python virtual environment 
 
 
 1. Log into katana
