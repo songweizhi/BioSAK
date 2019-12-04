@@ -74,47 +74,46 @@
        module load parallel/20190522 
        module load aragorn/1.2.38 
        module load prokka/1.13.3
-       mkdir Metagenomic_assemblies_Prokka    
-       prokka --force --metagenome --prefix Kelp --locustag Kelp --outdir Metagenomic_assemblies_Prokka/Kelp Metagenomic_assemblies/Kelp_ctg.fa
-       prokka --force --metagenome --prefix Sponge --locustag Sponge --outdir Metagenomic_assemblies_Prokka/Sponge Metagenomic_assemblies/Sponge_ctg.fa
-       prokka --force --metagenome --prefix Seawater --locustag Seawater --outdir Metagenomic_assemblies_Prokka/Seawater Metagenomic_assemblies/Seawater_ctg.fa
-       prokka --force --metagenome --prefix Sediment --locustag Sediment --outdir Metagenomic_assemblies_Prokka/Sediment Metagenomic_assemblies/Sediment_ctg.fa
+       mkdir CtgSeq_Prokka    
+       prokka --metagenome --prefix Kelp --locustag Kelp --outdir CtgSeq_Prokka/Kelp CtgSeq/Kelp_ctg.fa
+       prokka --metagenome --prefix Sponge --locustag Sponge --outdir CtgSeq_Prokka/Sponge CtgSeq/Sponge_ctg.fa
+       prokka --metagenome --prefix Seawater --locustag Seawater --outdir CtgSeq_Prokka/Seawater CtgSeq/Seawater_ctg.fa
+       prokka --metagenome --prefix Sediment --locustag Sediment --outdir CtgSeq_Prokka/Sediment CtgSeq/Sediment_ctg.fa
     
     Help info    
     + --metagenome:       Improve gene predictions for highly fragmented genomes
     + --locustag:         Locus tag prefix (prefix of gene id)
-    + --prefix:           Filename output prefix
 
 
 1. copy faa and gff files into separate folders
 
-       mkdir Metagenomic_assemblies_faa
-       cp Metagenomic_assemblies_Prokka/*/*.faa Metagenomic_assemblies_faa
+       mkdir CtgSeq_faa
+       cp CtgSeq_Prokka/*/*.faa CtgSeq_faa/
        
-       mkdir Metagenomic_assemblies_gff
-       cp Metagenomic_assemblies_Prokka/*/*.gff Metagenomic_assemblies_gff      
+       mkdir CtgSeq_gff
+       cp CtgSeq_Prokka/*/*.gff CtgSeq_gff/      
 
 1. get gene depth according to the depth of the contig they sit in 
     
        module load python/3.7.3
        source ~/mypython3env_BioSAK/bin/activate
-       BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Kelp.gff -ctg_depth Metagenomic_assemblies_depth/Kelp_ctg.depth -skip_header
-       BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Sponge.gff -ctg_depth Metagenomic_assemblies_depth/Sponge_ctg.depth -skip_header
-       BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Seawater.gff -ctg_depth Metagenomic_assemblies_depth/Seawater_ctg.depth -skip_header
-       BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Sediment.gff -ctg_depth Metagenomic_assemblies_depth/Sediment_ctg.depth -skip_header
+       BioSAK get_gene_depth -gff CtgSeq_gff/Kelp.gff -ctg_depth CtgDepth/Kelp_ctg.depth -skip_header
+       BioSAK get_gene_depth -gff CtgSeq_gff/Sponge.gff -ctg_depth CtgDepth/Sponge_ctg.depth -skip_header
+       BioSAK get_gene_depth -gff CtgSeq_gff/Seawater.gff -ctg_depth CtgDepth/Seawater_ctg.depth -skip_header
+       BioSAK get_gene_depth -gff CtgSeq_gff/Sediment.gff -ctg_depth CtgDepth/Sediment_ctg.depth -skip_header
 
        # move generated protein depth files into a separate folder
-       mkdir Metagenomic_assemblies_faa_depth
-       mv Metagenomic_assemblies_gff/*.depth Metagenomic_assemblies_faa_depth/
+       mkdir CtgSeq_faa_depth
+       mv CtgSeq_gff/*.depth CtgSeq_faa_depth/
 
 1. run COG, KEGG and CAZy annotation
 
        module load diamond/0.9.24
        module load hmmer/3.2.1
        	   
-       BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
-       BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
-       BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i Metagenomic_assemblies_faa -x faa -depth Metagenomic_assemblies_faa_depth
+       BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i CtgSeq_faa -x faa -diamond -depth CtgSeq_faa_depth
+       BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in CtgSeq_faa -x faa -diamond -depth CtgSeq_faa_depth
+       BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i CtgSeq_faa -x faa -depth CtgSeq_faa_depth
 
 
 ### Steps for getting contig depth with MetaBAT's jgi_summarize_bam_contig_depths
