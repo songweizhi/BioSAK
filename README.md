@@ -52,3 +52,4 @@ Help information
 
     $ BioSAK -h
     $ BioSAK COG2014 -h
+
