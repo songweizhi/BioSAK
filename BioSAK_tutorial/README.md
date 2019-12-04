@@ -10,7 +10,7 @@
 
 1. Log into katana
 
-       ssh zID@katana.restech.unsw.edu.au -o "ServerAliveInterval 10"
+       ssh $zID@katana.restech.unsw.edu.au -o "ServerAliveInterval 10"
         
 1. Start a interactive job (running programs on Katana head node is not allowed)    
         
@@ -114,7 +114,7 @@
        BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i CtgSeq_faa -x faa -depth CtgSeq_faa_depth
 
 
-### Steps for getting contig depth with MetaBAT's jgi_summarize_bam_contig_depths
+### Commands for getting contig depth with MetaBAT's jgi_summarize_bam_contig_depths
 
     # Mapping filtered reads back to their assemblies
     module load bowtie/2.3.4.2
@@ -134,22 +134,13 @@
     jgi_summarize_bam_contig_depths --outputDepth Seawater_ctg.depth Seawater_sorted.bam
 
 
-### References and online resources:
-
-+ WebMGA: http://weizhong-lab.ucsd.edu/webMGA/server/cog/
-+ BlastKOALA: https://www.kegg.jp/blastkoala/
-+ GhostKOALA: https://www.kegg.jp/ghostkoala/
-+ dnCAN2: http://bcb.unl.edu/dbCAN2/blast.php
-+ jgi_summarize_bam_contig_depths: https://bitbucket.org/berkeleylab/metabat/issues/36/how-the-depth-of-contig-was-calculated-why
-
-
 ### Some other modules of BioSAK
 
 1. Download GenBank genomes
 
     + Go to https://www.ncbi.nlm.nih.gov/genome/browse#!/prokaryotes/refseq_category:reference
     + Search genomes you want to download (e.g. Alteromonas, Archaea)
-    + Click "Download" on the top right
+    + Click "Download" on the top right corner of the table
     + Download genome with dwnld_GenBank_genome
     
            cd /srv/scratch/$zID/BioSAK_demo/OtherFiles
@@ -158,4 +149,13 @@
 1. For more:
 
        BioSAK -h
+
+
+### References and online resources:
+
++ WebMGA: http://weizhong-lab.ucsd.edu/webMGA/server/cog/
++ BlastKOALA: https://www.kegg.jp/blastkoala/
++ GhostKOALA: https://www.kegg.jp/ghostkoala/
++ dnCAN2: http://bcb.unl.edu/dbCAN2/blast.php
++ jgi_summarize_bam_contig_depths: https://bitbucket.org/berkeleylab/metabat/issues/36/how-the-depth-of-contig-was-calculated-why
 
