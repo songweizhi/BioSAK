@@ -42,9 +42,7 @@
 
 ### Prepare database files
 
-1. Download [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh).
-
-1. Change the email address in line 5 to your own.
+1. Download [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh) and change the email address in line 5 to your own.
 
 1. Upload it to your Katana Scratch and submit with qsub.
 
@@ -54,7 +52,7 @@
 
 ### Run BioSAK
 
-1. Download demo data
+1. Download [demo data](https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz?dl=0)
 
        zID="z5039045"
        cd /srv/scratch/$zID
@@ -80,7 +78,7 @@
        prokka --metagenome --prefix Seawater --locustag Seawater --outdir CtgSeq_Prokka/Seawater CtgSeq/Seawater_ctg.fa
        prokka --metagenome --prefix Sediment --locustag Sediment --outdir CtgSeq_Prokka/Sediment CtgSeq/Sediment_ctg.fa
     
-    Help info    
+    Prokka help info:    
     + --metagenome:       Improve gene predictions for highly fragmented genomes
     + --locustag:         Locus tag prefix (prefix of gene id)
 
@@ -143,3 +141,21 @@
 + GhostKOALA: https://www.kegg.jp/ghostkoala/
 + dnCAN2: http://bcb.unl.edu/dbCAN2/blast.php
 + jgi_summarize_bam_contig_depths: https://bitbucket.org/berkeleylab/metabat/issues/36/how-the-depth-of-contig-was-calculated-why
+
+
+### Some other modules of BioSAK
+
+1. Download GenBank genomes
+
+    + Go to https://www.ncbi.nlm.nih.gov/genome/browse#!/prokaryotes/refseq_category:reference
+    + Search genomes you want to download (e.g. Alteromonas, Archaea)
+    + Click "Download" on the top right
+    + Download genome with dwnld_GenBank_genome
+    
+           cd /srv/scratch/$zID/BioSAK_demo/OtherFiles
+           BioSAK dwnld_GenBank_genome -csv Alteromonas.csv -fna -faa -gbff -name
+
+1. For more:
+
+       BioSAK -h
+
