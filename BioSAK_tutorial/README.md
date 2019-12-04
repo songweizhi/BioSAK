@@ -7,16 +7,15 @@
 
 ### Install BioSAK with Python virtual environment 
 
-
 1. Log into katana
 
-       ssh $zID@katana.restech.unsw.edu.au -o "ServerAliveInterval 10"
+       ssh z1234567@katana.restech.unsw.edu.au -o "ServerAliveInterval 10"
         
 1. Start a interactive job (running programs on Katana head node is not allowed)    
         
        qsub -I -l nodes=1:ppn=6,mem=60gb,walltime=02:59:00
 
-1. Create a Python3 virtual environment on Katana and install BioSAK
+1. Create a Python3 virtual environment and install BioSAK
 
        module load python/3.7.3
        mkdir ~/mypython3env_BioSAK
@@ -31,8 +30,7 @@
        
        # to leave Python's virtual environment
        deactivate 
-       
-       
+             
 1. get help information of BioSAK
 
        module load python/3.7.3
@@ -46,7 +44,7 @@
 
 1. Upload it to your Katana Scratch and submit with qsub.
 
-       cd /srv/scratch/$zID
+       cd /srv/scratch/z1234567
        qsub qsub_prepare_DB.sh
 
 
@@ -54,13 +52,11 @@
 
 1. Download [demo data](https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz?dl=0)
 
-       zID="z5039045"
-       cd /srv/scratch/$zID
+       cd /srv/scratch/z1234567
        wget https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz
        tar -xzvf BioSAK_demo.tar.gz
        cd BioSAK_demo
-       
-        
+              
 1. Predict genes from assemblies with Prokka
 
        module load perl/5.28.0
@@ -81,7 +77,6 @@
     Prokka help info:    
     + --metagenome:       Improve gene predictions for highly fragmented genomes
     + --locustag:         Locus tag prefix (prefix of gene id)
-
 
 1. copy faa and gff files into separate folders
 
@@ -109,6 +104,7 @@
        module load diamond/0.9.24
        module load hmmer/3.2.1
        	   
+       zID="z1234567"
        BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i CtgSeq_faa -x faa -diamond -depth CtgSeq_faa_depth
        BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in CtgSeq_faa -x faa -diamond -depth CtgSeq_faa_depth
        BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i CtgSeq_faa -x faa -depth CtgSeq_faa_depth
