@@ -58,7 +58,7 @@
 
        zID="z5039045"
        cd /srv/scratch/$zID
-       wget https://www.dropbox.com/s/ah99bsqi1cb7592/BioSAK_demo.tar.gz
+       wget https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/BioSAK_demo.tar.gz
        tar -xzvf BioSAK_demo.tar.gz
        cd BioSAK_demo
        
