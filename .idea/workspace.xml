@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="120bb65e-df28-41bc-852a-d66f5fe146fc" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BioSAK_tutorial/BioSAK_demo.tar.gz" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/BioSAK_tutorial/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/BioSAK_tutorial/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -451,7 +451,21 @@
       <option name="project" value="LOCAL" />
       <updated>1575422648680</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="-1.19.1">
+      <created>1575422694500</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1575422694500</updated>
+    </task>
+    <task id="LOCAL-00041" summary="-1.19.1">
+      <created>1575422723571</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1575422723571</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -476,19 +490,19 @@
     <option name="LAST_COMMIT_MESSAGE" value="-1.19.1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="1227" y="-889" key="CommitChangelistDialog2" timestamp="1575422694255">
+    <state x="1227" y="-889" key="CommitChangelistDialog2" timestamp="1575422723364">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
-    <state x="1227" y="-889" key="CommitChangelistDialog2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575422694255" />
+    <state x="1227" y="-889" key="CommitChangelistDialog2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575422723364" />
     <state x="1101" y="-920" key="CommitChangelistDialog2/618.-1050.1680.1050/0.23.1280.730/-1062.-1027.1680.1027@618.-1050.1680.1050" timestamp="1575422092645" />
     <state x="833" y="-1020" key="SettingsEditor" timestamp="1575418600598">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
     <state x="833" y="-1020" key="SettingsEditor/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575418468701" />
     <state x="833" y="-1020" key="SettingsEditor/618.-1050.1680.1050/0.23.1280.777/-1062.-1027.1680.1027@618.-1050.1680.1050" timestamp="1575418600598" />
-    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2" timestamp="1575422696233">
+    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2" timestamp="1575422725272">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
-    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575422696233" />
+    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575422725272" />
   </component>
 </project>
