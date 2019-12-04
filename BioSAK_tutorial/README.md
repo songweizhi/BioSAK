@@ -42,11 +42,11 @@
 
 ### Prepare database files
 
-1. Download [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh)
+1. Download [qsub_prepare_DB.sh](https://github.com/songweizhi/BioSAK/blob/master/BioSAK_tutorial/qsub_prepare_DB.sh).
 
-1. Change the email address in line 5 to your own
+1. Change the email address in line 5 to your own.
 
-1. Upload it to your Katana Scratch and submit with qsub
+1. Upload it to your Katana Scratch and submit with qsub.
 
        cd /srv/scratch/$zID
        qsub qsub_prepare_DB.sh
@@ -74,17 +74,17 @@
        module load parallel/20190522 
        module load aragorn/1.2.38 
        module load prokka/1.13.3
-       mkdir Metagenomic_assemblies_Prokka
+       mkdir Metagenomic_assemblies_Prokka    
        prokka --force --metagenome --prefix Kelp --locustag Kelp --outdir Metagenomic_assemblies_Prokka/Kelp Metagenomic_assemblies/Kelp_ctg.fa
        prokka --force --metagenome --prefix Sponge --locustag Sponge --outdir Metagenomic_assemblies_Prokka/Sponge Metagenomic_assemblies/Sponge_ctg.fa
        prokka --force --metagenome --prefix Seawater --locustag Seawater --outdir Metagenomic_assemblies_Prokka/Seawater Metagenomic_assemblies/Seawater_ctg.fa
        prokka --force --metagenome --prefix Sediment --locustag Sediment --outdir Metagenomic_assemblies_Prokka/Sediment Metagenomic_assemblies/Sediment_ctg.fa
+    
+    Help info    
+    + --metagenome:       Improve gene predictions for highly fragmented genomes
+    + --locustag:         Locus tag prefix (prefix of gene id)
+    + --prefix:           Filename output prefix
 
-
-    Note:
-    + --metagenome       Improve gene predictions for highly fragmented genomes
-    + --locustag         Locus tag prefix (prefix of gene id)
-    + --prefix [X]       Filename output prefix
 
 1. copy faa and gff files into separate folders
 
@@ -104,6 +104,7 @@
        BioSAK get_gene_depth -gff Metagenomic_assemblies_gff/Sediment.gff -ctg_depth Metagenomic_assemblies_depth/Sediment_ctg.depth -skip_header
 
        # move generated protein depth files into a separate folder
+       mkdir Metagenomic_assemblies_faa_depth
        mv Metagenomic_assemblies_gff/*.depth Metagenomic_assemblies_faa_depth/
 
 1. run COG, KEGG and CAZy annotation
@@ -112,9 +113,7 @@
        module load hmmer/3.2.1
        	   
        BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
-       
        BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in Metagenomic_assemblies_faa -x faa -diamond -depth Metagenomic_assemblies_faa_depth
-       
        BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i Metagenomic_assemblies_faa -x faa -depth Metagenomic_assemblies_faa_depth
 
 
