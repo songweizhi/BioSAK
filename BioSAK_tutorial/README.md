@@ -52,13 +52,21 @@
 
 1. Download [demo data](https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz?dl=0)
 
+       # Change into your scratch
        cd /srv/scratch/z1234567
+       
+       # download demo data
        wget https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz
+       
+       # decompress demo data
        tar -xzvf BioSAK_demo.tar.gz
+       
+       # Change into demo folder
        cd BioSAK_demo
               
 1. Predict genes from assemblies with Prokka
 
+       # load needed modules
        module load perl/5.28.0
        module load infernal/1.1.2 
        module load blast+/2.2.31 
@@ -68,7 +76,11 @@
        module load parallel/20190522 
        module load aragorn/1.2.38 
        module load prokka/1.13.3
+       
+       # create a folder
        mkdir CtgSeq_Prokka    
+       
+       # run Prokka
        prokka --metagenome --prefix Kelp --locustag Kelp --outdir CtgSeq_Prokka/Kelp CtgSeq/Kelp_ctg.fa
        prokka --metagenome --prefix Sponge --locustag Sponge --outdir CtgSeq_Prokka/Sponge CtgSeq/Sponge_ctg.fa
        prokka --metagenome --prefix Seawater --locustag Seawater --outdir CtgSeq_Prokka/Seawater CtgSeq/Seawater_ctg.fa
@@ -80,31 +92,40 @@
 
 1. copy faa and gff files into separate folders
 
+       # copy all faa file into CtgSeq_faa
        mkdir CtgSeq_faa
        cp CtgSeq_Prokka/*/*.faa CtgSeq_faa/
        
+       # copy all gff file into CtgSeq_gff
        mkdir CtgSeq_gff
        cp CtgSeq_Prokka/*/*.gff CtgSeq_gff/      
 
 1. get gene depth according to the depth of the contig they sit in 
     
+       # load python and activate python virtual environment
        module load python/3.7.3
        source ~/mypython3env_BioSAK/bin/activate
+       
+       # get gene depth 
        BioSAK get_gene_depth -gff CtgSeq_gff/Kelp.gff -ctg_depth CtgDepth/Kelp_ctg.depth -skip_header
        BioSAK get_gene_depth -gff CtgSeq_gff/Sponge.gff -ctg_depth CtgDepth/Sponge_ctg.depth -skip_header
        BioSAK get_gene_depth -gff CtgSeq_gff/Seawater.gff -ctg_depth CtgDepth/Seawater_ctg.depth -skip_header
        BioSAK get_gene_depth -gff CtgSeq_gff/Sediment.gff -ctg_depth CtgDepth/Sediment_ctg.depth -skip_header
 
-       # move generated protein depth files into a separate folder
+       # move generated gene depth files into CtgSeq_faa_depth
        mkdir CtgSeq_faa_depth
        mv CtgSeq_gff/*.depth CtgSeq_faa_depth/
 
 1. run COG, KEGG and CAZy annotation
 
+       # load needed modules
        module load diamond/0.9.24
        module load hmmer/3.2.1
-       	   
+       
+       # store your zID in variable to avoid changing the annotation commands 
        zID="z1234567"
+       
+       # run COG, KEGG and dbCAN annotation
        BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i CtgSeq_faa -x faa -diamond -depth CtgSeq_faa_depth
        BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in CtgSeq_faa -x faa -diamond -depth CtgSeq_faa_depth
        BioSAK dbCAN -db_dir /srv/scratch/$zID/BioSAK_db/dbCAN -m P -t 4 -i CtgSeq_faa -x faa -depth CtgSeq_faa_depth
@@ -139,8 +160,8 @@
     + Click "Download" on the top right corner of the table
     + Download genome with dwnld_GenBank_genome
     
-           cd /srv/scratch/$zID/BioSAK_demo/OtherFiles
-           BioSAK dwnld_GenBank_genome -csv Alteromonas.csv -fna -faa -gbff -name
+          cd /srv/scratch/$zID/BioSAK_demo/OtherFiles
+          BioSAK dwnld_GenBank_genome -csv Alteromonas.csv -fna -faa -gbff -name
 
 1. For more:
 
