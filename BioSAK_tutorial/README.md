@@ -48,21 +48,21 @@
        qsub qsub_prepare_DB.sh
 
 
+### Download [demo data](https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz?dl=0)
+
+    # Change into your scratch
+    cd /srv/scratch/z1234567
+       
+    # download demo data
+    wget https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz
+       
+    # decompress demo data
+    tar -xzvf BioSAK_demo.tar.gz
+       
+    # Change into the demo folder
+    cd BioSAK_demo
+
 ### Run BioSAK
-
-1. Download [demo data](https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz?dl=0)
-
-       # Change into your scratch
-       cd /srv/scratch/z1234567
-       
-       # download demo data
-       wget https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz
-       
-       # decompress demo data
-       tar -xzvf BioSAK_demo.tar.gz
-       
-       # Change into demo folder
-       cd BioSAK_demo
               
 1. Predict genes from assemblies with Prokka
 
