@@ -31,7 +31,7 @@
        # to leave Python's virtual environment
        deactivate 
              
-1. get help information of BioSAK
+1. BioSAK is ready for running now. If you want to run BioSAK later, just run the following commands to activate the virtual environment.
 
        module load python/3.7.3
        source ~/mypython3env_BioSAK/bin/activate
