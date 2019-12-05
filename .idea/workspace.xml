@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="120bb65e-df28-41bc-852a-d66f5fe146fc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/BioSAK_tutorial/BioSAK_functional_annotation.pptx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/BioSAK_tutorial/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/BioSAK_tutorial/README.md" afterDir="false" />
     </list>
@@ -493,7 +494,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575425329674</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="-1.19.1">
+      <created>1575425697039</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1575425697039</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -518,19 +526,19 @@
     <option name="LAST_COMMIT_MESSAGE" value="-1.19.1" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="1227" y="-889" key="CommitChangelistDialog2" timestamp="1575425329449">
+    <state x="1227" y="-889" key="CommitChangelistDialog2" timestamp="1575425696772">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
-    <state x="1227" y="-889" key="CommitChangelistDialog2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575425329449" />
+    <state x="1227" y="-889" key="CommitChangelistDialog2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575425696772" />
     <state x="1101" y="-920" key="CommitChangelistDialog2/618.-1050.1680.1050/0.23.1280.730/-1062.-1027.1680.1027@618.-1050.1680.1050" timestamp="1575422092645" />
     <state x="833" y="-1020" key="SettingsEditor" timestamp="1575418600598">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
     <state x="833" y="-1020" key="SettingsEditor/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575418468701" />
     <state x="833" y="-1020" key="SettingsEditor/618.-1050.1680.1050/0.23.1280.777/-1062.-1027.1680.1027@618.-1050.1680.1050" timestamp="1575418600598" />
-    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2" timestamp="1575425331084">
+    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2" timestamp="1575425698411">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
-    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575425331084" />
+    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575425698411" />
   </component>
 </project>

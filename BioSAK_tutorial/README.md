@@ -13,7 +13,7 @@
         
 1. Start a interactive job (running programs on Katana head node is not allowed)    
         
-       qsub -I -l nodes=1:ppn=6,mem=60gb,walltime=02:59:00
+       qsub -I -l nodes=1:ppn=4,mem=60gb,walltime=02:59:00
 
 1. Create a Python3 virtual environment and install BioSAK
 
