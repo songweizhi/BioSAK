@@ -122,7 +122,7 @@
        module load diamond/0.9.24
        module load hmmer/3.2.1
        
-       # store your zID in variable to avoid changing the annotation commands 
+       # store your zID in variable to avoid changing the BioSAK commands below
        zID="z1234567"
        
        # run COG, KEGG and dbCAN annotation
