@@ -31,6 +31,7 @@ from BioSAK import split_folder
 from BioSAK import SankeyTaxon
 from BioSAK import format_converter
 from BioSAK import get_Pfam_hmms
+from BioSAK import NetEnzymes
 from BioSAK.BioSAK_config import config_dict
 
 
@@ -52,6 +53,7 @@ def print_main_help():
        COG2014                ->   Wrapper for COG annotation (v2014, by blastp/diamond)
        KEGG                   ->   Wrapper for KEGG annotation
        dbCAN                  ->   Wrapper for running dbCAN
+       NetEnzymes             ->   Get network of enzymes (based on MetaCyc)   
     
     Sequence manipulator
        gbk2fa                 ->   gbk to fasta
@@ -105,6 +107,7 @@ if __name__ == '__main__':
     COG2014_parser =                    subparsers.add_parser('COG2014',                    description='Wrapper for COG annotation (v2014)',                   usage=COG2014.COG2014_parser_usage)
     KEGG_parser =                       subparsers.add_parser('KEGG',                       description='Wrapper for KEGG annotation',                          usage=KEGG.KEGG_parser_usage)
     dbCAN_parser =                      subparsers.add_parser('dbCAN',                      description='Wrapper for running dbCAN',                            usage=dbCAN.dbCAN_parser_usage)
+    NetEnzymes_parser =                 subparsers.add_parser('NetEnzymes',                 description='Get network of enzymes (based on MetaCyc)',            usage=NetEnzymes.NetEnzymes_parser_usage)
 
     # Sequence file manipulator
     gbk2fa_parser =                     subparsers.add_parser('gbk2fa',                     description='gbk to fasta',                                         usage=format_converter.sequence_manipulator_usage)
@@ -182,6 +185,14 @@ if __name__ == '__main__':
     dbCAN_parser.add_argument('-depth',                 required=False, default=None,                   help='gene depth file/folder')
     dbCAN_parser.add_argument('-db_dir',                required=True,                                  help='db folder')
     dbCAN_parser.add_argument('-t',                     required=False, type=int, default=1,            help='number of threads')
+
+    NetEnzymes_parser.add_argument('-ec',               required=True,                                  help='EC list file')
+    NetEnzymes_parser.add_argument('-ko',               required=False, default=None,                   help='get network of enzymes from specified ko')
+    NetEnzymes_parser.add_argument('-to_skip',          required=False, default=None,                   help='substrate/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
+    NetEnzymes_parser.add_argument('-NoHyphen',         required=False, action='store_true',            help='ignore enzymes with "-" in EC')
+    NetEnzymes_parser.add_argument('-plot',             required=False, action='store_true',            help='plot network, slow and messy layout for complicated network')
+    NetEnzymes_parser.add_argument('-lfs',              required=False,  default=3, type=float,         help='Font size of node labels, default is 3')
+    NetEnzymes_parser.add_argument('-ns',               required=False, default=20, type=float,         help='Node size, default is 20')
 
     CheckM_parser.add_argument('-i',                    required=True,                                  help='input bin folder')
     CheckM_parser.add_argument('-x',                    required=True,                                  help='bin file extension')
@@ -371,6 +382,9 @@ if __name__ == '__main__':
 
     elif args['subparser_name'] == 'rename_ctg':
         rename_ctg.rename_ctg(args)
+
+    elif args['subparser_name'] == 'NetEnzymes':
+        NetEnzymes.NetEnzymes(args, config_dict)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

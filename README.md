@@ -18,6 +18,8 @@ Dependencies
 Installation
 ---
 
++ BioSAK has been tested on Linux/Mac, but **NOT** supported on Windows.
+
 + BioSAK is implemented in python3, you can install it with:
 
       pip3 install BioSAK
@@ -54,3 +56,4 @@ Help information
 
     $ BioSAK -h
     $ BioSAK COG2014 -h
+    select_seq

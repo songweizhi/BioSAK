@@ -38,6 +38,7 @@ wget http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/hmmscan-parser.s
 wget http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/dbCAN-fam-HMMs.txt
 wget http://bcb.unl.edu/dbCAN2/download/Databases/CAZyDB.07312019.fam-activities.txt
 mv CAZyDB.07312019.fam-activities.txt CAZyDB.fam-activities.txt
+hmmpress dbCAN-fam-HMMs.txt
 
 # How it works:
 1. http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-old@UGA/readme.txt

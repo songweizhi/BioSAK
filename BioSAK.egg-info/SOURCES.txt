@@ -13,6 +13,8 @@ BioSAK/Gene2Ctg.py
 BioSAK/KEGG.py
 BioSAK/KEGG_get_eukaryotic_kos.py
 BioSAK/MetaCHIP_phylo.hmm
+BioSAK/MetaCyc_reactions_with_ec.txt
+BioSAK/NetEnzymes.py
 BioSAK/Newick_tree_plotter.py
 BioSAK/Prodigal.py
 BioSAK/Prokka.py
@@ -31,6 +33,7 @@ BioSAK/download_GenBank_genome2.py
 BioSAK/format_converter.py
 BioSAK/fq2fa.py
 BioSAK/gbk_to_ffn_faa.py
+BioSAK/get_EC_from_ko_stats_D.py
 BioSAK/get_Pfam_hmms.py
 BioSAK/get_SCG_tree.py
 BioSAK/get_aa_composition.py
@@ -44,6 +47,7 @@ BioSAK/get_total_length.py
 BioSAK/global_functions.py
 BioSAK/iTOL_wrapper.py
 BioSAK/keep_best_hit.py
+BioSAK/ko00001.keg
 BioSAK/label_tree.py
 BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py

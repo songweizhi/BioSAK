@@ -399,7 +399,6 @@ def parse_blast_op_worker(argument_list):
         AnnotateNorm(stats_file_C_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_C_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
         AnnotateNorm(stats_file_D_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_D_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
 
-      # AnnotateNorm(file_in, skip_header, value_column, Divisor_value, file_out, file_out_header)
 
     #################### write out GeneNumber and TotalDepth stats (pct_by_all) ####################
 

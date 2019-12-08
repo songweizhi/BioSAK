@@ -5,20 +5,19 @@ mpl.use('Agg')
 import matplotlib.pyplot as plt
 from datetime import datetime
 from BioSAK.BioSAK_config import config_dict
-#from BioSAK.global_functions import is_number
+from BioSAK.global_functions import is_number
 from BioSAK.global_functions import time_format
 from BioSAK.global_functions import sep_path_basename_ext
 
 
-NetMetaCyc_parser_usage = '''
-===================================== NetMetaCyc example commands =====================================
+NetEnzymes_parser_usage = '''
+===================================== NetEnzymes example commands =====================================
 
-BioSAK NetMetaCyc -ec Ecoli_ko_stats_D_GeneNumber.txt -ko 00010 -to_skip skip.txt -plot -NoHyphen
+# get network of all enzymes in Ecoli_ec.txt
+BioSAK NetEnzymes -ec Ecoli_ec.txt -to_skip skip.txt -NoHyphen
 
-cd /Users/songweizhi/MetaCyc_demo
-python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -to_skip skip.txt -plot -NoHyphen
-python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -ko 00010 -to_skip skip.txt -plot -NoHyphen
-python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -ko 00020 -to_skip skip.txt -plot -NoHyphen
+# get network of enzymes belong to ko 00010 (Glycolysis) in Ecoli_ec.txt
+BioSAK NetEnzymes -ec Ecoli_ec.txt -ko 00010 -to_skip skip.txt -NoHyphen -plot 
 
 # EC file format (one EC per line)
 2.7.7.23
@@ -30,18 +29,18 @@ ATP
 H2O
 H+
 
-To-do:
-'=' symbol
-
 ====================================================================================================
 '''
 
-def is_number(s):
-    try:
-        float(s)
-        return True
-    except ValueError:
-        return False
+'''
+cd /Users/songweizhi/MetaCyc_demo
+python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -to_skip skip.txt -plot -NoHyphen
+python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -ko 00010 -to_skip skip.txt -plot -NoHyphen
+python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -ko 00020 -to_skip skip.txt -plot -NoHyphen
+
+To-do:
+'=' symbol
+'''
 
 
 def get_ko2description_dict(ko00001_keg):
@@ -200,25 +199,26 @@ def parse_biological_raction(G, reaction, skip_list, node_color_dict):
                 G.add_edge(product, enzyme)
 
 
-def NetMetaCyc(args, config_dict):
+def NetEnzymes(args, config_dict):
 
     ec_list_file                = args['ec']
     interested_ko_id            = args['ko']
     ignore_ec_with_hyphen       = args['NoHyphen']
-    skip_list                   = args['to_skip']
+    to_skip_file                = args['to_skip']
     plot_network                = args['plot']
     label_font_size             = args['lfs']
     node_size                   = args['ns']
-    #ko00001_keg                 = config_dict['ko00001_keg']
-    #db_file_with_ec             = config_dict['MetaCyc_rxns_with_ec']
-
-    ko00001_keg = '/Users/songweizhi/DB/KEGG_2016-09-26/ko00001.keg'
-    db_file_with_ec = '/Users/songweizhi/DB/MetaCyc/all_reactions_with_ec.txt'
-
+    ko00001_keg                 = config_dict['ko00001_keg']
+    db_file_with_ec             = config_dict['MetaCyc_rxns_with_ec']
 
     ########################################################################################################################
 
     node_color_dict = {'enzyme': 'lightgreen', 'substrate': 'grey', 'product': 'grey'}
+
+    skip_list = set()
+    if to_skip_file is not None:
+        for each_to_skip in open(to_skip_file):
+            skip_list.add(each_to_skip.strip())
 
     # define output file name
     ec_file_no_path, ec_file_no_ext, ec_file_ext = sep_path_basename_ext(ec_list_file)
@@ -237,7 +237,6 @@ def NetMetaCyc(args, config_dict):
         else:
             output_graphml  = '%s/%s_ko%s.graphml'          % (ec_file_no_path, ec_file_no_ext, interested_ko_id)
             output_plot     = '%s/%s_ko%s.png'              % (ec_file_no_path, ec_file_no_ext, interested_ko_id)
-
 
     ########################################################################################################################
 
@@ -327,29 +326,29 @@ def NetMetaCyc(args, config_dict):
         plt.savefig(output_plot, dpi=300)
         plt.close()
 
-
         ########################################################################################################################
 
         # G_in_cytoscape_data = json_graph.cytoscape_data(G)
         # print(G_in_cytoscape_data)
         # G_in_cytoscape_graph = json_graph.cytoscape_graph(G_in_cytoscape_data)
         # print(G_in_cytoscape_data)
+
         print(datetime.now().strftime(time_format) + 'Done!')
 
 
 if __name__ == '__main__':
 
-    NetMetaCyc_parser = argparse.ArgumentParser()
+    NetEnzymes_parser = argparse.ArgumentParser()
 
     # arguments for NetMetaCyc_parser
-    NetMetaCyc_parser.add_argument('-ec',       required=True,                           help='EC list file')
-    NetMetaCyc_parser.add_argument('-ko',       required=False, default=None,            help='get network of enzymes from specified ko')
-    NetMetaCyc_parser.add_argument('-to_skip',  required=False,                          help='substrate/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
-    NetMetaCyc_parser.add_argument('-NoHyphen', required=False, action='store_true',     help='ignore enzymes with "-" in EC')
-    NetMetaCyc_parser.add_argument('-plot',     required=False, action='store_true',     help='plot network, slow and messy layout for complicated network')
-    NetMetaCyc_parser.add_argument('-lfs',      required=False,  default=3, type=float,  help='Font size of node labels, default is 3')
-    NetMetaCyc_parser.add_argument('-ns',       required=False, default=20, type=float,  help='Node size, default is 20')
+    NetEnzymes_parser.add_argument('-ec',       required=True,                           help='EC list file')
+    NetEnzymes_parser.add_argument('-ko',       required=False, default=None,            help='get network of enzymes from specified ko')
+    NetEnzymes_parser.add_argument('-to_skip',  required=False, default=None,            help='substrate/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
+    NetEnzymes_parser.add_argument('-NoHyphen', required=False, action='store_true',     help='ignore enzymes with "-" in EC')
+    NetEnzymes_parser.add_argument('-plot',     required=False, action='store_true',     help='plot network, slow and messy layout for complicated network')
+    NetEnzymes_parser.add_argument('-lfs',      required=False,  default=3, type=float,  help='Font size of node labels, default is 3')
+    NetEnzymes_parser.add_argument('-ns',       required=False, default=20, type=float,  help='Node size, default is 20')
 
-    args = vars(NetMetaCyc_parser.parse_args())
+    args = vars(NetEnzymes_parser.parse_args())
 
-    NetMetaCyc(args, config_dict)
+    NetEnzymes(args, config_dict)

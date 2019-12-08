@@ -3,6 +3,9 @@ from __future__ import division
 import os
 import argparse
 from Bio import SeqIO
+from datetime import datetime
+from BioSAK.global_functions import time_format
+from BioSAK.global_functions import sep_path_basename_ext
 
 
 select_seq_usage = '''
@@ -14,24 +17,12 @@ BioSAK select_seq -seq ctg.fasta -id seq_id.txt -option 1
 # Extract sequences except those in seq_id.txt
 BioSAK select_seq -seq ctg.fasta -id seq_id.txt -option 0
 
-# seq_id.txt file format: one id per line
+# seq_id.txt file format (one id per line): 
+NP_414542.1
+NP_414548.1
 
 ===================================================================
 '''
-
-
-def sep_path_basename_ext(file_in):
-
-    # separate path and file name
-    file_path, file_name = os.path.split(file_in)
-    if file_path == '':
-        file_path = '.'
-
-    # separate file basename and extension
-    file_basename, file_extension = os.path.splitext(file_name)
-
-    return file_path, file_basename, file_extension
-
 
 def select_seq(args):
 
@@ -42,7 +33,13 @@ def select_seq(args):
 
     # define output file name
     seq_file_path, seq_file_basename, seq_file_extension = sep_path_basename_ext(seq_file)
-    output_file = '%s/%s_%s%s' % (seq_file_path, seq_file_basename, select_option, seq_file_extension)
+    output_file = '%s/%s_option_%s%s' % (seq_file_path, seq_file_basename, select_option, seq_file_extension)
+
+    # report
+    if select_option == 1:
+        print(datetime.now().strftime(time_format) + 'Extracting sequences in %s' % id_file)
+    if select_option == 0:
+        print(datetime.now().strftime(time_format) + 'Extracting sequences except those in %s' % id_file)
 
     # get provided id list
     seq_id_list = []
@@ -63,6 +60,9 @@ def select_seq(args):
                 SeqIO.write(seq, output_file_handle, 'fasta')
 
     output_file_handle.close()
+
+    print(datetime.now().strftime(time_format) + 'Extracted sequences exported to %s' % output_file)
+    print(datetime.now().strftime(time_format) + 'Done!')
 
 
 if __name__ == '__main__':

@@ -5,3 +5,5 @@ include BioSAK/select_contig.pl
 include BioSAK/get_fasta_stats.pl
 include BioSAK/get_sankey_plot.R
 include BioSAK/MetaCHIP_phylo.hmm
+include BioSAK/ko00001.keg
+include BioSAK/MetaCyc_reactions_with_ec.txt
