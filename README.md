@@ -57,3 +57,4 @@ Help information
     $ BioSAK -h
     $ BioSAK COG2014 -h
     $ BioSAK select_seq -h
+    $ ect.
