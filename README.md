@@ -38,12 +38,13 @@ Installation
       # for later updating
       pip3 install --upgrade BioSAK
 
-      # to leave Python's virtual environment
+      # to leave Python virtual environment
       deactivate 
         
       ################################ run BioSAK ################################
 
-      # If you want to run BioSAK later, just run the following commands to activate the virtual environment.
+      # If you want to run BioSAK later, just run the following commands 
+      # to activate the virtual environment and BioSAK is ready for running
       module load python/3.7.3
       source ~/mypython3env/bin/activate
       BioSAK -h
