@@ -8,6 +8,14 @@ import matplotlib.pyplot as plt
 time_format = '[%Y-%m-%d %H:%M:%S] '
 
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+
 def force_create_folder(folder_to_create):
     if os.path.isdir(folder_to_create):
         shutil.rmtree(folder_to_create, ignore_errors=True)

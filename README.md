@@ -24,28 +24,29 @@ Installation
 
 + For UNSW Katana users
 
-        ############################## install BioSAK ##############################
+      ############## install BioSAK with Python virtual environment ##############
+      
+      # create a python virtual environment
+      module load python/3.7.3
+      mkdir ~/mypython3env
+      python3 -m venv --system-site-packages ~/mypython3env
+      source ~/mypython3env/bin/activate
         
-        # create a python virtual environment
-        module load python/3.7.3
-        mkdir ~/mypython3env
-        python3 -m venv --system-site-packages ~/mypython3env
-        source ~/mypython3env/bin/activate
-        
-        # to install 
-        pip3 install BioSAK
-        
-        # to upgrade
-        pip3 install --upgrade BioSAK
-        
-        ################################ run BioSAK ################################
+      # for the first time installation
+      pip3 install BioSAK
 
-        # activate python virtual environment
-        module load python/3.7.3
-        source ~/mypython3env/bin/activate
+      # for later updating
+      pip3 install --upgrade BioSAK
+
+      # to leave Python's virtual environment
+      deactivate 
         
-        # BioSAK is ready to run now
-        BioSAK -h
+      ################################ run BioSAK ################################
+
+      # If you want to run BioSAK later, just run the following commands to activate the virtual environment.
+      module load python/3.7.3
+      source ~/mypython3env/bin/activate
+      BioSAK -h
 
 Help information
 ---

@@ -2,7 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="120bb65e-df28-41bc-852a-d66f5fe146fc" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/BioSAK/MetaCyc_reactions_with_ec.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BioSAK/NetMetaCyc.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BioSAK/get_EC_from_ko_stats_D.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/BioSAK/ko00001.keg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BioSAK/BioSAK_config.py" beforeDir="false" afterPath="$PROJECT_DIR$/BioSAK/BioSAK_config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BioSAK/VERSION" beforeDir="false" afterPath="$PROJECT_DIR$/BioSAK/VERSION" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BioSAK/global_functions.py" beforeDir="false" afterPath="$PROJECT_DIR$/BioSAK/global_functions.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BioSAK_tutorial/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/BioSAK_tutorial/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BioSAK_tutorial/qsub_prepare_DB.sh" beforeDir="false" afterPath="$PROJECT_DIR$/BioSAK_tutorial/qsub_prepare_DB.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/other_scripts/tmp_2.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +71,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="MetaCyc" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BioSAK" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/other_scripts/Scrapy" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/other_scripts/Scrapy/MetaCyc.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="compare_BioTAK_COG" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="BioSAK" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -81,7 +113,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="rename_ctg" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="demo_moive_info" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="BioSAK" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -89,11 +121,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/BioSAK" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/other_scripts/Scrapy" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BioSAK/rename_ctg.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/other_scripts/Scrapy/demo_moive_info.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -114,28 +146,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/other_scripts/tmp_2.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="tmp_3" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="BioSAK" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/other_scripts" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/other_scripts/Assess_BioTAK_KEGG.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/BioSAK/get_EC_from_ko_stats_D.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -147,10 +158,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Python.tmp_2" />
+        <item itemvalue="Python.MetaCyc" />
+        <item itemvalue="Python.demo_moive_info" />
         <item itemvalue="Python.Assess_BioTAK_COG_WebMGA" />
         <item itemvalue="Python.compare_BioTAK_COG" />
-        <item itemvalue="Python.tmp_3" />
-        <item itemvalue="Python.rename_ctg" />
       </list>
     </recent_temporary>
   </component>
@@ -176,13 +187,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1572928253560</updated>
-    </task>
-    <task id="LOCAL-00003" summary="-1.18.6">
-      <created>1572930016630</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1572930016630</updated>
     </task>
     <task id="LOCAL-00004" summary="-1.18.6">
       <created>1572930165933</created>
@@ -520,7 +524,14 @@
       <option name="project" value="LOCAL" />
       <updated>1575541102582</updated>
     </task>
-    <option name="localTasksCounter" value="52" />
+    <task id="LOCAL-00052" summary="-1.19.7">
+      <created>1575541564543</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1575541564544</updated>
+    </task>
+    <option name="localTasksCounter" value="53" />
     <servers />
   </component>
   <component name="UnknownFeatures">
@@ -546,19 +557,35 @@
     <option name="LAST_COMMIT_MESSAGE" value="-1.19.7" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="1227" y="-889" key="CommitChangelistDialog2" timestamp="1575541102379">
+    <state x="1227" y="-889" key="CommitChangelistDialog2" timestamp="1575541564077">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
-    <state x="1227" y="-889" key="CommitChangelistDialog2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575541102379" />
+    <state x="1227" y="-889" key="CommitChangelistDialog2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575541564077" />
     <state x="1101" y="-920" key="CommitChangelistDialog2/618.-1050.1680.1050/0.23.1280.730/-1062.-1027.1680.1027@618.-1050.1680.1050" timestamp="1575422092645" />
+    <state width="1659" height="305" key="GridCell.Tab.0.bottom" timestamp="1575761133132">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state width="1659" height="305" key="GridCell.Tab.0.bottom/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575761133132" />
+    <state width="1659" height="305" key="GridCell.Tab.0.center" timestamp="1575761133131">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state width="1659" height="305" key="GridCell.Tab.0.center/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575761133131" />
+    <state width="1659" height="305" key="GridCell.Tab.0.left" timestamp="1575761133130">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state width="1659" height="305" key="GridCell.Tab.0.left/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575761133130" />
+    <state width="1659" height="305" key="GridCell.Tab.0.right" timestamp="1575761133132">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state width="1659" height="305" key="GridCell.Tab.0.right/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575761133132" />
     <state x="833" y="-1020" key="SettingsEditor" timestamp="1575418600598">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
     <state x="833" y="-1020" key="SettingsEditor/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575418468701" />
     <state x="833" y="-1020" key="SettingsEditor/618.-1050.1680.1050/0.23.1280.777/-1062.-1027.1680.1027@618.-1050.1680.1050" timestamp="1575418600598" />
-    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2" timestamp="1575541103949">
+    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2" timestamp="1575541566488">
       <screen x="618" y="-1050" width="1680" height="1050" />
     </state>
-    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575541103949" />
+    <state x="1058" y="-784" key="Vcs.Push.Dialog.v2/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575541566488" />
   </component>
 </project>

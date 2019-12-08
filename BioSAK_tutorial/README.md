@@ -49,7 +49,7 @@
 
 
 ### Download [demo data](https://www.dropbox.com/s/ur9c0vsbndl5lop/BioSAK_demo.tar.gz?dl=0)
-
+  
     # Change into your scratch
     cd /srv/scratch/z1234567
        
@@ -124,7 +124,7 @@
        
        # store your zID in variable to avoid changing the BioSAK commands below
        zID="z1234567"
-       
+
        # run COG, KEGG and dbCAN annotation
        BioSAK COG2014 -db_dir /srv/scratch/$zID/BioSAK_db/COG2014 -m P -t 4 -i CtgSeq_faa -x faa -diamond -depth CtgSeq_faa_depth
        BioSAK KEGG -db_dir /srv/scratch/$zID/BioSAK_db/KEGG -t 4 -seq_in CtgSeq_faa -x faa -diamond -depth CtgSeq_faa_depth

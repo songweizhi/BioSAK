@@ -13,7 +13,7 @@ module load hmmer/3.2.1
 
 # Change into directory that you submitted the job from
 cd $PBS_O_WORKDIR
-
+#cd /srv/scratch/z5039045/
 
 # create folders
 mkdir BioSAK_db
