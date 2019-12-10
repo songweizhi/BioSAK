@@ -11,7 +11,7 @@ from BioSAK.global_functions import sep_path_basename_ext
 
 
 NetEnzymes_parser_usage = '''
-===================================== NetEnzymes example commands =====================================
+=========================== NetEnzymes example commands ===========================
 
 # get network of all enzymes in Ecoli_ec.txt
 BioSAK NetEnzymes -ec Ecoli_ec.txt -to_skip skip.txt -NoHyphen
@@ -19,24 +19,26 @@ BioSAK NetEnzymes -ec Ecoli_ec.txt -to_skip skip.txt -NoHyphen
 # get network of enzymes belong to ko 00010 (Glycolysis) in Ecoli_ec.txt
 BioSAK NetEnzymes -ec Ecoli_ec.txt -ko 00010 -to_skip skip.txt -NoHyphen -plot 
 
-# EC file format (one EC per line)
+# EC file format (one EC per line):
 2.7.7.23
 3.6.3.28
-4.1.1.19
 
-# to_skip file format (one substrate per line)
-ATP
+# to_skip file format (one substrate per line):
 H2O
 H+
 
-====================================================================================================
+===================================================================================
 '''
 
 '''
 cd /Users/songweizhi/MetaCyc_demo
-python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -to_skip skip.txt -plot -NoHyphen
-python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -ko 00010 -to_skip skip.txt -plot -NoHyphen
-python3 ~/PycharmProjects/BioSAK/BioSAK/NetMetaCyc.py -ec Ecoli_ec.txt -ko 00020 -to_skip skip.txt -plot -NoHyphen
+python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Ecoli_ec.txt -to_skip skip.txt -plot -NoHyphen
+python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Ecoli_ec.txt -ko 00010 -to_skip skip.txt -plot -NoHyphen
+python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Ecoli_ec.txt -ko 00020 -to_skip skip.txt -plot -NoHyphen
+python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Glycolysis_ECs.txt -to_skip skip.txt -NoHyphen -plot 
+
+BioSAK NetEnzymes -ec Ecoli_ec.txt -ko 00020 -to_skip skip.txt -plot -NoHyphen
+BioSAK NetEnzymes -ec Glycolysis_ECs.txt -to_skip skip.txt -NoHyphen -plot
 
 To-do:
 '=' symbol
@@ -173,6 +175,7 @@ def parse_biological_raction(G, reaction, skip_list, node_color_dict):
        else:
            substrate_list_no_num.append(substrate)
 
+
     product_list_no_num = []
     for product in product_list:
         if (' ' in product):
@@ -184,14 +187,33 @@ def parse_biological_raction(G, reaction, skip_list, node_color_dict):
         else:
             product_list_no_num.append(product)
 
-    for substrate in substrate_list_no_num:
+    # remove brackets
+    substrate_list_no_num_brackets = []
+    for substrate_no_num in substrate_list_no_num:
+        if '[' in substrate_no_num:
+            substrate_no_num_split = substrate_no_num.split('[')
+            substrate_no_num_brackets = substrate_no_num_split[0]
+            substrate_list_no_num_brackets.append(substrate_no_num_brackets)
+        else:
+            substrate_list_no_num_brackets.append(substrate_no_num)
+
+    product_list_no_num_brackets = []
+    for product_no_num in product_list_no_num:
+        if '[' in product_no_num:
+            product_no_num_split = product_no_num.split('[')
+            product_no_num_brackets = product_no_num_split[0]
+            product_list_no_num_brackets.append(product_no_num_brackets)
+        else:
+            product_list_no_num_brackets.append(product_no_num)
+
+    for substrate in substrate_list_no_num_brackets:
         if substrate not in skip_list:
             G.add_node(substrate, data=True, shape='o', color_map=node_color_dict['substrate'])
             G.add_edge(substrate, enzyme)
             if '↔' in reaction_equation:
                 G.add_edge(enzyme, substrate)
 
-    for product in product_list_no_num:
+    for product in product_list_no_num_brackets:
         if product not in skip_list:
             G.add_node(product, data=True, shape='o', color_map=node_color_dict['product'])
             G.add_edge(enzyme, product)
@@ -292,7 +314,6 @@ def NetEnzymes(args, config_dict):
 
         print(datetime.now().strftime(time_format) + 'plot network')
 
-
         # specify
         graph_layout = nx.layout.kamada_kawai_layout(G)  # kamada_kawai_layout, planar_layout, fruchterman_reingold_layout
 
@@ -352,3 +373,4 @@ if __name__ == '__main__':
     args = vars(NetEnzymes_parser.parse_args())
 
     NetEnzymes(args, config_dict)
+

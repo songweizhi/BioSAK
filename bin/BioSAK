@@ -99,7 +99,7 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(help="--", dest='subparser_name')
 
     # Annotation modules
-    Prodigal_parser =                   subparsers.add_parser('Prodigal_Runner',            description='Wrapper for running Prodigal',                         usage=Prodigal.Prodigal_parser_usage)
+    Prodigal_parser =                   subparsers.add_parser('Prodigal',                   description='Wrapper for running Prodigal',                         usage=Prodigal.Prodigal_parser_usage)
     Barrnap_parser =                    subparsers.add_parser('Barrnap_Runner',             description='Wrapper for running Barrnap',                          usage='')
     CheckM_parser =                     subparsers.add_parser('CheckM_Runner',              description='Wrapper for running CheckM',                           usage=CheckM.CheckM_Runner_usage)
     CheckM_output_parser =              subparsers.add_parser('CheckM_op_parser',           description='Parse combined CheckM outputs',                        usage=CheckM.CheckM_output_parser_usage)
@@ -305,7 +305,7 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
 
     # run corresponding function
-    if args['subparser_name'] == 'Prodigal_Runner':
+    if args['subparser_name'] == 'Prodigal':
         Prodigal.Annotation_Prodigal(args)
 
     elif args['subparser_name'] == 'COG2003':
