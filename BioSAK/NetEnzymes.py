@@ -373,4 +373,3 @@ if __name__ == '__main__':
     args = vars(NetEnzymes_parser.parse_args())
 
     NetEnzymes(args, config_dict)
-
