@@ -5,12 +5,16 @@ from itolapi import Itol, ItolExport
 
 
 iTol_wrapper_usage = '''
-===================================== iTol_wrapper example commands =====================================
+======================================= iTol_wrapper example commands =======================================
 
-# for completed genome
-BioSAK iTOL_wrapper -tree NorthSea.tree -label labels.txt -color colors_tol.txt -collapse collapse.txt -range ranges.txt
+BioSAK iTOL_wrapper -tree Demo.tree -label Demo_label.txt -color Demo_color.txt -collapse Demo_collapse.txt
 
-=========================================================================================================
+# Note:
+1. iTol_wrapper needs internet connection for working.
+2. Some example input files can be found from the tutorial folder in BioSAK GitHub repository.
+3. iTol_wrapper doesn't show collapsed nodes. You should go to the provided link for better visualization. 
+
+=============================================================================================================
 '''
 
 
@@ -34,8 +38,6 @@ def iTOL_wrapper(args):
     collapse_file =     args['collapse']
     label_file =        args['label']
     color_file =        args['color']
-    range_file =        args['range']
-    heatmap_file =      args['heatmap']
 
 
     # define output file name
@@ -53,15 +55,8 @@ def iTOL_wrapper(args):
     if label_file is not None:
         my_job.add_file(label_file)
 
-    if range_file is not None:
-        my_job.add_file(range_file)
-
     if collapse_file is not None:
         my_job.add_file(collapse_file)
-
-    if heatmap_file is not None:
-        my_job.add_file(heatmap_file)
-
 
     # upload tree
     print('Uploading tree. This may take some time depending on how large the tree is and how much load there is on the itol server')
@@ -70,9 +65,7 @@ def iTOL_wrapper(args):
         print('There was an error:' + my_job.comm.upload_output)
         sys.exit(1)
 
-
     print('Tree Web Page URL: %s'     % my_job.get_webpage())
-
 
     # Export the tree above to pdf
     itol_exporter = my_job.get_itol_export()
@@ -92,18 +85,11 @@ if __name__ == '__main__':
     parser.add_argument('-label',     required=True,  help='label')
     parser.add_argument('-color',     required=False, help='color')
     parser.add_argument('-collapse',  required=False, help='collapse)')
-    parser.add_argument('-range',     required=False, help='range')
-    parser.add_argument('-heatmap',   required=False, help='heatmap')
 
     args = vars(parser.parse_args())
 
     iTOL_wrapper(args)
 
-
 # vertical_shift_factor
 # horizontal_scale_factor
 # leaf_sorting (disable Leaf sorting, important!!!)
-
-
-
-
