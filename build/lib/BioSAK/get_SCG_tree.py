@@ -26,11 +26,12 @@ BioSAK get_SCG_tree -i genomes -p NorthSea -x fasta -t 4 -nonmeta
 BioSAK get_SCG_tree -i genomes -p NorthSea -x fasta -t 4
 
 Software dependencies:
-module load python/3.7.3
-module load prodigal/2.6.3 
 module load hmmer/3.2.1
 module load mafft/7.407
 module load fasttree/2.1.10
+module load R/3.5.3
+module load blast+/2.9.0
+module load prodigal/2.6.3
 
 =========================================================================================================
 '''

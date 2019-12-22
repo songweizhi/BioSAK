@@ -3,127 +3,192 @@ import glob
 import argparse
 from Bio import SeqIO
 from datetime import datetime
+from BioSAK.global_functions import time_format
+from BioSAK.global_functions import sep_path_basename_ext
 
 
 get_bin_abundance_usage = '''
-==================== get_bin_abundance example commands ====================
+========================================== get_bin_abundance example commands ==========================================
 
-# Example command
-BioSAK get_bin_abundance -d ctg_lt2500_depth.txt -b bin_files -x fasta -p Refined_bins
+# get abundance of individual bins 
+BioSAK get_bin_abundance -sam combined_bins.sam -bin_folder all_bins -bin_ext fa
 
-# Software dependencies:
-module load python/3.7.3
+# get abundance of customized bin clusters
+BioSAK get_bin_abundance -sam combined_bins.sam -bin_folder all_bins -bin_ext fa -out cluster_abundance.txt -cluster bin_cluster.txt
 
-==========================================================================
+# get abundance of dRep produced bin clusters
+BioSAK get_bin_abundance -sam combined_bins.sam -bin_folder all_bins -bin_ext fa -out cluster_abundance.txt -Cdb Cdb.csv
+
+# How it works
+
+# format of customized cluster file (tab-separated, with the first col as cluster id, followed by a list of bins from it)
+cluster_1	bin_1.fa	bin_4.fa
+cluster_2	bin_5.fa	bin_2.fa	bin_6.fa
+cluster_3	bin_3.fa
+
+========================================================================================================================
 '''
 
 
-def sep_path_basename_ext(file_in):
+def Cdb_2_bin_cluster_file(Cdb_file, bin_cluster_file):
+    cluster_to_bin_dict = {}
+    obtained_clusters = set()
+    for each_bin in open(Cdb_file):
+        if not each_bin.startswith('genome,secondary_cluster'):
+            each_bin_split = each_bin.strip().split(',')
+            bin_id = each_bin_split[0]
+            secondary_cluster = each_bin_split[1]
 
-    # separate path and file name
-    file_path, file_name = os.path.split(file_in)
-    if file_path == '':
-        file_path = '.'
+            obtained_clusters.add(secondary_cluster)
 
-    # separate file basename and extension
-    file_basename, file_extension = os.path.splitext(file_name)
+            if secondary_cluster not in cluster_to_bin_dict:
+                cluster_to_bin_dict[secondary_cluster] = [bin_id]
+            else:
+                cluster_to_bin_dict[secondary_cluster].append(bin_id)
 
-    return file_path, file_basename, file_extension
+    obtained_clusters_list = sorted([i for i in obtained_clusters])
+
+    bin_cluster_file_handle = open(bin_cluster_file, 'w')
+    for j in obtained_clusters_list:
+        bin_cluster_file_handle.write('cluster_%s\t%s\n' % (j, '\t'.join(cluster_to_bin_dict[j])))
+    bin_cluster_file_handle.close()
+
+
+def get_ref_to_read_num_from_sam(input_sam_file, output_stats_file):
+
+    output_stats_file_path, output_stats_file_basename, output_stats_file_extension = sep_path_basename_ext(output_stats_file)
+    output_stats_tmp = '%s/%s_tmp%s' % (output_stats_file_path, output_stats_file_basename, output_stats_file_extension)
+
+    # Store reads num in dict
+    ref2read_num_dict = {}
+    for each_read in open(input_sam_file):
+        if not each_read.startswith('@'):
+            ref_id = each_read.strip().split('\t')[2]
+
+            if ref_id not in ref2read_num_dict:
+                ref2read_num_dict[ref_id] = 1
+            else:
+                ref2read_num_dict[ref_id] += 1
+
+    # Write reads num to file
+    stat_file_unsorted_handle = open(output_stats_tmp, 'w')
+    for each_ref in ref2read_num_dict:
+        stat_file_unsorted_handle.write('%s\t%s\n' % (each_ref, ref2read_num_dict[each_ref]))
+    stat_file_unsorted_handle.close()
+
+    # sort output file
+    os.system('cat %s | sort > %s' % (output_stats_tmp, output_stats_file))
+
+    # remove tmp file
+    os.system('rm %s' % output_stats_tmp)
 
 
 def get_bin_abundance(args):
 
-    # read in arguments
-    metabat_depth_file =  args['d']
-    bin_folder =          args['b']
-    bin_file_extension =  args['x']
-    output_prefix =       args['p']
+    ################################################# read in arguments ################################################
 
-    # check input file
-    if bin_folder[-1] == '/':
-      bin_folder = bin_folder[:-1]
+    sam_file            = args['sam']
+    bin_folder          = args['bin_folder']
+    bin_ext             = args['bin_ext']
+    output_file         = args['out']
+    cluster_info        = args['cluster_info']
+    dRep_Cdb_file       = args['dRep_Cdb']
 
-    # define output abundance file name
-    output_abundance_txt = '%s_relative_abundance.txt' % output_prefix
+    ############################################## define bin_cluster file #############################################
 
-    # get bin file list
-    bin_file_re= '%s/*.%s' % (bin_folder, bin_file_extension)
-    bin_file_list = [os.path.basename(file_name) for file_name in glob.glob(bin_file_re)]
+    bin_cluster_file = ''
+    if (cluster_info is None) and (dRep_Cdb_file is None):
+        bin_cluster_file = None
 
-    # check whether input bin files detected
-    if len(bin_file_list) == 0:
-        print('%s %s' % ((datetime.now().strftime('[%Y-%m-%d %H:%M:%S]')), 'No bin file detected, program exit!'))
+    elif (cluster_info is not None) and (dRep_Cdb_file is None):
+        bin_cluster_file = cluster_info
+
+    elif (cluster_info is None) and (dRep_Cdb_file is not None):
+
+        Cdb_file_path, Cdb_file_basename, Cdb_file_extension = sep_path_basename_ext(dRep_Cdb_file)
+        cluster_file_from_Cdb = '%s/%s_derived_cluster_file%s' % (Cdb_file_path, Cdb_file_basename, Cdb_file_extension)
+        Cdb_2_bin_cluster_file(dRep_Cdb_file, cluster_file_from_Cdb)
+        bin_cluster_file = cluster_file_from_Cdb
+
+    else:
+        print(datetime.now().strftime(time_format) + 'cluster_info and dRep_Cdb are not compatible, please specify one only, program exited!')
         exit()
 
-    # read in depth info
-    ctg_to_length_dict = {}
-    ctg_to_depth_dict = {}
-    ctg_to_weighted_depth_dict = {}
-    line_num = 0
-    ctg_total_depth_weighted = 0
-    total_ctg_list = []
-    for ctg_depth in open(metabat_depth_file):
+    ################################################ get bin to ctg dict ###############################################
 
-        if line_num > 0:
-            ctg_depth_split = ctg_depth.strip().split()
-            ctg_id = ctg_depth_split[0]
-            ctg_len = int(ctg_depth_split[1])
-            ctg_depth = float(ctg_depth_split[2])
-            ctg_depth_weighted = ctg_len*ctg_depth
+    bin_file_re = '%s/*%s' % (bin_folder, bin_ext)
+    bin_file_list = [os.path.basename(file_name) for file_name in glob.glob(bin_file_re)]
 
-            ctg_to_depth_dict[ctg_id] = ctg_depth
-            ctg_to_length_dict[ctg_id] = ctg_len
-            ctg_to_weighted_depth_dict[ctg_id] = ctg_depth_weighted
-            ctg_total_depth_weighted += ctg_depth_weighted
-            total_ctg_list.append(ctg_id)
+    if len(bin_file_list) == 0:
+        print(datetime.now().strftime(time_format) + 'No bin file found, program exited!')
+        exit()
 
-        line_num += 1
+    bin_2_ctg_dict = {}
+    for each_bin in bin_file_list:
+        pwd_each_bin = '%s/%s' % (bin_folder, each_bin)
+        bin_2_ctg_dict[each_bin] = set()
+        for seq in SeqIO.parse(pwd_each_bin, 'fasta'):
+            bin_2_ctg_dict[each_bin].add(seq.id)
 
-    # write out depth info
-    output_txt_handle = open(output_abundance_txt, 'w')
-    output_txt_handle.write('Bin_id\tRelative_abundance\n')
+    ############################################ get group to ctg list dict ############################################
 
-    #test_handle = open('/Users/songweizhi/Desktop/new.txt', 'w')
-    binned_ctg_list = set()
-    for genome_bin in sorted(bin_file_list):
+    if bin_cluster_file is None:
+        group_2_ctg_dict = bin_2_ctg_dict
+    else:
+        # get group to bin dict
+        group_2_bin_dict = {}
+        for group in open(bin_cluster_file):
+            group_split = group.strip().split('\t')
+            group_2_bin_dict[group_split[0]] = group_split[1:]
 
-        pwd_genome_bin = '%s/%s' % (bin_folder, genome_bin)
-        genome_bin_path, genome_bin_basename, genome_bin_extension = sep_path_basename_ext(pwd_genome_bin)
+        group_2_ctg_dict = {}
+        for bin_group in group_2_bin_dict:
+            group_member_list = group_2_bin_dict[bin_group]
+            group_2_ctg_dict[bin_group] = set()
+            for genome_bin in group_member_list:
+                genome_bin_ctg_list = bin_2_ctg_dict[genome_bin]
+                for ctg in genome_bin_ctg_list:
+                    group_2_ctg_dict[bin_group].add(ctg)
 
-        current_bin_weighted_depth = 0
-        for ctg in SeqIO.parse(pwd_genome_bin, 'fasta'):
-            ctg_id = str(ctg.id)
-            ctg_weighted_depth = ctg_to_weighted_depth_dict[ctg_id]
-            current_bin_weighted_depth += ctg_weighted_depth
-            binned_ctg_list.add(ctg_id)
+    ########################################### get_ref_to_read_num_from_sam ###########################################
 
-        current_bin_weighted_depth_norm = current_bin_weighted_depth*100/ctg_total_depth_weighted
-        current_bin_weighted_depth_norm = float("{0:.2f}".format(current_bin_weighted_depth_norm))
+    sam_file_path, sam_file_basename, sam_file_extension = sep_path_basename_ext(sam_file)
+    ref_to_read_num_file = '%s/%s_ref_to_read_num.txt' % (sam_file_path, sam_file_basename)
 
-        output_txt_handle.write('%s\t%s\n' % (genome_bin_basename, current_bin_weighted_depth_norm))
-        #test_handle.write('%s\t%s\n' % (genome_bin_basename, current_bin_weighted_depth))
-    #test_handle.close()
-    # get unbinned contig list
-    unbinned_ctg_list = []
-    for ctg in total_ctg_list:
-        if ctg not in binned_ctg_list:
-            unbinned_ctg_list.append(ctg)
+    get_ref_to_read_num_from_sam(sam_file, ref_to_read_num_file)
 
-    # get unbinned contig total weighted depth
-    unbinned_ctg_total_weighted_depth = 0
-    for unbinned_ctg in unbinned_ctg_list:
-        unbinned_ctg_weighted_depth = ctg_to_weighted_depth_dict[unbinned_ctg]
-        unbinned_ctg_total_weighted_depth += unbinned_ctg_weighted_depth
+    ########################################### read in ref_to_read_num_file ###########################################
 
-    unbinned_ctg_total_weighted_depth_norm = unbinned_ctg_total_weighted_depth*100/ctg_total_depth_weighted
-    unbinned_ctg_total_weighted_depth_norm = float("{0:.2f}".format(unbinned_ctg_total_weighted_depth_norm))
+    mapped_reads_num = 0
+    ref_to_read_num_dict = {}
+    for each_ctg in open(ref_to_read_num_file):
+        each_ctg_split = each_ctg.strip().split('\t')
+        ctg_id = each_ctg_split[0]
+        read_num = int(each_ctg_split[1])
+        ref_to_read_num_dict[ctg_id] = read_num
+        if ctg_id != '*':
+            mapped_reads_num += read_num
 
-    output_txt_handle.write('%s\t%s\n' % ('unbinned', unbinned_ctg_total_weighted_depth_norm))
-    output_txt_handle.close()
+    ###################################### get the number of reads in each group #######################################
 
-    # report
-    print('%s %s' % ((datetime.now().strftime('[%Y-%m-%d %H:%M:%S]')), 'Bin abundance exported to %s' % output_abundance_txt))
-    print('%s %s' % ((datetime.now().strftime('[%Y-%m-%d %H:%M:%S]')), 'Done!'))
+    group_to_read_num_dict = {}
+    for group in group_2_ctg_dict:
+        group_ctg_list = group_2_ctg_dict[group]
+        group_to_read_num_dict[group] = 0
+        for ctg in group_ctg_list:
+            group_to_read_num_dict[group] += ref_to_read_num_dict[ctg]
+
+    output_file_handle = open(output_file, 'w')
+    output_file_handle.write('cluster\tread_num\tread_pct\n')
+    for group in group_to_read_num_dict:
+        group_read_num = group_to_read_num_dict[group]
+        group_read_pct = float("{0:.2f}".format(group_read_num*100/mapped_reads_num))
+        output_file_handle.write('%s\t%s\t%s\n' % (group, group_read_num, group_read_pct))
+    output_file_handle.close()
+
+    ################################################## final report ####################################################
+
+    print(datetime.now().strftime(time_format) + 'Done!')
 
 
 if __name__ == "__main__":
@@ -131,10 +196,12 @@ if __name__ == "__main__":
     get_bin_abundance_parser = argparse.ArgumentParser()
 
     # Annotation modules
-    get_bin_abundance_parser.add_argument('-d', required=True,                    help='MetaBAT produced depth file')
-    get_bin_abundance_parser.add_argument('-b', required=True,                    help='bin folder')
-    get_bin_abundance_parser.add_argument('-x', required=False, default='fasta',  help='file extension')
-    get_bin_abundance_parser.add_argument('-p', required=False, default='OUTPUT', help='output prefix')
+    get_bin_abundance_parser.add_argument('-sam',          required=True,                  help='input sam file')
+    get_bin_abundance_parser.add_argument('-bin_folder',   required=True,                  help='bin folder')
+    get_bin_abundance_parser.add_argument('-bin_ext',      required=True, default='fasta', help='bin file extension, default: fasta')
+    get_bin_abundance_parser.add_argument('-out',          required=True,                  help='output file')
+    get_bin_abundance_parser.add_argument('-cluster',      required=False, default=None,   help='cluster info')
+    get_bin_abundance_parser.add_argument('-Cdb',          required=False, default=None,   help='cluster info from dRep')
 
     args = vars(get_bin_abundance_parser.parse_args())
 

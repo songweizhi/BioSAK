@@ -37,11 +37,16 @@ python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Ecoli_ec.txt -ko 00010
 python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Ecoli_ec.txt -ko 00020 -to_skip skip.txt -plot -NoHyphen
 python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Glycolysis_ECs.txt -to_skip skip.txt -NoHyphen -plot 
 
+python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -enzymes TCA_enzymes.txt -compounds TCA_compounds.txt -plot
+enzymes 
+
 BioSAK NetEnzymes -ec Ecoli_ec.txt -ko 00020 -to_skip skip.txt -plot -NoHyphen
 BioSAK NetEnzymes -ec Glycolysis_ECs.txt -to_skip skip.txt -NoHyphen -plot
 
 To-do:
-'=' symbol
+1. Provide a network for a list of enzymes and substrates
+2. '=' symbol
+
 '''
 
 
@@ -133,7 +138,7 @@ def get_ec_of_interested_ko(D2ABCD_dict, KO_description_D_dict, ko_level, ko_id)
     return interested_ko_ec_list
 
 
-def parse_biological_raction(G, reaction, skip_list, node_color_dict):
+def parse_biological_raction(G, reaction, compounds_to_exclude, compounds_to_include, node_color_dict):
 
     reaction_split = reaction.strip().split('\t')
     enzyme = reaction_split[0]
@@ -191,11 +196,15 @@ def parse_biological_raction(G, reaction, skip_list, node_color_dict):
     substrate_list_no_num_brackets = []
     for substrate_no_num in substrate_list_no_num:
         if '[' in substrate_no_num:
+
             substrate_no_num_split = substrate_no_num.split('[')
             substrate_no_num_brackets = substrate_no_num_split[0]
             substrate_list_no_num_brackets.append(substrate_no_num_brackets)
         else:
             substrate_list_no_num_brackets.append(substrate_no_num)
+
+    #print(substrate_list_no_num)
+    #print(substrate_list_no_num_brackets)
 
     product_list_no_num_brackets = []
     for product_no_num in product_list_no_num:
@@ -207,23 +216,42 @@ def parse_biological_raction(G, reaction, skip_list, node_color_dict):
             product_list_no_num_brackets.append(product_no_num)
 
     for substrate in substrate_list_no_num_brackets:
-        if substrate not in skip_list:
-            G.add_node(substrate, data=True, shape='o', color_map=node_color_dict['substrate'])
-            G.add_edge(substrate, enzyme)
-            if '↔' in reaction_equation:
-                G.add_edge(enzyme, substrate)
+        if substrate not in compounds_to_exclude:
+
+            if compounds_to_include == 'all':
+                G.add_node(substrate, data=True, shape='o', color_map=node_color_dict['substrate'])
+                G.add_edge(substrate, enzyme)
+                if '↔' in reaction_equation:
+                    G.add_edge(enzyme, substrate)
+            else:
+                if substrate in compounds_to_include:
+                    G.add_node(substrate, data=True, shape='o', color_map=node_color_dict['substrate'])
+                    G.add_edge(substrate, enzyme)
+                    if '↔' in reaction_equation:
+                        G.add_edge(enzyme, substrate)
+
 
     for product in product_list_no_num_brackets:
-        if product not in skip_list:
-            G.add_node(product, data=True, shape='o', color_map=node_color_dict['product'])
-            G.add_edge(enzyme, product)
-            if '↔' in reaction_equation:
-                G.add_edge(product, enzyme)
+        if product not in compounds_to_exclude:
+
+            if compounds_to_include == 'all':
+
+                G.add_node(product, data=True, shape='o', color_map=node_color_dict['product'])
+                G.add_edge(enzyme, product)
+                if '↔' in reaction_equation:
+                    G.add_edge(product, enzyme)
+            else:
+                if product in compounds_to_include:
+                    G.add_node(product, data=True, shape='o', color_map=node_color_dict['product'])
+                    G.add_edge(enzyme, product)
+                    if '↔' in reaction_equation:
+                        G.add_edge(product, enzyme)
 
 
 def NetEnzymes(args, config_dict):
 
-    ec_list_file                = args['ec']
+    enzymes_list_file           = args['enzymes']
+    compound_list_file          = args['compounds']
     interested_ko_id            = args['ko']
     ignore_ec_with_hyphen       = args['NoHyphen']
     to_skip_file                = args['to_skip']
@@ -242,8 +270,14 @@ def NetEnzymes(args, config_dict):
         for each_to_skip in open(to_skip_file):
             skip_list.add(each_to_skip.strip())
 
+    compounds_to_include_list = 'all'
+    if compound_list_file is not None:
+        compounds_to_include_list = set()
+        for compound_to_include in open(compound_list_file):
+            compounds_to_include_list.add(compound_to_include.strip())
+
     # define output file name
-    ec_file_no_path, ec_file_no_ext, ec_file_ext = sep_path_basename_ext(ec_list_file)
+    ec_file_no_path, ec_file_no_ext, ec_file_ext = sep_path_basename_ext(enzymes_list_file)
 
     if interested_ko_id is None:
         if ignore_ec_with_hyphen is True:
@@ -277,7 +311,7 @@ def NetEnzymes(args, config_dict):
     print(datetime.now().strftime(time_format) + 'read in provided ECs')
 
     identified_ec_list = set()
-    for ec in open(ec_list_file):
+    for ec in open(enzymes_list_file):
         ec = ec.strip()
         if interested_ko_id is not None:
             if ec in interested_ec_list:
@@ -303,7 +337,7 @@ def NetEnzymes(args, config_dict):
         ec_id = reaction.strip().split('\t')[0]
 
         if ec_id in identified_ec_list:
-            parse_biological_raction(G, reaction, skip_list=skip_list, node_color_dict=node_color_dict)
+            parse_biological_raction(G, reaction, skip_list, compounds_to_include_list, node_color_dict)
 
     print(datetime.now().strftime(time_format) + 'write out network to graphml file')
 
@@ -347,14 +381,14 @@ def NetEnzymes(args, config_dict):
         plt.savefig(output_plot, dpi=300)
         plt.close()
 
-        ########################################################################################################################
+    ########################################################################################################################
 
-        # G_in_cytoscape_data = json_graph.cytoscape_data(G)
-        # print(G_in_cytoscape_data)
-        # G_in_cytoscape_graph = json_graph.cytoscape_graph(G_in_cytoscape_data)
-        # print(G_in_cytoscape_data)
+    # G_in_cytoscape_data = json_graph.cytoscape_data(G)
+    # print(G_in_cytoscape_data)
+    # G_in_cytoscape_graph = json_graph.cytoscape_graph(G_in_cytoscape_data)
+    # print(G_in_cytoscape_data)
 
-        print(datetime.now().strftime(time_format) + 'Done!')
+    print(datetime.now().strftime(time_format) + 'Done!')
 
 
 if __name__ == '__main__':
@@ -362,13 +396,14 @@ if __name__ == '__main__':
     NetEnzymes_parser = argparse.ArgumentParser()
 
     # arguments for NetMetaCyc_parser
-    NetEnzymes_parser.add_argument('-ec',       required=True,                           help='EC list file')
-    NetEnzymes_parser.add_argument('-ko',       required=False, default=None,            help='get network of enzymes from specified ko')
-    NetEnzymes_parser.add_argument('-to_skip',  required=False, default=None,            help='substrate/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
-    NetEnzymes_parser.add_argument('-NoHyphen', required=False, action='store_true',     help='ignore enzymes with "-" in EC')
-    NetEnzymes_parser.add_argument('-plot',     required=False, action='store_true',     help='plot network, slow and messy layout for complicated network')
-    NetEnzymes_parser.add_argument('-lfs',      required=False,  default=3, type=float,  help='Font size of node labels, default is 3')
-    NetEnzymes_parser.add_argument('-ns',       required=False, default=20, type=float,  help='Node size, default is 20')
+    NetEnzymes_parser.add_argument('-enzymes',   required=True,                           help='Enzyme list file')
+    NetEnzymes_parser.add_argument('-compounds', required=False, default=None,            help='compound list file')
+    NetEnzymes_parser.add_argument('-ko',        required=False, default=None,            help='get network of enzymes from specified ko')
+    NetEnzymes_parser.add_argument('-to_skip',   required=False, default=None,            help='substrates/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
+    NetEnzymes_parser.add_argument('-NoHyphen',  required=False, action='store_true',     help='ignore enzymes with "-" in EC')
+    NetEnzymes_parser.add_argument('-plot',      required=False, action='store_true',     help='plot network, slow and messy layout for complicated network')
+    NetEnzymes_parser.add_argument('-lfs',       required=False,  default=3, type=float,  help='Font size of node labels, default is 3')
+    NetEnzymes_parser.add_argument('-ns',        required=False, default=20, type=float,  help='Node size, default is 20')
 
     args = vars(NetEnzymes_parser.parse_args())
 

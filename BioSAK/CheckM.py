@@ -20,15 +20,15 @@ CheckM_output_parser_usage = '''
 ================================ CheckM_output_parser example commands ===============================
 
 # only parse quality file
-BioSAK CheckM_output_parser -i combined_qualities.txt -o bin_qualities.txt
+BioSAK CheckM_op_parser -i combined_qualities.txt -o bin_qualities.txt
 
 # get the quality of qualified bins 
-BioSAK CheckM_output_parser -i combined_qualities.txt -complete 99 -o bin_qualities_complete99.txt
-BioSAK CheckM_output_parser -i combined_qualities.txt -complete 99 -contain 5 -o bin_qualities_complete99_contain5.txt
+BioSAK CheckM_op_parser -i combined_qualities.txt -complete 99 -o bin_qualities_complete99.txt
+BioSAK CheckM_op_parser -i combined_qualities.txt -complete 99 -contain 5 -o bin_qualities_complete99_contain5.txt
 
 # get the quality of qualified bins and copy them into a separate folder
-BioSAK CheckM_output_parser -i combined_qualities.txt -bin bin_folder -x fasta -complete 99 -o bin_qualities_complete99.txt
-BioSAK CheckM_output_parser -i combined_qualities.txt -bin bin_folder -x fasta -complete 99 -contain 5 -o bin_qualities_complete99_contain5.txt
+BioSAK CheckM_op_parser -i combined_qualities.txt -bin bin_folder -x fasta -complete 99 -o bin_qualities_complete99.txt
+BioSAK CheckM_op_parser -i combined_qualities.txt -bin bin_folder -x fasta -complete 99 -contain 5 -o bin_qualities_complete99_contain5.txt
 
 ======================================================================================================
 '''
@@ -232,24 +232,3 @@ def CheckM_output_parser(args):
     if (completeness_cutoff is not None) or (contamination_cutoff is not None):
         print('The number of qualified genomes: %s' % qualified_bin_num)
 
-
-if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument('-i',           required=True,                                  help='input bin folder')
-    parser.add_argument('-x',           required=True,                                  help='bin file extension')
-    parser.add_argument('-e',           required=False,                                 help='your email address')
-    parser.add_argument('-nodes',       required=False, default=1, type=int,            help='nodes number needed (default = 1)')
-    parser.add_argument('-ppn',         required=False, default=1, type=int,            help='ppn number needed (default = 1)')
-    parser.add_argument('-memory',      required=False, default=120, type=int,          help='memory needed (default = 120)')
-    parser.add_argument('-walltime',    required=False, default='2:59:00',              help='walltime needed (default = 2:59:00)')
-    parser.add_argument('-python',      required=False, default='python/2.7.15',        help='python version (default: python/2.7.15)')
-    parser.add_argument('-hmmer',       required=False, default='hmmer/3.2.1',          help='hmmer version (default: hmmer/3.2.1)')
-    parser.add_argument('-pplacer',     required=False, default='pplacer/1.1.alpha19',  help='pplacer version (default: pplacer/1.1.alpha19)')
-    parser.add_argument('-prodigal',    required=False, default='prodigal/2.6.3',       help='prodigal version (default: prodigal/2.6.3)')
-    parser.add_argument('-qsub',        action="store_true",                            help='submit generated PBS job scripts')
-
-    args = vars(parser.parse_args())
-
-    CheckM_Runner(args)

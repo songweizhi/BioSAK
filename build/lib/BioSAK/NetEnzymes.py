@@ -11,7 +11,7 @@ from BioSAK.global_functions import sep_path_basename_ext
 
 
 NetEnzymes_parser_usage = '''
-===================================== NetEnzymes example commands =====================================
+=========================== NetEnzymes example commands ===========================
 
 # get network of all enzymes in Ecoli_ec.txt
 BioSAK NetEnzymes -ec Ecoli_ec.txt -to_skip skip.txt -NoHyphen
@@ -19,17 +19,15 @@ BioSAK NetEnzymes -ec Ecoli_ec.txt -to_skip skip.txt -NoHyphen
 # get network of enzymes belong to ko 00010 (Glycolysis) in Ecoli_ec.txt
 BioSAK NetEnzymes -ec Ecoli_ec.txt -ko 00010 -to_skip skip.txt -NoHyphen -plot 
 
-# EC file format (one EC per line)
+# EC file format (one EC per line):
 2.7.7.23
 3.6.3.28
-4.1.1.19
 
-# to_skip file format (one substrate per line)
-ATP
+# to_skip file format (one substrate per line):
 H2O
 H+
 
-====================================================================================================
+===================================================================================
 '''
 
 '''
@@ -40,7 +38,6 @@ python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Ecoli_ec.txt -ko 00020
 python3 ~/PycharmProjects/BioSAK/BioSAK/NetEnzymes.py -ec Glycolysis_ECs.txt -to_skip skip.txt -NoHyphen -plot 
 
 BioSAK NetEnzymes -ec Ecoli_ec.txt -ko 00020 -to_skip skip.txt -plot -NoHyphen
-
 BioSAK NetEnzymes -ec Glycolysis_ECs.txt -to_skip skip.txt -NoHyphen -plot
 
 To-do:

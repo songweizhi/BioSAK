@@ -21,7 +21,7 @@ import warnings
 import argparse
 from BioSAK import Prodigal, CheckM
 from BioSAK import COG2003, COG2014, KEGG, dbCAN
-from BioSAK import get_SCG_tree, Subset_tree, label_tree, iTOL_wrapper
+from BioSAK import get_SCG_tree, Subset_tree, label_tree, iTOL
 from BioSAK import sra_reads_downloader, download_GenBank_genome
 from BioSAK import select_seq, rename_ctg
 from BioSAK import get_gene_depth
@@ -62,7 +62,7 @@ def print_main_help():
        ffn2faa                ->   ffn to faa
        get_rc                 ->   get reverse complement sequence
        rename_ctg             ->   rename contigs in a file
-       select_seq             ->   select sequences by id
+       select_seq             ->   select sequences by their id
        get_gene_depth         ->   Get gene depth by contig depth
        convert_align_format   ->   Convert alignment format
 
@@ -70,7 +70,7 @@ def print_main_help():
        get_SCG_tree           ->   construct SCG tree for query genomes
        label_tree             ->   Add labels to tree leaves
        subset_tree            ->   Subset tree
-       iTOL_wrapper           ->   Plot tree with iTOL
+       iTOL                   ->   Plot tree with iTOL
                       
     Other modules
        split_folder           ->   Split folder
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(help="--", dest='subparser_name')
 
     # Annotation modules
-    Prodigal_parser =                   subparsers.add_parser('Prodigal_Runner',            description='Wrapper for running Prodigal',                         usage=Prodigal.Prodigal_parser_usage)
+    Prodigal_parser =                   subparsers.add_parser('Prodigal',                   description='Wrapper for running Prodigal',                         usage=Prodigal.Prodigal_parser_usage)
     Barrnap_parser =                    subparsers.add_parser('Barrnap_Runner',             description='Wrapper for running Barrnap',                          usage='')
     CheckM_parser =                     subparsers.add_parser('CheckM_Runner',              description='Wrapper for running CheckM',                           usage=CheckM.CheckM_Runner_usage)
     CheckM_output_parser =              subparsers.add_parser('CheckM_op_parser',           description='Parse combined CheckM outputs',                        usage=CheckM.CheckM_output_parser_usage)
@@ -131,7 +131,7 @@ if __name__ == '__main__':
     get_SCG_tree_parser =               subparsers.add_parser('get_SCG_tree',               description='get SCG tree',                                         usage=get_SCG_tree.get_SCG_tree_usage)
     subset_tree_parser =                subparsers.add_parser('subset_tree',                description='Subset tree',                                          usage=Subset_tree.subset_tree_parser_usage)
     plot_tree_parser =                  subparsers.add_parser('Plot_tree',                  description='Plot tree in Newick format',                           usage='')
-    iTOL_wrapper_parser =               subparsers.add_parser('iTOL_wrapper',               description='Plot tree with iTOL',                                  usage=iTOL_wrapper.iTol_wrapper_usage)
+    iTOL_parser =                       subparsers.add_parser('iTOL',                       description='Plot tree with iTOL',                                  usage=iTOL.iTOL_usage)
     label_tree_parser =                 subparsers.add_parser('label_tree',                 description='Add labels to tree leaves',                            usage=label_tree.label_tree_usage)
 
     # Other modules
@@ -242,12 +242,10 @@ if __name__ == '__main__':
     subset_tree_parser.add_argument('-taxon',           required=True,                                  help='A file containing list of nodes to keep, one node per line')
     subset_tree_parser.add_argument('-out',             required=True,                                  help='Output tree file')
 
-    iTOL_wrapper_parser.add_argument('-tree',           required=True,                                  help='tree file in newick format')
-    iTOL_wrapper_parser.add_argument('-label',          required=False,                                 help='label')
-    iTOL_wrapper_parser.add_argument('-color',          required=False,                                 help='color')
-    iTOL_wrapper_parser.add_argument('-collapse',       required=False,                                 help='collapse)')
-    iTOL_wrapper_parser.add_argument('-range',          required=False,                                 help='range')
-    iTOL_wrapper_parser.add_argument('-heatmap',        required=False,                                 help='heatmap')
+    iTOL_parser.add_argument('-tree',                   required=True,                                  help='tree file in newick format')
+    iTOL_parser.add_argument('-label',                  required=False,                                 help='label')
+    iTOL_parser.add_argument('-color',                  required=False,                                 help='color')
+    iTOL_parser.add_argument('-collapse',               required=False,                                 help='collapse)')
 
     SankeyTaxon_parser.add_argument('-taxon',           required=True,                                  help='taxon classification results')
     SankeyTaxon_parser.add_argument('-r',               required=True,                                  help='taxon ranks to plot, e.g. dpcofgs, pco, pcf, cfs')
@@ -305,7 +303,7 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
 
     # run corresponding function
-    if args['subparser_name'] == 'Prodigal_Runner':
+    if args['subparser_name'] == 'Prodigal':
         Prodigal.Annotation_Prodigal(args)
 
     elif args['subparser_name'] == 'COG2003':
@@ -338,8 +336,8 @@ if __name__ == '__main__':
     elif args['subparser_name'] == 'label_tree':
         label_tree.label_tree(args, config_dict)
 
-    elif args['subparser_name'] == 'iTOL_wrapper':
-        iTOL_wrapper.iTOL_wrapper(args)
+    elif args['subparser_name'] == 'iTOL':
+        iTOL.iTOL(args)
 
     elif args['subparser_name'] == 'split_folder':
         split_folder.split_folder(args)

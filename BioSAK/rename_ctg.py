@@ -7,10 +7,13 @@ rename_ctg_usage = '''
 ========================= rename_ctg example commands =========================
 
 # rename "NODE_941_length_17600_cov_52.7123" to "NODE_941"
-BioSAK rename_ctg i Contigs.fa -si "_" -n 2
+BioSAK rename_ctg in Contigs.fa -sep_in "_" -n 2
 
 # rename "Seawater|NODE|941|length|17600|cov|52.7123" to "Seawater_NODE_941"
-BioSAK rename_ctg i Contigs.fa -si "|" -so "_" -n 3
+BioSAK rename_ctg in Contigs.fa -sep_in "|" -sep_out "_" -n 3
+
+# add prefix to all sequences in a fasta file
+BioSAK rename_ctg in Contigs.fa -add_prefix seawater
 
 ===============================================================================
 '''
@@ -42,10 +45,11 @@ if __name__ == '__main__':
     rename_ctg_parser = argparse.ArgumentParser()
 
     # arguments for rename_ctg_parser
-    rename_ctg_parser.add_argument('-i',    required=True,                  help='input sequence file')
-    rename_ctg_parser.add_argument('-si',   required=True,                  help='separator for input sequences')
-    rename_ctg_parser.add_argument('-so',   required=False, default=None,   help='separator for output sequences, default: same as si')
-    rename_ctg_parser.add_argument('-n',    required=True, type=int,        help='the number of columns to keep')
+    rename_ctg_parser.add_argument('-in',           required=True,                  help='input sequence file')
+    rename_ctg_parser.add_argument('-sep_in',       required=False,                 help='separator for input sequences')
+    rename_ctg_parser.add_argument('-sep_out',      required=False, default=None,   help='separator for output sequences, default: same as si')
+    rename_ctg_parser.add_argument('-n',            required=False, type=int,       help='the number of columns to keep')
+    rename_ctg_parser.add_argument('-add_prefix',   required=False, default=None,   help='add prefix to all sequences in a fasta file')
 
     args = vars(rename_ctg_parser.parse_args())
 
