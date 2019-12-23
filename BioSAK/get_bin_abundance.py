@@ -8,25 +8,26 @@ from BioSAK.global_functions import sep_path_basename_ext
 
 
 get_bin_abundance_usage = '''
-========================================== get_bin_abundance example commands ==========================================
+=========================== get_bin_abundance example commands ===========================
 
 # get abundance of individual bins 
-BioSAK get_bin_abundance -sam combined_bins.sam -bin_folder all_bins -bin_ext fa
+BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt
 
 # get abundance of customized bin clusters
-BioSAK get_bin_abundance -sam combined_bins.sam -bin_folder all_bins -bin_ext fa -out cluster_abundance.txt -cluster bin_cluster.txt
+BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt -cluster bin_cluster.txt
 
 # get abundance of dRep produced bin clusters
-BioSAK get_bin_abundance -sam combined_bins.sam -bin_folder all_bins -bin_ext fa -out cluster_abundance.txt -Cdb Cdb.csv
+BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt -Cdb Cdb.csv
 
 # How it works
+The get_bin_abundance module first gets the number of reads mapped to each reference sequence in the provided sam file. Then get the total number/percentage of reads mapped to the sequences in each bin (cluster).
 
 # format of customized cluster file (tab-separated, with the first col as cluster id, followed by a list of bins from it)
 cluster_1	bin_1.fa	bin_4.fa
 cluster_2	bin_5.fa	bin_2.fa	bin_6.fa
 cluster_3	bin_3.fa
 
-========================================================================================================================
+==========================================================================================
 '''
 
 
@@ -87,12 +88,12 @@ def get_bin_abundance(args):
 
     ################################################# read in arguments ################################################
 
-    sam_file            = args['sam']
-    bin_folder          = args['bin_folder']
-    bin_ext             = args['bin_ext']
-    output_file         = args['out']
-    cluster_info        = args['cluster_info']
-    dRep_Cdb_file       = args['dRep_Cdb']
+    sam_file      = args['sam']
+    bin_folder    = args['bin']
+    bin_ext       = args['x']
+    output_file   = args['o']
+    cluster_info  = args['cluster']
+    dRep_Cdb_file = args['Cdb']
 
     ############################################## define bin_cluster file #############################################
 
@@ -106,7 +107,7 @@ def get_bin_abundance(args):
     elif (cluster_info is None) and (dRep_Cdb_file is not None):
 
         Cdb_file_path, Cdb_file_basename, Cdb_file_extension = sep_path_basename_ext(dRep_Cdb_file)
-        cluster_file_from_Cdb = '%s/%s_derived_cluster_file%s' % (Cdb_file_path, Cdb_file_basename, Cdb_file_extension)
+        cluster_file_from_Cdb = '%s/%s_derived_cluster_file_%s%s' % (Cdb_file_path, Cdb_file_basename, datetime.now().strftime('%Y-%m-%d_%Hh-%Mm-%Ss_%f'), Cdb_file_extension)
         Cdb_2_bin_cluster_file(dRep_Cdb_file, cluster_file_from_Cdb)
         bin_cluster_file = cluster_file_from_Cdb
 
@@ -132,6 +133,8 @@ def get_bin_abundance(args):
 
     ############################################ get group to ctg list dict ############################################
 
+    print(datetime.now().strftime(time_format) + 'Get bin (cluster) to contig correlations')
+
     if bin_cluster_file is None:
         group_2_ctg_dict = bin_2_ctg_dict
     else:
@@ -152,8 +155,10 @@ def get_bin_abundance(args):
 
     ########################################### get_ref_to_read_num_from_sam ###########################################
 
+    print(datetime.now().strftime(time_format) + 'Get the number of reads mapped to each reference sequence in sam file')
+
     sam_file_path, sam_file_basename, sam_file_extension = sep_path_basename_ext(sam_file)
-    ref_to_read_num_file = '%s/%s_ref_to_read_num.txt' % (sam_file_path, sam_file_basename)
+    ref_to_read_num_file = '%s/%s_ref_to_read_num_%s.txt' % (sam_file_path, sam_file_basename, datetime.now().strftime('%Y-%m-%d_%Hh-%Mm-%Ss_%f'))
 
     get_ref_to_read_num_from_sam(sam_file, ref_to_read_num_file)
 
@@ -170,6 +175,8 @@ def get_bin_abundance(args):
             mapped_reads_num += read_num
 
     ###################################### get the number of reads in each group #######################################
+
+    print(datetime.now().strftime(time_format) + 'Get the number of reads mapped to each bin (cluster)')
 
     group_to_read_num_dict = {}
     for group in group_2_ctg_dict:
@@ -188,6 +195,12 @@ def get_bin_abundance(args):
 
     ################################################## final report ####################################################
 
+    # delete tmp files
+    os.system('rm %s' % ref_to_read_num_file)
+    if (cluster_info is None) and (dRep_Cdb_file is not None):
+        os.system('rm %s' % bin_cluster_file)
+
+    # final report
     print(datetime.now().strftime(time_format) + 'Done!')
 
 
@@ -196,14 +209,13 @@ if __name__ == "__main__":
     get_bin_abundance_parser = argparse.ArgumentParser()
 
     # Annotation modules
-    get_bin_abundance_parser.add_argument('-sam',          required=True,                  help='input sam file')
-    get_bin_abundance_parser.add_argument('-bin_folder',   required=True,                  help='bin folder')
-    get_bin_abundance_parser.add_argument('-bin_ext',      required=True, default='fasta', help='bin file extension, default: fasta')
-    get_bin_abundance_parser.add_argument('-out',          required=True,                  help='output file')
-    get_bin_abundance_parser.add_argument('-cluster',      required=False, default=None,   help='cluster info')
-    get_bin_abundance_parser.add_argument('-Cdb',          required=False, default=None,   help='cluster info from dRep')
+    get_bin_abundance_parser.add_argument('-sam',     required=True,                  help='input sam file')
+    get_bin_abundance_parser.add_argument('-bin',     required=True,                  help='bin folder')
+    get_bin_abundance_parser.add_argument('-x',       required=True, default='fasta', help='bin file extension, default: fasta')
+    get_bin_abundance_parser.add_argument('-o',       required=True,                  help='output abundance file')
+    get_bin_abundance_parser.add_argument('-cluster', required=False, default=None,   help='cluster info')
+    get_bin_abundance_parser.add_argument('-Cdb',     required=False, default=None,   help='cluster info from dRep (Cdb.csv)')
 
     args = vars(get_bin_abundance_parser.parse_args())
 
     get_bin_abundance(args)
-

@@ -23,7 +23,7 @@ from BioSAK import Prodigal, CheckM
 from BioSAK import COG2003, COG2014, KEGG, dbCAN
 from BioSAK import get_SCG_tree, Subset_tree, label_tree, iTOL
 from BioSAK import sra_reads_downloader, download_GenBank_genome
-from BioSAK import select_seq, rename_ctg
+from BioSAK import select_seq, rename_seq
 from BioSAK import get_gene_depth
 from BioSAK import keep_best_hit
 from BioSAK import get_bin_abundance
@@ -61,7 +61,7 @@ def print_main_help():
        gbk2faa                ->   gbk to faa
        ffn2faa                ->   ffn to faa
        get_rc                 ->   get reverse complement sequence
-       rename_ctg             ->   rename contigs in a file
+       rename_seq             ->   rename sequences in a file
        select_seq             ->   select sequences by their id
        get_gene_depth         ->   Get gene depth by contig depth
        convert_align_format   ->   Convert alignment format
@@ -120,7 +120,7 @@ if __name__ == '__main__':
     get_fasta_stats_parser =            subparsers.add_parser('get_fasta_stats',            description='Wrapper for running Prodigal',                         usage='')
     FastaSplitler_parser =              subparsers.add_parser('FastaSplitler',              description='Wrapper for running Prodigal',                         usage='')
     get_gene_depth_parser =             subparsers.add_parser('get_gene_depth',             description='Get gene depth by contig depth',                       usage=get_gene_depth.get_gene_depth_parser_usage)
-    rename_ctg_parser =                 subparsers.add_parser('rename_ctg',                 description='rename contigs in a file',                             usage=rename_ctg.rename_ctg_usage)
+    rename_seq_parser =                 subparsers.add_parser('rename_seq',                 description='rename contigs in a file',                             usage=rename_seq.rename_seq_usage)
     convert_align_fmt_parser =          subparsers.add_parser('convert_align_format',       description='Convert alignment format',                             usage=format_converter.convert_align_format_usage)
 
     # Sam file manipulator
@@ -188,7 +188,7 @@ if __name__ == '__main__':
 
     NetEnzymes_parser.add_argument('-ec',               required=True,                                  help='EC list file')
     NetEnzymes_parser.add_argument('-ko',               required=False, default=None,                   help='get network of enzymes from specified ko')
-    NetEnzymes_parser.add_argument('-to_skip',          required=False, default=None,                   help='substrate/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
+    NetEnzymes_parser.add_argument('-to_skip',          required=False, default=None,                   help='substrates/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
     NetEnzymes_parser.add_argument('-NoHyphen',         required=False, action='store_true',            help='ignore enzymes with "-" in EC')
     NetEnzymes_parser.add_argument('-plot',             required=False, action='store_true',            help='plot network, slow and messy layout for complicated network')
     NetEnzymes_parser.add_argument('-lfs',              required=False,  default=3, type=float,         help='Font size of node labels, default is 3')
@@ -266,10 +266,12 @@ if __name__ == '__main__':
     BestHit_parser.add_argument('-i',                   required=True,                                  help='input blast results (outfmt: 6)')
     BestHit_parser.add_argument('-o',                   required=True,                                  help='output file')
 
-    get_bin_abundance_parser.add_argument('-d',         required=True,                                  help='MetaBAT produced depth file')
-    get_bin_abundance_parser.add_argument('-b',         required=True,                                  help='bin folder')
-    get_bin_abundance_parser.add_argument('-x',         required=False, default='fasta',                help='file extension')
-    get_bin_abundance_parser.add_argument('-p',         required=False, default='OUTPUT',               help='output prefix')
+    get_bin_abundance_parser.add_argument('-sam',       required=True,                                  help='input sam file')
+    get_bin_abundance_parser.add_argument('-bin',       required=True,                                  help='bin folder')
+    get_bin_abundance_parser.add_argument('-x',         required=True, default='fasta',                 help='bin file extension, default: fasta')
+    get_bin_abundance_parser.add_argument('-o',         required=True,                                  help='output abundance file')
+    get_bin_abundance_parser.add_argument('-cluster',   required=False, default=None,                   help='cluster info')
+    get_bin_abundance_parser.add_argument('-Cdb',       required=False, default=None,                   help='cluster info from dRep (Cdb.csv)')
 
     dwnld_GenBank_genome_parser.add_argument('-csv',    required=True,                                  help='csv file from NCBI genome_browse')
     dwnld_GenBank_genome_parser.add_argument('-fna',    required=False, action="store_true",            help='download gna file')
@@ -285,10 +287,11 @@ if __name__ == '__main__':
     get_Pfam_hmms_parser.add_argument('-pfam',          required=True,                                  help='Pfam db file, normally with name Pfam-A.hmm')
     get_Pfam_hmms_parser.add_argument('-id',            required=True,                                  help='ids of profiles need to be extracted, one id per line')
 
-    rename_ctg_parser.add_argument('-i',                required=True,                                  help='input sequence file')
-    rename_ctg_parser.add_argument('-si',               required=True,                                  help='separator for input sequences')
-    rename_ctg_parser.add_argument('-so',               required=False, default=None,                   help='separator for output sequences, default: same as si')
-    rename_ctg_parser.add_argument('-n',                required=True,  type=int,                       help='the number of columns to keep')
+    rename_seq_parser.add_argument('-in',               required=True,                                  help='input sequence file')
+    rename_seq_parser.add_argument('-sep_in',           required=False,                                 help='separator for input sequences')
+    rename_seq_parser.add_argument('-sep_out',          required=False, default=None,                   help='separator for output sequences, default: same as si')
+    rename_seq_parser.add_argument('-n',                required=False, type=int,                       help='the number of columns to keep')
+    rename_seq_parser.add_argument('-prefix',           required=False, default=None,                   help='add prefix to all sequences in a fasta file')
 
     ###################################################### parse provided arguments and run corresponding function #####################################################
 
@@ -378,8 +381,8 @@ if __name__ == '__main__':
     elif args['subparser_name'] == 'get_gene_depth':
         get_gene_depth.get_gene_depth(args)
 
-    elif args['subparser_name'] == 'rename_ctg':
-        rename_ctg.rename_ctg(args)
+    elif args['subparser_name'] == 'rename_seq':
+        rename_seq.rename_seq(args)
 
     elif args['subparser_name'] == 'NetEnzymes':
         NetEnzymes.NetEnzymes(args, config_dict)

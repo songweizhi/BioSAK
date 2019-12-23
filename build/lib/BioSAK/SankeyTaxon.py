@@ -5,6 +5,8 @@ import argparse
 SankeyTaxon_parser_usage ='''
 ===================================== SankeyTaxon example commands ====================================
 
+module load R
+
 # Visualize taxonomic classification at phylum, class and genus level
 BioSAK SankeyTaxon -taxon KelpBins_gtdbtk.tsv -r pcg -p KelpBins
 

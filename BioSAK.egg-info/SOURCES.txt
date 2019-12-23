@@ -54,11 +54,12 @@ BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
 BioSAK/plot_sam_depth.py
-BioSAK/rename_ctg.py
+BioSAK/rename_seq.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/split_folder.py
 BioSAK/sra_reads_downloader.py
+BioSAK/tmp_1.py
 BioSAK.egg-info/PKG-INFO
 BioSAK.egg-info/SOURCES.txt
 BioSAK.egg-info/dependency_links.txt
