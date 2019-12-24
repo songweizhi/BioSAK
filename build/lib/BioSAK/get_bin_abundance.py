@@ -14,7 +14,7 @@ get_bin_abundance_usage = '''
 BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt
 
 # get abundance of customized bin clusters
-BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt -cluster bin_cluster.txt
+BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt -g bin_cluster.txt
 
 # get abundance of dRep produced bin clusters
 BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt -Cdb Cdb.csv
@@ -22,7 +22,10 @@ BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt 
 # How it works
 The get_bin_abundance module first gets the number of reads mapped to each reference sequence in the provided sam file. Then get the total number/percentage of reads mapped to the sequences in each bin (cluster).
 
-# format of customized cluster file (tab-separated, with the first col as cluster id, followed by a list of bins from it)
+# The input sam file is obtained by mapping sequencing reads from a sample to the combined file of all bins in ‘-bin’ folder. 
+Please make sure contig ids are UNIQUE if you are combining bin files derived from multiple samples.
+
+# format of grouping file (tab-separated, with the first col as group id, followed by a list of bins from it)
 cluster_1	bin_1.fa	bin_4.fa
 cluster_2	bin_5.fa	bin_2.fa	bin_6.fa
 cluster_3	bin_3.fa
@@ -92,7 +95,7 @@ def get_bin_abundance(args):
     bin_folder    = args['bin']
     bin_ext       = args['x']
     output_file   = args['o']
-    cluster_info  = args['cluster']
+    cluster_info  = args['g']
     dRep_Cdb_file = args['Cdb']
 
     ############################################## define bin_cluster file #############################################
@@ -195,6 +198,12 @@ def get_bin_abundance(args):
 
     ################################################## final report ####################################################
 
+    # delete tmp files
+    os.system('rm %s' % ref_to_read_num_file)
+    if (cluster_info is None) and (dRep_Cdb_file is not None):
+        os.system('rm %s' % bin_cluster_file)
+
+    # final report
     print(datetime.now().strftime(time_format) + 'Done!')
 
 
@@ -207,7 +216,7 @@ if __name__ == "__main__":
     get_bin_abundance_parser.add_argument('-bin',     required=True,                  help='bin folder')
     get_bin_abundance_parser.add_argument('-x',       required=True, default='fasta', help='bin file extension, default: fasta')
     get_bin_abundance_parser.add_argument('-o',       required=True,                  help='output abundance file')
-    get_bin_abundance_parser.add_argument('-cluster', required=False, default=None,   help='cluster info')
+    get_bin_abundance_parser.add_argument('-g',       required=False, default=None,   help='bin grouping info')
     get_bin_abundance_parser.add_argument('-Cdb',     required=False, default=None,   help='cluster info from dRep (Cdb.csv)')
 
     args = vars(get_bin_abundance_parser.parse_args())

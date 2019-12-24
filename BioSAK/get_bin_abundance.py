@@ -8,29 +8,31 @@ from BioSAK.global_functions import sep_path_basename_ext
 
 
 get_bin_abundance_usage = '''
-=========================== get_bin_abundance example commands ===========================
+================================ get_bin_abundance example commands ================================
 
 # get abundance of individual bins 
 BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt
 
 # get abundance of customized bin clusters
-BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt -g bin_cluster.txt
+BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt -g bin_clusters.txt
 
 # get abundance of dRep produced bin clusters
 BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt -Cdb Cdb.csv
 
 # How it works
-The get_bin_abundance module first gets the number of reads mapped to each reference sequence in the provided sam file. Then get the total number/percentage of reads mapped to the sequences in each bin (cluster).
+The get_bin_abundance module first gets the number of reads mapped to each reference sequence in the provided sam file. 
+Then get the total number/percentage of reads mapped to the sequences from each bin (cluster).
 
-# The input sam file is obtained by mapping sequencing reads from a sample to the combined file of all bins in ‘-bin’ folder. 
-Please make sure contig ids are UNIQUE if you are combining bin files derived from multiple samples.
+# Format of grouping file (tab-separated, with the first column as group id, followed by a list of bins from it)
+cluster_1	Ecklonia_bin_1.fa	Delisea_bin_1.fa
+cluster_2	Ecklonia_bin_2.fa	Delisea_bin_5.fa	Amphiroa_bin_1.fa
+cluster_3	Amphiroa_bin_3.fa
 
-# format of grouping file (tab-separated, with the first col as group id, followed by a list of bins from it)
-cluster_1	bin_1.fa	bin_4.fa
-cluster_2	bin_5.fa	bin_2.fa	bin_6.fa
-cluster_3	bin_3.fa
+# Note!!!
+The input sam file is obtained by mapping sequencing reads from a sample to the combined file of all bins in ‘-bin’ folder. 
+Please make sure contig ids are UNIQUE if you are combining bins derived from multiple samples.
 
-==========================================================================================
+====================================================================================================
 '''
 
 
