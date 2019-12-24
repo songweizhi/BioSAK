@@ -7,9 +7,9 @@
 Contact
 ---
 
-+ Weizhi Song (songwz03@gmail.com)
++ Weizhi Song
 + Center for Marine Science & Innovation, University of New South Wales, Sydney, Australia
-+ E-mail: [songwz03@gmail.com](songwz03@gmail.com)
++ E-mail: songwz03@gmail.com
 
 Dependencies
 ---
