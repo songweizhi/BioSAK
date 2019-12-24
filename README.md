@@ -14,7 +14,11 @@ Contact
 Dependencies
 ---
 
-+ [BioPython](https://github.com/biopython/biopython.github.io/)
++ Module dependent, see module-specific help info for details. E.g.
+
+      BioSAK COG2014 -h
+      BioSAK select_seq -h
+      BioSAK dwnld_GenBank_genome -h
 
 Installation
 ---
