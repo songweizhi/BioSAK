@@ -43,6 +43,7 @@ Installation
       source ~/mypython3env_BioSAK/bin/activate
       pip3 install BioSAK
         
+        
       ################################ run BioSAK ################################
 
       # If you want to run BioSAK later, just run the following commands 
@@ -58,5 +59,6 @@ Help information
     BioSAK COG2014 -h
     BioSAK select_seq -h
     BioSAK dwnld_GenBank_genome -h
+    etc.
 
     
