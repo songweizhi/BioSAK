@@ -16,9 +16,8 @@ Dependencies
 
 Module dependent, see module-specific help info for details. E.g.
 
+    BioSAK KEGG -h
     BioSAK COG2014 -h
-    BioSAK select_seq -h
-    BioSAK dwnld_GenBank_genome -h
 
 Installation
 ---
@@ -35,15 +34,14 @@ Installation
       
 1. For UNSW Katana users
 
-       ############## install BioSAK with Python virtual environment ##############
-      
+       ################## install BioSAK with virtual environment #################
+
        module load python/3.7.3
        mkdir ~/mypython3env_BioSAK
        python3 -m venv --system-site-packages ~/mypython3env_BioSAK
        source ~/mypython3env_BioSAK/bin/activate
        pip3 install BioSAK
-        
-        
+
        ################################ run BioSAK ################################
 
        # If you want to run BioSAK later, just run the following commands 
@@ -92,7 +90,6 @@ BioSAK modules
        get_Pfam_hmms          ->   get Pfam profiles by id
        reads_simulator        ->   simulate NGS reads
 
-
 Help information
 ---
 
@@ -101,5 +98,3 @@ Help information
     BioSAK select_seq -h
     BioSAK dwnld_GenBank_genome -h
     etc.
-
-    
