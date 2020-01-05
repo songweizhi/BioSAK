@@ -60,14 +60,14 @@ def print_main_help():
        gbk2ffn                ->   gbk to ffn
        gbk2faa                ->   gbk to faa
        ffn2faa                ->   ffn to faa
-       get_rc                 ->   get reverse complement sequence
-       rename_seq             ->   rename sequences in a file
-       select_seq             ->   select sequences by their id
+       get_rc                 ->   Get reverse complement sequence
+       rename_seq             ->   Rename sequences in a file
+       select_seq             ->   Select sequences by their id
        get_gene_depth         ->   Get gene depth by contig depth
        convert_align_format   ->   Convert alignment format
 
     Tree manipulator
-       get_SCG_tree           ->   construct SCG tree for query genomes
+       get_SCG_tree           ->   Construct SCG tree for query genomes
        label_tree             ->   Add labels to tree leaves
        subset_tree            ->   Subset tree
        iTOL                   ->   Plot tree with iTOL
@@ -76,11 +76,11 @@ def print_main_help():
        split_folder           ->   Split folder
        SankeyTaxon            ->   Plot taxonomic classification with Sankey plot
        BestHit                ->   Keep Best Hits only (blast outfmt 6)
-       get_bin_abundance      ->   Calculate bin abundance according to MetaBAT depth file
-       sra_reads_downloader   ->   download SRA read files
+       get_bin_abundance      ->   Get bin abundance
+       sra_reads_downloader   ->   Download SRA read files
        dwnld_GenBank_genome   ->   Batch download GenBank genomes
-       get_Pfam_hmms          ->   get Pfam profiles by id
-       reads_simulator        ->   simulate NGS reads
+       get_Pfam_hmms          ->   Get Pfam profiles by id
+       reads_simulator        ->   Simulate NGS reads
        
     # for module specific help info
     BioSAK <ModuleName> -h
@@ -138,7 +138,7 @@ if __name__ == '__main__':
     split_folder_parser =               subparsers.add_parser('split_folder',               description='Split folder',                                         usage=split_folder.split_folder_parser_usage)
     SankeyTaxon_parser =                subparsers.add_parser('SankeyTaxon',                description='Visualize GTDB output with Sankey diagram',            usage=SankeyTaxon.SankeyTaxon_parser_usage)
     BestHit_parser =                    subparsers.add_parser('BestHit',                    description='Keep blast hits with highest bit score',               usage=split_folder.split_folder_parser_usage)
-    get_bin_abundance_parser =          subparsers.add_parser('get_bin_abundance',          description='Get bin abundance from MetaBAT depth file',            usage=get_bin_abundance.get_bin_abundance_usage)
+    get_bin_abundance_parser =          subparsers.add_parser('get_bin_abundance',          description='Get bin abundance',                                    usage=get_bin_abundance.get_bin_abundance_usage)
     sra_reads_downloader_parser =       subparsers.add_parser('sra_reads_downloader',       description='Download SRA read files',                              usage=sra_reads_downloader.sra_reads_downloader_usage)
     dwnld_GenBank_genome_parser =       subparsers.add_parser('dwnld_GenBank_genome',       description='Batch download GenBank genomes',                       usage=download_GenBank_genome.download_GenBank_genome_parser_usage)
     get_Pfam_hmms_parser =              subparsers.add_parser('get_Pfam_hmms',              description='Get Pfam profiles by id',                              usage=get_Pfam_hmms.get_Pfam_hmms_usage)

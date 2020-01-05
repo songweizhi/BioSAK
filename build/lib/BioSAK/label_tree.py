@@ -4,7 +4,7 @@ from BioSAK.BioSAK_config import config_dict
 
 
 label_tree_usage = '''
-================================ label_tree example commands ================================
+======================== label_tree example commands ========================
 
 module load R
 
@@ -21,7 +21,7 @@ label_B,leaf_2
 label_B,leaf_3
 label_C,leaf_4
 
-=============================================================================================
+=============================================================================
 '''
 
 
@@ -40,10 +40,10 @@ def sep_path_basename_ext(file_in):
 
 def label_tree(args, config_dict):
 
-    tree_in =           args['tree']
-    label_file =        args['label']
-    leaf_taxon =        args['taxon']
-    taxon_rank =        args['rank']
+    tree_in      = args['tree']
+    label_file   = args['label']
+    leaf_taxon   = args['taxon']
+    taxon_rank   = args['rank']
     label_tree_R = config_dict['label_tree_R']
 
     if (label_file is not None) and (leaf_taxon is None) and (taxon_rank is None):
@@ -102,7 +102,7 @@ def label_tree(args, config_dict):
         os.system(label_tree_cmd)
 
     else:
-        print('Please provide either a customized grouping file or the taxonomy info of tree leaves together with the rank want to be added')
+        print('Please provide either a customized label file or the taxonomy info of tree leaves together with a taxonomic rank')
         print('Program exited!')
         exit()
 
@@ -116,14 +116,6 @@ if __name__ == '__main__':
     parser.add_argument('-label',     required=False,  default=None, help='label file (label,leaf)')
     parser.add_argument('-taxon',     required=False,  default=None, help='taxonomic classification')
     parser.add_argument('-rank',      required=False,  default=None, help='taxonomic rank to label')
-    #parser.add_argument('-plot',      required=False,  default=None, help='plot tree')
 
     args = vars(parser.parse_args())
     label_tree(args, config_dict)
-
-# label_tree({'label': None, 'plot': None,
-#             'tree':'/Users/songweizhi/Desktop/222/NS_SCG_tree.newick',
-#             'taxon':'/Users/songweizhi/Desktop/222/NorthSea_GTDB.tsv',
-#             'rank':'p'},
-#            {'label_tree_R':'/Users/songweizhi/PycharmProjects/BioSAK/BioSAK/label_tree.R'})
-
