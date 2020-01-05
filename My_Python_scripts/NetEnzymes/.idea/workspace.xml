@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="27586193-4873-4ce0-b5a5-b0d8021e363d" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1UbjBFu2ICFnXg33UgFGZBr1H7y" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.Scrapy_MetaCyc">
+    <configuration name="DiGraph_demo" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BioNetwork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/NetMetaCyc.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="GetKeggCateEC" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BioNetwork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GetKeggCateEC.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Prepare_DB" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BioNetwork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Prepare_DB.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Scrapy_MetaCyc" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BioNetwork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Scrapy_MetaCyc.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Scrapy_demo" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="BioNetwork" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Scrapy_demo.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.Scrapy_MetaCyc" />
+        <item itemvalue="Python.Scrapy_demo" />
+        <item itemvalue="Python.DiGraph_demo" />
+        <item itemvalue="Python.Prepare_DB" />
+        <item itemvalue="Python.GetKeggCateEC" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="27586193-4873-4ce0-b5a5-b0d8021e363d" name="Default Changelist" comment="" />
+      <created>1575632051051</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1575632051051</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1659" height="420" key="GridCell.Tab.0.bottom" timestamp="1576026785111">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state width="1259" height="230" key="GridCell.Tab.0.bottom/0.0.1280.800@0.0.1280.800" timestamp="1575725331462" />
+    <state width="1259" height="54" key="GridCell.Tab.0.bottom/0.23.1280.730@0.23.1280.730" timestamp="1575754939684" />
+    <state width="1659" height="420" key="GridCell.Tab.0.bottom/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1576026785111" />
+    <state width="1659" height="420" key="GridCell.Tab.0.center" timestamp="1576026785109">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state width="1259" height="230" key="GridCell.Tab.0.center/0.0.1280.800@0.0.1280.800" timestamp="1575725331461" />
+    <state width="1259" height="54" key="GridCell.Tab.0.center/0.23.1280.730@0.23.1280.730" timestamp="1575754939683" />
+    <state width="1659" height="420" key="GridCell.Tab.0.center/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1576026785109" />
+    <state width="1659" height="420" key="GridCell.Tab.0.left" timestamp="1576026785108">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state width="1259" height="230" key="GridCell.Tab.0.left/0.0.1280.800@0.0.1280.800" timestamp="1575725331460" />
+    <state width="1259" height="54" key="GridCell.Tab.0.left/0.23.1280.730@0.23.1280.730" timestamp="1575754939683" />
+    <state width="1659" height="420" key="GridCell.Tab.0.left/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1576026785108" />
+    <state width="1659" height="420" key="GridCell.Tab.0.right" timestamp="1576026785110">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state width="1259" height="230" key="GridCell.Tab.0.right/0.0.1280.800@0.0.1280.800" timestamp="1575725331461" />
+    <state width="1259" height="54" key="GridCell.Tab.0.right/0.23.1280.730@0.23.1280.730" timestamp="1575754939684" />
+    <state width="1659" height="420" key="GridCell.Tab.0.right/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1576026785110" />
+    <state x="967" y="-886" key="SettingsEditor" timestamp="1575685654784">
+      <screen x="618" y="-1050" width="1680" height="1050" />
+    </state>
+    <state x="967" y="-886" key="SettingsEditor/618.-1050.1680.1050/0.0.1280.800/-1062.-1050.1680.1050@618.-1050.1680.1050" timestamp="1575685654784" />
+    <state x="305" y="124" width="670" height="676" key="search.everywhere.popup" timestamp="1575670572429">
+      <screen x="0" y="0" width="1280" height="800" />
+    </state>
+    <state x="305" y="124" width="670" height="676" key="search.everywhere.popup/0.0.1280.800@0.0.1280.800" timestamp="1575670572429" />
+  </component>
+</project>

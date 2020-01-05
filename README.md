@@ -1,8 +1,8 @@
 
 ## BioSAK (A Swiss Army Knife for Biologists)
 
-[![pypi licence       ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
-[![pypi version       ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 
+[![pypi licence ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
+[![pypi version ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 
 
 Contact
 ---
@@ -42,10 +42,8 @@ Installation
        source ~/mypython3env_BioSAK/bin/activate
        pip3 install BioSAK
 
-       ################################ run BioSAK ################################
+       ############################ For later running #############################
 
-       # If you want to run BioSAK later, just run the following commands 
-       # to activate the virtual environment and it's ready for running.
        module load python/3.7.3
        source ~/mypython3env_BioSAK/bin/activate
        BioSAK -h
@@ -84,7 +82,7 @@ BioSAK modules
        split_folder           ->   Split folder
        SankeyTaxon            ->   Plot taxonomic classification with Sankey plot
        BestHit                ->   Keep Best Hits only (blast outfmt 6)
-       get_bin_abundance      ->   Calculate bin abundance according to MetaBAT depth file
+       get_bin_abundance      ->   get bin abundance
        sra_reads_downloader   ->   download SRA read files
        dwnld_GenBank_genome   ->   Batch download GenBank genomes
        get_Pfam_hmms          ->   get Pfam profiles by id
