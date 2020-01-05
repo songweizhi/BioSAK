@@ -34,7 +34,7 @@ Installation
       
 1. For UNSW Katana users
 
-       ################## install BioSAK with virtual environment #################
+       ############# install BioSAK with virtual environment ############
 
        module load python/3.7.3
        mkdir ~/mypython3env_BioSAK
@@ -42,7 +42,7 @@ Installation
        source ~/mypython3env_BioSAK/bin/activate
        pip3 install BioSAK
 
-       ############################ For later running #############################
+       ####################### For later running ########################
 
        module load python/3.7.3
        source ~/mypython3env_BioSAK/bin/activate
