@@ -48,6 +48,7 @@ BioSAK/global_functions.py
 BioSAK/iTOL.py
 BioSAK/keep_best_hit.py
 BioSAK/ko00001.keg
+BioSAK/label_tree.R
 BioSAK/label_tree.py
 BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py

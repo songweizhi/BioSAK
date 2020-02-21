@@ -1,0 +1,39 @@
+DATASET_SIMPLEBAR
+# https://itol.embl.de/help/dataset_simplebar_template.txt
+
+
+SEPARATOR TAB
+DATASET_LABEL	Demo_Bar_Chart
+COLOR	lightblue
+WIDTH	600
+MARGIN	20
+HEIGHT_FACTOR	0.8
+BORDER_WIDTH	0
+BORDER_COLOR	#0000ff
+
+
+########## provide values here ##########
+
+DATA
+
+bin01	1
+bin02	1
+bin03	1
+bin04	5
+bin05	4
+bin06	2
+bin07	5
+bin08	8
+bin09	4
+bin10	6
+bin11	2
+bin12	8
+bin13	8
+bin14	9
+bin15	4
+bin16	5
+bin17	7
+bin18	6
+bin19	4
+bin20	3
+#bin13|bin12|bin06|bin20	10

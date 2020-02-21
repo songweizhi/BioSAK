@@ -16,10 +16,10 @@ BioSAK label_tree -tree NorthSea.tree -taxon GTDB_output.tsv -rank p
 BioSAK label_tree -tree NorthSea.tree -taxon GTDB_output.tsv -rank c
 
 # label file format:
-label_A,leaf_1
-label_B,leaf_2
-label_B,leaf_3
-label_C,leaf_4
+label_A,tree_leaf_1
+label_B,tree_leaf_2
+label_B,tree_leaf_3
+label_C,tree_leaf_4
 
 =============================================================================
 '''

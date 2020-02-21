@@ -49,10 +49,10 @@ def print_main_help():
        Prodigal               ->   Wrapper for running Prodigal
        CheckM                 ->   Wrapper for running CheckM
        CheckM_op_parser       ->   Parse (combined) CheckM outputs
-       COG2003                ->   Wrapper for COG annotation (v2003, by rpsblast)
-       COG2014                ->   Wrapper for COG annotation (v2014, by blastp/diamond)
-       KEGG                   ->   Wrapper for KEGG annotation
-       dbCAN                  ->   Wrapper for running dbCAN
+       COG2003                ->   COG annotation (v2003, by rpsblast)
+       COG2014                ->   COG annotation (v2014, by blastp/diamond)
+       KEGG                   ->   KEGG annotation
+       dbCAN                  ->   CAZy annotation with dbCAN
        NetEnzymes             ->   Get network of enzymes (based on MetaCyc)   
     
     Sequence manipulator

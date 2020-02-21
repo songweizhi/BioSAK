@@ -2,6 +2,9 @@ LABELS
 
 SEPARATOR TAB
 
+
+########## customised leaf label here ##########
+
 DATA
 
 bin01	Oryza sativa
