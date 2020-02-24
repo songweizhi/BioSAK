@@ -26,14 +26,3 @@ bin17	clade	#3ec8c8	normal	5
 bin18	clade	#3ec8c8	normal	10
 bin19	clade	#3ec8c8	dashed	15
 bin20	clade	#f4980b	normal	5
-
-
-########## specify range color here ##########
-
-#bin07|bin14	range	#c04104
-#bin05|bin11|bin15|bin04|bin08|bin10	range	#8a3861
-#bin17|bin09|bin19	range	#c23551
-#bin03|bin13|bin12|bin06|bin20	range	#f4980b
-#bin01|bin06	range	#15daa6
-#bin02	range	#a16088
-#bin18	range	#3ec8c8
