@@ -4,7 +4,7 @@ from BioSAK.global_functions import sep_path_basename_ext
 
 
 rename_seq_usage = '''
-========================= rename_ctg example commands =========================
+========================= rename_seq example commands =========================
 
 # rename "NODE_941_length_17600_cov_52.7123" to "NODE_941"
 BioSAK rename_seq -in Contigs.fa -sep_in "_" -n 2

@@ -1,16 +1,17 @@
 DATASET_SIMPLEBAR
 # https://itol.embl.de/help/dataset_simplebar_template.txt
 
-
 SEPARATOR TAB
 DATASET_LABEL	Demo_Bar_Chart
 COLOR	lightblue
-WIDTH	600
+WIDTH	500
 MARGIN	20
 HEIGHT_FACTOR	0.8
 BORDER_WIDTH	0
 BORDER_COLOR	#0000ff
 
+# VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR
+DATASET_SCALE	0-0-#0000ff-1-1-5	5-5-#0000ff-1-1-5	10-10-#0000ff-1-1-5
 
 ########## provide values here ##########
 

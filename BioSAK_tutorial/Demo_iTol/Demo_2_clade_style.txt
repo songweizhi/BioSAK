@@ -6,26 +6,26 @@ DATA
 
 ########## specify clade color here ##########
 
-bin01	clade	#c04104	normal	10
-bin02	clade	#0c4e99	normal	5
-bin03	clade	#8c6d63	normal	3
-bin04	clade	#e41ea4	normal	18
-bin05	clade	#c23551	normal	2
-bin06	clade	#a16088	normal	10
-bin07	clade	#02165d	dashed	6
-bin08	clade	#8a3861	dashed	19
-bin09	clade	#cabd33	dashed	8
-bin10	clade	#c4f71f	dashed	20
-bin11	clade	#d3ddfc	normal	8
-bin12	clade	#f4980b	dashed	14
-bin13	clade	#15daa6	normal	7
-bin14	clade	#d89de9	dashed	7
-bin15	clade	#bdb6fb	dashed	17
-bin16	clade	#17785a	normal	10
-bin17	clade	#d5b328	normal	3
+bin01	clade	#bdb6fb	normal	10
+bin02	clade	#3ec8c8	normal	5
+bin03	clade	#f4980b	normal	5
+bin04	clade	#bdb6fb	normal	5
+bin05	clade	#bdb6fb	normal	5
+bin06	clade	#f4980b	normal	10
+bin07	clade	#3ec8c8	dashed	15
+bin08	clade	#bdb6fb	dashed	15
+bin09	clade	#3ec8c8	dashed	15
+bin10	clade	#bdb6fb	dashed	20
+bin11	clade	#bdb6fb	normal	5
+bin12	clade	#f4980b	dashed	15
+bin13	clade	#f4980b	normal	5
+bin14	clade	#3ec8c8	dashed	5
+bin15	clade	#bdb6fb	dashed	15
+bin16	clade	#bdb6fb	normal	10
+bin17	clade	#3ec8c8	normal	5
 bin18	clade	#3ec8c8	normal	10
-bin19	clade	#48d4ba	dashed	13
-bin20	clade	#661b92	normal	6
+bin19	clade	#3ec8c8	dashed	15
+bin20	clade	#f4980b	normal	5
 
 
 ########## specify range color here ##########
