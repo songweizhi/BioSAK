@@ -26,7 +26,7 @@ def get_boxplot(num_lol, label_list, label_rotation, output_plot):
     plt.close()
 
 
-num_lol = [[1,2,3], [4,5,6], [7,8,9]]
+num_lol = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 label_list = ['Apl', 'Car', 'Cli']
 label_rotation = 0
 output_plot = '/Users/songweizhi/Desktop/Boxplot_with_extra_values.png'
