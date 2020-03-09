@@ -1,15 +1,31 @@
-# About
 
-##Examples to plot in python.
-
-####bar_plot
-   ![bar_plot](bar_plot.png)
-
-####box_plot
-   ![box_plot](box_plot.png)
+Example plots in python.
+------
 
 
-#####Useful Links:
+####Basic barplot [basic_plot.py](basic_plot.py)
+   ![basic_barplot](basic_barplot.png)
+
+
+####Boxplot with dots [basic_plot.py](basic_plot.py)
+   ![boxplot_with_dots.png](boxplot_with_dots.png)
+
+
+####Boxplot with extra values [Boxplot_with_extra_values.py](Boxplot_with_extra_values.py)
+   ![Boxplot_with_extra_values.png](Boxplot_with_extra_values.png)
+
+
+####Grouped boxplot [grouped_boxplot.py](grouped_boxplot.py)
+   ![grouped_boxplot.png](grouped_boxplot.png)
+
+
+####Categorical scatter plot [basic_plot.py](basic_plot.py)
+   ![categorical_scatter_plot.png](categorical_scatter_plot.png)
+
+
+
+Useful Links:
+------
 
 1. Plotly Python Library
 https://plot.ly/python/
