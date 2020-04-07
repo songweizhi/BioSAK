@@ -15,7 +15,6 @@ MAG_10 = ['MAG_10', 0.2, 'Kelp', 'Gemm']
 MAG_data = [MAG_1, MAG_2, MAG_3, MAG_4, MAG_5, MAG_6, MAG_7, MAG_9, MAG_10]
 
 MAG_df = pd.DataFrame(MAG_data, columns=['MAG', 'Freq', 'Lifestyle', 'Phylum'])
-print(MAG_df)
 
 box_order =   ['Kelp',   'Tara']
 color_order = ['orange', 'lightblue']
@@ -23,7 +22,6 @@ color_order = ['orange', 'lightblue']
 sns.boxplot(data=MAG_df, x="Phylum", y="Freq",
             hue="Lifestyle", hue_order=box_order, palette=color_order)
 
-sns.despine(offset=10, trim=True)
 plt.show()
 
 
