@@ -8,13 +8,13 @@ This tutorial shows how to visualize all these info in one figure.
 
 1. Files needed (all these files need to be formatted according to iTOL's requirement):
 
-    + A phylogenetic tree in Newick format: [NorthSea.newick](NorthSea.newick)
-    + Taxonomy info: [NorthSea_1_taxon.txt](NorthSea_1_taxon.txt) or [NorthSea_1_taxon_range.txt](NorthSea_1_taxon_range.txt)
-    + Life-style info: [NorthSea_2_bin_source.txt](NorthSea_2_bin_source.txt)
-    + MAG sizes: [NorthSea_3_bin_size_norm.txt](NorthSea_3_bin_size_norm.txt)
+    + A phylogenetic tree in Newick format: [NorthSea_0_Tree.newick](NorthSea_0_Tree.newick)
+    + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](NorthSea_1_Taxon_Range.txt)
+    + Life-style info: [NorthSea_2_LifeStyle.txt](NorthSea_2_LifeStyle.txt)
+    + MAG sizes: [NorthSea_3_MAG_Size.txt](NorthSea_3_MAG_Size.txt)
 
 
-1. Upload your tree ([NorthSea.newick](NorthSea.newick)) to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
+1. Upload your tree ([NorthSea_0_Tree.newick](NorthSea_0_Tree.newick)) to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 
 
 1. Once you have your tree uploaded, you'll see the skeleton of your tree without any decoration. 
@@ -24,15 +24,15 @@ You can now play around with the control panel on the right side (e.g. change tr
 
 
 2. We are going to add the taxonomy info of our MAG to the tree now, which is really easy to do in iTOL. 
-You just need to drag and drop the [NorthSea_1_taxon.txt](NorthSea_1_taxon.txt) file to the tree area.
+You just need to drag and drop the [NorthSea_0_Tree.newick](NorthSea_0_Tree.newick) file to the tree area.
 
 
-3. Do the same thing to file [NorthSea_2_bin_source.txt](NorthSea_2_bin_source.txt) and [NorthSea_3_bin_size_norm.txt](NorthSea_3_bin_size_norm.txt) to add life-style and size info, you'll see a tree like this:
+3. Do the same thing to file [NorthSea_2_LifeStyle.txt](NorthSea_2_LifeStyle.txt) and [NorthSea_3_MAG_Size.txt](NorthSea_3_bin_size_norm.txt) to add life-style and size info, you'll see a tree like this:
 ![Layout_Normal](figures/Layout_Normal.jpg)
 
 
 4. To get a tree with a circular layout and MAG classes coloured as in the right figure below. 
-You need to use [NorthSea_1_taxon_range.txt](NorthSea_1_taxon_range.txt) instead of NorthSea_1_taxon.txt,
+You need to use [NorthSea_1_Taxon_Range.txt](NorthSea_1_Taxon_Range.txt) instead of NorthSea_1_taxon.txt,
 choose "Circular" mode in the control panel, click "At tips" and then turn it off.
 
 ![Step_2](figures/Step_2.jpg)

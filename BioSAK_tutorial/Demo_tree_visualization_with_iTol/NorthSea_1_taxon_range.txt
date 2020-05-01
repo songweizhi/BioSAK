@@ -1,19 +1,20 @@
 TREE_COLORS
 
+# all data below should be TAB separated
 SEPARATOR TAB
 
-DATASET_LABEL	bin_taxon
+DATASET_LABEL	Classes_Range
 
 
-# Dataset legends
+# customize legend, colors were provided in hex format
 LEGEND_TITLE	Class
 LEGEND_SHAPES	1	1	1	1	1
 LEGEND_COLORS	#CC0000	#CC6600	#CCCC00	#66CC00	#9999FF
 LEGEND_LABELS	c__Actinobacteria	c__Alphaproteobacteria	c__Bacteroidia	c__Gammaproteobacteria	c__Verrucomicrobiae
 
 
+# provide data below, colors were provided in hex format
 DATA
-
 NorthSea_bin070	range	#CCCC00	c__Bacteroidia
 NorthSea_bin054	range	#CC6600	c__Alphaproteobacteria
 NorthSea_bin083	range	#CC6600	c__Alphaproteobacteria

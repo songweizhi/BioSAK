@@ -1,19 +1,24 @@
+DATASET_SIMPLEBAR
 # https://itol.embl.de/help/dataset_simplebar_template.txt
 
-DATASET_SIMPLEBAR
-SEPARATOR TAB
-DATASET_LABEL	Demo_Bar_Chart
-COLOR	grey
 
+# all data below should be TAB separated
+SEPARATOR TAB
+
+
+DATASET_LABEL	MAG_size
+COLOR	grey
 WIDTH	300
 MARGIN	20
 HEIGHT_FACTOR	0.8
 BORDER_WIDTH	0
 
-# VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR
-# SCALE_FACTOR: Font size
+
+# VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR, SCALE_FACTOR controls font size
 DATASET_SCALE	0-0-#696969-1-1-2	3-3-#696969-1-1-2	6-6-#696969-1-1-2	9-9-#696969-1-1-2
 
+
+# provide data below, colors were provided in hex format
 DATA
 NorthSea_bin070	6.15
 NorthSea_bin054	6.63

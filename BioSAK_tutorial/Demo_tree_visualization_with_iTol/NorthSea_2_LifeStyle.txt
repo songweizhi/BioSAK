@@ -1,6 +1,7 @@
 DATASET_COLORSTRIP
 # https://itol.embl.de/help/dataset_color_strip_template.txt
 
+# all data below should be TAB separated
 SEPARATOR TAB
 
 DATASET_LABEL	bin_source
@@ -9,15 +10,15 @@ STRIP_WIDTH	100
 MARGIN	20
 
 
-# Dataset legends
+# customize legend, colors were provided in hex format
 LEGEND_TITLE	Lifestyle
 LEGEND_SHAPES	1	1
 LEGEND_COLORS	#8eecf5	#e69d50
 LEGEND_LABELS	Planktonic	Surface-associated
 
 
+# provide data below, colors were provided in hex format
 DATA
-
 NorthSea_bin070	#e69d50	Surface-associated
 NorthSea_bin054	#e69d50	Surface-associated
 NorthSea_bin083	#e69d50	Surface-associated
