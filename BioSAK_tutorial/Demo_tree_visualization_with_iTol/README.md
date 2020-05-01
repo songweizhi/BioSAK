@@ -33,8 +33,8 @@ You just need to drag and drop **NorthSea_1_Taxon_ColorStrip.txt**  to the tree 
 
 
 1. To get a tree with a circular layout and MAG classes coloured as in the right figure below. 
-You need to use **NorthSea_1_Taxon_Range.txt** instead of NorthSea_1_taxon.txt,
-choose "Circular" mode in the control panel, click "At tips" and then turn it off.
+You need to use **NorthSea_1_Taxon_Range.txt** instead of **NorthSea_1_taxon.txt**,
+choose "**Circular**" mode in the control panel, click "**At tips**" and then turn it **off**.
 
 ![Step_2](figures/Step_2.jpg)
 
