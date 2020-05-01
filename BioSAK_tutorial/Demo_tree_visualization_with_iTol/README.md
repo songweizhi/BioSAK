@@ -15,26 +15,25 @@ This tutorial shows how to visualize all these info in one figure.
     + MAG size info: [NorthSea_3_MAG_Size.txt](NorthSea_3_MAG_Size.txt)
 
 
-1. Upload your tree ([NorthSea_0_Tree.newick](NorthSea_0_Tree.newick)) to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 1. Upload **NorthSea_0_Tree.newick** to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 
 
-1. Once you have your tree uploaded, you'll see the skeleton of your tree without any decoration. 
+1. Once you have the tree uploaded, you'll see the skeleton of the tree without any decoration. 
 You can now play around with the control panel on the right side (e.g. change tree layout to circular).
 
 ![Step_1](figures/Step_1.jpg)
 
 
 1. We are going to add the taxonomy info of our MAG to the tree now, which is really easy to do in iTOL. 
-You just need to drag and drop the [NorthSea_1_Taxon_ColorStrip.txt](NorthSea_1_Taxon_ColorStrip.txt) file to the tree area.
+You just need to drag and drop **NorthSea_1_Taxon_ColorStrip.txt**  to the tree area.
 
 
-1. Do the same thing to file [NorthSea_2_LifeStyle.txt](NorthSea_2_LifeStyle.txt) and [NorthSea_3_MAG_Size.txt](NorthSea_3_MAG_Size.txt) to add life-style and size info, you'll see a tree like this:
+1. Do the same thing to file **NorthSea_2_LifeStyle.txt** and **NorthSea_3_MAG_Size.txt** to add life-style and size info, you'll see a tree like this:
 ![Layout_Normal](figures/Layout_Normal.jpg)
 
 
 1. To get a tree with a circular layout and MAG classes coloured as in the right figure below. 
-You need to use [NorthSea_1_Taxon_Range.txt](NorthSea_1_Taxon_Range.txt) instead of NorthSea_1_taxon.txt,
+You need to use **NorthSea_1_Taxon_Range.txt** instead of NorthSea_1_taxon.txt,
 choose "Circular" mode in the control panel, click "At tips" and then turn it off.
 
 ![Step_2](figures/Step_2.jpg)
