@@ -3,7 +3,7 @@ library(mvabund)
 # Generalised linear models 1
 # http://environmentalcomputing.net/generalised-linear-models-1/
 
-Crabs_data = '/Users/songweizhi/PycharmProjects/BioSAK/My_R_scripts/Environmental_Computing_ tutorials/data/Crabs.csv'
+Crabs_data = '/Users/songweizhi/PycharmProjects/BioSAK/My_R_scripts/Environmental_Computing_tutorials/data/Crabs.csv'
 
 Crab_PA <- read.csv(Crabs_data, header = T)
 Crab_PA

@@ -3,7 +3,7 @@
 
 library(mvabund)
 
-Revegetation_data = '/Users/songweizhi/PycharmProjects/BioSAK/My_R_scripts/Environmental_Computing_ tutorials/data/Revegetation.csv'
+Revegetation_data = '/Users/songweizhi/PycharmProjects/BioSAK/My_R_scripts/Environmental_Computing_tutorials/data/Revegetation.csv'
 Reveg <- read.csv(Revegetation_data, header = T)
 Reveg
 

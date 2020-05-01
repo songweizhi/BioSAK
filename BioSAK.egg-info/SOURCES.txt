@@ -9,6 +9,7 @@ BioSAK/COG2014.py
 BioSAK/CheckM.py
 BioSAK/FastaSplitler_by_num.py
 BioSAK/FastaSplitler_by_size.py
+BioSAK/GTDB_for_BLCA.py
 BioSAK/Gene2Ctg.py
 BioSAK/KEGG.py
 BioSAK/KEGG_get_eukaryotic_kos.py
@@ -19,6 +20,7 @@ BioSAK/Newick_tree_plotter.py
 BioSAK/Prodigal.py
 BioSAK/Prokka.py
 BioSAK/Reads_simulator.py
+BioSAK/SILVA_for_BLCA.py
 BioSAK/SankeyTaxon.py
 BioSAK/Subset_tree.py
 BioSAK/VERSION

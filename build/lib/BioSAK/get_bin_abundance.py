@@ -30,7 +30,7 @@ cluster_3	Amphiroa_bin_3.fa
 
 # Note!!!
 The input sam file is obtained by mapping sequencing reads from a sample to the combined file of all bins in ‘-bin’ folder. 
-Please make sure contig ids are UNIQUE if you are combining bins derived from multiple samples.
+Please make sure contig ids are UNIQUE if you have bins derived from multiple samples combined together.
 
 ====================================================================================================
 '''

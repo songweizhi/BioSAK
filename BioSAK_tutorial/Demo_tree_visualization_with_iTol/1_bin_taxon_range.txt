@@ -1,0 +1,35 @@
+TREE_COLORS
+
+SEPARATOR TAB
+
+DATASET_LABEL	bin_source
+
+# Dataset legends
+LEGEND_TITLE	Phyla
+LEGEND_SHAPES	1	1	1	1
+LEGEND_COLORS	#CC0000	#CC6600	#CCCC00	#66CC00	
+LEGEND_LABELS	p__Cyanobacteria	p__Actinobacteriota	p__Patescibacteria	p__Chloroflexota	
+
+
+DATA
+
+bin01	range	#CC0000	p__Cyanobacteria
+bin02	range	#CC6600	p__Actinobacteriota
+bin03	range	#CC0000	p__Cyanobacteria
+bin04	range	#CC6600	p__Actinobacteriota
+bin05	range	#CC0000	p__Cyanobacteria
+bin06	range	#CCCC00	p__Patescibacteria
+bin07	range	#CCCC00	p__Patescibacteria
+bin08	range	#CCCC00	p__Patescibacteria
+bin09	range	#66CC00	p__Chloroflexota
+bin10	range	#66CC00	p__Chloroflexota
+bin11	range	#CC0000	p__Cyanobacteria
+bin12	range	#CC0000	p__Cyanobacteria
+bin13	range	#CC0000	p__Cyanobacteria
+bin14	range	#66CC00	p__Chloroflexota
+bin15	range	#CC6600	p__Actinobacteriota
+bin16	range	#66CC00	p__Chloroflexota
+bin17	range	#CC6600	p__Actinobacteriota
+bin18	range	#66CC00	p__Chloroflexota
+bin19	range	#CC6600	p__Actinobacteriota
+bin20	range	#66CC00	p__Chloroflexota

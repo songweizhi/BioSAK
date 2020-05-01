@@ -32,6 +32,8 @@ from BioSAK import SankeyTaxon
 from BioSAK import format_converter
 from BioSAK import get_Pfam_hmms
 from BioSAK import NetEnzymes
+from BioSAK import SILVA_for_BLCA
+from BioSAK import GTDB_for_BLCA
 from BioSAK.BioSAK_config import config_dict
 
 
@@ -74,6 +76,8 @@ def print_main_help():
                       
     Other modules
        split_folder           ->   Split folder
+       SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
+       GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
        SankeyTaxon            ->   Plot taxonomic classification with Sankey plot
        BestHit                ->   Keep Best Hits only (blast outfmt 6)
        get_bin_abundance      ->   Get bin abundance
@@ -136,6 +140,8 @@ if __name__ == '__main__':
 
     # Other modules
     split_folder_parser =               subparsers.add_parser('split_folder',               description='Split folder',                                         usage=split_folder.split_folder_parser_usage)
+    SILVA_for_BLCA_parser =             subparsers.add_parser('SILVA_for_BLCA',             description='Prepare BLCA-compatible SILVA SSU database',           usage=SILVA_for_BLCA.SILVA_for_BLCA_usage)
+    GTDB_for_BLCA_parser =              subparsers.add_parser('GTDB_for_BLCA',              description='Prepare BLCA-compatible GTDB SSU database',            usage=GTDB_for_BLCA.GTDB_for_BLCA_usage)
     SankeyTaxon_parser =                subparsers.add_parser('SankeyTaxon',                description='Visualize GTDB output with Sankey diagram',            usage=SankeyTaxon.SankeyTaxon_parser_usage)
     BestHit_parser =                    subparsers.add_parser('BestHit',                    description='Keep blast hits with highest bit score',               usage=split_folder.split_folder_parser_usage)
     get_bin_abundance_parser =          subparsers.add_parser('get_bin_abundance',          description='Get bin abundance',                                    usage=get_bin_abundance.get_bin_abundance_usage)
@@ -293,6 +299,11 @@ if __name__ == '__main__':
     rename_seq_parser.add_argument('-n',                required=False, type=int,                       help='the number of columns to keep')
     rename_seq_parser.add_argument('-prefix',           required=False, default=None,                   help='add prefix to all sequences in a fasta file')
 
+    SILVA_for_BLCA_parser.add_argument('-SILVA_ssu',    required=True,                                  help='SILVA SSU sequence file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
+
+    GTDB_for_BLCA_parser.add_argument('-GTDB_ssu',      required=True,                                  help='GTDB SSU sequence file, e.g. bac120_ar122_ssu_r89.fna')
+
+
     ###################################################### parse provided arguments and run corresponding function #####################################################
 
     # disable warning message
@@ -386,6 +397,12 @@ if __name__ == '__main__':
 
     elif args['subparser_name'] == 'NetEnzymes':
         NetEnzymes.NetEnzymes(args, config_dict)
+
+    elif args['subparser_name'] == 'SILVA_for_BLCA':
+        SILVA_for_BLCA.SILVA_for_BLCA(args)
+
+    elif args['subparser_name'] == 'GTDB_for_BLCA':
+        GTDB_for_BLCA.GTDB_for_BLCA(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
