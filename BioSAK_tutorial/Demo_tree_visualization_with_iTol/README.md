@@ -28,17 +28,16 @@ You can now play around with the control panel on the right side (e.g. change tr
 You just need to drag and drop **NorthSea_1_Taxon_ColorStrip.txt**  to the tree area.
 
 
-1. Do the same thing to file **NorthSea_2_LifeStyle.txt** and **NorthSea_3_MAG_Size.txt** to add life-style and size info, you'll see a tree like this:
-![Layout_Normal](figures/Layout_Normal.jpg)
+1. Do the same thing to file **NorthSea_2_LifeStyle.txt** and **NorthSea_3_MAG_Size.txt** to add life-style and size info, 
+you'll see trees like this:
+![Tree_1](figures/Tree_1.jpg)
 
 
-1. To get a tree with a circular layout and MAG classes coloured as in the right figure below. 
-You need to use **NorthSea_1_Taxon_Range.txt** instead of **NorthSea_1_taxon.txt**,
+1. To get a tree with a circular layout and MAG classes coloured as in the figure below. 
+You need to use **NorthSea_1_Taxon_Range.txt** instead of **NorthSea_1_Taxon_ColorStrip.txt**,
 choose "**Circular**" mode in the control panel, click "**At tips**" and then turn it **off**.
 
-![Step_2](figures/Step_2.jpg)
-
-![Layout_Circular](figures/Layout_Circular.jpg)
+![Tree_2](figures/Tree_2.jpg)
 
 
 # Help information
