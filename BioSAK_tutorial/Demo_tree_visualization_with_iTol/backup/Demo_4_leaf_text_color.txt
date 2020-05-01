@@ -1,0 +1,28 @@
+TREE_COLORS
+
+SEPARATOR TAB
+
+DATA
+
+########## specify label color here ##########
+
+bin01	label	#c04104	bold	1
+bin02	label	#0c4e99	bold	1.2
+bin03	label	#8c6d63	bold	0.4
+bin04	label	#e41ea4	bold	0.5
+bin05	label	#c23551	bold	0.6
+bin06	label	#a16088	bold	0.8
+bin07	label	#02165d	italic	1
+bin08	label	#8a3861	italic	1
+bin09	label	#cabd33	italic	1
+bin10	label	#c4f71f	italic	1.2
+bin11	label	#d3ddfc	bold	1
+bin12	label	#f4980b	italic	1
+bin13	label	#15daa6	bold	1
+bin14	label	#d89de9	italic	1
+bin15	label	#bdb6fb	bold-italic	1
+bin16	label	#17785a	bold-italic	1
+bin17	label	#d5b328	bold-italic	0.5
+bin18	label	#3ec8c8	bold-italic	1
+bin19	label	#48d4ba	bold-italic	0.5
+bin20	label	#661b92	bold-italic	1
