@@ -13,14 +13,14 @@ STRIP_WIDTH	100
 MARGIN	20
 
 
-# customize legend, colors were provided in hex format
+# customize legend here, colors were specified in hex format
 LEGEND_TITLE	Class
 LEGEND_SHAPES	1	1	1	1	1
 LEGEND_COLORS	#CC0000	#CC6600	#CCCC00	#66CC00	#9999FF
 LEGEND_LABELS	c__Actinobacteria	c__Alphaproteobacteria	c__Bacteroidia	c__Gammaproteobacteria	c__Verrucomicrobiae
 
 
-# provide data below, colors were provided in hex format
+# provide data here, colors were specified in hex format
 DATA
 NorthSea_bin070	#CCCC00	c__Bacteroidia
 NorthSea_bin054	#CC6600	c__Alphaproteobacteria

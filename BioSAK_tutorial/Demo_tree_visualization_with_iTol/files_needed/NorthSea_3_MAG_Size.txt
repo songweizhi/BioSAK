@@ -18,7 +18,7 @@ BORDER_WIDTH	0
 DATASET_SCALE	0-0-#696969-1-1-2	3-3-#696969-1-1-2	6-6-#696969-1-1-2	9-9-#696969-1-1-2
 
 
-# provide data below, colors were provided in hex format
+# provide data here
 DATA
 NorthSea_bin070	6.15
 NorthSea_bin054	6.63
