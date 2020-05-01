@@ -9,10 +9,10 @@ This short note shows how to visualize all these info in one figure.
 
 1. File description (all files need to be prepared according to iTOL's syntax):
 
-    + A phylogenetic tree in Newick format: [NorthSea_0_Tree.newick](NorthSea_0_Tree.newick)
-    + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](NorthSea_1_Taxon_Range.txt)
-    + Life-style info: [NorthSea_2_LifeStyle.txt](NorthSea_2_LifeStyle.txt)
-    + MAG size info: [NorthSea_3_MAG_Size.txt](NorthSea_3_MAG_Size.txt)
+    + A phylogenetic tree in Newick format: [NorthSea_0_Tree.newick](files_needed/NorthSea_0_Tree.newick)
+    + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](files_needed/NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](files_needed/NorthSea_1_Taxon_Range.txt)
+    + Life-style info: [NorthSea_2_LifeStyle.txt](files_needed/NorthSea_2_LifeStyle.txt)
+    + MAG size info: [NorthSea_3_MAG_Size.txt](files_needed/NorthSea_3_MAG_Size.txt)
 
 
 1. Upload **NorthSea_0_Tree.newick** to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
