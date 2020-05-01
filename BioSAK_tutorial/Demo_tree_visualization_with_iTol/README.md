@@ -3,11 +3,11 @@
 
 1. Here, I have a phylogenetic tree for 37 MAGs derived from microbial communities (either surface-associated or planktonic) sampled in North Sea.
 I have the taxonomy info of these MAGs at class level and I also have the size of these MAGs.
-This tutorial shows how to visualize all these info in one figure.
+This short note shows how to visualize all these info in one figure.
 
 1. Download needed files: [files_needed.zip](files_needed.zip)
 
-1. File description (all files need to be formatted according to iTOL's requirement):
+1. File description (all files need to be prepared according to iTOL's syntax):
 
     + A phylogenetic tree in Newick format: [NorthSea_0_Tree.newick](NorthSea_0_Tree.newick)
     + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](NorthSea_1_Taxon_Range.txt)
