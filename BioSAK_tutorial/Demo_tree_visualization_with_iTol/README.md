@@ -7,7 +7,7 @@ This tutorial shows how to visualize all these info in one figure.
 
 1. Download needed files: [files_needed.zip](files_needed.zip)
 
-1. Files description (all files need to be formatted according to iTOL's requirement):
+1. File description (all files need to be formatted according to iTOL's requirement):
 
     + A phylogenetic tree in Newick format: [NorthSea_0_Tree.newick](NorthSea_0_Tree.newick)
     + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](NorthSea_1_Taxon_Range.txt)
@@ -16,6 +16,7 @@ This tutorial shows how to visualize all these info in one figure.
 
 
 1. Upload your tree ([NorthSea_0_Tree.newick](NorthSea_0_Tree.newick)) to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
+1. Upload **NorthSea_0_Tree.newick** to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 
 
 1. Once you have your tree uploaded, you'll see the skeleton of your tree without any decoration. 
