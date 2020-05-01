@@ -1,7 +1,7 @@
 
 ## Tree visualization with [iTOL](https://itol.embl.de)
 
-1. Here, I have a phylogenetic tree for 37 MAGs derived from microbial communities (either surface-associated or planktonic) collected in North Sea.
+1. Here, I have a phylogenetic tree for 37 MAGs derived from microbial communities (either surface-associated or planktonic) sampled in North Sea.
 I have the taxonomy info of these MAGs at class level and I also have the size of these MAGs.
 This tutorial shows how to visualize all these info in one figure.
 
@@ -24,10 +24,10 @@ You can now play around with the control panel on the right side (e.g. change tr
 
 
 2. We are going to add the taxonomy info of our MAG to the tree now, which is really easy to do in iTOL. 
-You just need to drag and drop the [NorthSea_0_Tree.newick](NorthSea_0_Tree.newick) file to the tree area.
+You just need to drag and drop the [NorthSea_1_Taxon_ColorStrip.txt](NorthSea_1_Taxon_ColorStrip.txt) file to the tree area.
 
 
-3. Do the same thing to file [NorthSea_2_LifeStyle.txt](NorthSea_2_LifeStyle.txt) and [NorthSea_3_MAG_Size.txt](NorthSea_3_bin_size_norm.txt) to add life-style and size info, you'll see a tree like this:
+3. Do the same thing to file [NorthSea_2_LifeStyle.txt](NorthSea_2_LifeStyle.txt) and [NorthSea_3_MAG_Size.txt](NorthSea_3_MAG_Size.txt) to add life-style and size info, you'll see a tree like this:
 ![Layout_Normal](figures/Layout_Normal.jpg)
 
 
