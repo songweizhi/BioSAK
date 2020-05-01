@@ -9,7 +9,7 @@ This short note shows how to visualize all these info in one figure.
 
 1. File description (all files need to be prepared according to iTOL's syntax):
 
-    + A phylogenetic tree in Newick format: [NorthSea_0_Tree.newick](files_needed/NorthSea_0_Tree.newick)
+    + A phylogenetic tree in [Newick](http://evolution.genetics.washington.edu/phylip/newicktree.html) format: [NorthSea_0_Tree.newick](files_needed/NorthSea_0_Tree.newick)
     + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](files_needed/NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](files_needed/NorthSea_1_Taxon_Range.txt)
     + Life-style info: [NorthSea_2_LifeStyle.txt](files_needed/NorthSea_2_LifeStyle.txt)
     + MAG size info: [NorthSea_3_MAG_Size.txt](files_needed/NorthSea_3_MAG_Size.txt)
@@ -21,9 +21,9 @@ You can now play around with the control panel on the right side (e.g. change tr
 ![Step_1](figures/Step_1.jpg)
 
 1. We are going to add the taxonomy info of our MAG to the tree now, which is really easy to do in iTOL. 
-You just need to drag and drop **NorthSea_1_Taxon_ColorStrip.txt**  to the tree area.
+You just need to drag and drop **NorthSea_1_Taxon_ColorStrip.txt**  to the **tree area**.
 
-1. Do the same thing to file **NorthSea_2_LifeStyle.txt** and **NorthSea_3_MAG_Size.txt** to add life-style and size info, 
+1. Do the same thing to **NorthSea_2_LifeStyle.txt** and **NorthSea_3_MAG_Size.txt** to add life-style and size info, 
 you'll see trees like this:
 ![Tree_1](figures/Tree_1.jpg)
 
