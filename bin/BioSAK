@@ -20,7 +20,8 @@ import sys
 import warnings
 import argparse
 from BioSAK import Prodigal, CheckM
-from BioSAK import COG2003, COG2014, KEGG, dbCAN
+from BioSAK import COG2003, COG2014, KEGG, dbCAN, NetEnzymes
+from BioSAK import SILVA_for_BLCA, GTDB_for_BLCA
 from BioSAK import get_SCG_tree, Subset_tree, label_tree, iTOL
 from BioSAK import sra_reads_downloader, download_GenBank_genome
 from BioSAK import select_seq, rename_seq
@@ -31,9 +32,6 @@ from BioSAK import split_folder
 from BioSAK import SankeyTaxon
 from BioSAK import format_converter
 from BioSAK import get_Pfam_hmms
-from BioSAK import NetEnzymes
-from BioSAK import SILVA_for_BLCA
-from BioSAK import GTDB_for_BLCA
 from BioSAK.BioSAK_config import config_dict
 
 
@@ -73,7 +71,7 @@ def print_main_help():
        get_SCG_tree           ->   Construct SCG tree for query genomes
        label_tree             ->   Add labels to tree leaves
        subset_tree            ->   Subset tree
-       iTOL                   ->   Plot tree with iTOL
+       iTOL                   ->   Prepare files for tree visualization with iTOL
                       
     Other modules
        split_folder           ->   Split folder
