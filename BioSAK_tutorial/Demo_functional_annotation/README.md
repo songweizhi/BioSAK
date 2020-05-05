@@ -151,23 +151,6 @@
     jgi_summarize_bam_contig_depths --outputDepth Seawater_ctg.depth Seawater_sorted.bam
 
 
-### Some other modules of BioSAK
-
-1. Download GenBank genomes
-
-    + Go to https://www.ncbi.nlm.nih.gov/genome/browse#!/prokaryotes/refseq_category:reference
-    + Search genomes you want to download (e.g. Alteromonas, Archaea)
-    + Click "Download" on the top right corner of the table
-    + Download genome with dwnld_GenBank_genome
-    
-          cd /srv/scratch/$zID/BioSAK_demo/OtherFiles
-          BioSAK dwnld_GenBank_genome -csv Alteromonas.csv -fna -faa -gbff -name
-
-1. For more:
-
-       BioSAK -h
-
-
 ### References and online resources:
 
 + WebMGA: http://weizhong-lab.ucsd.edu/webMGA/server/cog/
