@@ -53,7 +53,7 @@ def print_main_help():
        COG2014                ->   COG annotation (v2014, by blastp/diamond)
        KEGG                   ->   KEGG annotation
        dbCAN                  ->   CAZy annotation with dbCAN
-       NetEnzymes             ->   Get network of enzymes (based on MetaCyc)   
+       NetEnzymes             ->   Get network of enzymes (based on MetaCyc, under development)   
        Enrichment             ->   Gene set enrichment analysis (to be added)
        
     Sequence manipulator
@@ -63,7 +63,7 @@ def print_main_help():
        ffn2faa                ->   ffn to faa
        get_rc                 ->   Get reverse complement sequence
        rename_seq             ->   Rename sequences in a file
-       select_seq             ->   Select sequences by their id
+       select_seq             ->   Select sequences by their ids
        get_gene_depth         ->   Get gene depth by contig depth
        convert_align_format   ->   Convert alignment format
 

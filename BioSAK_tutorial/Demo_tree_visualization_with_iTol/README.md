@@ -32,6 +32,10 @@ You need to use **NorthSea_1_Taxon_Range.txt** instead of **NorthSea_1_Taxon_Col
 choose "**Circular**" mode in the control panel, click "**At tips**" and then turn it **off**.
 ![Tree_2](figures/Tree_2.jpg)
 
+1. Go to the **Export** panel, choose desired file format and export your tree plot to file. 
+Remember to turn on "**Colored ranges legend**", if you are using **NorthSea_1_Taxon_Range.txt** to color MAG classes.
+![Step_2](figures/Step_2.jpg)
+
 
 # Help information
 
