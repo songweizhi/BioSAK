@@ -2,7 +2,7 @@
 ## Tree visualization with [iTOL](https://itol.embl.de)
 
 1. Here, I have a phylogenetic tree for 37 MAGs derived from microbial communities (either surface-associated or planktonic) sampled in North Sea.
-I have the taxonomy info of these MAGs at class level and I also have the size of these MAGs.
+I have the taxonomy info of these MAGs at class level and I also have their sizes.
 This short note shows how to visualize all these info in one figure.
 
 1. Download needed files: [files_needed.zip](files_needed.zip)
@@ -33,7 +33,7 @@ choose "**Circular**" mode in the control panel, click "**At tips**" and then tu
 ![Tree_2](figures/Tree_2.jpg)
 
 1. Go to the **Export** panel, choose desired file format and export your tree plot to file. 
-Remember to turn on "**Colored ranges legend**", if you are using **NorthSea_1_Taxon_Range.txt** to color MAG classes.
+Remember to turn on **Colored ranges legend**, if you are using **NorthSea_1_Taxon_Range.txt** to color MAG classes.
 ![Step_2](figures/Step_2.jpg)
 
 
