@@ -16,16 +16,16 @@ This short note shows how to visualize all these info in one figure.
     
     + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module (> 1.22.0) to prepare these files. Please refers to BioSAK's [help page](https://github.com/songweizhi/BioSAK) for its installation.
     
-          # get NorthSea_1_Taxon_ColorStrip.txt with raw_MAG_taxon.txt and raw_taxon_color.txt
+          # get NorthSea_1_Taxon_ColorStrip.txt
           BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_ColorStrip.txt
           
-          # get NorthSea_1_Taxon_Range.txt with raw_MAG_taxon.txt and raw_taxon_color.txt
+          # get NorthSea_1_Taxon_Range.txt
           BioSAK iTOL -ColorRange -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_Range.txt
           
-          # get NorthSea_2_LifeStyle.txt with raw_MAG_LifeStyle.txt and raw_LifeStyle_color.txt
+          # get NorthSea_2_LifeStyle.txt
           BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_LifeStyle.txt -GroupColor raw_LifeStyle_color.txt -LegendTitle MAG_LifeStyle -out NorthSea_2_LifeStyle.txt
           
-          # get NorthSea_3_MAG_Size.txt with raw_MAG_size.txt
+          # get NorthSea_3_MAG_Size.txt
           BioSAK iTOL -SimpleBar -LeafValue raw_MAG_size.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_3_MAG_Size.txt
 
           # Help info
