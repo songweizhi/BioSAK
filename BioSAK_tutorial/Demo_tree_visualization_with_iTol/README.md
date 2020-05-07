@@ -14,7 +14,7 @@ This short note shows how to visualize all these info in one figure.
     + Life-style info: [NorthSea_2_LifeStyle.txt](files_needed/NorthSea_2_LifeStyle.txt)
     + MAG size info: [NorthSea_3_MAG_Size.txt](files_needed/NorthSea_3_MAG_Size.txt)
     
-    + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to prepare these files, please run "BioSAK iTOL -h" for more details.
+    + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to prepare these files.
     
           BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_ColorStrip.txt
           BioSAK iTOL -ColorRange -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_Range.txt
