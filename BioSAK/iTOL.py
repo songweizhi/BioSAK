@@ -6,54 +6,70 @@ import argparse
 iTOL_usage = '''
 =========================================== iTOL example commands ===========================================
 
-BioSAK iTOL -ColorStrip -LeafGroup LeafGroup.txt -GroupColor GroupColor.txt -prefix NorthSea -LegendTitle Phylum 
-BioSAK iTOL -ColorRange -LeafGroup LeafGroup.txt -GroupColor GroupColor.txt -prefix NorthSea -LegendTitle Phylum 
+BioSAK iTOL -ColorStrip -LeafGroup LeafGroup.txt -GroupColor GroupColor.txt -LegendTitle Phylum -out NorthSea_ColorStrip_taxon.txt
+BioSAK iTOL -ColorRange -LeafGroup LeafGroup.txt -GroupColor GroupColor.txt -LegendTitle Phylum -out NorthSea_ColorRange_taxon.txt
+BioSAK iTOL -SimpleBar -LeafValue LeafValue.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_SimpleBar_Size.txt
 
 # LeafGroup file format (tab separated)
-NorthSea_bin070	Alphaproteobacteria
-NorthSea_bin054	Actinobacteria
-NorthSea_bin103	Verrucomicrobiae
+NorthSea_bin001	Alphaproteobacteria
+NorthSea_bin002	Alphaproteobacteria
+NorthSea_bin003	Verrucomicrobiae
 
 # GroupColor file format (tab separated)
 Alphaproteobacteria	#CCCC00
 Verrucomicrobiae	#9999FF
-Actinobacteria	#CC6600
+
+# LeafValue file format (tab separated)
+NorthSea_bin001	6.15
+NorthSea_bin002	6.63
+NorthSea_bin003	7.11
+
+
+
 
 =============================================================================================================
-'''
-
-'''
-
-cd /Users/songweizhi/Desktop/iTOL
-python ~/PycharmProjects/BioSAK/BioSAK/iTOL.py -ColorStrip -LeafGroup NorthSea_LeafGroup.txt -GroupColor NorthSea_GroupColor.txt -prefix NorthSea -LegendTitle MAG_Class 
-python ~/PycharmProjects/BioSAK/BioSAK/iTOL.py -ColorRange -LeafGroup NorthSea_LeafGroup.txt -GroupColor NorthSea_GroupColor.txt -prefix NorthSea -LegendTitle MAG_Class 
-
 '''
 
 
 def iTOL(args):
 
     # read in arguments
-    FilePrefix      = args['prefix']
     ColorStrip      = args['ColorStrip']
     ColorRange      = args['ColorRange']
+    SimpleBar       = args['SimpleBar']
     LeafGroup       = args['LeafGroup']
     GroupColor      = args['GroupColor']
+    LeafValue       = args['LeafValue']
+    scale_str       = args['scale']
     LegendTitle     = args['LegendTitle']
-    STRIP_WIDTH     = 100
-    MARGIN          = 20
+    FileOut         = args['out']
 
-    if (ColorStrip is True) and (ColorRange is True):
-        print('Please specify one at a time')
+    STRIP_WIDTH                 = 100
+    MARGIN                      = 20
+    SimpleBar_COLOR             = 'grey'
+    SimpleBar_WIDTH             = 300
+    SimpleBar_HEIGHT_FACTOR     = 0.8
+    SimpleBar_BORDER_WIDTH      = 0
+    SimpleBar_SCALE_COLOR       = '#696969'
+    SimpleBar_SCALE_WIDTH       = 1
+    SimpleBar_SCALE_DASHED      = 1
+    SimpleBar_SCALE_FontSize    = 2
+
+    # check the number of specified file type
+    True_num = 0
+    for file_type in [ColorStrip, ColorRange, SimpleBar]:
+        if file_type is True:
+            True_num += 1
+
+    if True_num == 0:
+        print('Please specify one file type, choose from -ColorStrip, -ColorRange or -SimpleBar')
+        exit()
+    if True_num > 1:
+        print('Please specify one file type ONLY, choose from -ColorStrip, -ColorRange or -SimpleBar')
         exit()
 
-    elif (ColorStrip is True) or (ColorRange is True):
-
-        file_out = ''
-        if ColorStrip is True:
-            file_out = '%s_ColorStrip.txt' % FilePrefix
-        if ColorRange is True:
-            file_out = '%s_ColorRange.txt' % FilePrefix
+    # Prepare ColorStrip and ColorRange file
+    if (ColorStrip is True) or (ColorRange is True):
 
         Leaf_to_Group_dict = {}
         for each_leaf in open(LeafGroup):
@@ -68,43 +84,100 @@ def iTOL(args):
         group_list = [i for i in Group_to_Color_dict]
         color_list = [Group_to_Color_dict[i] for i in group_list]
 
-        file_out_handle = open(file_out, 'w')
+        FileOut_handle = open(FileOut, 'w')
 
         # write out header
         if ColorStrip is True:
-            file_out_handle.write('DATASET_COLORSTRIP\n')
-            file_out_handle.write('SEPARATOR TAB\n')
-            file_out_handle.write('DATASET_LABEL\t%s_ColorStrip\n' % LegendTitle)
+            FileOut_handle.write('DATASET_COLORSTRIP\n')
+            FileOut_handle.write('SEPARATOR TAB\n')
+            FileOut_handle.write('DATASET_LABEL\t%s_ColorStrip\n' % LegendTitle)
         if ColorRange is True:
-            file_out_handle.write('TREE_COLORS\n')
-            file_out_handle.write('SEPARATOR TAB\n')
-            file_out_handle.write('DATASET_LABEL\t%s_ColorRange\n' % LegendTitle)
+            FileOut_handle.write('TREE_COLORS\n')
+            FileOut_handle.write('SEPARATOR TAB\n')
+            FileOut_handle.write('DATASET_LABEL\t%s_ColorRange\n' % LegendTitle)
 
         # write out strip attributes
         if ColorStrip is True:
-            file_out_handle.write('\n# customize strip attributes here\n')
-            file_out_handle.write('STRIP_WIDTH\t%s\n' % STRIP_WIDTH)
-            file_out_handle.write('MARGIN\t%s\n'      % MARGIN)
+            FileOut_handle.write('\n# customize strip attributes here\n')
+            FileOut_handle.write('STRIP_WIDTH\t%s\n' % STRIP_WIDTH)
+            FileOut_handle.write('MARGIN\t%s\n'      % MARGIN)
 
         # write out legend info
-        file_out_handle.write('\n# customize legend here\n')
-        file_out_handle.write('LEGEND_TITLE\t%s\n' % LegendTitle)
-        file_out_handle.write('LEGEND_SHAPES\t%s\n' % '\t'.join(['1' for i in Group_to_Color_dict]))
-        file_out_handle.write('LEGEND_COLORS\t%s\n' % '\t'.join(color_list))
-        file_out_handle.write('LEGEND_LABELS\t%s\n' % '\t'.join(group_list))
+        FileOut_handle.write('\n# customize legend here\n')
+        FileOut_handle.write('LEGEND_TITLE\t%s\n' % LegendTitle)
+        FileOut_handle.write('LEGEND_SHAPES\t%s\n' % '\t'.join(['1' for i in Group_to_Color_dict]))
+        FileOut_handle.write('LEGEND_COLORS\t%s\n' % '\t'.join(color_list))
+        FileOut_handle.write('LEGEND_LABELS\t%s\n' % '\t'.join(group_list))
 
         # write out data info
-        file_out_handle.write('\n# provide data here\nDATA\n')
+        FileOut_handle.write('\n# provide data here\nDATA\n')
         for leaf in Leaf_to_Group_dict:
             leaf_group = Leaf_to_Group_dict[leaf]
             leaf_color = Group_to_Color_dict[leaf_group]
 
             if ColorStrip is True:
-                file_out_handle.write('%s\t%s\t%s\n' % (leaf, leaf_color, leaf_group))
+                FileOut_handle.write('%s\t%s\t%s\n' % (leaf, leaf_color, leaf_group))
             if ColorRange is True:
-                file_out_handle.write('%s\trange\t%s\t%s\n' % (leaf, leaf_color, leaf_group))
+                FileOut_handle.write('%s\trange\t%s\t%s\n' % (leaf, leaf_color, leaf_group))
 
-        file_out_handle.close()
+        FileOut_handle.close()
+
+
+    # Prepare SimpleBar file
+    if SimpleBar is True:
+
+        if scale_str is None:
+            print('Please provide scale values for barchart, in format 0-3-6-9')
+            exit()
+
+        # read in leaf value into dict
+        leaf_value_dict = {}
+        max_value = None
+        for leaf_value in open(LeafValue):
+            leaf_value_split = leaf_value.strip().split('\t')
+            leaf_value_dict[leaf_value_split[0]] = float(leaf_value_split[1])
+
+            # get max value
+            if max_value == None:
+                max_value = float(leaf_value_split[1])
+            else:
+                if float(leaf_value_split[1]) > max_value:
+                    max_value = float(leaf_value_split[1])
+
+        SimpleBar_FileOut_handle = open(FileOut, 'w')
+
+        # write out header
+        SimpleBar_FileOut_handle.write('DATASET_SIMPLEBAR\n')
+        SimpleBar_FileOut_handle.write('# Reference: https://itol.embl.de/help/dataset_simplebar_template.txt\n')
+        SimpleBar_FileOut_handle.write('\nSEPARATOR TAB\n')
+
+        # write out SimpleBar attributes
+        SimpleBar_FileOut_handle.write('\n# customize barchart attributes here\n')
+        SimpleBar_FileOut_handle.write('DATASET_LABEL\t%s\n'    % LegendTitle)
+        SimpleBar_FileOut_handle.write('COLOR\t%s\n'            % SimpleBar_COLOR)
+        SimpleBar_FileOut_handle.write('WIDTH\t%s\n'            % SimpleBar_WIDTH)
+        SimpleBar_FileOut_handle.write('MARGIN\t%s\n'           % MARGIN)
+        SimpleBar_FileOut_handle.write('HEIGHT_FACTOR\t%s\n'    % SimpleBar_HEIGHT_FACTOR)
+        SimpleBar_FileOut_handle.write('BORDER_WIDTH\t%s\n'     % SimpleBar_BORDER_WIDTH)
+
+        # write out scale attributes
+        scale_attributes_list = []
+        for scale_value in scale_str.split('-'):
+            scale_attributes = '%s-%s-%s-%s-%s-%s' % (scale_value, scale_value, SimpleBar_SCALE_COLOR, SimpleBar_SCALE_WIDTH, SimpleBar_SCALE_DASHED, SimpleBar_SCALE_FontSize)
+            scale_attributes_list.append(scale_attributes)
+
+        SimpleBar_FileOut_handle.write('\n# customize scale attributes here\n')
+        SimpleBar_FileOut_handle.write('# format: VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR, LABEL_SCALE_FACTOR controls font size\n')
+        SimpleBar_FileOut_handle.write('DATASET_SCALE\t%s\n' % '\t'.join(scale_attributes_list))
+
+        # write out data info
+        SimpleBar_FileOut_handle.write('\n# provide data here\n')
+        SimpleBar_FileOut_handle.write('DATA\n')
+
+        for leaf in leaf_value_dict:
+            SimpleBar_FileOut_handle.write('%s\t%s\n' % (leaf, leaf_value_dict[leaf]))
+
+        SimpleBar_FileOut_handle.close()
 
 
 if __name__ == '__main__':
@@ -112,12 +185,15 @@ if __name__ == '__main__':
     # initialize the options parser
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-prefix',      required=True,                         help='Output prefix')
     parser.add_argument('-ColorStrip',  required=False, action='store_true',   help='ColorStrip')
     parser.add_argument('-ColorRange',  required=False, action='store_true',   help='ColorRange')
+    parser.add_argument('-SimpleBar',   required=False, action='store_true',   help='SimpleBar')
     parser.add_argument('-LeafGroup',   required=False, default=None,          help='Leaf Group')
     parser.add_argument('-GroupColor',  required=False, default=None,          help='Group Color')
+    parser.add_argument('-LeafValue',   required=False, default=None,          help='Leaf Value')
+    parser.add_argument('-scale',       required=False, default=None,          help='Scale Values, in format 0-3-6-9')
     parser.add_argument('-LegendTitle', required=False, default=None,          help='Legend Title')
+    parser.add_argument('-out',         required=True,                         help='Output filename')
 
     args = vars(parser.parse_args())
 

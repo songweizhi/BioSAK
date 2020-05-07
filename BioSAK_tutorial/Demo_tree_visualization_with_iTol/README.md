@@ -1,7 +1,7 @@
 
 ## Tree visualization with [iTOL](https://itol.embl.de)
 
-1. Here, I have a phylogenetic tree for 37 MAGs derived from microbial communities (either surface-associated or planktonic) sampled in North Sea.
+1. Here, I have a phylogenetic tree for 37 MAGs derived from microbial communities (either surface-associated or planktonic) sampled in the North Sea.
 I have the taxonomy info of these MAGs at class level and I also have their sizes.
 This short note shows how to visualize all these info in one figure.
 
@@ -13,6 +13,17 @@ This short note shows how to visualize all these info in one figure.
     + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](files_needed/NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](files_needed/NorthSea_1_Taxon_Range.txt)
     + Life-style info: [NorthSea_2_LifeStyle.txt](files_needed/NorthSea_2_LifeStyle.txt)
     + MAG size info: [NorthSea_3_MAG_Size.txt](files_needed/NorthSea_3_MAG_Size.txt)
+    
+    + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to prepare these files, please run "BioSAK iTOL -h" for more details.
+    
+          BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_ColorStrip.txt
+          BioSAK iTOL -ColorRange -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_Range.txt
+          BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_LifeStyle.txt -GroupColor raw_LifeStyle_color.txt -LegendTitle MAG_LifeStyle -out NorthSea_2_LifeStyle.txt
+          BioSAK iTOL -SimpleBar -LeafValue raw_MAG_size.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_3_MAG_Size.txt
+
+          # Help info
+          BioSAK iTOL -h
+
 
 1. Upload **NorthSea_0_Tree.newick** to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 
@@ -32,7 +43,7 @@ You need to use **NorthSea_1_Taxon_Range.txt** instead of **NorthSea_1_Taxon_Col
 choose "**Circular**" mode in the control panel, click "**At tips**" and then turn it **off**.
 ![Tree_2](figures/Tree_2.jpg)
 
-1. Go to the **Export** panel, choose desired file format and export your tree plot to file. 
+1. Go to the **Export** panel, choose desired file format and export your tree to file. 
 Remember to turn on **Colored ranges legend**, if you are using **NorthSea_1_Taxon_Range.txt** to color MAG classes.
 ![Step_2](figures/Step_2.jpg)
 

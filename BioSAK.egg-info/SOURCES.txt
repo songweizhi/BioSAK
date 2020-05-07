@@ -7,6 +7,7 @@ BioSAK/BioSAK_config.py
 BioSAK/COG2003.py
 BioSAK/COG2014.py
 BioSAK/CheckM.py
+BioSAK/Enrichment.py
 BioSAK/FastaSplitler_by_num.py
 BioSAK/FastaSplitler_by_size.py
 BioSAK/GTDB_for_BLCA.py
@@ -38,6 +39,7 @@ BioSAK/gbk_to_ffn_faa.py
 BioSAK/get_EC_from_ko_stats_D.py
 BioSAK/get_Pfam_hmms.py
 BioSAK/get_SCG_tree.py
+BioSAK/get_TopHits_taxonomy.py
 BioSAK/get_aa_composition.py
 BioSAK/get_bin_abundance.py
 BioSAK/get_bin_abundance_old.py
@@ -45,9 +47,11 @@ BioSAK/get_gc.py
 BioSAK/get_gene_depth.py
 BioSAK/get_reads_from_sam.py
 BioSAK/get_sankey_plot.R
+BioSAK/get_top_hit.py
 BioSAK/get_total_length.py
 BioSAK/global_functions.py
 BioSAK/iTOL.py
+BioSAK/iTOL_backup.py
 BioSAK/keep_best_hit.py
 BioSAK/ko00001.keg
 BioSAK/label_tree.R

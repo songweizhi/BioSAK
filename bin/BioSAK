@@ -71,7 +71,7 @@ def print_main_help():
        get_SCG_tree           ->   Construct SCG tree for query genomes
        label_tree             ->   Add labels to tree leaves
        subset_tree            ->   Subset tree
-       iTOL                   ->   Prepare files for tree visualization with iTOL
+       iTOL                   ->   Prepare iTOL compatible files for tree visualization
                       
     Other modules
        split_folder           ->   Split folder
@@ -247,10 +247,15 @@ if __name__ == '__main__':
     subset_tree_parser.add_argument('-taxon',           required=True,                                  help='A file containing list of nodes to keep, one node per line')
     subset_tree_parser.add_argument('-out',             required=True,                                  help='Output tree file')
 
-    iTOL_parser.add_argument('-tree',                   required=True,                                  help='tree file in newick format')
-    iTOL_parser.add_argument('-label',                  required=False,                                 help='label')
-    iTOL_parser.add_argument('-color',                  required=False,                                 help='color')
-    iTOL_parser.add_argument('-collapse',               required=False,                                 help='collapse)')
+    iTOL_parser.add_argument('-ColorStrip',             required=False, action='store_true',            help='ColorStrip')
+    iTOL_parser.add_argument('-ColorRange',             required=False, action='store_true',            help='ColorRange')
+    iTOL_parser.add_argument('-SimpleBar',              required=False, action='store_true',            help='SimpleBar')
+    iTOL_parser.add_argument('-LeafGroup',              required=False, default=None,                   help='Leaf Group')
+    iTOL_parser.add_argument('-GroupColor',             required=False, default=None,                   help='Group Color')
+    iTOL_parser.add_argument('-LeafValue',              required=False, default=None,                   help='Leaf Value')
+    iTOL_parser.add_argument('-scale',                  required=False, default=None,                   help='Scale Values, in format 0-3-6-9')
+    iTOL_parser.add_argument('-LegendTitle',            required=False, default=None,                   help='Legend Title')
+    iTOL_parser.add_argument('-out',                    required=True,                                  help='Output filename')
 
     SankeyTaxon_parser.add_argument('-taxon',           required=True,                                  help='taxon classification results')
     SankeyTaxon_parser.add_argument('-r',               required=True,                                  help='taxon ranks to plot, e.g. dpcofgs, pco, pcf, cfs')

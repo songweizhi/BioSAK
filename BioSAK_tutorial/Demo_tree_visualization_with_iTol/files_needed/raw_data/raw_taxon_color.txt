@@ -1,0 +1,5 @@
+c__Actinobacteria	#CC0000
+c__Alphaproteobacteria	#CC6600
+c__Bacteroidia	#CCCC00
+c__Gammaproteobacteria	#66CC00
+c__Verrucomicrobiae	#9999FF
