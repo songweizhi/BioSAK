@@ -1,4 +1,30 @@
-MAG_id	Sediment_A	Sediment_B	Sediment_C	Seawater_A	Seawater_B	Seawater_C
+DATASET_HEATMAP
+# Reference https://itol.embl.de/help/dataset_heatmap_template.txt
+
+SEPARATOR TAB
+
+# customize heatmap attributes here
+MARGIN	20
+STRIP_WIDTH	60
+
+# customize legend here
+AUTO_LEGEND	1
+DATASET_LABEL	Abundance
+USE_MID_COLOR	1
+COLOR_MIN	#2980B9
+COLOR_MID	#ECF0F1
+COLOR_MAX	#E74C3C
+
+# customize value range here. By default, color gradients will be calculated based on dataset values
+# USER_MIN_VALUE	0
+# USER_MID_VALUE	5
+# USER_MAX_VALUE	10
+
+# customize column name here
+FIELD_LABELS	Sediment_A	Sediment_B	Sediment_C	Seawater_A	Seawater_B	Seawater_C
+
+# Provide data here
+DATA
 NorthSea_bin070	13	11	15	26	20	26
 NorthSea_bin054	64	71	66	33	33	44
 NorthSea_bin083	52	51	43	19	18	45

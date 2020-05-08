@@ -1,9 +1,9 @@
 
 ## Tree visualization with [iTOL](https://itol.embl.de)
 
-1. Here, I have a phylogenetic tree for 37 MAGs derived from microbial communities (either surface-associated or planktonic) sampled in the North Sea.
-I have the taxonomy info of these MAGs at class level and I also have their sizes.
-This short note shows how to visualize all these info in one figure.
+1. Here, I have a phylogenetic tree for 37 MAGs derived from six microbial communities (either surface-associated or planktonic) sampled in the North Sea.
+I have the taxonomy info of these MAGs at the class level, their sizes and their abundances across the six samples.
+This short note shows how to visualize all these info in one plot.
 
 1. Download needed files: [files_needed.zip](files_needed.zip)
 
@@ -12,7 +12,8 @@ This short note shows how to visualize all these info in one figure.
     + A phylogenetic tree in [Newick](http://evolution.genetics.washington.edu/phylip/newicktree.html) format: [NorthSea_0_Tree.newick](files_needed/NorthSea_0_Tree.newick)
     + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](files_needed/NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](files_needed/NorthSea_1_Taxon_Range.txt)
     + Life-style info: [NorthSea_2_LifeStyle.txt](files_needed/NorthSea_2_LifeStyle.txt)
-    + MAG size info: [NorthSea_3_MAG_Size.txt](files_needed/NorthSea_3_MAG_Size.txt)
+    + Abundance across samples: [NorthSea_3_Abundance.txt](files_needed/NorthSea_3_Abundance.txt)
+    + MAG size info: [NorthSea_4_MAG_Size.txt](files_needed/NorthSea_4_MAG_Size.txt)
     
     + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module (> 1.22.0) to prepare these files. Please refers to BioSAK's [help page](https://github.com/songweizhi/BioSAK) for its installation.
     
@@ -25,8 +26,11 @@ This short note shows how to visualize all these info in one figure.
           # get NorthSea_2_LifeStyle.txt
           BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_LifeStyle.txt -GroupColor raw_LifeStyle_color.txt -LegendTitle MAG_LifeStyle -out NorthSea_2_LifeStyle.txt
           
-          # get NorthSea_3_MAG_Size.txt
-          BioSAK iTOL -SimpleBar -LeafValue raw_MAG_size.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_3_MAG_Size.txt
+          # get NorthSea_3_Abundance.txt
+          BioSAK iTOL -Heatmap -LeafMatrix raw_MAG_abundance.txt -LegendTitle Abundance -out NorthSea_3_Abundance.txt
+
+          # get NorthSea_4_MAG_Size.txt
+          BioSAK iTOL -SimpleBar -LeafValue raw_MAG_size.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_4_MAG_Size.txt
 
           # Help info
           BioSAK iTOL -h
@@ -41,7 +45,7 @@ You can now play around with the control panel on the right side (e.g. change tr
 1. We are going to add the taxonomy info of our MAG to the tree now, which is really easy to do in iTOL. 
 You just need to drag and drop **NorthSea_1_Taxon_ColorStrip.txt**  to the **tree area**.
 
-1. Do the same thing to **NorthSea_2_LifeStyle.txt** and **NorthSea_3_MAG_Size.txt** to add life-style and size info, 
+1. Do the same thing to **NorthSea_2_LifeStyle.txt**, **NorthSea_3_Abundance.txt** and **NorthSea_4_MAG_Size.txt** to add life-style, abundance and size info, 
 you'll see trees like this:
 ![Tree_1](figures/Tree_1.jpg)
 
