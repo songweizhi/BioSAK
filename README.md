@@ -34,7 +34,7 @@ Installation
       
 1. For UNSW Katana users
 
-       ############# install BioSAK with virtual environment ############
+       ######### Install BioSAK with Python's virtual environment ########
 
        module load python/3.7.3
        mkdir ~/mypython3env_BioSAK
@@ -42,11 +42,14 @@ Installation
        source ~/mypython3env_BioSAK/bin/activate
        pip3 install BioSAK
 
-       ####################### For later running ########################
+       ####################### For later running #########################
 
        module load python/3.7.3
        source ~/mypython3env_BioSAK/bin/activate
        BioSAK -h
+              
+       # Type "deactivate" in your terminal to leave Python's virtual environment.
+
 
 BioSAK modules
 ---
@@ -76,8 +79,8 @@ BioSAK modules
        get_SCG_tree           ->   Construct SCG tree for query genomes
        label_tree             ->   Add labels to tree leaves
        subset_tree            ->   Subset tree
-       iTOL                   ->   Plot tree with iTOL
-                      
+       iTOL                   ->   Prepare iTOL-compatible files for tree visualization
+         
     Other modules
        split_folder           ->   Split folder
        SankeyTaxon            ->   Plot taxonomic classification with Sankey plot

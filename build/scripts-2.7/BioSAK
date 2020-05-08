@@ -71,7 +71,7 @@ def print_main_help():
        get_SCG_tree           ->   Construct SCG tree for query genomes
        label_tree             ->   Add labels to tree leaves
        subset_tree            ->   Subset tree
-       iTOL                   ->   Prepare iTOL compatible files for tree visualization
+       iTOL                   ->   Prepare iTOL-compatible files for tree visualization
                       
     Other modules
        split_folder           ->   Split folder
