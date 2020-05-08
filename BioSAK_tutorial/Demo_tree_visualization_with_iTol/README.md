@@ -28,9 +28,6 @@ This short note shows how to visualize all these info in one figure.
           # get NorthSea_3_MAG_Size.txt
           BioSAK iTOL -SimpleBar -LeafValue raw_MAG_size.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_3_MAG_Size.txt
 
-          # get NorthSea_4_Heatmap_Abundance.txt
-          BioSAK iTOL -Heatmap -LeafMatrix raw_MAG_abundance.txt -LegendTitle Abundance -out NorthSea_4_Heatmap_Abundance.txt
-
           # Help info
           BioSAK iTOL -h
 
