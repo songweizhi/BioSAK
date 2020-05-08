@@ -1,31 +1,27 @@
 DATASET_HEATMAP
 # Reference https://itol.embl.de/help/dataset_heatmap_template.txt
 
-
 SEPARATOR TAB
-DATASET_LABEL	Heatmap_demo
 
-
-# Define column name here
-FIELD_LABELS	Col_1	Col_2	Col_3
-
-
-# Define heatmap attributes here
-MARGIN	10
+# customize heatmap attributes here
+MARGIN	20
 STRIP_WIDTH	60
-AUTO_LEGEND	1
 
-# Define color range here
+# customize legend here
+AUTO_LEGEND	1
+DATASET_LABEL	Abundance
 USE_MID_COLOR	1
 COLOR_MIN	#2980B9
 COLOR_MID	#ECF0F1
 COLOR_MAX	#E74C3C
 
-# Define value range here. By default, color gradients will be calculated based on dataset values
+# customize value range here. By default, color gradients will be calculated based on dataset values
 # USER_MIN_VALUE	0
 # USER_MID_VALUE	5
 # USER_MAX_VALUE	10
 
+# customize column name here
+FIELD_LABELS	Sample_A	Sample_B	Sample_C
 
 # Provide data here
 DATA
