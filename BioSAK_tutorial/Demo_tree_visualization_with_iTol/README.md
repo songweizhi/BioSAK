@@ -17,6 +17,10 @@ This short note shows how to visualize all these info in one plot.
     
     + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module (> 1.22.0) to prepare these files. Please refers to BioSAK's [help page](https://github.com/songweizhi/BioSAK) for its installation.
     
+        The purpose of BioSAK's iTOL module is to generate iTOL-recognizable file for your data, but this doesn't mean the parameters 
+        specified in the output file are optimal. The best way to optimize your plot is to visualize your tree with the default 
+        output and optimize the parameters (e.g. colour, font size, strip width et al.) by looking at the tree.
+
           # get NorthSea_1_Taxon_ColorStrip.txt
           BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_ColorStrip.txt
           
