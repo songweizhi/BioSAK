@@ -36,9 +36,6 @@ This short note shows how to visualize all these info in one plot.
           # get NorthSea_4_MAG_Size.txt
           BioSAK iTOL -SimpleBar -LeafValue raw_MAG_size.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_4_MAG_Size.txt
 
-          # Help info
-          BioSAK iTOL -h
-
 
 1. Upload **NorthSea_0_Tree.newick** to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 

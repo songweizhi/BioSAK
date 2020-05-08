@@ -1,22 +1,19 @@
 DATASET_SIMPLEBAR
-# https://itol.embl.de/help/dataset_simplebar_template.txt
+# Reference: https://itol.embl.de/help/dataset_simplebar_template.txt
 
-
-# all data below should be TAB separated
 SEPARATOR TAB
 
-
-DATASET_LABEL	MAG_size
+# customize barchart attributes here
+DATASET_LABEL	MAG_Size
 COLOR	grey
 WIDTH	300
 MARGIN	20
 HEIGHT_FACTOR	0.8
 BORDER_WIDTH	0
 
-
-# VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR, SCALE_FACTOR controls font size
+# customize scale attributes here
+# format: VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR, LABEL_SCALE_FACTOR controls font size
 DATASET_SCALE	0-0-#696969-1-1-2	3-3-#696969-1-1-2	6-6-#696969-1-1-2	9-9-#696969-1-1-2
-
 
 # provide data here
 DATA

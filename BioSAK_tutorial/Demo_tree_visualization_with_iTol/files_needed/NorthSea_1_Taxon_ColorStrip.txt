@@ -1,26 +1,18 @@
 DATASET_COLORSTRIP
-# https://itol.embl.de/help/dataset_color_strip_template.txt
-
-# all data below should be TAB separated
 SEPARATOR TAB
+DATASET_LABEL	MAG_class_ColorStrip
 
-
-DATASET_LABEL	Classes_COLORSTRIP
-
-
-# define strip width and margin between strips
+# customize strip attributes here
 STRIP_WIDTH	100
 MARGIN	20
 
-
-# customize legend here, colors were specified in hex format
-LEGEND_TITLE	Class
+# customize legend here
+LEGEND_TITLE	MAG_class
 LEGEND_SHAPES	1	1	1	1	1
 LEGEND_COLORS	#CC0000	#CC6600	#CCCC00	#66CC00	#9999FF
 LEGEND_LABELS	c__Actinobacteria	c__Alphaproteobacteria	c__Bacteroidia	c__Gammaproteobacteria	c__Verrucomicrobiae
 
-
-# provide data here, colors were specified in hex format
+# provide data here
 DATA
 NorthSea_bin070	#CCCC00	c__Bacteroidia
 NorthSea_bin054	#CC6600	c__Alphaproteobacteria
