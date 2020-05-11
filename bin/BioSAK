@@ -56,7 +56,7 @@ def print_main_help():
        NetEnzymes             ->   Get network of enzymes (based on MetaCyc, under development)   
        Enrichment             ->   Gene set enrichment analysis (to be added)
     
-    16S related modules
+    16S rRNA sequencing related modules
        SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
        

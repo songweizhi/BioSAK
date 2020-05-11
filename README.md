@@ -62,8 +62,13 @@ BioSAK modules
        COG2014                ->   COG annotation (v2014, by blastp/diamond)
        KEGG                   ->   KEGG annotation
        dbCAN                  ->   CAZy annotation with dbCAN
-       NetEnzymes             ->   Get network of enzymes (based on MetaCyc)   
+       NetEnzymes             ->   Get network of enzymes (based on MetaCyc, under development)   
+       Enrichment             ->   Gene set enrichment analysis (to be added)
     
+    16S rRNA sequencing related modules
+       SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
+       GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
+       
     Sequence manipulator
        gbk2fa                 ->   gbk to fasta
        gbk2ffn                ->   gbk to ffn
