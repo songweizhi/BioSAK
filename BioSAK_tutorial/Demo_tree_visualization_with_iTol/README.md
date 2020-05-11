@@ -15,11 +15,11 @@ This short note shows how to visualize all these info in one plot.
     + Abundance across samples: [NorthSea_3_Abundance.txt](files_needed/NorthSea_3_Abundance.txt)
     + MAG size info: [NorthSea_4_MAG_Size.txt](files_needed/NorthSea_4_MAG_Size.txt)
     
-    + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module (> 1.22.0) to prepare these files. Please refers to BioSAK's [help page](https://github.com/songweizhi/BioSAK) for its installation.
+    + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to prepare these files. Please refers to the [help page](https://github.com/songweizhi/BioSAK) for its installation.
     
         The purpose of BioSAK's iTOL module is to generate iTOL-recognizable file for your data, but this doesn't mean the parameters 
-        specified in the output file are optimal. The best way to optimize your plot is to visualize your tree with the default 
-        output and optimize the parameters (e.g. colour, font size, strip width et al.) by looking at the tree.
+        specified in the output file are optimal. The best way to optimize your plot is to visualize your tree with BioSAK's default 
+        outputs and adjust parameters inside (e.g. colour, font size, strip width et al.) by looking at the tree.
 
           # get NorthSea_1_Taxon_ColorStrip.txt
           BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_ColorStrip.txt
@@ -62,6 +62,6 @@ Remember to turn on **Colored ranges legend**, if you are using **NorthSea_1_Tax
 
 # Help information
 
-1. More examples and help information can be found from iTOL's help page: [https://itol.embl.de/help.cgi](https://itol.embl.de/help.cgi)
+1. More examples: [https://itol.embl.de/help.cgi](https://itol.embl.de/help.cgi)
 1. The Newick tree format: [http://evolution.genetics.washington.edu/phylip/newicktree.html](http://evolution.genetics.washington.edu/phylip/newicktree.html)
 1. Hex Color Codes: [https://htmlcolorcodes.com](https://htmlcolorcodes.com) and [https://www.color-hex.com](https://www.color-hex.com)

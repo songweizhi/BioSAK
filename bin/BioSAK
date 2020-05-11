@@ -55,6 +55,10 @@ def print_main_help():
        dbCAN                  ->   CAZy annotation with dbCAN
        NetEnzymes             ->   Get network of enzymes (based on MetaCyc, under development)   
        Enrichment             ->   Gene set enrichment analysis (to be added)
+    
+    16S related modules
+       SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
+       GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
        
     Sequence manipulator
        gbk2fa                 ->   gbk to fasta
@@ -75,8 +79,6 @@ def print_main_help():
                       
     Other modules
        split_folder           ->   Split folder
-       SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
-       GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
        SankeyTaxon            ->   Plot taxonomic classification with Sankey plot
        BestHit                ->   Keep Best Hits only (blast outfmt 6)
        get_bin_abundance      ->   Get bin abundance

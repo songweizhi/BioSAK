@@ -12,10 +12,10 @@ specified in the output file are optimal. The best way to optimize your plot is 
 output and optimize the parameters (e.g. colour, font size, strip width et al.) by looking at the tree.
 
 # Example commands
-BioSAK iTOL -ColorStrip -LeafGroup MAG_taxon.txt -GroupColor taxon_color.txt -LegendTitle Phylum -out NorthSea_ColorStrip_taxon.txt
-BioSAK iTOL -ColorRange -LeafGroup MAG_taxon.txt -GroupColor taxon_color.txt -LegendTitle Phylum -out NorthSea_ColorRange_taxon.txt
-BioSAK iTOL -SimpleBar -LeafValue MAG_size.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_SimpleBar_MAG_Size.txt
-BioSAK iTOL -Heatmap -LeafMatrix MAG_abundance.txt -LegendTitle Abundance -out NorthSea_Heatmap_abundance.txt
+BioSAK iTOL -ColorStrip -LeafGroup MagTaxon.txt -GroupColor TaxonColor.txt -LegendTitle Phylum -out ColorStrip_taxon.txt
+BioSAK iTOL -ColorRange -LeafGroup MagTaxon.txt -GroupColor TaxonColor.txt -LegendTitle Phylum -out ColorRange_taxon.txt
+BioSAK iTOL -SimpleBar -LeafValue MagSize.txt -scale 0-3-6-9 -LegendTitle Size -out SimpleBar_size.txt
+BioSAK iTOL -Heatmap -LeafMatrix MagAbundance.txt -LegendTitle Abundance -out Heatmap_abundance.txt
 
 # LeafGroup file format (tab separated)
 NorthSea_bin001	Alphaproteobacteria
