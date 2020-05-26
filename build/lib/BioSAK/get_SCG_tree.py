@@ -528,27 +528,6 @@ def hmmalign_worker(argument_list):
     os.system('rm %s' % pwd_aln_out_tmp)
 
 
-config_file_path = '/Users/songweizhi/PycharmProjects/BioSAK/BioSAK'
-
-config_dict = {'prodigal'         : 'prodigal',
-               'hmmsearch'        : 'hmmsearch',
-               'hmmfetch'         : 'hmmfetch',
-               'hmmalign'         : 'hmmalign',
-               'hmmstat'          : 'hmmstat',
-               'mafft'            : 'mafft',
-               'blastp'           : 'blastp',
-               'blastn'           : 'blastn',
-               'makeblastdb'      : 'makeblastdb',
-               'fasttree'         : 'FastTree',
-               'ranger_mac'       : '%s/Ranger-DTL-Dated.mac'   % config_file_path,  # do not edit this line
-               'ranger_linux'     : '%s/Ranger-DTL-Dated.linux' % config_file_path,  # do not edit this line
-               'path_to_hmm'      : '%s/MetaCHIP_phylo.hmm'     % config_file_path,  # do not edit this line
-               'circos_HGT_R'     : '%s/MetaCHIP_circos_HGT.R'  % config_file_path,   # do not edit this line
-               'cdd2cog_perl'     : '%s/cdd2cog.pl' % config_file_path,
-               'get_sankey_plot_R': '%s/get_sankey_plot.R' % config_file_path
-               }
-
-
 def get_SCG_tree(args, config_dict):
 
     # read in arguments

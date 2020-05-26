@@ -22,13 +22,13 @@ This short note shows how to visualize all these info in one plot.
         outputs and adjust parameters inside (e.g. colour, font size, strip width et al.) by looking at the tree.
 
           # get NorthSea_1_Taxon_ColorStrip.txt
-          BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_ColorStrip.txt
+          BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_taxon.txt -LegendTitle Class -out NorthSea_1_Taxon_ColorStrip.txt
           
           # get NorthSea_1_Taxon_Range.txt
-          BioSAK iTOL -ColorRange -LeafGroup raw_MAG_taxon.txt -GroupColor raw_taxon_color.txt -LegendTitle MAG_class -out NorthSea_1_Taxon_Range.txt
+          BioSAK iTOL -ColorRange -LeafGroup raw_MAG_taxon.txt -LegendTitle Class -out NorthSea_1_Taxon_Range.txt
           
           # get NorthSea_2_LifeStyle.txt
-          BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_LifeStyle.txt -GroupColor raw_LifeStyle_color.txt -LegendTitle MAG_LifeStyle -out NorthSea_2_LifeStyle.txt
+          BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_LifeStyle.txt -LegendTitle LifeStyle -out NorthSea_2_LifeStyle.txt
           
           # get NorthSea_3_Abundance.txt
           BioSAK iTOL -Heatmap -LeafMatrix raw_MAG_abundance.txt -LegendTitle Abundance -out NorthSea_3_Abundance.txt
