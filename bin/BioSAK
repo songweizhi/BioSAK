@@ -254,7 +254,7 @@ if __name__ == '__main__':
     iTOL_parser.add_argument('-SimpleBar',              required=False, action='store_true',            help='SimpleBar')
     iTOL_parser.add_argument('-Heatmap',                required=False, action='store_true',            help='Heatmap')
     iTOL_parser.add_argument('-LeafGroup',              required=False, default=None,                   help='Leaf Group')
-    iTOL_parser.add_argument('-GroupColor',             required=False, default=None,                   help='Group Color')
+    iTOL_parser.add_argument('-GroupColor',             required=False, default=None,                   help='Specify Group Color (optional)')
     iTOL_parser.add_argument('-LeafValue',              required=False, default=None,                   help='Leaf Value')
     iTOL_parser.add_argument('-LeafMatrix',             required=False, default=None,                   help='Leaf Matrix')
     iTOL_parser.add_argument('-scale',                  required=False, default=None,                   help='Scale Values, in format 0-3-6-9')

@@ -1,6 +1,7 @@
-import os
-import sys
+import math
+import random
 import argparse
+import seaborn as sns
 
 
 iTOL_usage = '''
@@ -12,8 +13,10 @@ specified in the output file are optimal. The best way to optimize your plot is 
 output and optimize the parameters (e.g. colour, font size, strip width et al.) by looking at the tree.
 
 # Example commands
-BioSAK iTOL -ColorStrip -LeafGroup MagTaxon.txt -GroupColor TaxonColor.txt -LegendTitle Phylum -out ColorStrip_taxon.txt
-BioSAK iTOL -ColorRange -LeafGroup MagTaxon.txt -GroupColor TaxonColor.txt -LegendTitle Phylum -out ColorRange_taxon.txt
+BioSAK iTOL -ColorStrip -LeafGroup MagTaxon.txt -LegendTitle Phylum -out ColorStrip_taxon.txt
+BioSAK iTOL -ColorStrip -LeafGroup MagTaxon.txt -LegendTitle Phylum -out ColorStrip_taxon.txt -GroupColor TaxonColor.txt
+BioSAK iTOL -ColorRange -LeafGroup MagTaxon.txt -LegendTitle Phylum -out ColorRange_taxon.txt
+BioSAK iTOL -ColorRange -LeafGroup MagTaxon.txt -LegendTitle Phylum -out ColorRange_taxon.txt -GroupColor TaxonColor.txt
 BioSAK iTOL -SimpleBar -LeafValue MagSize.txt -scale 0-3-6-9 -LegendTitle Size -out SimpleBar_size.txt
 BioSAK iTOL -Heatmap -LeafMatrix MagAbundance.txt -LegendTitle Abundance -out Heatmap_abundance.txt
 
@@ -37,8 +40,44 @@ NorthSea_bin001	6.15    2.23    1.56
 NorthSea_bin002	6.63    1.72    2.55
 NorthSea_bin003	7.11    3.52    3.69
 
+
 =============================================================================================================
 '''
+
+
+def get_color_list(color_num):
+
+    if color_num <= 8:
+        color_list_combined = ['#3787c0', '#39399f', '#ffb939', '#399f39', '#9f399f', '#fb694a', '#9f9f39', '#959595']
+
+    elif 8 < color_num <= 16:
+        color_list_combined = ['#2b7bba', '#89bedc', '#2e2e99', '#8a8acc', '#ffa500', '#ffc55c', '#2e992e', '#8acc8a', '#992e99', '#cc8acc', '#d52221', '#fc8161', '#99992e', '#cccc8a', '#5c5c5c', '#adadad']
+
+    else:
+        color_num_each = math.ceil(color_num/8) + 2
+
+        color_list_1 = sns.color_palette('Blues',  n_colors=color_num_each).as_hex()
+        color_list_2 = sns.light_palette('navy',   n_colors=color_num_each).as_hex()
+        color_list_3 = sns.light_palette('orange', n_colors=color_num_each).as_hex()
+        color_list_4 = sns.light_palette('green',  n_colors=color_num_each).as_hex()
+        color_list_5 = sns.light_palette('purple', n_colors=color_num_each).as_hex()
+        color_list_6 = sns.color_palette('Reds',   n_colors=color_num_each).as_hex()
+        color_list_7 = sns.light_palette('olive',  n_colors=color_num_each).as_hex()
+        color_list_8 = sns.color_palette('Greys', n_colors=color_num_each).as_hex()
+
+        color_list_combined = []
+        for color_list in [color_list_1, color_list_2, color_list_3, color_list_4, color_list_5, color_list_6, color_list_7, color_list_8]:
+            for color in color_list[2:][::-1]:
+                color_list_combined.append(color)
+
+    color_list_to_return = random.sample(color_list_combined, color_num)
+
+    color_list_to_return_sorted = []
+    for color_to_return in color_list_combined:
+        if color_to_return in color_list_to_return:
+            color_list_to_return_sorted.append(color_to_return)
+
+    return color_list_to_return_sorted
 
 
 def iTOL(args):
@@ -90,14 +129,22 @@ def iTOL(args):
     if (ColorStrip is True) or (ColorRange is True):
 
         Leaf_to_Group_dict = {}
+        Group_list = []
         for each_leaf in open(LeafGroup):
             each_leaf_split = each_leaf.strip().split('\t')
             Leaf_to_Group_dict[each_leaf_split[0]] = each_leaf_split[1]
+            # get Group_list
+            if each_leaf_split[1] not in Group_list:
+                Group_list.append(each_leaf_split[1])
 
         Group_to_Color_dict = {}
-        for each_group in open(GroupColor):
-            each_group_split = each_group.strip().split('\t')
-            Group_to_Color_dict[each_group_split[0]] = each_group_split[1]
+        if GroupColor is None:
+            color_list = get_color_list(len(Group_list))
+            Group_to_Color_dict = dict(zip(Group_list, color_list))
+        else:
+            for each_group in open(GroupColor):
+                each_group_split = each_group.strip().split('\t')
+                Group_to_Color_dict[each_group_split[0]] = each_group_split[1]
 
         group_list = [i for i in Group_to_Color_dict]
         color_list = [Group_to_Color_dict[i] for i in group_list]
@@ -258,7 +305,7 @@ if __name__ == '__main__':
     parser.add_argument('-SimpleBar',   required=False, action='store_true',   help='SimpleBar')
     parser.add_argument('-Heatmap',     required=False, action='store_true',   help='Heatmap')
     parser.add_argument('-LeafGroup',   required=False, default=None,          help='Leaf Group')
-    parser.add_argument('-GroupColor',  required=False, default=None,          help='Group Color')
+    parser.add_argument('-GroupColor',  required=False, default=None,          help='Specify Group Color (optional)')
     parser.add_argument('-LeafValue',   required=False, default=None,          help='Leaf Value')
     parser.add_argument('-LeafMatrix',  required=False, default=None,          help='Leaf Matrix')
     parser.add_argument('-scale',       required=False, default=None,          help='Scale Values, in format 0-3-6-9')
@@ -268,3 +315,4 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     iTOL(args)
+

@@ -1,0 +1,417 @@
+#!python
+
+# Copyright (C) 2017, Weizhi Song.
+# songwz03@gmail.com
+
+# BioSAK is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# BioSAK is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys
+import warnings
+import argparse
+from BioSAK import Prodigal, CheckM
+from BioSAK import COG2003, COG2014, KEGG, dbCAN, NetEnzymes
+from BioSAK import SILVA_for_BLCA, GTDB_for_BLCA
+from BioSAK import get_SCG_tree, Subset_tree, label_tree, iTOL
+from BioSAK import sra_reads_downloader, download_GenBank_genome
+from BioSAK import select_seq, rename_seq
+from BioSAK import get_gene_depth
+from BioSAK import keep_best_hit
+from BioSAK import get_bin_abundance
+from BioSAK import split_folder
+from BioSAK import SankeyTaxon
+from BioSAK import format_converter
+from BioSAK import get_Pfam_hmms
+from BioSAK.BioSAK_config import config_dict
+
+
+def version(config_dict):
+    version_file = open('%s/VERSION' % config_dict['config_file_path'])
+    return version_file.readline().strip()
+
+
+def print_main_help():
+
+    help_message = ''' 
+                 ...::: BioSAK v%s :::...
+
+    Annotation modules
+       Prodigal               ->   Wrapper for running Prodigal
+       CheckM                 ->   Wrapper for running CheckM
+       CheckM_op_parser       ->   Parse (combined) CheckM outputs
+       COG2003                ->   COG annotation (v2003, by rpsblast)
+       COG2014                ->   COG annotation (v2014, by blastp/diamond)
+       KEGG                   ->   KEGG annotation
+       dbCAN                  ->   CAZy annotation with dbCAN
+       NetEnzymes             ->   Get network of enzymes (based on MetaCyc, under development)   
+       Enrichment             ->   Gene set enrichment analysis (to be added)
+    
+    16S rRNA sequencing related modules
+       SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
+       GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
+       
+    Sequence manipulator
+       gbk2fa                 ->   gbk to fasta
+       gbk2ffn                ->   gbk to ffn
+       gbk2faa                ->   gbk to faa
+       ffn2faa                ->   ffn to faa
+       get_rc                 ->   Get reverse complement sequence
+       rename_seq             ->   Rename sequences in a file
+       select_seq             ->   Select sequences by their ids
+       get_gene_depth         ->   Get gene depth by contig depth
+       convert_align_format   ->   Convert alignment format
+
+    Tree manipulator
+       get_SCG_tree           ->   Construct SCG tree for query genomes
+       label_tree             ->   Add labels to tree leaves
+       subset_tree            ->   Subset tree
+       iTOL                   ->   Prepare iTOL-compatible files for tree visualization
+                      
+    Other modules
+       split_folder           ->   Split folder
+       SankeyTaxon            ->   Plot taxonomic classification with Sankey plot
+       BestHit                ->   Keep Best Hits only (blast outfmt 6)
+       get_bin_abundance      ->   Get bin abundance
+       sra_reads_downloader   ->   Download SRA read files
+       dwnld_GenBank_genome   ->   Batch download GenBank genomes
+       get_Pfam_hmms          ->   Get Pfam profiles by id
+       reads_simulator        ->   Simulate NGS reads
+       
+    # for module specific help info
+    BioSAK <ModuleName> -h
+    
+    ''' % version(config_dict)
+
+    print(help_message)
+
+
+if __name__ == '__main__':
+
+    ########################################################################################### initialize subparsers ############################################################################################
+
+    # initialize the options parser
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(help="--", dest='subparser_name')
+
+    # Annotation modules
+    Prodigal_parser =                   subparsers.add_parser('Prodigal',                   description='Wrapper for running Prodigal',                         usage=Prodigal.Prodigal_parser_usage)
+    Barrnap_parser =                    subparsers.add_parser('Barrnap_Runner',             description='Wrapper for running Barrnap',                          usage='')
+    CheckM_parser =                     subparsers.add_parser('CheckM_Runner',              description='Wrapper for running CheckM',                           usage=CheckM.CheckM_Runner_usage)
+    CheckM_output_parser =              subparsers.add_parser('CheckM_op_parser',           description='Parse combined CheckM outputs',                        usage=CheckM.CheckM_output_parser_usage)
+    COG2003_parser =                    subparsers.add_parser('COG2003',                    description='Wrapper for COG annotation (v2003)',                   usage=COG2003.COG_parser_usage)
+    COG2014_parser =                    subparsers.add_parser('COG2014',                    description='Wrapper for COG annotation (v2014)',                   usage=COG2014.COG2014_parser_usage)
+    KEGG_parser =                       subparsers.add_parser('KEGG',                       description='Wrapper for KEGG annotation',                          usage=KEGG.KEGG_parser_usage)
+    dbCAN_parser =                      subparsers.add_parser('dbCAN',                      description='Wrapper for running dbCAN',                            usage=dbCAN.dbCAN_parser_usage)
+    NetEnzymes_parser =                 subparsers.add_parser('NetEnzymes',                 description='Get network of enzymes (based on MetaCyc)',            usage=NetEnzymes.NetEnzymes_parser_usage)
+
+    # Sequence file manipulator
+    gbk2fa_parser =                     subparsers.add_parser('gbk2fa',                     description='gbk to fasta',                                         usage=format_converter.sequence_manipulator_usage)
+    gbk2ffn_parser =                    subparsers.add_parser('gbk2ffn',                    description='gbk to ffn',                                           usage=format_converter.sequence_manipulator_usage)
+    gbk2faa_parser =                    subparsers.add_parser('gbk2faa',                    description='gbk to faa',                                           usage=format_converter.sequence_manipulator_usage)
+    ffn2faa_parser =                    subparsers.add_parser('ffn2faa',                    description='ffn to faa',                                           usage=format_converter.sequence_manipulator_usage)
+    get_rc_parser =                     subparsers.add_parser('get_rc',                     description='get reverse complement sequence',                      usage=format_converter.sequence_manipulator_usage)
+    select_seq_parser =                 subparsers.add_parser('select_seq',                 description='select sequences by id',                               usage=select_seq.select_seq_usage)
+    get_total_len_parser =              subparsers.add_parser('get_total_len',              description='Wrapper for running Prodigal',                         usage='')
+    get_fasta_stats_parser =            subparsers.add_parser('get_fasta_stats',            description='Wrapper for running Prodigal',                         usage='')
+    FastaSplitler_parser =              subparsers.add_parser('FastaSplitler',              description='Wrapper for running Prodigal',                         usage='')
+    get_gene_depth_parser =             subparsers.add_parser('get_gene_depth',             description='Get gene depth by contig depth',                       usage=get_gene_depth.get_gene_depth_parser_usage)
+    rename_seq_parser =                 subparsers.add_parser('rename_seq',                 description='rename contigs in a file',                             usage=rename_seq.rename_seq_usage)
+    convert_align_fmt_parser =          subparsers.add_parser('convert_align_format',       description='Convert alignment format',                             usage=format_converter.convert_align_format_usage)
+
+    # Sam file manipulator
+    extract_sam_reads_parser =          subparsers.add_parser('Extract_sam_reads',          description='Extract reads from SAM file',                          usage='')
+    plot_sam_depth_parser =             subparsers.add_parser('Plot_sam_depth',             description='Wrapper for running Prodigal',                         usage='')
+
+    # Tree file manipulator
+    get_SCG_tree_parser =               subparsers.add_parser('get_SCG_tree',               description='get SCG tree',                                         usage=get_SCG_tree.get_SCG_tree_usage)
+    subset_tree_parser =                subparsers.add_parser('subset_tree',                description='Subset tree',                                          usage=Subset_tree.subset_tree_parser_usage)
+    plot_tree_parser =                  subparsers.add_parser('Plot_tree',                  description='Plot tree in Newick format',                           usage='')
+    iTOL_parser =                       subparsers.add_parser('iTOL',                       description='Plot tree with iTOL',                                  usage=iTOL.iTOL_usage)
+    label_tree_parser =                 subparsers.add_parser('label_tree',                 description='Add labels to tree leaves',                            usage=label_tree.label_tree_usage)
+
+    # Other modules
+    split_folder_parser =               subparsers.add_parser('split_folder',               description='Split folder',                                         usage=split_folder.split_folder_parser_usage)
+    SILVA_for_BLCA_parser =             subparsers.add_parser('SILVA_for_BLCA',             description='Prepare BLCA-compatible SILVA SSU database',           usage=SILVA_for_BLCA.SILVA_for_BLCA_usage)
+    GTDB_for_BLCA_parser =              subparsers.add_parser('GTDB_for_BLCA',              description='Prepare BLCA-compatible GTDB SSU database',            usage=GTDB_for_BLCA.GTDB_for_BLCA_usage)
+    SankeyTaxon_parser =                subparsers.add_parser('SankeyTaxon',                description='Visualize GTDB output with Sankey diagram',            usage=SankeyTaxon.SankeyTaxon_parser_usage)
+    BestHit_parser =                    subparsers.add_parser('BestHit',                    description='Keep blast hits with highest bit score',               usage=split_folder.split_folder_parser_usage)
+    get_bin_abundance_parser =          subparsers.add_parser('get_bin_abundance',          description='Get bin abundance',                                    usage=get_bin_abundance.get_bin_abundance_usage)
+    sra_reads_downloader_parser =       subparsers.add_parser('sra_reads_downloader',       description='Download SRA read files',                              usage=sra_reads_downloader.sra_reads_downloader_usage)
+    dwnld_GenBank_genome_parser =       subparsers.add_parser('dwnld_GenBank_genome',       description='Batch download GenBank genomes',                       usage=download_GenBank_genome.download_GenBank_genome_parser_usage)
+    get_Pfam_hmms_parser =              subparsers.add_parser('get_Pfam_hmms',              description='Get Pfam profiles by id',                              usage=get_Pfam_hmms.get_Pfam_hmms_usage)
+    subsample_reads_parser =            subparsers.add_parser('subsample_reads',            description='Wrapper for running Prodigal',                         usage='')
+
+
+    ###################################################################################### define arguments for subparsers #######################################################################################
+
+    Prodigal_parser.add_argument('-i',                  required=True,                                  help='input genome folder')
+    Prodigal_parser.add_argument('-x',                  required=False, default='fasta',                help='file extension')
+    Prodigal_parser.add_argument('-p',                  required=True,                                  help='output prefix')
+    Prodigal_parser.add_argument('-meta',               required=False, action="store_true",            help='annotation mode for metagenome assembled genomes (MAGs)')
+    Prodigal_parser.add_argument('-t',                  required=False, type=int, default=1,            help='number of threads')
+
+    COG2003_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+    COG2003_parser.add_argument('-x',                   required=False,                                 help='file extension')
+    COG2003_parser.add_argument('-m',                   required=True,                                  help='The type of input sequences, "N" for "nucleotide", "P" for "protein"')
+    COG2003_parser.add_argument('-db_dir',              required=True,                                  help='folder holds whog, fun.txt, cddid.tbl and Cog.* files')
+    COG2003_parser.add_argument('-t',                   required=False, type=int, default=1,            help='number of threads')
+
+    COG2014_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+    COG2014_parser.add_argument('-x',                   required=False,                                 help='file extension')
+    COG2014_parser.add_argument('-m',                   required=True,                                  help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
+    COG2014_parser.add_argument('-depth',               required=False, default=None,                   help='gene depth file/folder')
+    COG2014_parser.add_argument('-pct_by_all',          required=False, action='store_true',            help='normalize by all query genes, rather than those with COG assignment')
+    COG2014_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
+    COG2014_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
+    COG2014_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
+    COG2014_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+
+    KEGG_parser.add_argument('-seq_in',                 required=False,                                 help='faa file')
+    KEGG_parser.add_argument('-ko_in',                  required=False,                                 help='annotation results from BlastKOALA/GhostKOALA, normally with name user_ko.txt')
+    KEGG_parser.add_argument('-x',                      required=False,                                 help='file extension')
+    KEGG_parser.add_argument('-depth',                  required=False, default=None,                   help='gene depth file/folder')
+    KEGG_parser.add_argument('-pct_by_all',             required=False, action='store_true',            help='normalize by all query genes, rather than those with ko assignment')
+    KEGG_parser.add_argument('-db_dir',                 required=True,                                  help='folder holds sequence, seq2ko and ko00001.keg files')
+    KEGG_parser.add_argument('-diamond',                required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
+    KEGG_parser.add_argument('-t',                      required=False, default=1,     type=int,        help='number of threads, default: 1')
+    KEGG_parser.add_argument('-evalue',                 required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+
+    dbCAN_parser.add_argument('-i',                     required=True,                                  help='path to input sequences (in multi-fasta format)')
+    dbCAN_parser.add_argument('-x',                     required=False,                                 help='file extension')
+    dbCAN_parser.add_argument('-m',                     required=False, default='P',                    help='The type of input sequences, "N/n" for "nucleotide", "P/p" for "protein"')
+    dbCAN_parser.add_argument('-depth',                 required=False, default=None,                   help='gene depth file/folder')
+    dbCAN_parser.add_argument('-db_dir',                required=True,                                  help='db folder')
+    dbCAN_parser.add_argument('-t',                     required=False, type=int, default=1,            help='number of threads')
+
+    NetEnzymes_parser.add_argument('-ec',               required=True,                                  help='EC list file')
+    NetEnzymes_parser.add_argument('-ko',               required=False, default=None,                   help='get network of enzymes from specified ko')
+    NetEnzymes_parser.add_argument('-to_skip',          required=False, default=None,                   help='substrates/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
+    NetEnzymes_parser.add_argument('-NoHyphen',         required=False, action='store_true',            help='ignore enzymes with "-" in EC')
+    NetEnzymes_parser.add_argument('-plot',             required=False, action='store_true',            help='plot network, slow and messy layout for complicated network')
+    NetEnzymes_parser.add_argument('-lfs',              required=False,  default=3, type=float,         help='Font size of node labels, default is 3')
+    NetEnzymes_parser.add_argument('-ns',               required=False, default=20, type=float,         help='Node size, default is 20')
+
+    CheckM_parser.add_argument('-i',                    required=True,                                  help='input bin folder')
+    CheckM_parser.add_argument('-x',                    required=True,                                  help='bin file extension')
+    CheckM_parser.add_argument('-e',                    required=False,                                 help='your email address')
+    CheckM_parser.add_argument('-nodes',                required=False, default=1,   type=int,          help='nodes number needed (default = 1)')
+    CheckM_parser.add_argument('-ppn',                  required=False, default=1,   type=int,          help='ppn number needed (default = 1)')
+    CheckM_parser.add_argument('-memory',               required=False, default=120, type=int,          help='memory needed (default = 120)')
+    CheckM_parser.add_argument('-walltime',             required=False, default='2:59:00',              help='walltime needed (default = 2:59:00)')
+    CheckM_parser.add_argument('-python',               required=False, default='python/2.7.15',        help='python version (default: python/2.7.15)')
+    CheckM_parser.add_argument('-hmmer',                required=False, default='hmmer/3.2.1',          help='hmmer version (default: hmmer/3.2.1)')
+    CheckM_parser.add_argument('-pplacer',              required=False, default='pplacer/1.1.alpha19',  help='pplacer version (default: pplacer/1.1.alpha19)')
+    CheckM_parser.add_argument('-prodigal',             required=False, default='prodigal/2.6.3',       help='prodigal version (default: prodigal/2.6.3)')
+    CheckM_parser.add_argument('-qsub',                 action="store_true",                            help='submit generated PBS job scripts')
+
+    CheckM_output_parser.add_argument('-i',             required=True,                                  help='input quality file')
+    CheckM_output_parser.add_argument('-bin',           required=False,                                 help='bin folder')
+    CheckM_output_parser.add_argument('-x',             required=False, default='fasta',                help='bin file extension')
+    CheckM_output_parser.add_argument('-complete',      required=False, type=float,                     help='completeness cutoff (0-100)')
+    CheckM_output_parser.add_argument('-contain',       required=False, type=float,                     help='contamination cutoff (0-100)')
+    CheckM_output_parser.add_argument('-o',             required=True,                                  help='output quality file')
+
+    gbk2fa_parser.add_argument('-gbk',                  required=True,                                  help='input gbk file')
+    gbk2ffn_parser.add_argument('-gbk',                 required=True,                                  help='input gbk file')
+    gbk2faa_parser.add_argument('-gbk',                 required=True,                                  help='input gbk file')
+    ffn2faa_parser.add_argument('-ffn',                 required=True,                                  help='input ffn file')
+    get_rc_parser.add_argument('-seq',                  required=True,                                  help='input sequence(s)')
+
+    get_gene_depth_parser.add_argument('-gbk',          required=False, default=None,                   help='gbk file')
+    get_gene_depth_parser.add_argument('-gff',          required=False, default=None,                   help='gff file')
+    get_gene_depth_parser.add_argument('-ctg_depth',    required=True,                                  help='contig depth file')
+    get_gene_depth_parser.add_argument('-id_column',    required=False, default=1, type=int,            help='contig id column, default is 1')
+    get_gene_depth_parser.add_argument('-depth_column', required=False, default=2, type=int,            help='contig depth column, default is 2')
+    get_gene_depth_parser.add_argument('-skip_header',  required=False, action='store_true',            help='skip the 1st line in contig depth file')
+
+    get_SCG_tree_parser.add_argument('-i',              required=True,                                  help='input genome folder')
+    get_SCG_tree_parser.add_argument('-p',              required=True,                                  help='output prefix')
+    get_SCG_tree_parser.add_argument('-x',              required=False, default='fasta',                help='file extension')
+    get_SCG_tree_parser.add_argument('-nonmeta',        required=False, action="store_true",            help='annotate Non-metagenome-assembled genomes (Non-MAGs)')
+    get_SCG_tree_parser.add_argument('-t',              required=False, type=int, default=1,            help='number of threads, default: 1')
+
+    label_tree_parser.add_argument('-tree',             required=True,                                  help='tree file in newick format')
+    label_tree_parser.add_argument('-label',            required=False,  default=None,                  help='label file (label,leaf)')
+    label_tree_parser.add_argument('-taxon',            required=False,  default=None,                  help='taxonomic classification')
+    label_tree_parser.add_argument('-rank',             required=False,  default=None,                  help='taxonomic rank to label')
+
+    subset_tree_parser.add_argument('-tree',            required=True,                                  help='input tree file')
+    subset_tree_parser.add_argument('-taxon',           required=True,                                  help='A file containing list of nodes to keep, one node per line')
+    subset_tree_parser.add_argument('-out',             required=True,                                  help='Output tree file')
+
+    iTOL_parser.add_argument('-ColorStrip',             required=False, action='store_true',            help='ColorStrip')
+    iTOL_parser.add_argument('-ColorRange',             required=False, action='store_true',            help='ColorRange')
+    iTOL_parser.add_argument('-SimpleBar',              required=False, action='store_true',            help='SimpleBar')
+    iTOL_parser.add_argument('-Heatmap',                required=False, action='store_true',            help='Heatmap')
+    iTOL_parser.add_argument('-LeafGroup',              required=False, default=None,                   help='Leaf Group')
+    iTOL_parser.add_argument('-GroupColor',             required=False, default=None,                   help='Specify Group Color (optional)')
+    iTOL_parser.add_argument('-LeafValue',              required=False, default=None,                   help='Leaf Value')
+    iTOL_parser.add_argument('-LeafMatrix',             required=False, default=None,                   help='Leaf Matrix')
+    iTOL_parser.add_argument('-scale',                  required=False, default=None,                   help='Scale Values, in format 0-3-6-9')
+    iTOL_parser.add_argument('-LegendTitle',            required=False, default=None,                   help='Legend Title')
+    iTOL_parser.add_argument('-out',                    required=True,                                  help='Output filename')
+
+    SankeyTaxon_parser.add_argument('-taxon',           required=True,                                  help='taxon classification results')
+    SankeyTaxon_parser.add_argument('-r',               required=True,                                  help='taxon ranks to plot, e.g. dpcofgs, pco, pcf, cfs')
+    SankeyTaxon_parser.add_argument('-p',               required=True,                                  help='output prefix')
+    SankeyTaxon_parser.add_argument('-ec',              required=False, action='store_true',            help='only plot explicit classifications')
+    SankeyTaxon_parser.add_argument('-x',               required=False, type=int,                       help='plot width')
+    SankeyTaxon_parser.add_argument('-y',               required=False, type=int,                       help='plot height')
+
+    convert_align_fmt_parser.add_argument('-in',        required=True,                                  help='input alignment')
+    convert_align_fmt_parser.add_argument('-inf',       required=True,                                  help='format of input alignment')
+    convert_align_fmt_parser.add_argument('-out',       required=True,                                  help='output alignment')
+    convert_align_fmt_parser.add_argument('-outf',      required=True,                                  help='format of output alignment')
+
+    split_folder_parser.add_argument('-in',             required=True,                                  help='file folder')
+    split_folder_parser.add_argument('-x',              required=True,                                  help='file extension')
+    split_folder_parser.add_argument('-n',              required=False, type=int,                       help='number of subfolder')
+
+    BestHit_parser.add_argument('-i',                   required=True,                                  help='input blast results (outfmt: 6)')
+    BestHit_parser.add_argument('-o',                   required=True,                                  help='output file')
+
+    get_bin_abundance_parser.add_argument('-sam',       required=True,                                  help='input sam file')
+    get_bin_abundance_parser.add_argument('-bin',       required=True,                                  help='bin folder')
+    get_bin_abundance_parser.add_argument('-x',         required=True, default='fasta',                 help='bin file extension, default: fasta')
+    get_bin_abundance_parser.add_argument('-o',         required=True,                                  help='output abundance file')
+    get_bin_abundance_parser.add_argument('-cluster',   required=False, default=None,                   help='cluster info')
+    get_bin_abundance_parser.add_argument('-Cdb',       required=False, default=None,                   help='cluster info from dRep (Cdb.csv)')
+
+    dwnld_GenBank_genome_parser.add_argument('-csv',    required=True,                                  help='csv file from NCBI genome_browse')
+    dwnld_GenBank_genome_parser.add_argument('-fna',    required=False, action="store_true",            help='download gna file')
+    dwnld_GenBank_genome_parser.add_argument('-faa',    required=False, action="store_true",            help='download faa file')
+    dwnld_GenBank_genome_parser.add_argument('-gbff',   required=False, action="store_true",            help='download gbff file')
+    dwnld_GenBank_genome_parser.add_argument('-name',   required=False, action="store_true",            help='include genome name in the downloaded files')
+    dwnld_GenBank_genome_parser.add_argument('-t',      required=False, default=1, type=int,            help='number of threads')
+
+    select_seq_parser.add_argument('-seq',              required=True,                                  help='sequence file')
+    select_seq_parser.add_argument('-id',               required=True,                                  help='sequence id file, one id per line')
+    select_seq_parser.add_argument('-option',           required=True,  type=int,                       help='select option, either 1 or 0')
+
+    get_Pfam_hmms_parser.add_argument('-pfam',          required=True,                                  help='Pfam db file, normally with name Pfam-A.hmm')
+    get_Pfam_hmms_parser.add_argument('-id',            required=True,                                  help='ids of profiles need to be extracted, one id per line')
+
+    rename_seq_parser.add_argument('-in',               required=True,                                  help='input sequence file')
+    rename_seq_parser.add_argument('-sep_in',           required=False,                                 help='separator for input sequences')
+    rename_seq_parser.add_argument('-sep_out',          required=False, default=None,                   help='separator for output sequences, default: same as si')
+    rename_seq_parser.add_argument('-n',                required=False, type=int,                       help='the number of columns to keep')
+    rename_seq_parser.add_argument('-prefix',           required=False, default=None,                   help='add prefix to all sequences in a fasta file')
+
+    SILVA_for_BLCA_parser.add_argument('-SILVA_ssu',    required=True,                                  help='SILVA SSU sequence file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
+
+    GTDB_for_BLCA_parser.add_argument('-GTDB_ssu',      required=True,                                  help='GTDB SSU sequence file, e.g. bac120_ar122_ssu_r89.fna')
+
+
+    ###################################################### parse provided arguments and run corresponding function #####################################################
+
+    # disable warning message
+    warnings.filterwarnings('ignore')
+
+    # parse options
+    if (len(sys.argv) == 1) or (sys.argv[1] in ['-h', '-help', '--help']):
+        print_main_help()
+        sys.exit(0)
+    else:
+        args = vars(parser.parse_args())
+
+    # run corresponding function
+    if args['subparser_name'] == 'Prodigal':
+        Prodigal.Annotation_Prodigal(args)
+
+    elif args['subparser_name'] == 'COG2003':
+        COG2003.COG2003(args, config_dict)
+
+    elif args['subparser_name'] == 'COG2014':
+        COG2014.COG2014(args)
+
+    elif args['subparser_name'] == 'KEGG':
+        KEGG.Annotation_KEGG(args)
+
+    elif args['subparser_name'] == 'dbCAN':
+        dbCAN.dbCAN(args)
+
+    elif args['subparser_name'] == 'CheckM_Runner':
+        CheckM.CheckM_Runner(args)
+
+    elif args['subparser_name'] == 'CheckM_op_parser':
+        CheckM.CheckM_output_parser(args)
+
+    elif args['subparser_name'] == 'SankeyTaxon':
+        SankeyTaxon.SankeyTaxon(args)
+
+    elif args['subparser_name'] == 'get_SCG_tree':
+        get_SCG_tree.get_SCG_tree(args, config_dict)
+
+    elif args['subparser_name'] == 'subset_tree':
+        Subset_tree.subset_tree(args)
+
+    elif args['subparser_name'] == 'label_tree':
+        label_tree.label_tree(args, config_dict)
+
+    elif args['subparser_name'] == 'iTOL':
+        iTOL.iTOL(args)
+
+    elif args['subparser_name'] == 'split_folder':
+        split_folder.split_folder(args)
+
+    elif args['subparser_name'] == 'BestHit':
+        keep_best_hit.best_hit(args)
+
+    elif args['subparser_name'] == 'get_bin_abundance':
+        get_bin_abundance.get_bin_abundance(args)
+
+    elif args['subparser_name'] == 'dwnld_GenBank_genome':
+        download_GenBank_genome.download_GenBank_genome(args)
+
+    elif args['subparser_name'] == 'convert_align_format':
+        format_converter.convert_align_format(args)
+
+    elif args['subparser_name'] == 'gbk2fa':
+        format_converter.gbk2fa(args)
+
+    elif args['subparser_name'] == 'gbk2ffn':
+        format_converter.gbk2ffn(args)
+
+    elif args['subparser_name'] == 'gbk2faa':
+        format_converter.gbk2faa(args)
+
+    elif args['subparser_name'] == 'ffn2faa':
+        format_converter.ffn2faa(args)
+
+    elif args['subparser_name'] == 'get_rc':
+        format_converter.get_rc(args)
+
+    elif args['subparser_name'] == 'select_seq':
+        select_seq.select_seq(args)
+
+    elif args['subparser_name'] == 'get_Pfam_hmms':
+        get_Pfam_hmms.get_Pfam_hmms(args)
+
+    elif args['subparser_name'] == 'get_gene_depth':
+        get_gene_depth.get_gene_depth(args)
+
+    elif args['subparser_name'] == 'rename_seq':
+        rename_seq.rename_seq(args)
+
+    elif args['subparser_name'] == 'NetEnzymes':
+        NetEnzymes.NetEnzymes(args, config_dict)
+
+    elif args['subparser_name'] == 'SILVA_for_BLCA':
+        SILVA_for_BLCA.SILVA_for_BLCA(args)
+
+    elif args['subparser_name'] == 'GTDB_for_BLCA':
+        GTDB_for_BLCA.GTDB_for_BLCA(args)
+
+    else:
+        print('Unrecognized command: %s, program exited' % sys.argv[1])
+        exit()

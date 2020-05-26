@@ -1,47 +1,22 @@
 
-import csv
-import numpy
+mags_1030 = '/Users/songweizhi/Desktop/1030MAGs.txt'
+gtdb_output = '/Users/songweizhi/Desktop/Kelp_NM_GTDB_r89.tsv'
 
-filename = '/Users/songweizhi/Desktop/test.csv'
-
-# raw_data = open(filename)
-#
-#
-# reader = csv.reader(raw_data, delimiter=',', quoting=csv.QUOTE_NONE)
-# print(reader)
-# x = list(reader)
-# print(x)
-# data = numpy.array(x).astype('float')
-# print(data)
-# print(data.shape)
-
-
-
-# from numpy import loadtxt
-# raw_data = open(filename, 'rt')
-# data = loadtxt(raw_data, delimiter=",")
-# print(data)
-# print(data.shape)
-
-
-from pandas import read_csv
-from numpy import set_printoptions
-from sklearn.preprocessing import MinMaxScaler
-
-names = ['preg', 'plas', 'pres', 'skin', 'test', 'mass', 'pedi', 'age', 'class']
-dataframe = read_csv(filename, names=names)
-array = dataframe.values
-X = array[:,:8]
-Y = array[:,8]
-
-scaler = MinMaxScaler(feature_range=(0, 1))
-rescaledX = scaler.fit_transform(X)
-set_printoptions(precision=3)
-
-print(X[0:5,:])
-
-print(rescaledX[0:5,:])
+mags_1030_list = []
+for each in open(mags_1030):
+    mags_1030_list.append(each.strip())
 
 
 
 
+for each in open(gtdb_output):
+    each_split = each.strip().split('\t')
+    mag_id = each_split[0]
+    taxon = each_split[1]
+
+    if mag_id in mags_1030_list:
+
+        if 'd__Archaea' in taxon:
+            print(taxon)
+
+# p__Thermoplasmatota, p__Halobacterota

@@ -24,5 +24,5 @@ setup(name="BioSAK",
       packages=['BioSAK'],
       package_data={'': ['*.r', '*.R', '*.py', '*.pl', 'VERSION', '*.hmm']},
       include_package_data=True,
-      install_requires=['biopython', 'matplotlib', 'numpy', 'scipy', 'itolapi', 'networkx'],
+      install_requires=['biopython', 'matplotlib', 'numpy', 'scipy', 'itolapi', 'networkx', 'seaborn'],
       scripts=['bin/BioSAK'])
