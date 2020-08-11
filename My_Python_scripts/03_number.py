@@ -40,7 +40,8 @@ def cluster(data, maxgap, min_size):
 
 ######################### get_malthusian_selection_coefficients ##########################
 
-# Reference: Fitness effects of advantageous mutations in evolving Escherichia coli populations
+# Equation for calculating mij in reference:
+# Fitness effects of advantageous mutations in evolving Escherichia coli populations
 
 import numpy as np
 
