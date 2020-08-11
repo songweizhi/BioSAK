@@ -21,16 +21,16 @@ BioSAK get_bin_abundance -sam all_bins.sam -bin all_bins -x fa -o abundance.txt 
 
 # How it works
 The get_bin_abundance module first gets the number of reads mapped to each reference sequence in the provided sam file. 
-Then get the total number/percentage of reads mapped to the sequences from each bin (cluster).
+Then calculate the number/percentage of reads mapped to the sequences in each bin (cluster).
 
-# Format of grouping file (tab-separated, with the first column as group id, followed by a list of bins from it)
+# Format of customized grouping file (tab-separated, with the first column as group id, followed by a list of bins from it)
 cluster_1	Ecklonia_bin_1.fa	Delisea_bin_1.fa
 cluster_2	Ecklonia_bin_2.fa	Delisea_bin_5.fa	Amphiroa_bin_1.fa
 cluster_3	Amphiroa_bin_3.fa
 
 # Note!!!
 The input sam file is obtained by mapping sequencing reads from a sample to the combined file of all bins in ‘-bin’ folder. 
-Please make sure contig ids are UNIQUE if you have bins derived from multiple samples combined together.
+Please make sure contig ids are UNIQUE across all bins in ‘-bin’ folder.
 
 ====================================================================================================
 '''

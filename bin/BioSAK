@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # Copyright (C) 2017, Weizhi Song.
 # songwz03@gmail.com
@@ -32,6 +32,7 @@ from BioSAK import split_folder
 from BioSAK import SankeyTaxon
 from BioSAK import format_converter
 from BioSAK import get_Pfam_hmms
+from BioSAK import Reads_simulator
 from BioSAK.BioSAK_config import config_dict
 
 
@@ -85,7 +86,7 @@ def print_main_help():
        sra_reads_downloader   ->   Download SRA read files
        dwnld_GenBank_genome   ->   Batch download GenBank genomes
        get_Pfam_hmms          ->   Get Pfam profiles by id
-       reads_simulator        ->   Simulate NGS reads
+       Reads_simulator        ->   Simulate NGS reads
        
     # for module specific help info
     BioSAK <ModuleName> -h
@@ -144,12 +145,13 @@ if __name__ == '__main__':
     SILVA_for_BLCA_parser =             subparsers.add_parser('SILVA_for_BLCA',             description='Prepare BLCA-compatible SILVA SSU database',           usage=SILVA_for_BLCA.SILVA_for_BLCA_usage)
     GTDB_for_BLCA_parser =              subparsers.add_parser('GTDB_for_BLCA',              description='Prepare BLCA-compatible GTDB SSU database',            usage=GTDB_for_BLCA.GTDB_for_BLCA_usage)
     SankeyTaxon_parser =                subparsers.add_parser('SankeyTaxon',                description='Visualize GTDB output with Sankey diagram',            usage=SankeyTaxon.SankeyTaxon_parser_usage)
-    BestHit_parser =                    subparsers.add_parser('BestHit',                    description='Keep blast hits with highest bit score',               usage=split_folder.split_folder_parser_usage)
+    BestHit_parser =                    subparsers.add_parser('BestHit',                    description='Keep blast hits with highest bit score',               usage=keep_best_hit.BestHit_parser_usage)
     get_bin_abundance_parser =          subparsers.add_parser('get_bin_abundance',          description='Get bin abundance',                                    usage=get_bin_abundance.get_bin_abundance_usage)
     sra_reads_downloader_parser =       subparsers.add_parser('sra_reads_downloader',       description='Download SRA read files',                              usage=sra_reads_downloader.sra_reads_downloader_usage)
     dwnld_GenBank_genome_parser =       subparsers.add_parser('dwnld_GenBank_genome',       description='Batch download GenBank genomes',                       usage=download_GenBank_genome.download_GenBank_genome_parser_usage)
     get_Pfam_hmms_parser =              subparsers.add_parser('get_Pfam_hmms',              description='Get Pfam profiles by id',                              usage=get_Pfam_hmms.get_Pfam_hmms_usage)
     subsample_reads_parser =            subparsers.add_parser('subsample_reads',            description='Wrapper for running Prodigal',                         usage='')
+    Reads_simulator_parser =            subparsers.add_parser('Reads_simulator',            description='Simulate NGS reads',                                   usage=Reads_simulator.Reads_simulator_usage)
 
 
     ###################################################################################### define arguments for subparsers #######################################################################################
@@ -303,13 +305,18 @@ if __name__ == '__main__':
 
     rename_seq_parser.add_argument('-in',               required=True,                                  help='input sequence file')
     rename_seq_parser.add_argument('-sep_in',           required=False,                                 help='separator for input sequences')
-    rename_seq_parser.add_argument('-sep_out',          required=False, default=None,                   help='separator for output sequences, default: same as si')
+    rename_seq_parser.add_argument('-sep_out',          required=False, default=None,                   help='separator for output sequences, default: same as sep_in')
     rename_seq_parser.add_argument('-n',                required=False, type=int,                       help='the number of columns to keep')
     rename_seq_parser.add_argument('-prefix',           required=False, default=None,                   help='add prefix to all sequences in a fasta file')
 
     SILVA_for_BLCA_parser.add_argument('-SILVA_ssu',    required=True,                                  help='SILVA SSU sequence file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
-
     GTDB_for_BLCA_parser.add_argument('-GTDB_ssu',      required=True,                                  help='GTDB SSU sequence file, e.g. bac120_ar122_ssu_r89.fna')
+
+    Reads_simulator_parser.add_argument('-r',           required=True,                                  help='reference genomes')
+    Reads_simulator_parser.add_argument('-n',           required=True, type=int,                        help='reads number')
+    Reads_simulator_parser.add_argument('-l',           required=True, type=int,                        help='reads length')
+    Reads_simulator_parser.add_argument('-i',           required=True, type=int,                        help='insert size')
+    Reads_simulator_parser.add_argument('-split',       action="store_true",                            help='Export forward and reverse reads to separate files')
 
 
     ###################################################### parse provided arguments and run corresponding function #####################################################
@@ -412,6 +419,27 @@ if __name__ == '__main__':
     elif args['subparser_name'] == 'GTDB_for_BLCA':
         GTDB_for_BLCA.GTDB_for_BLCA(args)
 
+    elif args['subparser_name'] == 'Reads_simulator':
+        Reads_simulator.Reads_simulator(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
+
+
+upload_to_pypi_cmd = '''
+
+alias twine='/Users/songweizhi/Library/Python/3.7/bin/twine'
+cd /Users/songweizhi/PycharmProjects/BioSAK
+rm -r build
+rm -r dist
+rm -r BioSAK.egg-info
+python setup.py sdist bdist_wheel
+twine upload dist/*
+songweizhi
+
+shan88
+
+pip3 install --upgrade BioSAK
+
+'''

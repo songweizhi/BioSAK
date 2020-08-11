@@ -1,3 +1,13 @@
+import argparse
+
+
+BestHit_parser_usage = '''
+================ BestHit example commands ================
+
+BioSAK BestHit -i blast_result.tab -o blast_result_BestHit.tab
+
+===============================================================
+'''
 
 
 def best_hit(args):
@@ -35,9 +45,12 @@ def best_hit(args):
 
 if __name__ == '__main__':
 
-    file_in = '/Users/songweizhi/Desktop/ResistFlowBins/class_level/ResistFlow_c37_HGTs_PG.tab'
-    file_out = '/Users/songweizhi/Desktop/ResistFlowBins/class_level/ResistFlow_c37_HGTs_PG_best_hit.tab'
+    BestHit_parser = argparse.ArgumentParser()
 
-    args = [file_in, file_out]
+    # arguments for BestHit_parser
+    BestHit_parser.add_argument('-i',                   required=True,                                  help='input blast results (outfmt: 6)')
+    BestHit_parser.add_argument('-o',                   required=True,                                  help='output file')
+
+    args = vars(BestHit_parser.parse_args())
 
     best_hit(args)

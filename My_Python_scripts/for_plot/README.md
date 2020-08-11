@@ -20,6 +20,9 @@ Example plots in python.
 1. Categorical scatter plot [[basic_plot.py](basic_plot.py)]
    ![categorical_scatter_plot.png](categorical_scatter_plot.png)
 
+1. Customize subplots [[customized_subplots.py](customized_subplots.py)]
+   ![customized_subplots.png](customized_subplots.png)
+
 
 Useful Links:
 ------

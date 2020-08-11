@@ -32,7 +32,7 @@ else:
 # Prepare header
 line_1 = '#!/bin/bash\n'
 line_2 = '#PBS -l nodes=' + str(nodes_number) + ':ppn=' + str(ppn_number) + '\n'
-line_3 = '#PBS -l vmem=' + str(memory) + 'gb\n'
+line_3 = '#PBS -l mem=' + str(memory) + 'gb\n'
 line_4 = '#PBS -l walltime=' + walltime_needed + '\n'
 line_5 = '#PBS -j oe\n'
 line_6 = '#PBS -M ' + email + '\n'

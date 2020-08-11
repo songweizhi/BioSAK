@@ -5,3 +5,5 @@ scipy
 itolapi
 networkx
 seaborn
+lxml
+beautifulsoup4

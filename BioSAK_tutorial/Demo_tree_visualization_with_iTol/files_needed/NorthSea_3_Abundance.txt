@@ -20,10 +20,10 @@ COLOR_MAX	#E74C3C
 # USER_MID_VALUE	5
 # USER_MAX_VALUE	10
 
-# customize column name here
+# provide column name here
 FIELD_LABELS	Sediment_A	Sediment_B	Sediment_C	Seawater_A	Seawater_B	Seawater_C
 
-# Provide data here
+# provide data here
 DATA
 NorthSea_bin070	13	11	15	26	20	26
 NorthSea_bin054	64	71	66	33	33	44

@@ -77,3 +77,11 @@ label_list = ['Frogs', 'Hogs', 'Bogs', 'Slogs']
 get_categorical_scatter_plot(num_list, label_list, 0, '/Users/songweizhi/Desktop/categorical_scatter_plot.png')
 
 
+# # add vertical lines
+# for x_16s in ribosomal_RNA_16S_pos_list_dict['2.10_chromosome']:
+#     plt.axvline(x=x_16s)
+
+
+# # add horizontal lines
+# for y_16s in ribosomal_RNA_16S_pos_list_dict['D2_c']:
+#     plt.hlines(y=y_16s, xmin=0, xmax=ref_length_dict['2.10_chromosome'])

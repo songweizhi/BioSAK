@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2017, Weizhi Song, Kerrin Steensen and Torsten Thomas.
-# songwz03@gmail.com and t.thomas@unsw.edu.au
-
-# HgtSIM is free software: you can redistribute it and/or modify it under the terms of the GNU Affero
-# General Public License as published by the Free Software Foundation, either version 3 of the License,
-# or (at your option) any later version.
-
-# HgtSIM is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the
-# implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General
-# Public License for more details.
-
-# You should have received a copy of the GNU Affero General Public License along with this program.
-# If not, see <http://www.gnu.org/licenses/>.
-
-
 import os
 import shutil
 import random
@@ -25,6 +10,15 @@ from Bio.SeqIO import FastaIO
 from Bio.Alphabet import IUPAC
 from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import generic_dna
+
+
+Reads_simulator_usage = '''
+===================== Reads_simulator example commands =====================
+
+To be added
+
+============================================================================
+'''
 
 
 def get_genome_size(fasta_file):
@@ -46,7 +40,14 @@ def export_dna_record(gene_seq, gene_id, gene_description, output_handle):
     fasta_out.write_footer()
 
 
-def simulate_reads(pwd_genome_file, read_number, read_length, insert_size, split):
+def Reads_simulator(args):
+
+    pwd_genome_file = args['r']
+    read_number = args['n']
+    read_length = args['l']
+    insert_size = args['i']
+    split = args['split']
+
     path, file_name = os.path.split(pwd_genome_file)
     genome_name, ext = os.path.splitext(file_name)
 
@@ -76,11 +77,8 @@ def simulate_reads(pwd_genome_file, read_number, read_length, insert_size, split
         current_fragment_r1 = current_fragment[:read_length]
         current_fragment_r2 = current_fragment[-read_length:]
         current_fragment_r2_reverse_complement = str(Seq(current_fragment_r2, generic_dna).reverse_complement())
-        current_read_r1_id = 'r%s_from_%s_%sth_bp_#0/1' % (n, genome_name, rdm_num)
-        current_read_r2_id = 'r%s_from_%s_%sth_bp_#0/2' % (n, genome_name, rdm_num)
-
-        current_read_r1_id = '%s_%sth_r1' % (genome_name, n)
-        current_read_r2_id = '%s_%sth_r2' % (genome_name, n)
+        current_read_r1_id = '%s_%s_1' % (genome_name, n)
+        current_read_r2_id = '%s_%s_2' % (genome_name, n)
 
         if split == 1:
             export_dna_record(current_fragment_r1, current_read_r1_id, '', output_r1_handle)
@@ -89,6 +87,7 @@ def simulate_reads(pwd_genome_file, read_number, read_length, insert_size, split
             export_dna_record(current_fragment_r1, current_read_r1_id, '', output_combined_handle)
             export_dna_record(current_fragment_r2_reverse_complement, current_read_r2_id, '', output_combined_handle)
         n += 1
+
     if split == 1:
         output_r1_handle.close()
         output_r2_handle.close()
@@ -96,22 +95,11 @@ def simulate_reads(pwd_genome_file, read_number, read_length, insert_size, split
         output_combined_handle.close()
 
 
-def Reads_simulator(args):
-
-    rederence_genome = args['R']
-    reads_number = args['n']
-    reads_length = args['l']
-    insert_size = args['i']
-    split = args['split']
-
-    simulate_reads(rederence_genome, reads_number, reads_length, insert_size, split)
-
-
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-R', required=True, help='reference genomes')
+    parser.add_argument('-r', required=True, help='reference genomes')
     parser.add_argument('-n', required=True, type=int, help='reads number')
     parser.add_argument('-l', required=True, type=int, help='reads length')
     parser.add_argument('-i', required=True, type=int, help='insert size')

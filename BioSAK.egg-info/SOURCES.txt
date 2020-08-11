@@ -45,6 +45,7 @@ BioSAK/get_bin_abundance.py
 BioSAK/get_bin_abundance_old.py
 BioSAK/get_gc.py
 BioSAK/get_gene_depth.py
+BioSAK/get_ko_gene_seqs.py
 BioSAK/get_reads_from_sam.py
 BioSAK/get_sankey_plot.R
 BioSAK/get_top_hit.py
@@ -60,6 +61,7 @@ BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
+BioSAK/mean_sam_depth.py
 BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_sam_depth.py
 BioSAK/rename_seq.py
