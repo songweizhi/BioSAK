@@ -1,11 +1,34 @@
-
 import os
 import argparse
 from Bio import SeqIO
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.pyplot import figure
+
+
+plot_sam_depth_usage = '''
+================================== plot_sam_depth example commands ==================================
+
+# get depth file 
+samtools depth 12D9.bam > 12D9.depth
+BioSAK plot_sam_depth -r ref.fa -d 12D9.depth
+BioSAK plot_sam_depth -r ref.fa -d 12D9.depth -i contig_01 -s 100 -e 900 -k 1 -l 500,550,600
+
+=====================================================================================================
+'''
+
+
+def sep_path_basename_ext(file_in):
+
+    # separate path and file name
+    file_path, file_name = os.path.split(file_in)
+    if file_path == '':
+        file_path = '.'
+
+    # separate file basename and extension
+    file_basename, file_extension = os.path.splitext(file_name)
+
+    return file_path, file_basename, file_extension
 
 
 def take_kmer_mean(num_list, k_mer):
@@ -37,8 +60,8 @@ def take_kmer_mean(num_list, k_mer):
     return k_mer_average_list
 
 
-def plot_seq_depth(depth_file, seq_to_plot, start_pos, end_pos, bps_to_marker, plot_filename):
-    #print('Extracting absolute depth from input file')
+def plot_sam(depth_file, seq_to_plot, start_pos, end_pos, bps_to_marker, plot_filename, k_mer, plot_width, plot_height):
+
     x = []
     y = []
     bp_num = 1
@@ -111,57 +134,43 @@ def plot_seq_depth(depth_file, seq_to_plot, start_pos, end_pos, bps_to_marker, p
     plt.xticks(fontsize=7)
     plt.yticks(fontsize=7)
 
-    ymax = 0
-    if max(y) <= 2000:
-        ymax = 2000
-    elif (2000 < max(y) <= 5000):
-        ymax = 5000
-    elif (5000 < max(y) <= 10000):
-        ymax = 10000
-    else:
-        ymax = max(y)
-
-    plt.ylim(ymin=0, ymax=ymax)
+    # set axis range
+    plt.ylim(0, max(y))
 
     # add lines to specified positions
     if bps_to_marker != None:
         bps_to_marker_list = bps_to_marker.strip().split(',')
         for each_line in bps_to_marker_list:
-            plt.axvline(x=int(each_line), c='red', linewidth=0.3)
+            plt.axvline(x=int(each_line), c='red', linewidth=0.2, linestyle='dashed')
 
     # Get plot
-    plt.savefig('%s.png' % plot_filename, dpi=300)
+    plt.savefig('%s.pdf' % plot_filename, dpi=300)
     plt.close()
 
 
 def plot_sam_depth(args):
 
-    sequence_file = args['REF']
-    depth_file = args['DEPTH']
-    seq_to_plot = args['SeqID']
-    start_pos = args['START']
-    end_pos = args['END']
-    k_mer = args['Kmer']
-    plot_filename = args['Out']
-    bps_to_marker = args['Lines']
-    plot_width = args['xlen']
-    plot_height = args['ylen']
-
+    sequence_file = args['r']
+    depth_file = args['d']
+    seq_to_plot = args['i']
+    start_pos = args['s']
+    end_pos = args['e']
+    k_mer = args['k']
+    bps_to_marker = args['l']
+    plot_width = args['x']
+    plot_height = args['y']
 
     # get sequence length dict
     seq_id_length_dict = {}
     for each_seq in SeqIO.parse(sequence_file, 'fasta'):
         seq_id_length_dict[each_seq.id] = len(each_seq.seq)
 
-
     if (seq_to_plot != None) and (seq_to_plot not in seq_id_length_dict):
-        print('Reference sequence %s not found in bam file, program exited!' % seq_to_plot)
+        print('Reference sequence %s not found in reference file, program exited!' % seq_to_plot)
         exit()
 
-
     # get depth_file base name
-    depth_file_basename, depth_file_extension = os.path.splitext(depth_file)
-
+    depth_file_path, depth_file_basename, depth_file_extension = sep_path_basename_ext(depth_file)
 
     if seq_to_plot != None:
 
@@ -172,36 +181,31 @@ def plot_sam_depth(args):
             end_pos = seq_id_length_dict[seq_to_plot]
 
         print('Processing %s' % seq_to_plot)
-        if plot_filename == None:
-            plot_filename = '%s__%s__%s-%sbp__%smer' % (depth_file_basename, seq_to_plot, start_pos, end_pos, k_mer)
-            plot_seq_depth(depth_file, seq_to_plot, start_pos, end_pos, bps_to_marker, plot_filename)
+        plot_filename = '%s__%s__%s-%sbp__%smer' % (depth_file_basename, seq_to_plot, start_pos, end_pos, k_mer)
+        plot_sam(depth_file, seq_to_plot, start_pos, end_pos, bps_to_marker, plot_filename, k_mer, plot_width, plot_height)
 
     if seq_to_plot == None:
-
         for each_ctg in SeqIO.parse(sequence_file, 'fasta'):
             print('Processing %s' % each_ctg.id)
             plot_filename = '%s__%s__%s-%sbp__%smer' % (depth_file_basename, each_ctg.id, 1, seq_id_length_dict[each_ctg.id], k_mer)
-            plot_seq_depth(depth_file, each_ctg.id, 1, seq_id_length_dict[each_ctg.id], bps_to_marker, plot_filename)
+            plot_sam(depth_file, each_ctg.id, 1, seq_id_length_dict[each_ctg.id], bps_to_marker, plot_filename, k_mer, plot_width, plot_height)
 
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='', add_help=False)
-    required = parser.add_argument_group('required arguments')
-    optional = parser.add_argument_group('optional arguments')
+    plot_sam_depth_parser = argparse.ArgumentParser()
 
-    optional.add_argument('-h', action='help', help='Show this help message and exit')
-    required.add_argument('-r', required=True,  type=str, help='reference sequence file')
-    required.add_argument('-d', required=True,  type=str, help='depth file')
-    optional.add_argument('-i', required=False, type=str, default=None, help='id of sequence to plot')
-    optional.add_argument('-s', required=False, type=int, default=None, help='start position to plot')
-    optional.add_argument('-e', required=False, type=int, default=None, help='end position to plot')
-    optional.add_argument('-k', required=False, type=int, default=100, help='k-mer mean depth')
-    optional.add_argument('-o', required=False, type=str, default=None, help='output plot name')
-    optional.add_argument('-l', required=False, type=str, default=None, help='position to mark')
-    optional.add_argument('-x', required=False, type=int, default=8, help='plot width')
-    optional.add_argument('-y', required=False, type=int, default=3, help='plot height')
+    plot_sam_depth_parser.add_argument('-r',            required=True, type=str,                        help='reference sequence file')
+    plot_sam_depth_parser.add_argument('-d',            required=True, type=str,                        help='depth file')
+    plot_sam_depth_parser.add_argument('-i',            required=False, type=str, default=None,         help='id of sequence to plot')
+    plot_sam_depth_parser.add_argument('-s',            required=False, type=int, default=None,         help='start position to plot')
+    plot_sam_depth_parser.add_argument('-e',            required=False, type=int, default=None,         help='end position to plot')
+    plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth')
+    plot_sam_depth_parser.add_argument('-l',            required=False, type=str, default=None,         help='position to mark')
+    plot_sam_depth_parser.add_argument('-x',            required=False, type=int, default=8,            help='plot width')
+    plot_sam_depth_parser.add_argument('-y',            required=False, type=int, default=3,            help='plot height')
 
-    args = vars(parser.parse_args())
+
+    args = vars(plot_sam_depth_parser.parse_args())
 
     plot_sam_depth(args)

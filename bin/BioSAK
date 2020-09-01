@@ -33,6 +33,7 @@ from BioSAK import SankeyTaxon
 from BioSAK import format_converter
 from BioSAK import get_Pfam_hmms
 from BioSAK import Reads_simulator
+from BioSAK import plot_sam_depth
 from BioSAK.BioSAK_config import config_dict
 
 
@@ -87,7 +88,8 @@ def print_main_help():
        dwnld_GenBank_genome   ->   Batch download GenBank genomes
        get_Pfam_hmms          ->   Get Pfam profiles by id
        Reads_simulator        ->   Simulate NGS reads
-       
+       plot_sam_depth         ->   Plot sam depth
+
     # for module specific help info
     BioSAK <ModuleName> -h
     
@@ -131,7 +133,7 @@ if __name__ == '__main__':
 
     # Sam file manipulator
     extract_sam_reads_parser =          subparsers.add_parser('Extract_sam_reads',          description='Extract reads from SAM file',                          usage='')
-    plot_sam_depth_parser =             subparsers.add_parser('Plot_sam_depth',             description='Wrapper for running Prodigal',                         usage='')
+    plot_sam_depth_parser =             subparsers.add_parser('plot_sam_depth',             description='plot sam depth',                                       usage=plot_sam_depth.plot_sam_depth_usage)
 
     # Tree file manipulator
     get_SCG_tree_parser =               subparsers.add_parser('get_SCG_tree',               description='get SCG tree',                                         usage=get_SCG_tree.get_SCG_tree_usage)
@@ -318,6 +320,16 @@ if __name__ == '__main__':
     Reads_simulator_parser.add_argument('-i',           required=True, type=int,                        help='insert size')
     Reads_simulator_parser.add_argument('-split',       action="store_true",                            help='Export forward and reverse reads to separate files')
 
+    plot_sam_depth_parser.add_argument('-r',            required=True, type=str,                        help='reference sequence file')
+    plot_sam_depth_parser.add_argument('-d',            required=True, type=str,                        help='depth file')
+    plot_sam_depth_parser.add_argument('-i',            required=False, type=str, default=None,         help='id of sequence to plot')
+    plot_sam_depth_parser.add_argument('-s',            required=False, type=int, default=None,         help='start position to plot')
+    plot_sam_depth_parser.add_argument('-e',            required=False, type=int, default=None,         help='end position to plot')
+    plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth')
+    plot_sam_depth_parser.add_argument('-l',            required=False, type=str, default=None,         help='position to mark')
+    plot_sam_depth_parser.add_argument('-x',            required=False, type=int, default=8,            help='plot width')
+    plot_sam_depth_parser.add_argument('-y',            required=False, type=int, default=3,            help='plot height')
+
 
     ###################################################### parse provided arguments and run corresponding function #####################################################
 
@@ -422,6 +434,9 @@ if __name__ == '__main__':
     elif args['subparser_name'] == 'Reads_simulator':
         Reads_simulator.Reads_simulator(args)
 
+    elif args['subparser_name'] == 'plot_sam_depth':
+        plot_sam_depth.plot_sam_depth(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
@@ -441,5 +456,8 @@ songweizhi
 shan88
 
 pip3 install --upgrade BioSAK
+
+
+
 
 '''

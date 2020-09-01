@@ -1,3 +1,5 @@
+import argparse
+
 
 def get_ref_mean_depth(sam_depth_file):
     ref_id_list = []
@@ -36,16 +38,12 @@ def get_ref_mean_depth(sam_depth_file):
     return mean_depth_dict
 
 
-sam_depth_file = '/Users/songweizhi/Desktop/OneHGT_50_to_50.depth'
-sam_depth_file = '/Users/songweizhi/Desktop/OneHGT_75_to_25.depth'
-sam_depth_file = '/Users/songweizhi/Desktop/OneHGT_90_to_10.depth'
-sam_depth_file = '/Users/songweizhi/Desktop/OneHGT_95_to_05.depth'
-sam_depth_file = '/Users/songweizhi/Desktop/OneHGT_99_to_01.depth'
+parser = argparse.ArgumentParser()
+parser.add_argument('-d', required=True, help='depth file')
+args = vars(parser.parse_args())
+sam_depth_file = args['d']
 
-print(get_ref_mean_depth(sam_depth_file))
+mean_depth_dict = get_ref_mean_depth(sam_depth_file)
 
-# 50_to_50：{'2.10_chromosome': 55.29, 'D2_c': 45.67}
-# 75_to_25：{'2.10_chromosome': 82.91, 'D2_c': 22.84}
-# 90_to_10：{'2.10_chromosome': 99.47, 'D2_c': 9.14}
-# 95_to_05: {'2.10_chromosome': 105.0, 'D2_c': 4.62}
-# 99_to_01: {'2.10_chromosome': 109.41, 'D2_c': 1.53}
+for i in mean_depth_dict:
+    print('%s\t%s\t%s' % (sam_depth_file, i, mean_depth_dict[i]))

@@ -1,5 +1,5 @@
 
-## BioSAK (A Swiss Army Knife for Biologists)
+## BioSAK (A Swiss-Army-Knife for Biologists)
 
 [![pypi licence ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
 [![pypi version ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 

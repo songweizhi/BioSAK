@@ -150,13 +150,14 @@ def dbCAN_worker(argument_list):
         query_id = hmm_hit_split[2]
         matched_hmm = hmm_hit_split[0]
         matched_hmm_id = matched_hmm.split('.hmm')[0]
-        if '_' in matched_hmm_id:
-            matched_hmm_id = matched_hmm_id.split('_')[0]
 
         # get activities
         matched_hmm_activities = 'NA'
-        if matched_hmm_id in fam_to_activities_dict:
-            matched_hmm_activities = fam_to_activities_dict[matched_hmm_id]
+        matched_hmm_id_no_underscore = matched_hmm_id
+        if '_' in matched_hmm_id_no_underscore:
+            matched_hmm_id_no_underscore = matched_hmm_id_no_underscore.split('_')[0]
+        if matched_hmm_id_no_underscore in fam_to_activities_dict:
+            matched_hmm_activities = fam_to_activities_dict[matched_hmm_id_no_underscore]
 
         # get hmm_to_num_dict
         if matched_hmm_id not in hmm_to_gene_member_dict:
@@ -176,16 +177,15 @@ def dbCAN_worker(argument_list):
     pwd_annotation_results_stats_GeneNumber_handle.write('Family\tGeneNumber\tActivities\n')
     total_GeneNumber_identified = 0
     for each_hmm in hmm_to_gene_member_dict:
-
         each_hmm_id = each_hmm.split('.hmm')[0]
-        if '_' in each_hmm_id:
-            each_hmm_id = each_hmm_id.split('_')[0]
-
         each_hmm_GeneNumber = len(hmm_to_gene_member_dict[each_hmm_id])
 
         each_hmm_activities = 'NA'
-        if each_hmm_id in fam_to_activities_dict:
-            each_hmm_activities = fam_to_activities_dict[each_hmm_id]
+        matched_hmm_id_no_underscore = each_hmm_id
+        if '_' in matched_hmm_id_no_underscore:
+            matched_hmm_id_no_underscore = matched_hmm_id_no_underscore.split('_')[0]
+        if matched_hmm_id_no_underscore in fam_to_activities_dict:
+            each_hmm_activities = fam_to_activities_dict[matched_hmm_id_no_underscore]
 
         pwd_annotation_results_stats_GeneNumber_handle.write('%s\t%s\t%s\n' % (each_hmm_id, each_hmm_GeneNumber, each_hmm_activities))
         total_GeneNumber_identified += each_hmm_GeneNumber
@@ -202,11 +202,7 @@ def dbCAN_worker(argument_list):
         pwd_annotation_results_stats_TotalDepth_handle.write('Family\tTotalDepth\tActivities\n')
         total_depth_identified = 0
         for each_hmm in hmm_to_gene_member_dict:
-
             each_hmm_id = each_hmm.split('.hmm')[0]
-            if '_' in each_hmm_id:
-                each_hmm_id = each_hmm_id.split('_')[0]
-
             each_hmm_TotalDepth = 0
             for each_gene in hmm_to_gene_member_dict[each_hmm_id]:
                 each_gene_depth = gene_depth_dict[each_gene]
@@ -214,8 +210,11 @@ def dbCAN_worker(argument_list):
             each_hmm_TotalDepth = float("{0:.2f}".format(each_hmm_TotalDepth))
 
             each_hmm_activities = 'NA'
-            if each_hmm_id in fam_to_activities_dict:
-                each_hmm_activities = fam_to_activities_dict[each_hmm_id]
+            matched_hmm_id_no_underscore = each_hmm_id
+            if '_' in matched_hmm_id_no_underscore:
+                matched_hmm_id_no_underscore = matched_hmm_id_no_underscore.split('_')[0]
+            if matched_hmm_id_no_underscore in fam_to_activities_dict:
+                each_hmm_activities = fam_to_activities_dict[matched_hmm_id_no_underscore]
 
             pwd_annotation_results_stats_TotalDepth_handle.write('%s\t%s\t%s\n' % (each_hmm_id, each_hmm_TotalDepth, each_hmm_activities))
             total_depth_identified += each_hmm_TotalDepth
