@@ -16,8 +16,8 @@ download_GenBank_genome_parser_usage = '''
 # 3. Click "Download" on the right side
 # 4. provide the downloaded csv file with '-csv'
 
-# Download all genomes in file prokaryotes.csv
-BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -fna
+# Download genomes in file prokaryotes.csv
+BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -fna -name
 BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -fna -faa -gbff -name
 
 ===========================================================================================================
@@ -26,12 +26,12 @@ BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -fna -faa -gbff -name
 
 def genome_download_worker(argument_list):
 
-    genome_record_split =       argument_list[0]
-    downloaded_genome_folder =  argument_list[1]
-    get_fna =                   argument_list[2]
-    get_faa =                   argument_list[3]
-    get_gbff =                   argument_list[4]
-    with_name =                  argument_list[5]
+    genome_record_split =      argument_list[0]
+    downloaded_genome_folder = argument_list[1]
+    get_fna =                  argument_list[2]
+    get_faa =                  argument_list[3]
+    get_gbff =                 argument_list[4]
+    with_name =                argument_list[5]
 
     genome_name = genome_record_split[0][1:-1]
     genome_name_no_space = '_'.join(genome_name.split(' '))
@@ -154,3 +154,4 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
 
     download_GenBank_genome(args)
+
