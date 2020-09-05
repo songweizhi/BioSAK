@@ -17,24 +17,25 @@ This short note shows how to visualize all these info in one plot.
     
     + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to prepare these files. Please refers to the [help page](https://github.com/songweizhi/BioSAK) for its installation.
     
-        The purpose of BioSAK's iTOL module is to generate iTOL-recognizable file for your data, but this doesn't mean the parameters 
-        specified in the output file are optimal. The best way to optimize your plot is to visualize your tree with BioSAK's default 
-        outputs and adjust parameters inside (e.g. colour, font size, strip width et al.) by looking at the tree.
+        The purpose for developing this module is to generate iTOL-recognizable file for your dataset, 
+        parameters (e.g. colour, font size and strip width) provided in the output file might need 
+        further adjustment. The best way to optimize your plot is to visualize your tree with the 
+        default output and optimize the parameters by looking at the tree.
 
           # get NorthSea_1_Taxon_ColorStrip.txt
-          BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_taxon.txt -LegendTitle Class -out NorthSea_1_Taxon_ColorStrip.txt
+          BioSAK iTOL -ColorStrip -lg raw_MAG_taxon.txt -lt Class -out NorthSea_1_Taxon_ColorStrip.txt
           
           # get NorthSea_1_Taxon_Range.txt
-          BioSAK iTOL -ColorRange -LeafGroup raw_MAG_taxon.txt -LegendTitle Class -out NorthSea_1_Taxon_Range.txt
+          BioSAK iTOL -ColorRange -lg raw_MAG_taxon.txt -lt Class -out NorthSea_1_Taxon_Range.txt
           
           # get NorthSea_2_LifeStyle.txt
-          BioSAK iTOL -ColorStrip -LeafGroup raw_MAG_LifeStyle.txt -LegendTitle LifeStyle -out NorthSea_2_LifeStyle.txt
+          BioSAK iTOL -ColorStrip -lg raw_MAG_LifeStyle.txt -lt LifeStyle -out NorthSea_2_LifeStyle.txt
           
           # get NorthSea_3_Abundance.txt
-          BioSAK iTOL -Heatmap -LeafMatrix raw_MAG_abundance.txt -LegendTitle Abundance -out NorthSea_3_Abundance.txt
+          BioSAK iTOL -Heatmap -lm raw_MAG_abundance.txt -lt Abundance -out NorthSea_3_Abundance.txt
 
           # get NorthSea_4_MAG_Size.txt
-          BioSAK iTOL -SimpleBar -LeafValue raw_MAG_size.txt -scale 0-3-6-9 -LegendTitle MAG_Size -out NorthSea_4_MAG_Size.txt
+          BioSAK iTOL -SimpleBar -lv raw_MAG_size.txt -scale 0-3-6-9 -lt MAG_Size -out NorthSea_4_MAG_Size.txt
 
 
 1. Upload **NorthSea_0_Tree.newick** to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
