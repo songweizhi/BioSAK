@@ -5,43 +5,38 @@ import seaborn as sns
 
 
 iTOL_usage = '''
-=========================================== iTOL example commands ===========================================
-
-# Note!!!
-The purpose of this module is to generate iTOL-recognizable file for your data, but this doesn't mean the parameters 
-specified in the output file are optimal. The best way to optimize your plot is to visualize your tree with the default 
-output and optimize the parameters (e.g. colour, font size, strip width et al.) by looking at the tree.
+==================================== iTOL example commands ====================================
 
 # Example commands
-BioSAK iTOL -ColorStrip -LeafGroup MagTaxon.txt -LegendTitle Phylum -out ColorStrip_taxon.txt
-BioSAK iTOL -ColorStrip -LeafGroup MagTaxon.txt -LegendTitle Phylum -out ColorStrip_taxon.txt -GroupColor TaxonColor.txt
-BioSAK iTOL -ColorRange -LeafGroup MagTaxon.txt -LegendTitle Phylum -out ColorRange_taxon.txt
-BioSAK iTOL -ColorRange -LeafGroup MagTaxon.txt -LegendTitle Phylum -out ColorRange_taxon.txt -GroupColor TaxonColor.txt
-BioSAK iTOL -SimpleBar -LeafValue MagSize.txt -scale 0-3-6-9 -LegendTitle Size -out SimpleBar_size.txt
-BioSAK iTOL -Heatmap -LeafMatrix MagAbundance.txt -LegendTitle Abundance -out Heatmap_abundance.txt
+BioSAK iTOL -ColorStrip -lg MagTaxon.txt -lt Phylum -out ColorStrip_taxon.txt
+BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -out ColorRange_taxon.txt
+BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -out SimpleBar_size.txt
+BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -out Heatmap_abundance.txt
 
-# LeafGroup file format (tab separated)
+# Leaf to Group file format (-lg, tab separated, no header)
 NorthSea_bin001	Alphaproteobacteria
-NorthSea_bin002	Alphaproteobacteria
 NorthSea_bin003	Verrucomicrobiae
 
-# GroupColor file format (tab separated)
+# Group to Color file format (-gc, tab separated, no header)
 Alphaproteobacteria	#CCCC00
 Verrucomicrobiae	#9999FF
 
-# LeafValue file format (tab separated)
+# Leaf to Value file format (-lv, tab separated, no header)
 NorthSea_bin001	6.15
 NorthSea_bin002	6.63
-NorthSea_bin003	7.11
 
-# LeafMatrix file format (tab separated, header required!!!)
+# Leaf to Matrix file format (-lm, tab separated, header required!!!)
 MAG_id Sample_A   Sample_B   Sample_C
 NorthSea_bin001	6.15    2.23    1.56
 NorthSea_bin002	6.63    1.72    2.55
-NorthSea_bin003	7.11    3.52    3.69
 
+# Note!!!
+The purpose for developing this module is to generate iTOL-recognizable file for your dataset, 
+parameters (e.g. colour, font size and strip width) provided in the output file might need 
+further adjustment. The best way to optimize your plot is to visualize your tree with the 
+default output and optimize the parameters by looking at the tree.
 
-=============================================================================================================
+===============================================================================================
 '''
 
 
@@ -87,12 +82,12 @@ def iTOL(args):
     ColorRange      = args['ColorRange']
     SimpleBar       = args['SimpleBar']
     Heatmap         = args['Heatmap']
-    LeafGroup       = args['LeafGroup']
-    GroupColor      = args['GroupColor']
-    LeafValue       = args['LeafValue']
-    LeafMatrix      = args['LeafMatrix']
+    LeafGroup       = args['lg']
+    GroupColor      = args['gc']
+    LeafValue       = args['lv']
+    LeafMatrix      = args['lm']
     scale_str       = args['scale']
-    LegendTitle     = args['LegendTitle']
+    LegendTitle     = args['lt']
     FileOut         = args['out']
 
     # General
@@ -304,12 +299,12 @@ if __name__ == '__main__':
     parser.add_argument('-ColorRange',  required=False, action='store_true',   help='ColorRange')
     parser.add_argument('-SimpleBar',   required=False, action='store_true',   help='SimpleBar')
     parser.add_argument('-Heatmap',     required=False, action='store_true',   help='Heatmap')
-    parser.add_argument('-LeafGroup',   required=False, default=None,          help='Leaf Group')
-    parser.add_argument('-GroupColor',  required=False, default=None,          help='Specify Group Color (optional)')
-    parser.add_argument('-LeafValue',   required=False, default=None,          help='Leaf Value')
-    parser.add_argument('-LeafMatrix',  required=False, default=None,          help='Leaf Matrix')
+    parser.add_argument('-lg',          required=False, default=None,          help='Leaf Group')
+    parser.add_argument('-gc',          required=False, default=None,          help='Specify Group Color (optional)')
+    parser.add_argument('-lv',          required=False, default=None,          help='Leaf Value')
+    parser.add_argument('-lm',          required=False, default=None,          help='Leaf Matrix')
     parser.add_argument('-scale',       required=False, default=None,          help='Scale Values, in format 0-3-6-9')
-    parser.add_argument('-LegendTitle', required=False, default=None,          help='Legend Title')
+    parser.add_argument('-lt',          required=False, default=None,          help='Legend Title')
     parser.add_argument('-out',         required=True,                         help='Output filename')
 
     args = vars(parser.parse_args())

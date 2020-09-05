@@ -32,7 +32,8 @@ BioSAK/boxplot_matrix_KEGG.py
 BioSAK/cdd2cog.pl
 BioSAK/dbCAN.py
 BioSAK/download_GenBank_genome.py
-BioSAK/download_GenBank_genome2.py
+BioSAK/download_GenBank_genome_subset_prokaryotes_csv.py
+BioSAK/dwnld_sra_reads.py
 BioSAK/format_converter.py
 BioSAK/fq2fa.py
 BioSAK/gbk_to_ffn_faa.py
@@ -68,7 +69,8 @@ BioSAK/rename_seq.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/split_folder.py
-BioSAK/sra_reads_downloader.py
+BioSAK/tmp_1.py
+BioSAK/tmp_2.py
 BioSAK.egg-info/PKG-INFO
 BioSAK.egg-info/SOURCES.txt
 BioSAK.egg-info/dependency_links.txt

@@ -14,12 +14,12 @@ BioSAK sra_reads_downloader -in prokaryotes.csv
 '''
 
 
-def sra_reads_downloader_worker():
+def dwnld_sra_reads_worker():
 
     pass
 
 
-def sra_reads_downloader(args):
+def dwnld_sra_reads(args):
 
     pass
 
