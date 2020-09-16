@@ -53,11 +53,11 @@ BioSAK/get_top_hit.py
 BioSAK/get_total_length.py
 BioSAK/global_functions.py
 BioSAK/iTOL.py
-BioSAK/iTOL_backup.py
 BioSAK/keep_best_hit.py
 BioSAK/ko00001.keg
 BioSAK/label_tree.R
 BioSAK/label_tree.py
+BioSAK/link_16S_MAG.py
 BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
@@ -65,6 +65,7 @@ BioSAK/manipulator_sam.py
 BioSAK/mean_sam_depth.py
 BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_sam_depth.py
+BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
