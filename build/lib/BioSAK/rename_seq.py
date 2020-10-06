@@ -29,6 +29,7 @@ def rename_seq(args):
     sep_out =        args['sep_out']
     column_to_keep = args['n']
     add_prefix =     args['prefix']
+    one_line =       args['oneline']
 
     ctg_file_path, ctg_file_basename, ctg_file_ext = sep_path_basename_ext(ctg_file_in)
     ctg_file_out = '%s/%s_renamed%s' % (ctg_file_path, ctg_file_basename, ctg_file_ext)
@@ -53,8 +54,13 @@ def rename_seq(args):
             print('Don\'t know what to do, program exited!')
             exit()
 
-        Seq_record.id = Seq_record_id_new
-        SeqIO.write(Seq_record, ctg_file_out_handle, 'fasta')
+        if one_line is True:
+            ctg_file_out_handle.write('>%s\n' % Seq_record_id_new)
+            ctg_file_out_handle.write('%s\n' % Seq_record.seq)
+        else:
+            Seq_record.id = Seq_record_id_new
+            SeqIO.write(Seq_record, ctg_file_out_handle, 'fasta')
+
     ctg_file_out_handle.close()
 
 
@@ -62,12 +68,13 @@ if __name__ == '__main__':
 
     rename_seq_parser = argparse.ArgumentParser()
 
-    # arguments for rename_ctg_parser
+    # arguments for rename_seq_parser
     rename_seq_parser.add_argument('-in',         required=True,                          help='input sequence file')
     rename_seq_parser.add_argument('-sep_in',     required=False, default=None,           help='separator for input sequences')
     rename_seq_parser.add_argument('-sep_out',    required=False, default=None,           help='separator for output sequences, default: same as sep_in')
     rename_seq_parser.add_argument('-n',          required=False, default=None, type=int, help='the number of columns to keep')
     rename_seq_parser.add_argument('-prefix',     required=False, default=None,           help='add prefix to sequence')
+    rename_seq_parser.add_argument('-oneline',    required=False, action="store_true",    help='put sequence in a single line')
 
     args = vars(rename_seq_parser.parse_args())
 

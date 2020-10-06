@@ -72,6 +72,7 @@ BioSAK/sep_reads_by_barcode.py
 BioSAK/split_folder.py
 BioSAK/tmp_1.py
 BioSAK/tmp_2.py
+BioSAK/tmp_3.py
 BioSAK.egg-info/PKG-INFO
 BioSAK.egg-info/SOURCES.txt
 BioSAK.egg-info/dependency_links.txt

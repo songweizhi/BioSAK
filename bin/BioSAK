@@ -377,6 +377,8 @@ if __name__ == '__main__':
         rename_seq_parser.add_argument('-sep_out',          required=False, default=None,                   help='separator for output sequences, default: same as sep_in')
         rename_seq_parser.add_argument('-n',                required=False, type=int,                       help='the number of columns to keep')
         rename_seq_parser.add_argument('-prefix',           required=False, default=None,                   help='add prefix to all sequences in a fasta file')
+        rename_seq_parser.add_argument('-oneline',          required=False, action="store_true",            help='put sequence in a single line')
+
         args = vars(parser.parse_args())
         rename_seq.rename_seq(args)
 

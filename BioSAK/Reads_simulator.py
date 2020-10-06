@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 
 import os
-import shutil
 import random
 import argparse
 from Bio import SeqIO
 from Bio.Seq import Seq
-from Bio.SeqIO import FastaIO
-from Bio.Alphabet import IUPAC
-from Bio.SeqRecord import SeqRecord
 from Bio.Alphabet import generic_dna
 
 
@@ -29,28 +25,20 @@ def get_genome_size(fasta_file):
     return total_length
 
 
-def export_dna_record(gene_seq, gene_id, gene_description, output_handle):
-    seq_object = Seq(gene_seq, IUPAC.unambiguous_dna)
-    seq_record = SeqRecord(seq_object)
-    seq_record.id = gene_id
-    seq_record.description = gene_description
-    fasta_out = FastaIO.FastaWriter(output_handle, wrap=None)
-    fasta_out.write_header()
-    fasta_out.write_record(seq_record)
-    fasta_out.write_footer()
-
-
 def Reads_simulator(args):
 
     pwd_genome_file = args['r']
-    read_number = args['n']
-    read_length = args['l']
-    insert_size = args['i']
-    split = args['split']
+    read_number     = args['n']
+    read_length     = args['l']
+    insert_size     = args['i']
+    split           = args['split']
 
     path, file_name = os.path.split(pwd_genome_file)
     genome_name, ext = os.path.splitext(file_name)
 
+    output_r1_handle = ''
+    output_r2_handle = ''
+    output_combined_handle = ''
     if split == 1:
         output_r1 = '%s_R1.fasta' % (genome_name)
         output_r2 = '%s_R2.fasta' % (genome_name)
@@ -77,15 +65,20 @@ def Reads_simulator(args):
         current_fragment_r1 = current_fragment[:read_length]
         current_fragment_r2 = current_fragment[-read_length:]
         current_fragment_r2_reverse_complement = str(Seq(current_fragment_r2, generic_dna).reverse_complement())
-        current_read_r1_id = '%s_%s_1' % (genome_name, n)
-        current_read_r2_id = '%s_%s_2' % (genome_name, n)
+        current_read_r1_id = '%s_%s.1' % (genome_name, n)
+        current_read_r2_id = '%s_%s.2' % (genome_name, n)
 
         if split == 1:
-            export_dna_record(current_fragment_r1, current_read_r1_id, '', output_r1_handle)
-            export_dna_record(current_fragment_r2_reverse_complement, current_read_r2_id, '', output_r2_handle)
+            output_r1_handle.write('>%s\n' % current_read_r1_id)
+            output_r1_handle.write('%s\n'  % current_fragment_r1)
+            output_r2_handle.write('>%s\n' % current_read_r2_id)
+            output_r2_handle.write('%s\n'  % current_fragment_r2_reverse_complement)
         else:
-            export_dna_record(current_fragment_r1, current_read_r1_id, '', output_combined_handle)
-            export_dna_record(current_fragment_r2_reverse_complement, current_read_r2_id, '', output_combined_handle)
+            output_combined_handle.write('>%s\n' % current_read_r1_id)
+            output_combined_handle.write('%s\n'  % current_fragment_r1)
+            output_combined_handle.write('>%s\n' % current_read_r2_id)
+            output_combined_handle.write('%s\n'  % current_fragment_r2_reverse_complement)
+
         n += 1
 
     if split == 1:
@@ -99,11 +92,11 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-r', required=True, help='reference genomes')
-    parser.add_argument('-n', required=True, type=int, help='reads number')
-    parser.add_argument('-l', required=True, type=int, help='reads length')
-    parser.add_argument('-i', required=True, type=int, help='insert size')
-    parser.add_argument('-split', action="store_true", help='Export forward and reverse reads to separate files')
+    parser.add_argument('-r',     required=True,           help='reference genomes')
+    parser.add_argument('-n',     required=True, type=int, help='reads number')
+    parser.add_argument('-l',     required=True, type=int, help='reads length')
+    parser.add_argument('-i',     required=True, type=int, help='insert size')
+    parser.add_argument('-split', action="store_true",     help='Export forward and reverse reads to separate files')
 
     args = vars(parser.parse_args())
 
