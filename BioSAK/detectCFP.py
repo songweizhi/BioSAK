@@ -8,6 +8,33 @@ import multiprocessing as mp
 from distutils.spawn import find_executable
 
 
+detectCFP_usage = '''
+===================================== detectCFP example commands =====================================
+
+# modules needed
+module load python/3.7.3
+module load perl/5.28.0
+module load blast+/2.9.0
+module load hmmer/3.3
+module load prodigal/2.6.3
+module load git/2.22.0
+module load bedtools/2.27.1
+module load glpk/4.65
+module load barrnap/0.9
+module load gcc/7.3.0
+module load exonerate/2.2.0
+module load parallel/20190522
+module load R/3.6.1
+module load cplex/12.9.0-academic  
+
+# example commands
+python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k path2hmm.txt -t 6
+python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k path2hmm.txt -t 6 -faa faa_files
+
+======================================================================================================
+'''
+
+
 def force_create_folder(folder_to_create):
     if os.path.isdir(folder_to_create):
         shutil.rmtree(folder_to_create, ignore_errors=True)
@@ -21,15 +48,10 @@ def force_create_folder(folder_to_create):
 
 
 def sep_path_basename_ext(file_in):
-
-    # separate path and file name
     file_path, file_name = os.path.split(file_in)
     if file_path == '':
         file_path = '.'
-
-    # separate file basename and extension
     file_basename, file_extension = os.path.splitext(file_name)
-
     return file_path, file_basename, file_extension
 
 
@@ -43,21 +65,6 @@ def list1_in_list2(list1, list2):
     return all_list1_elements_in_list2
 
 
-def prodigal_worker(argument_list):
-    prodigal_cmd = argument_list[0]
-    os.system(prodigal_cmd)
-
-
-def hmmsearch_worker(argument_list):
-    hmmsearch_cmd = argument_list[0]
-    os.system(hmmsearch_cmd)
-
-
-def gapseq_worker(argument_list):
-    gapseq_cmd = argument_list[0]
-    os.system(gapseq_cmd)
-
-
 def detectCFP(args):
 
     ###################################################### file in/out #####################################################
@@ -66,11 +73,11 @@ def detectCFP(args):
     genome_ext                       = args['x']
     faa_folder                       = args['faa']
     hmm_profiles                     = args['hmm']
+    hmm_evalue                       = args['e']
     pwy_to_key_enzyme_file           = args['k']
     pwy_completeness_cutoff          = args['c']
     num_threads                      = args['t']
     gapseq_exe                       = args['gapseq']
-
 
     # define output file name
     genome_folder_basename = genome_folder
@@ -94,7 +101,7 @@ def detectCFP(args):
     ################################################ check dependencies ################################################
 
     # check whether executables exist
-    program_list = ['prodigal', 'hmmsearch', 'gapseq']
+    program_list = ['prodigal', 'hmmsearch', gapseq_exe]
     not_detected_programs = []
     for needed_program in program_list:
         if find_executable(needed_program) is None:
@@ -126,12 +133,12 @@ def detectCFP(args):
             pwd_genome_file = '%s/%s.%s' % (genome_folder, genome_file, genome_ext)
             prodigal_cmd = 'prodigal -i %s -o %s/%s.genes -a %s/%s.faa -p meta -q' % (pwd_genome_file, prodigal_output_folder, genome_file, prodigal_output_folder, genome_file)
             cmd_file_prodigal_handle.write('%s\n' % prodigal_cmd)
-            argument_list_for_prodigal_worker.append([prodigal_cmd])
+            argument_list_for_prodigal_worker.append(prodigal_cmd)
         cmd_file_prodigal_handle.close()
 
         # run prodigal with multiprocessing
         pool = mp.Pool(processes=num_threads)
-        pool.map(prodigal_worker, argument_list_for_prodigal_worker)
+        pool.map(os.system, argument_list_for_prodigal_worker)
         pool.close()
         pool.join()
 
@@ -178,15 +185,14 @@ def detectCFP(args):
     argument_list_for_hmmsearch_worker = []
     for each_faa in intersect_file_list:
         pwd_faa = '%s/%s.faa' % (faa_folder, each_faa)
-        hmmsearch_cmd = 'hmmsearch -o /dev/null --domtblout %s/%s.tbl -E 1e-99 %s %s' % (hmmsearch_output_folder, each_faa, hmm_profiles, pwd_faa)
+        hmmsearch_cmd = 'hmmsearch -o /dev/null --domtblout %s/%s.tbl -E %s %s %s' % (hmmsearch_output_folder, each_faa, hmm_evalue, hmm_profiles, pwd_faa)
         cmd_file_hmmsearch_handle.write('%s\n' % hmmsearch_cmd)
-        argument_list_for_hmmsearch_worker.append([hmmsearch_cmd])
+        argument_list_for_hmmsearch_worker.append(hmmsearch_cmd)
     cmd_file_hmmsearch_handle.close()
-
 
     # run hmmsearch with multiprocessing
     pool = mp.Pool(processes=num_threads)
-    pool.map(hmmsearch_worker, argument_list_for_hmmsearch_worker)
+    pool.map(os.system, argument_list_for_hmmsearch_worker)
     pool.close()
     pool.join()
 
@@ -239,13 +245,13 @@ def detectCFP(args):
 
         gapseq_cmd = '%s find -p all -l custom -b 200 %s > %s_gapseq_stdout.txt' % (gapseq_exe, pwd_genome_file, qualified_genome)
         cmd_file_gapseq_handle.write('%s\n' % gapseq_cmd)
-        argument_list_for_gapseq_worker.append([gapseq_cmd])
+        argument_list_for_gapseq_worker.append(gapseq_cmd)
     cmd_file_gapseq_handle.close()
 
     # run GapSeq with multiprocessing
     os.chdir(gapseq_output_folder)
     pool = mp.Pool(processes=num_threads)
-    pool.map(gapseq_worker, argument_list_for_gapseq_worker)
+    pool.map(os.system, argument_list_for_gapseq_worker)
     pool.close()
     pool.join()
     os.chdir('../../')
@@ -268,7 +274,7 @@ def detectCFP(args):
 
     ##################################################### write out ####################################################
 
-    print('Writing out detections to file')
+    print('Writing detections to %s' % output_df)
 
     # write out as data matrix
     output_df_handle = open(output_df, 'w')
@@ -328,7 +334,7 @@ def detectCFP(args):
 
 if __name__ == '__main__':
 
-    detectCFP_parser = argparse.ArgumentParser()
+    detectCFP_parser = argparse.ArgumentParser(usage=detectCFP_usage)
 
     # arguments for detectCFP
     detectCFP_parser.add_argument('-g',        required=True,                             help='genome folder')
@@ -336,6 +342,7 @@ if __name__ == '__main__':
     detectCFP_parser.add_argument('-faa',      required=False, default=None,              help='faa files, requires Prodigal if not provided')
     detectCFP_parser.add_argument('-hmm',      required=True,                             help='hmm profiles')
     detectCFP_parser.add_argument('-k',        required=True,                             help='pathway to hmm file')
+    detectCFP_parser.add_argument('-e',        required=False, default='1e-99',           help='evalue cutoff for hmmsearch, default: 1e-99')
     detectCFP_parser.add_argument('-c',        required=False, type=float, default=80,    help='pathway completeness cutoff, default: 80')
     detectCFP_parser.add_argument('-gapseq',   required=False, default='gapseq',          help='path to GapSeq executable file, default: gapseq')
     detectCFP_parser.add_argument('-t',        required=False, type=int,   default=1,     help='number of threads, default: 1')
@@ -361,13 +368,11 @@ module load exonerate/2.2.0
 module load parallel/20190522
 module add R/3.6.1
 module load cplex/12.9.0-academic  
+
 cd /srv/scratch/z5039045/detectCFP_wd
-# python3 detectCFP.py -g mag_files -x fna -faa faa_files -hmm combined.HMM -k pathwaysXhmmfiles.txt -c 80 -t 6 -gapseq /srv/scratch/z5039045/Softwares/gapseq/gapseq
+#python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k pathwaysXhmmfiles.txt -c 80 -t 6 -gapseq /srv/scratch/z5039045/Softwares/gapseq/gapseq
+#python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k pathwaysXhmmfiles.txt -c 80 -t 6 -gapseq /srv/scratch/z5039045/Softwares/gapseq/gapseq -faa faa_files
 python3 /srv/scratch/z5287533/scripts/detectCFP.py -g mag_files -x fna -faa faa_files -hmm combined.HMM -k pathwaysXhmmfiles.txt -c 80 -t 6 -gapseq /path/to/gapseq
-
-
-# for help:
-python3 /srv/scratch/z5287533/scripts/detectCFP.py -h
 
 Note:
 1. HMM id in the HMM file and the path2hmm file need to be consistent. 
