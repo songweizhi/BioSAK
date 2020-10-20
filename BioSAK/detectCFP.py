@@ -24,12 +24,13 @@ module load barrnap/0.9
 module load gcc/7.3.0
 module load exonerate/2.2.0
 module load parallel/20190522
+module unload R
 module load R/3.6.1
 module load cplex/12.9.0-academic  
 
 # example commands
-python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k path2hmm.txt -t 6
-python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k path2hmm.txt -t 6 -faa faa_files
+python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k path2hmm.txt -t 6 -gapseq /path/to/gapseq
+python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k path2hmm.txt -t 6 -gapseq /path/to/gapseq -faa faa_files
 
 ======================================================================================================
 '''
@@ -65,6 +66,34 @@ def list1_in_list2(list1, list2):
     return all_list1_elements_in_list2
 
 
+def get_pwys_with_qualified_key_enzymes(mag_to_key_enzymes_dict, pwy_to_key_enzyme_dict, key_enzyme_pct_cutoff):
+
+        mag_to_qualified_pwys_dict = {}
+        for mag in mag_to_key_enzymes_dict:
+            current_mag_detected_key_enzymes = mag_to_key_enzymes_dict[mag]
+            for pathway in pwy_to_key_enzyme_dict:
+                current_pathway_key_enzyme = pwy_to_key_enzyme_dict[pathway]
+                current_pathway_key_enzyme_qualified = []
+                for key_enzyme_group in current_pathway_key_enzyme:
+                    key_enzyme_group_detected = set()
+                    for key_enzyme in key_enzyme_group:
+                        if key_enzyme in current_mag_detected_key_enzymes:
+                            key_enzyme_group_detected.add(key_enzyme)
+
+                    if (len(key_enzyme_group_detected) * 100 / len(key_enzyme_group)) >= key_enzyme_pct_cutoff:
+                        current_pathway_key_enzyme_qualified.append('yes')
+                    else:
+                        current_pathway_key_enzyme_qualified.append('no')
+
+                if 'yes' in current_pathway_key_enzyme_qualified:
+                    if mag not in mag_to_qualified_pwys_dict:
+                        mag_to_qualified_pwys_dict[mag] = [pathway]
+                    else:
+                        mag_to_qualified_pwys_dict[mag].append(pathway)
+
+        return mag_to_qualified_pwys_dict
+
+
 def detectCFP(args):
 
     ###################################################### file in/out #####################################################
@@ -75,7 +104,8 @@ def detectCFP(args):
     hmm_profiles                     = args['hmm']
     hmm_evalue                       = args['e']
     pwy_to_key_enzyme_file           = args['k']
-    pwy_completeness_cutoff          = args['c']
+    key_enzyme_percentage_cutoff     = args['kc']
+    pwy_completeness_cutoff          = args['pc']
     num_threads                      = args['t']
     gapseq_exe                       = args['gapseq']
 
@@ -84,15 +114,16 @@ def detectCFP(args):
     if '/' in genome_folder:
         genome_folder_basename = genome_folder.split('/')[-1]
 
-    detectCFP_wd            = '%s_detectCFP_wd'             % genome_folder_basename
-    prodigal_output_folder  = '%s/prodigal_output'          % detectCFP_wd
-    hmmsearch_output_folder = '%s/hmmsearch_output'         % detectCFP_wd
-    gapseq_output_folder    = '%s/gapseq_output'            % detectCFP_wd
-    output_df               = '%s/detected_CFP.txt'         % detectCFP_wd
-
-    cmd_file_prodigal       = '%s/cmds_prodigal.txt'        % detectCFP_wd
-    cmd_file_hmmsearch      = '%s/cmds_hmmsearch.txt'       % detectCFP_wd
-    cmd_file_gapseq         = '%s/cmds_gapseq.txt'          % detectCFP_wd
+    detectCFP_wd                                = '%s_detectCFP_wd'                         % genome_folder_basename
+    prodigal_output_folder                      = '%s/prodigal_output'                      % detectCFP_wd
+    hmmsearch_output_folder                     = '%s/hmmsearch_output'                     % detectCFP_wd
+    gapseq_output_folder                        = '%s/gapseq_output'                        % detectCFP_wd
+    gapseq_output_folder_combined_Pathways      = '%s/gapseq_output_combined_Pathways'      % detectCFP_wd
+    cmd_file_prodigal                           = '%s/cmds_prodigal.txt'                    % detectCFP_wd
+    cmd_file_hmmsearch                          = '%s/cmds_hmmsearch.txt'                   % detectCFP_wd
+    cmd_file_gapseq                             = '%s/cmds_gapseq.txt'                      % detectCFP_wd
+    output_df_1                                 = '%s/detected_CFP.1.txt'                   % detectCFP_wd
+    output_df_2                                 = '%s/detected_CFP.2.txt'                   % detectCFP_wd
 
     # create folder
     force_create_folder(detectCFP_wd)
@@ -101,7 +132,10 @@ def detectCFP(args):
     ################################################ check dependencies ################################################
 
     # check whether executables exist
-    program_list = ['prodigal', 'hmmsearch', gapseq_exe]
+    program_list = ['hmmsearch', gapseq_exe]
+    if faa_folder is None:
+        program_list.append('prodigal')
+
     not_detected_programs = []
     for needed_program in program_list:
         if find_executable(needed_program) is None:
@@ -217,35 +251,27 @@ def detectCFP(args):
 
     ###################################################### Gapseq ######################################################
 
+    mag_to_paths_with_qualified_key_enzyme_pct = get_pwys_with_qualified_key_enzymes(detected_key_enzymes_dict, pwy_to_key_enzyme_dict, key_enzyme_percentage_cutoff)
+
     os.mkdir(gapseq_output_folder)
 
-    # get the id of genomes for running Gapseq
-    genomes_for_running_gapseq = set()
-    for each_genome in intersect_file_list:
-        detected_key_enzymes = detected_key_enzymes_dict[each_genome]
-        at_least_one_detected = False
-        for pwy in pwy_to_key_enzyme_dict:
-            for key_enzyme_group in pwy_to_key_enzyme_dict[pwy]:
-                if list1_in_list2(key_enzyme_group, detected_key_enzymes) is True:
-                    at_least_one_detected = True
-
-        if at_least_one_detected is True:
-            genomes_for_running_gapseq.add(each_genome)
-
-    print('Running Gapseq for %s genomes with %s cores' % (len(genomes_for_running_gapseq), num_threads))
+    print('Running Gapseq for %s genomes with %s cores' % (len(mag_to_paths_with_qualified_key_enzyme_pct), num_threads))
 
     # prepare argument list for GapSeq worker
     cmd_file_gapseq_handle = open(cmd_file_gapseq, 'w')
     cmd_file_gapseq_handle.write('cd %s\n' % gapseq_output_folder)
     argument_list_for_gapseq_worker = []
-    for qualified_genome in genomes_for_running_gapseq:
+    for qualified_genome in mag_to_paths_with_qualified_key_enzyme_pct:
+
+        qualified_pwys = mag_to_paths_with_qualified_key_enzyme_pct[qualified_genome]
         pwd_genome_file = '%s/%s.%s' % (genome_folder, qualified_genome, genome_ext)
         if not pwd_genome_file.startswith('/'):
             pwd_genome_file = '../../%s' % pwd_genome_file
 
-        gapseq_cmd = '%s find -p all -l custom -b 200 %s > %s_gapseq_stdout.txt' % (gapseq_exe, pwd_genome_file, qualified_genome)
-        cmd_file_gapseq_handle.write('%s\n' % gapseq_cmd)
-        argument_list_for_gapseq_worker.append(gapseq_cmd)
+        for qualified_pwy in qualified_pwys:
+            gapseq_cmd = '%s find -p %s -b 200 %s > %s-%s-stdout.tbl' % (gapseq_exe, qualified_pwy[1:-1], pwd_genome_file, qualified_genome, qualified_pwy[1:-1],)
+            cmd_file_gapseq_handle.write('%s\n' % gapseq_cmd)
+            argument_list_for_gapseq_worker.append(gapseq_cmd)
     cmd_file_gapseq_handle.close()
 
     # run GapSeq with multiprocessing
@@ -258,10 +284,17 @@ def detectCFP(args):
 
     print('Commands for running Gapseq exported to %s' % cmd_file_gapseq)
 
+    # combine Pathways files
+    os.mkdir(gapseq_output_folder_combined_Pathways)
+    for each_mag in mag_to_paths_with_qualified_key_enzyme_pct:
+        print(each_mag)
+        combine_cmd = 'cat %s/%s-*-Pathways.tbl > %s/%s-combined-Pathways.tbl' % (gapseq_output_folder, each_mag, gapseq_output_folder_combined_Pathways, each_mag)
+        os.system(combine_cmd)
+
     # parse GapSeq outputs
     pwy_completeness_dict = {}
-    for each_gapseq_output in genomes_for_running_gapseq:
-        pwd_gapseq_output = '%s/%s-all-Pathways.tbl' % (gapseq_output_folder, each_gapseq_output)
+    for each_gapseq_output in mag_to_paths_with_qualified_key_enzyme_pct:
+        pwd_gapseq_output = '%s/%s-combined-Pathways.tbl' % (gapseq_output_folder_combined_Pathways, each_gapseq_output)
         current_genome_pwy_completeness_dict = {}
         for each_pwy in open(pwd_gapseq_output):
             if not each_pwy.startswith('ID'):
@@ -274,14 +307,17 @@ def detectCFP(args):
 
     ##################################################### write out ####################################################
 
-    print('Writing detections to %s' % output_df)
+    print('Writing out detections to %s and %s' % (output_df_1, output_df_2))
 
     # write out as data matrix
-    output_df_handle = open(output_df, 'w')
+    output_df_1_handle = open(output_df_1, 'w')
+    output_df_2_handle = open(output_df_2, 'w')
     header_printed = False
     for genome in sorted(intersect_file_list):
         current_genome_header_list = []
         current_genome_value_list = []
+        current_genome_header_list_2 = []
+        current_genome_value_list_2 = []
         for pathway in pwys_to_detect:
             current_pathway_key_enzymes = pwy_to_key_enzyme_dict[pathway]
             group_header_top = []
@@ -299,33 +335,34 @@ def detectCFP(args):
                 group_header_top.append(group_header)
 
             current_genome_header_list.append('%s__%s' % (pathway, '_v_'.join(group_header_top)))
+            current_genome_header_list_2.append('%s__%s' % (pathway, '_v_'.join(group_header_top)))
             current_genome_value_list.append('_v_'.join(group_value_top))
 
             current_genome_header_list.append('%s_completeness' % pathway)
             current_genome_header_list.append('%s_found' % pathway)
+            current_genome_header_list_2.append(pathway)
 
             if pathway in pwy_completeness_dict[genome]:
                 current_genome_value_list.append(str(pwy_completeness_dict[genome][pathway]))
             else:
-                current_genome_value_list.append('0')
+                current_genome_value_list.append('na')
 
-            key_enzymes_detected = False
-            for enzyme_group in current_pathway_key_enzymes:
-                if list1_in_list2(enzyme_group, detected_key_enzymes_dict[genome]) is True:
-                    key_enzymes_detected = True
-
-            if (key_enzymes_detected is True) and (pwy_completeness_dict[genome][pathway] >= pwy_completeness_cutoff):
-                current_genome_value_list.append('y')
+            if (pathway in mag_to_paths_with_qualified_key_enzyme_pct[genome]) and (pwy_completeness_dict[genome][pathway] >= pwy_completeness_cutoff):
+                current_genome_value_list.append('1')
+                current_genome_value_list_2.append('1')
             else:
-                current_genome_value_list.append('n')
+                current_genome_value_list.append('0')
+                current_genome_value_list_2.append('0')
 
         if header_printed is False:
-            output_df_handle.write('Genome\t%s\n' % '\t'.join(current_genome_header_list))
+            output_df_1_handle.write('Genome\t%s\n' % '\t'.join(current_genome_header_list))
+            output_df_2_handle.write('Genome\t%s\n' % '\t'.join(current_genome_header_list_2))
             header_printed = True
-        output_df_handle.write('%s\t%s\n' % (genome, '\t'.join(current_genome_value_list)))
+        output_df_1_handle.write('%s\t%s\n' % (genome, '\t'.join(current_genome_value_list)))
+        output_df_1_handle.write('%s\t%s\n' % (genome, '\t'.join(current_genome_value_list_2)))
 
-    output_df_handle.close()
-
+    output_df_1_handle.close()
+    output_df_2_handle.close()
 
     print('Done!')
 
@@ -341,9 +378,10 @@ if __name__ == '__main__':
     detectCFP_parser.add_argument('-x',        required=False, default='fasta',           help='genome file extension, default: fasta')
     detectCFP_parser.add_argument('-faa',      required=False, default=None,              help='faa files, requires Prodigal if not provided')
     detectCFP_parser.add_argument('-hmm',      required=True,                             help='hmm profiles')
-    detectCFP_parser.add_argument('-k',        required=True,                             help='pathway to hmm file')
+    detectCFP_parser.add_argument('-k',        required=True,                             help='pathway to hmm profiles')
     detectCFP_parser.add_argument('-e',        required=False, default='1e-99',           help='evalue cutoff for hmmsearch, default: 1e-99')
-    detectCFP_parser.add_argument('-c',        required=False, type=float, default=80,    help='pathway completeness cutoff, default: 80')
+    detectCFP_parser.add_argument('-kc',       required=False, type=float, default=66,    help='minimum percentage of key enzymes in a pathway, default: 66')
+    detectCFP_parser.add_argument('-pc',       required=False, type=float, default=80,    help='pathway completeness cutoff, default: 80')
     detectCFP_parser.add_argument('-gapseq',   required=False, default='gapseq',          help='path to GapSeq executable file, default: gapseq')
     detectCFP_parser.add_argument('-t',        required=False, type=int,   default=1,     help='number of threads, default: 1')
 
@@ -353,6 +391,21 @@ if __name__ == '__main__':
 
 
 '''
+
+Note:
+1. HMM id in the HMM file and the path2hmm file need to be consistent. 
+2. detectCFP.py will produce the faa files with Prodigal if they are not provided. if you already have them, you can specify with "-faa"
+2. You need to add your own pathways to gapseq's dat/custom_pwy.tbl file.
+3. Be aware of the format of path2hmm file.
+    1) file header need to be "PWY	HMM", separated by tab.
+    2) pathway id and hmm id(s) are separated by tab. if there are multiple key enzymes in a pathway, hmm ids need to be separated by comma.
+    3) example: /srv/scratch/z5287533/Willis/pathwaysXhmmfiles.txt
+5. final output:
+    1) each pathway in the final output has three columns: PWY_HMM, PWY_completeness and PWY_found
+    2) PWY_HMM: "_n_" refers to "and " and "_v_" refers to "or ".
+    3) PWY_completeness: Gapseq provided completeness
+    4) PWY_found: 1 for detected and 0 for not.
+
 
 module load python/3.7.3
 module load perl/5.28.0
@@ -370,23 +423,6 @@ module add R/3.6.1
 module load cplex/12.9.0-academic  
 
 cd /srv/scratch/z5039045/detectCFP_wd
-#python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k pathwaysXhmmfiles.txt -c 80 -t 6 -gapseq /srv/scratch/z5039045/Softwares/gapseq/gapseq
-#python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k pathwaysXhmmfiles.txt -c 80 -t 6 -gapseq /srv/scratch/z5039045/Softwares/gapseq/gapseq -faa faa_files
-python3 /srv/scratch/z5287533/scripts/detectCFP.py -g mag_files -x fna -faa faa_files -hmm combined.HMM -k pathwaysXhmmfiles.txt -c 80 -t 6 -gapseq /path/to/gapseq
-
-Note:
-1. HMM id in the HMM file and the path2hmm file need to be consistent. 
-2. detectCFP.py will produce the faa files with Prodigal if there are not provided. if you already have them, you can specify with "-faa"
-2. To avoid deleting GapSeq's default pathway database, put and only put your own patways in gapseq's dat/custom_pwy.tbl file and provide "-l custom" to gapseq.
-3. Be aware of the format of path2hmm file.
-    1) file header need to be "PWY	HMM", separated by tab.
-    2) pathway id and hmm id(s) are separated by tab. if there are multiple key enzymes in a pathway, hmm ids need to be separated by comma.
-    3) example: /srv/scratch/z5287533/Willis/pathwaysXhmmfiles.txt
-4. you can customize the cutoff for pathway completeness with "-c", default is 80
-5. final output:
-    1) each pathway in the final output has three columns: PWY_HMM, PWY_completeness and PWY_found
-    2) PWY_HMM: "_n_" refers to "and " and "_v_" refers to "or ".
-    3) PWY_completeness: Gapseq provided completeness
-    4) PWY_found: y for detected and n for not.
+python3 detectCFP.py -g mag_files -x fna -hmm combined.HMM -k pathwaysXhmmfiles.txt -t 6 -gapseq /srv/scratch/z5039045/Softwares/gapseq/gapseq
 
 '''
