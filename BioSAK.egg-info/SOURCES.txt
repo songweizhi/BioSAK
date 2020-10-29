@@ -31,6 +31,7 @@ BioSAK/boxplot_matrix_COG_backup.py
 BioSAK/boxplot_matrix_KEGG.py
 BioSAK/cdd2cog.pl
 BioSAK/dbCAN.py
+BioSAK/detectCFP.py
 BioSAK/download_GenBank_genome.py
 BioSAK/download_GenBank_genome_subset_prokaryotes_csv.py
 BioSAK/dwnld_sra_reads.py

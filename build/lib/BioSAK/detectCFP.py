@@ -2,7 +2,6 @@
 
 import os
 import glob
-import shutil
 import argparse
 import multiprocessing as mp
 from distutils.spawn import find_executable
@@ -34,18 +33,6 @@ python3 detectCFP.py -p DeepSea -g MAG_files -x fna -hmm keyEnzymes.hmm -k path2
 
 ========================================================================================================================
 '''
-
-
-def force_create_folder(folder_to_create):
-    if os.path.isdir(folder_to_create):
-        shutil.rmtree(folder_to_create, ignore_errors=True)
-        if os.path.isdir(folder_to_create):
-            shutil.rmtree(folder_to_create, ignore_errors=True)
-            if os.path.isdir(folder_to_create):
-                shutil.rmtree(folder_to_create, ignore_errors=True)
-                if os.path.isdir(folder_to_create):
-                    shutil.rmtree(folder_to_create, ignore_errors=True)
-    os.mkdir(folder_to_create)
 
 
 def sep_path_basename_ext(file_in):
@@ -98,7 +85,6 @@ def detectCFP(args):
     key_enzyme_percentage_cutoff     = args['kc']
     pwy_completeness_cutoff          = args['pc']
     num_threads                      = args['t']
-    force_overwrite                  = args['force']
     gapseq_exe                       = args['gapseq']
 
     # define output file name
@@ -120,11 +106,11 @@ def detectCFP(args):
     output_df_2                                 = '%s/%s_detected_CFPs.2.txt'      % (detectCFP_wd, output_prefix)
 
     # create folder
-    if (os.path.isdir(detectCFP_wd) is True) and (force_overwrite is False):
+    if os.path.isdir(detectCFP_wd):
         print('Output folder detected, program exited: %s' % detectCFP_wd)
         exit()
     else:
-        force_create_folder(detectCFP_wd)
+        os.mkdir(detectCFP_wd)
 
 
     ################################################ check dependencies ################################################
@@ -233,9 +219,7 @@ def detectCFP(args):
     # parse hmmsearch outputs
     detected_key_enzymes_dict = {}
     for each_hmm_out in intersect_file_list:
-
         pwd_hmm_out = '%s/%s.tbl' % (hmmsearch_output_folder, each_hmm_out)
-
         detected_hmms = set()
         for each_line in open(pwd_hmm_out):
             if not each_line.startswith('#'):
@@ -253,9 +237,9 @@ def detectCFP(args):
 
     mag_to_paths_with_qualified_key_enzyme_pct = get_pwys_with_qualified_key_enzymes(detected_key_enzymes_dict, pwy_to_key_enzyme_dict, key_enzyme_percentage_cutoff)
 
-    print('Running Gapseq for %s genomes with %s cores' % (len(mag_to_paths_with_qualified_key_enzyme_pct), num_threads))
-
     os.mkdir(gapseq_output_folder)
+
+    print('Running Gapseq for %s genomes with %s cores' % (len(mag_to_paths_with_qualified_key_enzyme_pct), num_threads))
 
     # prepare argument list for GapSeq worker
     cmd_file_gapseq_handle = open(cmd_file_gapseq, 'w')
@@ -290,24 +274,18 @@ def detectCFP(args):
         combine_cmd = 'cat %s/%s-*-Pathways.tbl > %s/%s-combined-Pathways.tbl' % (gapseq_output_folder, each_mag, gapseq_output_folder_combined_Pathways, each_mag)
         os.system(combine_cmd)
 
-
     # parse GapSeq outputs
     pwy_completeness_dict = {}
-    for each_gapseq_output in intersect_file_list:
-
+    for each_gapseq_output in mag_to_paths_with_qualified_key_enzyme_pct:
         pwd_gapseq_output = '%s/%s-combined-Pathways.tbl' % (gapseq_output_folder_combined_Pathways, each_gapseq_output)
-
-        if os.path.isfile(pwd_gapseq_output) is False:
-            pwy_completeness_dict[each_gapseq_output] = {}
-        else:
-            current_genome_pwy_completeness_dict = {}
-            for each_pwy in open(pwd_gapseq_output):
-                if not each_pwy.startswith('ID'):
-                    each_pwy_split = each_pwy.strip().split('\t')
-                    pwy_id = each_pwy_split[0]
-                    completeness = each_pwy_split[3]
-                    current_genome_pwy_completeness_dict[pwy_id] = float(completeness)
-            pwy_completeness_dict[each_gapseq_output] = current_genome_pwy_completeness_dict
+        current_genome_pwy_completeness_dict = {}
+        for each_pwy in open(pwd_gapseq_output):
+            if not each_pwy.startswith('ID'):
+                each_pwy_split = each_pwy.strip().split('\t')
+                pwy_id = each_pwy_split[0]
+                completeness = each_pwy_split[3]
+                current_genome_pwy_completeness_dict[pwy_id] = float(completeness)
+        pwy_completeness_dict[each_gapseq_output] = current_genome_pwy_completeness_dict
 
 
     ##################################################### write out ####################################################
@@ -351,15 +329,12 @@ def detectCFP(args):
             else:
                 current_genome_value_list.append('na')
 
-            value_to_append = '0'
-            if genome in mag_to_paths_with_qualified_key_enzyme_pct:
-                if pathway in mag_to_paths_with_qualified_key_enzyme_pct[genome]:
-                    if genome in pwy_completeness_dict:
-                        if pathway in pwy_completeness_dict[genome]:
-                            if pwy_completeness_dict[genome][pathway] >= pwy_completeness_cutoff:
-                                value_to_append = '1'
-            current_genome_value_list.append(value_to_append)
-            current_genome_value_list_2.append(value_to_append)
+            if (pathway in mag_to_paths_with_qualified_key_enzyme_pct[genome]) and (pwy_completeness_dict[genome][pathway] >= pwy_completeness_cutoff):
+                current_genome_value_list.append('1')
+                current_genome_value_list_2.append('1')
+            else:
+                current_genome_value_list.append('0')
+                current_genome_value_list_2.append('0')
 
         if header_printed is False:
             output_df_1_handle.write('Genome\t%s\n' % '\t'.join(current_genome_header_list))
@@ -373,6 +348,7 @@ def detectCFP(args):
 
 
     print('Detections exported to %s and %s' % (os.path.basename(output_df_1), os.path.basename(output_df_2)))
+
     print('Done!')
 
 
@@ -383,23 +359,21 @@ if __name__ == '__main__':
     detectCFP_parser = argparse.ArgumentParser(usage=detectCFP_usage)
 
     # arguments for detectCFP
-    detectCFP_parser.add_argument('-p',         required=False, default=None,            help='output prefix')
-    detectCFP_parser.add_argument('-g',         required=True,                           help='genome folder')
-    detectCFP_parser.add_argument('-x',         required=False, default='fasta',         help='genome file extension, default: fasta')
-    detectCFP_parser.add_argument('-faa',       required=False, default=None,            help='faa files, requires Prodigal if not provided')
-    detectCFP_parser.add_argument('-hmm',       required=True,                           help='hmm profiles')
-    detectCFP_parser.add_argument('-k',         required=True,                           help='pathway to hmm profiles')
-    detectCFP_parser.add_argument('-e',         required=False, default='1e-99',         help='evalue cutoff for hmmsearch, default: 1e-99')
-    detectCFP_parser.add_argument('-kc',        required=False, type=float, default=50,  help='minimum percentage of key enzymes in a pathway, default: 50')
-    detectCFP_parser.add_argument('-pc',        required=False, type=float, default=80,  help='pathway completeness cutoff, default: 80')
-    detectCFP_parser.add_argument('-gapseq',    required=False, default='gapseq',        help='path to GapSeq executable file, default: gapseq')
-    detectCFP_parser.add_argument('-force',     required=False, action="store_true",     help='force overwrite existing results')
-    detectCFP_parser.add_argument('-t',         required=False, type=int,   default=1,   help='number of threads, default: 1')
+    detectCFP_parser.add_argument('-p',       required=False, default=None,            help='output prefix')
+    detectCFP_parser.add_argument('-g',       required=True,                           help='genome folder')
+    detectCFP_parser.add_argument('-x',       required=False, default='fasta',         help='genome file extension, default: fasta')
+    detectCFP_parser.add_argument('-faa',     required=False, default=None,            help='faa files, requires Prodigal if not provided')
+    detectCFP_parser.add_argument('-hmm',     required=True,                           help='hmm profiles')
+    detectCFP_parser.add_argument('-k',       required=True,                           help='pathway to hmm profiles')
+    detectCFP_parser.add_argument('-e',       required=False, default='1e-99',         help='evalue cutoff for hmmsearch, default: 1e-99')
+    detectCFP_parser.add_argument('-kc',      required=False, type=float, default=50,  help='minimum percentage of key enzymes in a pathway, default: 50')
+    detectCFP_parser.add_argument('-pc',      required=False, type=float, default=80,  help='pathway completeness cutoff, default: 80')
+    detectCFP_parser.add_argument('-gapseq',  required=False, default='gapseq',        help='path to GapSeq executable file, default: gapseq')
+    detectCFP_parser.add_argument('-t',       required=False, type=int,   default=1,   help='number of threads, default: 1')
 
     args = vars(detectCFP_parser.parse_args())
 
     detectCFP(args)
-
 
 '''
 
@@ -416,5 +390,24 @@ Note:
     3) PWY_completeness: Gapseq provided completeness
     4) PWY_found: "1" for detected and "0" for not.
 5. final output 2: presence/absence matrices of interested pathways among MAGs.
+
+
+module load python/3.7.3
+module load perl/5.28.0
+module load blast+/2.9.0
+module load hmmer/3.3
+module load prodigal/2.6.3
+module load git/2.22.0
+module load bedtools/2.27.1
+module load glpk/4.65
+module load barrnap/0.9
+module load gcc/7.3.0
+module load exonerate/2.2.0
+module load parallel/20190522
+module unload R
+module load R/3.6.1
+module load cplex/12.9.0-academic  
+cd /srv/scratch/z5039045/detectCFP_wd
+python3 detectCFP.py -p Test -g mag_files -x fna -hmm combined.HMM -k pathwaysXhmmfiles.txt -t 6 -gapseq /srv/scratch/z5039045/Softwares/gapseq/gapseq -faa faa_files
 
 '''
