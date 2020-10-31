@@ -29,8 +29,10 @@ module load R/3.6.1
 module load cplex/12.9.0-academic  
 
 # example commands
-python3 detectCFP.py -p DeepSea -g MAG_files -x fna -hmm keyEnzymes.hmm -k path2hmm.txt -t 6 -gapseq /path/to/gapseq
-python3 detectCFP.py -p DeepSea -g MAG_files -x fna -hmm keyEnzymes.hmm -k path2hmm.txt -t 6 -gapseq /path/to/gapseq -faa faa_files
+python3 detectCFP.py -p DeepSea -g MAG_files -x fna -hmm keyEnzymes.hmm -k path2hmm.txt -t 6 
+python3 detectCFP.py -p DeepSea -g MAG_files -x fna -hmm keyEnzymes.hmm -k path2hmm.txt -t 6 -faa faa_files
+python3 detectCFP.py -p DeepSea -g MAG_files -x fna -hmm keyEnzymes.hmm -k path2hmm.txt -t 6 -c 70,80
+python3 detectCFP.py -p DeepSea -g MAG_files -x fna -hmm keyEnzymes.hmm -k path2hmm.txt -t 6 -c cutoff_table.txt -q mag_completeness.txt
 
 ========================================================================================================================
 '''
@@ -56,10 +58,35 @@ def sep_path_basename_ext(file_in):
     return file_path, file_basename, file_extension
 
 
-def get_pwys_with_qualified_key_enzymes(mag_to_key_enzymes_dict, pwy_to_key_enzyme_dict, key_enzyme_pct_cutoff):
+def get_pwy_ec_cutoff_by_mag_cpl(mag_cpl, mag_cpl_to_cutoff_dict, mag_cpl_threshold_list):
+
+    mag_cpl_threshold_list_high_to_low = sorted(mag_cpl_threshold_list)[::-1]
+
+    cutoffs_determined = False
+    pathway_cutoff = 0
+    key_enzyme_cutoff = 0
+    for cpl_threshold in mag_cpl_threshold_list_high_to_low:
+
+        if cutoffs_determined is False:
+            if mag_cpl >= cpl_threshold:
+                key_enzyme_cutoff = mag_cpl_to_cutoff_dict[cpl_threshold][0]
+                pathway_cutoff = mag_cpl_to_cutoff_dict[cpl_threshold][1]
+                cutoffs_determined = True
+
+    return key_enzyme_cutoff, pathway_cutoff
+
+
+def get_pwys_with_qualified_key_enzymes(mag_to_key_enzymes_dict, pwy_to_key_enzyme_dict, dynamic_cutoff, key_enzyme_pct_cutoff):
+
 
         mag_to_qualified_pwys_dict = {}
         for mag in mag_to_key_enzymes_dict:
+
+            if dynamic_cutoff is False:
+                current_mag_cutoff = key_enzyme_pct_cutoff
+            else:
+                current_mag_cutoff = key_enzyme_pct_cutoff[mag]
+
             current_mag_detected_key_enzymes = mag_to_key_enzymes_dict[mag]
             for pathway in pwy_to_key_enzyme_dict:
                 current_pathway_key_enzyme = pwy_to_key_enzyme_dict[pathway]
@@ -70,7 +97,7 @@ def get_pwys_with_qualified_key_enzymes(mag_to_key_enzymes_dict, pwy_to_key_enzy
                         if key_enzyme in current_mag_detected_key_enzymes:
                             key_enzyme_group_detected.add(key_enzyme)
 
-                    if (len(key_enzyme_group_detected) * 100 / len(key_enzyme_group)) >= key_enzyme_pct_cutoff:
+                    if (len(key_enzyme_group_detected) * 100 / len(key_enzyme_group)) >= current_mag_cutoff:
                         current_pathway_key_enzyme_qualified.append('yes')
                     else:
                         current_pathway_key_enzyme_qualified.append('no')
@@ -95,8 +122,8 @@ def detectCFP(args):
     hmm_profiles                     = args['hmm']
     hmm_evalue                       = args['e']
     pwy_to_key_enzyme_file           = args['k']
-    key_enzyme_percentage_cutoff     = args['kc']
-    pwy_completeness_cutoff          = args['pc']
+    key_enzyme_and_pwy_cutoff        = args['c']
+    mag_cpl_file                     = args['q']
     num_threads                      = args['t']
     force_overwrite                  = args['force']
     gapseq_exe                       = args['gapseq']
@@ -205,6 +232,52 @@ def detectCFP(args):
     pwys_to_detect = sorted([i for i in pwy_to_key_enzyme_dict])
 
 
+    ##################################### check key enzyme and pwy cutoff settings #####################################
+
+    dynamic_cutoff = False
+    if (os.path.isfile(key_enzyme_and_pwy_cutoff) is True) and (os.path.isfile(mag_cpl_file) is True):
+        dynamic_cutoff = True
+
+    elif (os.path.isfile(key_enzyme_and_pwy_cutoff) is True) and (mag_cpl_file is None):
+        print('MAG completeness file not provided, program exited!')
+        exit()
+
+    elif (',' in key_enzyme_and_pwy_cutoff) and (mag_cpl_file is not None):
+        print('Cut-offs for key enzyme percentage and pathway completeness were fixed, MAG qualities will be ignored')
+
+
+    key_enzyme_percentage_cutoff = 0
+    pwy_completeness_cutoff = 0
+    mag_to_key_enzyme_cutoff_dict = {}
+    mag_to_pathway_cutoff_dict = {}
+    mag_completeness_dict = {}
+    if dynamic_cutoff is False:
+        key_enzyme_percentage_cutoff = float(key_enzyme_and_pwy_cutoff.split(',')[0])
+        pwy_completeness_cutoff      = float(key_enzyme_and_pwy_cutoff.split(',')[1])
+    else:
+        # read in cutoff table
+        mag_cpl_to_cutoff_dict = {}
+        mag_cpl_threshold_list = []
+        for line in open(key_enzyme_and_pwy_cutoff):
+            if not line.startswith('MAG	PWY	Enzyme'):
+                line_split = line.strip().split()
+                mag_c = int(line_split[0])
+                mag_e = int(line_split[1])
+                mag_p = int(line_split[2])
+                mag_cpl_to_cutoff_dict[mag_c] = [mag_e, mag_p]
+                mag_cpl_threshold_list.append(mag_c)
+
+        # get mag_to_pathway_cutoff_dict and mag_to_key_enzyme_cutoff_dict
+        for mag in open(mag_cpl_file):
+            mag_split = mag.strip().split('\t')
+            mag_id = mag_split[0]
+            mag_cpl = float(mag_split[1])
+            mag_completeness_dict[mag_id] = mag_cpl
+            current_mag_pathway_cutoff, current_mag_key_enzyme_cutoff = get_pwy_ec_cutoff_by_mag_cpl(mag_cpl, mag_cpl_to_cutoff_dict, mag_cpl_threshold_list)
+            mag_to_pathway_cutoff_dict[mag_id] = current_mag_pathway_cutoff
+            mag_to_key_enzyme_cutoff_dict[mag_id] = current_mag_key_enzyme_cutoff
+
+
     ##################################################### hmmsearch ####################################################
 
     print('Running hmmsearch for %s genomes with %s cores' % (len(genome_file_list_no_extension), num_threads))
@@ -251,7 +324,11 @@ def detectCFP(args):
 
     ###################################################### Gapseq ######################################################
 
-    mag_to_paths_with_qualified_key_enzyme_pct = get_pwys_with_qualified_key_enzymes(detected_key_enzymes_dict, pwy_to_key_enzyme_dict, key_enzyme_percentage_cutoff)
+    if dynamic_cutoff is False:
+        mag_to_paths_with_qualified_key_enzyme_pct = get_pwys_with_qualified_key_enzymes(detected_key_enzymes_dict, pwy_to_key_enzyme_dict, dynamic_cutoff, key_enzyme_percentage_cutoff)
+    else:
+        mag_to_paths_with_qualified_key_enzyme_pct = get_pwys_with_qualified_key_enzymes(detected_key_enzymes_dict, pwy_to_key_enzyme_dict, dynamic_cutoff, mag_to_key_enzyme_cutoff_dict)
+
 
     print('Running Gapseq for %s genomes with %s cores' % (len(mag_to_paths_with_qualified_key_enzyme_pct), num_threads))
 
@@ -319,6 +396,13 @@ def detectCFP(args):
     output_df_2_handle = open(output_df_2, 'w')
     header_printed = False
     for genome in sorted(intersect_file_list):
+
+        # get current genome pwy completeness cutoff
+        if dynamic_cutoff is False:
+            current_genome_pwy_completeness_cutoff = pwy_completeness_cutoff
+        else:
+            current_genome_pwy_completeness_cutoff = mag_to_pathway_cutoff_dict[genome]
+
         current_genome_header_list = []
         current_genome_value_list = []
         current_genome_header_list_2 = []
@@ -356,7 +440,7 @@ def detectCFP(args):
                 if pathway in mag_to_paths_with_qualified_key_enzyme_pct[genome]:
                     if genome in pwy_completeness_dict:
                         if pathway in pwy_completeness_dict[genome]:
-                            if pwy_completeness_dict[genome][pathway] >= pwy_completeness_cutoff:
+                            if pwy_completeness_dict[genome][pathway] >= current_genome_pwy_completeness_cutoff:
                                 value_to_append = '1'
             current_genome_value_list.append(value_to_append)
             current_genome_value_list_2.append(value_to_append)
@@ -366,7 +450,9 @@ def detectCFP(args):
             output_df_2_handle.write('Genome\t%s\n' % '\t'.join(current_genome_header_list_2))
             header_printed = True
         output_df_1_handle.write('%s\t%s\n' % (genome, '\t'.join(current_genome_value_list)))
-        output_df_2_handle.write('%s\t%s\n' % (genome, '\t'.join(current_genome_value_list_2)))
+        current_genome_value_list_2_uniq = {i for i in current_genome_value_list_2}
+        if current_genome_value_list_2_uniq != {'0'}:
+            output_df_2_handle.write('%s\t%s\n' % (genome, '\t'.join(current_genome_value_list_2)))
 
     output_df_1_handle.close()
     output_df_2_handle.close()
@@ -383,18 +469,18 @@ if __name__ == '__main__':
     detectCFP_parser = argparse.ArgumentParser(usage=detectCFP_usage)
 
     # arguments for detectCFP
-    detectCFP_parser.add_argument('-p',         required=False, default=None,            help='output prefix')
-    detectCFP_parser.add_argument('-g',         required=True,                           help='genome folder')
-    detectCFP_parser.add_argument('-x',         required=False, default='fasta',         help='genome file extension, default: fasta')
-    detectCFP_parser.add_argument('-faa',       required=False, default=None,            help='faa files, requires Prodigal if not provided')
-    detectCFP_parser.add_argument('-hmm',       required=True,                           help='hmm profiles')
-    detectCFP_parser.add_argument('-k',         required=True,                           help='pathway to hmm profiles')
-    detectCFP_parser.add_argument('-e',         required=False, default='1e-99',         help='evalue cutoff for hmmsearch, default: 1e-99')
-    detectCFP_parser.add_argument('-kc',        required=False, type=float, default=50,  help='minimum percentage of key enzymes in a pathway, default: 50')
-    detectCFP_parser.add_argument('-pc',        required=False, type=float, default=80,  help='pathway completeness cutoff, default: 80')
-    detectCFP_parser.add_argument('-gapseq',    required=False, default='gapseq',        help='path to GapSeq executable file, default: gapseq')
-    detectCFP_parser.add_argument('-force',     required=False, action="store_true",     help='force overwrite existing results')
-    detectCFP_parser.add_argument('-t',         required=False, type=int,   default=1,   help='number of threads, default: 1')
+    detectCFP_parser.add_argument('-p',         required=False, default=None,                help='output prefix')
+    detectCFP_parser.add_argument('-g',         required=True,                               help='genome folder')
+    detectCFP_parser.add_argument('-x',         required=False, default='fasta',             help='genome file extension, default: fasta')
+    detectCFP_parser.add_argument('-faa',       required=False, default=None,                help='faa files, requires Prodigal if not provided')
+    detectCFP_parser.add_argument('-hmm',       required=True,                               help='hmm profiles')
+    detectCFP_parser.add_argument('-k',         required=True,                               help='pathway to hmm profiles')
+    detectCFP_parser.add_argument('-e',         required=False, default='1e-99',             help='evalue cutoff for hmmsearch, default: 1e-99')
+    detectCFP_parser.add_argument('-c',         required=False, default='50,80',             help='cutoffs for minimum key enzymes percentage and pathway completeness, default: 50,80')
+    detectCFP_parser.add_argument('-q',         required=False, default=None,                help='MAG completeness, no header, no mag file extension, tab separated')
+    detectCFP_parser.add_argument('-gapseq',    required=False, default='gapseq',            help='path to GapSeq executable file, default: gapseq')
+    detectCFP_parser.add_argument('-force',     required=False, action="store_true",         help='force overwrite existing results')
+    detectCFP_parser.add_argument('-t',         required=False, type=int,   default=1,       help='number of threads, default: 1')
 
     args = vars(detectCFP_parser.parse_args())
 
@@ -405,16 +491,39 @@ if __name__ == '__main__':
 
 Note:
 1. HMM id in the HMM file and the path2hmm file need to be consistent. 
+
 2. detectCFP.py will produce the faa files with Prodigal if they are not provided. if you already have them, you can specify with "-faa"
-2. You need to add your own pathways to gapseq's dat/custom_pwy.tbl file.
-3. The format of path2hmm file:
+
+3. You need to add your own pathways to gapseq's dat/custom_pwy.tbl file.
+
+4. The format of path2hmm file:
     1) file header need to be "PWY	HMM", separated by tab.
     2) pathway id and hmm id(s) are separated by tab. if there are multiple key enzymes in a pathway, hmm ids need to be separated by comma.
-4. final output 1:
+
+5. final output 1:
     1) each pathway in the final output has three columns: PWY_HMM, PWY_completeness and PWY_found
     2) PWY_HMM: "_n_" refers to "and " and "_v_" refers to "or ".
     3) PWY_completeness: Gapseq provided completeness
     4) PWY_found: "1" for detected and "0" for not.
-5. final output 2: presence/absence matrices of interested pathways among MAGs.
+
+6. final output 2: presence/absence matrices of interested pathways among MAGs.
+
+7. fixed cutoffs for key enzyme percentage and pathway completeness (-c): 
+    key enzyme percentage cutoff, followed by pathway completeness cutoff, comma separated, e.g.: 
+    -c 50,80
+
+8. cutoff_table file format (-c): file header has to be "MAG	PWY	Enzyme" (tab separated). Specify MAG completeness in the first column, 
+   followed by the cutoffs for key enzyme percentage and pathway completeness will be used when MAG completeness NO LESS THAN the specified value, e.g.:
+    MAG	PWY	Enzyme
+    95	80	50
+    90	75	45
+    70	50	45
+
+9.  MAG completeness file format (-q): no header, no mag file extension, tab separated
+    mag_1	97.57
+    mag_2	74.21
+    mag_3	100
+    
+10. '-c' and '-q' need to be provided together.
 
 '''
