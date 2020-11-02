@@ -42,7 +42,7 @@ def print_main_help():
        dbCAN                   ->   CAZy annotation with dbCAN
        NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
        Enrichment              ->   Gene set enrichment analysis (to be added)
-    
+
     16S-sequencing related
        SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database

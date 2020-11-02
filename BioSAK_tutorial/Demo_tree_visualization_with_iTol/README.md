@@ -5,38 +5,15 @@
 I have the taxonomy info of these MAGs at the class level, their sizes and their abundances across the six samples.
 This short note shows how to visualize all these info in one plot.
 
-1. Download needed files: [files_needed.zip](files_needed.zip)
+1. Download files: [files_needed.zip](files_needed.zip)
 
-1. File description (all files need to be prepared according to iTOL's syntax):
+1. File description:
 
     + A phylogenetic tree in [Newick](http://evolution.genetics.washington.edu/phylip/newicktree.html) format: [NorthSea_0_Tree.newick](files_needed/NorthSea_0_Tree.newick)
     + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](files_needed/NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](files_needed/NorthSea_1_Taxon_Range.txt)
     + Life-style info: [NorthSea_2_LifeStyle.txt](files_needed/NorthSea_2_LifeStyle.txt)
     + Abundance across samples: [NorthSea_3_Abundance.txt](files_needed/NorthSea_3_Abundance.txt)
     + MAG size info: [NorthSea_4_MAG_Size.txt](files_needed/NorthSea_4_MAG_Size.txt)
-    
-    + You can use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to prepare these files. Please refers to the [help page](https://github.com/songweizhi/BioSAK) for its installation.
-    
-        The purpose for developing this module is to generate iTOL-recognizable file for your dataset, 
-        parameters (e.g. colour, font size and strip width) provided in the output file might need 
-        further adjustment. The best way to optimize your plot is to visualize your tree with the 
-        default output and optimize the parameters by looking at the tree.
-
-          # get NorthSea_1_Taxon_ColorStrip.txt
-          BioSAK iTOL -ColorStrip -lg raw_MAG_taxon.txt -lt Class -out NorthSea_1_Taxon_ColorStrip.txt
-          
-          # get NorthSea_1_Taxon_Range.txt
-          BioSAK iTOL -ColorRange -lg raw_MAG_taxon.txt -lt Class -out NorthSea_1_Taxon_Range.txt
-          
-          # get NorthSea_2_LifeStyle.txt
-          BioSAK iTOL -ColorStrip -lg raw_MAG_LifeStyle.txt -lt LifeStyle -out NorthSea_2_LifeStyle.txt
-          
-          # get NorthSea_3_Abundance.txt
-          BioSAK iTOL -Heatmap -lm raw_MAG_abundance.txt -lt Abundance -out NorthSea_3_Abundance.txt
-
-          # get NorthSea_4_MAG_Size.txt
-          BioSAK iTOL -SimpleBar -lv raw_MAG_size.txt -scale 0-3-6-9 -lt MAG_Size -out NorthSea_4_MAG_Size.txt
-
 
 1. Upload **NorthSea_0_Tree.newick** to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 
@@ -59,6 +36,29 @@ choose "**Circular**" mode in the control panel, click "**At tips**" and then tu
 1. Go to the **Export** panel, choose desired file format and export your tree to file. 
 Remember to turn on **Colored ranges legend**, if you are using **NorthSea_1_Taxon_Range.txt** to color MAG classes.
 ![Step_2](figures/Step_2.jpg)
+
+
+# How to prepare these files
+
++ Some tools suggested by iTOL: https://itol.embl.de/help.cgi#external
+
++ You can also use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to prepare these files. Please refers to the [help page](https://github.com/songweizhi/BioSAK) for its installation.
+    
+  The purpose for developing this module is to generate iTOL-recognizable file for your dataset, 
+  parameters (e.g. colour, font size and strip width) provided in the output file might need 
+  further adjustment. The best way to optimize your plot is to visualize your tree with the 
+  default output and optimize the parameters by looking at the tree.
+  
+  Input files for the following commands can be found in `files_needed/raw_data`.
+     
+      BioSAK iTOL -ColorRange -lg raw_MAG_taxon.txt -lt Class -out NorthSea_1_Taxon_Range.txt
+      BioSAK iTOL -ColorStrip -lg raw_MAG_taxon.txt -lt Class -out NorthSea_1_Taxon_ColorStrip.txt
+      BioSAK iTOL -ColorStrip -lg raw_MAG_LifeStyle.txt -lt LifeStyle -out NorthSea_2_LifeStyle.txt
+      BioSAK iTOL -Heatmap -lm raw_MAG_abundance.txt -lt Abundance -out NorthSea_3_Abundance.txt
+      BioSAK iTOL -SimpleBar -lv raw_MAG_size.txt -scale 0-3-6-9 -lt MAG_Size -out NorthSea_4_MAG_Size.txt
+      
+      # for help
+      BioSAK iTOL -h
 
 
 # Help information
