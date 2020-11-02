@@ -7,7 +7,7 @@ This short note shows how to visualize all these info in one plot.
 
 1. Download files: [files_needed.zip](files_needed.zip)
 
-1. File description:
+1. File description (Please see below for how to prepare these files.):
 
     + A phylogenetic tree in [Newick](http://evolution.genetics.washington.edu/phylip/newicktree.html) format: [NorthSea_0_Tree.newick](files_needed/NorthSea_0_Tree.newick)
     + Taxonomy info: [NorthSea_1_Taxon_ColorStrip.txt](files_needed/NorthSea_1_Taxon_ColorStrip.txt), [NorthSea_1_Taxon_Range.txt](files_needed/NorthSea_1_Taxon_Range.txt)
