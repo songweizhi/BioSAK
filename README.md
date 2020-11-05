@@ -81,6 +81,7 @@ BioSAK modules
        select_seq             ->   Select sequences by their id
        get_gene_depth         ->   Get gene depth by contig depth
        convert_align_format   ->   Convert alignment format
+       OneLineAln             ->   One-line alignments in fasta fromat 
 
     Tree manipulator
        get_SCG_tree           ->   Construct SCG tree for query genomes

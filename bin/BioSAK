@@ -58,6 +58,8 @@ def print_main_help():
        select_seq              ->   Select sequences by their ids
        get_gene_depth          ->   Get gene depth by contig depth
        convert_align_format    ->   Convert alignment format
+       OneLineAln              ->   One-line fasta format alignments
+       SubsetAlnCols           ->   Subset MSA by column
        rename_reads_for_Reago  ->   Rename paired reads for Reago
 
     Tree manipulator
@@ -465,11 +467,29 @@ if __name__ == '__main__':
         link_16S_MAG_parser.add_argument('-quiet',  required=False, action="store_true",     help='not report progress')
         link_16S_MAG_parser.add_argument('-force',  required=False, action="store_true",     help='force overwrite existing results')
         link_16S_MAG_parser.add_argument('-tmp',    required=False, action="store_true",     help='keep temporary files')
-
         args = vars(parser.parse_args())
         args['run_mapping'] = True
         args['run_blastn'] = True
         link_16S_MAG.link_16S_MAG(args, config_dict)
+
+    elif sys.argv[1] == 'OneLineAln':
+        from BioSAK import OneLineAln
+        OneLineAln_parser = subparsers.add_parser('OneLineAln', description='One-line fasta format alignments', usage=OneLineAln.OneLineAln_usage)
+        OneLineAln_parser.add_argument('-in',       required=True,                       help='input MSA in fasta format')
+        OneLineAln_parser.add_argument('-out',      required=False, default=None,        help='output file')
+        OneLineAln_parser.add_argument('-upper',    required=False, action='store_true', help='turn to uppercase')
+        args = vars(parser.parse_args())
+        OneLineAln.OneLineAln(args)
+
+    elif sys.argv[1] == 'SubsetAlnCols':
+        from BioSAK import SubsetAlnCols
+        SubsetAlnCols_parser = subparsers.add_parser('SubsetAlnCols', description='Subset MSA by column', usage=SubsetAlnCols.SubsetAlnCols_usage)
+        SubsetAlnCols_parser.add_argument('-in',  required=True,                help='input MSA in fasta format')
+        SubsetAlnCols_parser.add_argument('-r',   required=True,                help='columns to keep, e.g. 200-300, one based')
+        SubsetAlnCols_parser.add_argument('-pct', required=False, default=None, help='minimum percentage of nonempty bases (e.g. 70), default keep all')
+        SubsetAlnCols_parser.add_argument('-out', required=True,                help='output file')
+        args = vars(parser.parse_args())
+        SubsetAlnCols.SubsetAlnCols(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

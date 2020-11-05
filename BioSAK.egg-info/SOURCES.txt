@@ -18,11 +18,13 @@ BioSAK/MetaCHIP_phylo.hmm
 BioSAK/MetaCyc_reactions_with_ec.txt
 BioSAK/NetEnzymes.py
 BioSAK/Newick_tree_plotter.py
+BioSAK/OneLineAln.py
 BioSAK/Prodigal.py
 BioSAK/Prokka.py
 BioSAK/Reads_simulator.py
 BioSAK/SILVA_for_BLCA.py
 BioSAK/SankeyTaxon.py
+BioSAK/SubsetAlnCols.py
 BioSAK/Subset_tree.py
 BioSAK/VERSION
 BioSAK/__init__.py
@@ -31,7 +33,6 @@ BioSAK/boxplot_matrix_COG_backup.py
 BioSAK/boxplot_matrix_KEGG.py
 BioSAK/cdd2cog.pl
 BioSAK/dbCAN.py
-BioSAK/detectCFP.py
 BioSAK/download_GenBank_genome.py
 BioSAK/download_GenBank_genome_subset_prokaryotes_csv.py
 BioSAK/dwnld_sra_reads.py
@@ -74,6 +75,7 @@ BioSAK/split_folder.py
 BioSAK/tmp_1.py
 BioSAK/tmp_2.py
 BioSAK/tmp_3.py
+BioSAK/tmp_4.py
 BioSAK.egg-info/PKG-INFO
 BioSAK.egg-info/SOURCES.txt
 BioSAK.egg-info/dependency_links.txt
