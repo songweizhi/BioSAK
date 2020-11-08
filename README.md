@@ -81,7 +81,10 @@ BioSAK modules
        select_seq             ->   Select sequences by their id
        get_gene_depth         ->   Get gene depth by contig depth
        convert_align_format   ->   Convert alignment format
-       OneLineAln             ->   One-line alignments in fasta fromat 
+       OneLineAln             ->   One-line fasta format alignments
+       SubsetAlnCols          ->   Subset MSA by column
+       rename_reads_for_Reago ->   Rename paired reads for Reago
+       MeanMappingDepth       ->   Get mean mapping depth 
 
     Tree manipulator
        get_SCG_tree           ->   Construct SCG tree for query genomes

@@ -61,6 +61,7 @@ def print_main_help():
        OneLineAln              ->   One-line fasta format alignments
        SubsetAlnCols           ->   Subset MSA by column
        rename_reads_for_Reago  ->   Rename paired reads for Reago
+       MeanMappingDepth        ->   Get mean mapping depth 
 
     Tree manipulator
        get_SCG_tree            ->   Construct SCG tree for query genomes
@@ -491,6 +492,14 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         SubsetAlnCols.SubsetAlnCols(args)
 
+    elif sys.argv[1] == 'MeanMappingDepth':
+        from BioSAK import MeanMappingDepth
+        MeanMappingDepth_parser = subparsers.add_parser('MeanMappingDepth', description='get mean mapping depth', usage=MeanMappingDepth.MeanMappingDepth_usage)
+        MeanMappingDepth_parser.add_argument('-depth',  required=True,                          help='input depth file from "samtools depth" ')
+        MeanMappingDepth_parser.add_argument('-T',      required=False, action="store_true",    help='get overall stats')
+        args = vars(parser.parse_args())
+        MeanMappingDepth.MeanMappingDepth(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
@@ -517,19 +526,9 @@ python setup.py sdist bdist_wheel
 twine upload dist/*
 songweizhi
 
-
-cd /Users/songweizhi/PycharmProjects/BioSAK
-rm -r build
-rm -r dist
-rm -r BioSAK.egg-info
-python setup.py sdist bdist_wheel
-twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-songweizhi
-
-
 shan88
 
 pip3 install --upgrade BioSAK
-pip3 install --upgrade -i https://test.pypi.org/simple/ BioSAK
 
 '''
+

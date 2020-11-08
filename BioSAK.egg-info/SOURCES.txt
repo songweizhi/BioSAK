@@ -14,6 +14,7 @@ BioSAK/GTDB_for_BLCA.py
 BioSAK/Gene2Ctg.py
 BioSAK/KEGG.py
 BioSAK/KEGG_get_eukaryotic_kos.py
+BioSAK/MeanMappingDepth.py
 BioSAK/MetaCHIP_phylo.hmm
 BioSAK/MetaCyc_reactions_with_ec.txt
 BioSAK/NetEnzymes.py
@@ -64,7 +65,6 @@ BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
-BioSAK/mean_sam_depth.py
 BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_sam_depth.py
 BioSAK/rename_reads_for_Reago.py
