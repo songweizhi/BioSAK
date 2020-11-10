@@ -46,7 +46,6 @@ def print_main_help():
     16S-sequencing related
        SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
-       link_16S_MAG            ->   Link 16S to metagenomic assemblies/MAGs
 
     Sequence manipulator
        gbk2fa                  ->   gbk to fasta
@@ -447,31 +446,6 @@ if __name__ == '__main__':
         rename_reads_for_Reago_parser.add_argument('-d',   required=True, type=int, help='chose from 1 (forward) or 2 (reverse)')
         args = vars(parser.parse_args())
         rename_reads_for_Reago.rename_reads_for_Reago(args)
-
-    elif sys.argv[1] == 'link_16S_MAG':
-        from BioSAK import link_16S_MAG
-        link_16S_MAG_parser = subparsers.add_parser('link_16S_MAG', description='Link 16S to metagenomic assemblies/MAGs', usage=link_16S_MAG.link_16S_MAG_usage)
-        link_16S_MAG_parser.add_argument('-p',      required=True,                           help='Output prefix')
-        link_16S_MAG_parser.add_argument('-r1',     required=True,                           help='Paired reads r1')
-        link_16S_MAG_parser.add_argument('-r2',     required=True,                           help='Paired reads r2')
-        link_16S_MAG_parser.add_argument('-m',      required=True,                           help='Marker gene sequences')
-        link_16S_MAG_parser.add_argument('-g',      required=False, default=None,            help='Genomic sequences')
-        link_16S_MAG_parser.add_argument('-mag',    required=False, default=None,            help='Metagenome-assembled-genome (MAG) folder')
-        link_16S_MAG_parser.add_argument('-x',      required=False, default='fasta',         help='MAG file extension, default: fasta')
-        link_16S_MAG_parser.add_argument('-iden',   required=False, type=float, default=100, help='identity cutoff, default: 100')
-        link_16S_MAG_parser.add_argument('-cov',    required=False, type=float, default=100, help='coverage cutoff, default: 100')
-        link_16S_MAG_parser.add_argument('-cigarM', required=False, type=int, default=50,    help='cigarM cutoff, default: 50')
-        link_16S_MAG_parser.add_argument('-cigarS', required=False, type=int, default=50,    help='cigarS cutoff, default: 50')
-        link_16S_MAG_parser.add_argument('-num',    required=False, type=int, default=5,     help='minimum number of reads for a link to plot, default: 5')
-        link_16S_MAG_parser.add_argument('-len',    required=False, type=int, default=500,   help='minimum length of reads for a link to plot, default: 500')
-        link_16S_MAG_parser.add_argument('-t',      required=False, type=int, default=1,     help='number of threads, default: 1')
-        link_16S_MAG_parser.add_argument('-quiet',  required=False, action="store_true",     help='not report progress')
-        link_16S_MAG_parser.add_argument('-force',  required=False, action="store_true",     help='force overwrite existing results')
-        link_16S_MAG_parser.add_argument('-tmp',    required=False, action="store_true",     help='keep temporary files')
-        args = vars(parser.parse_args())
-        args['run_mapping'] = True
-        args['run_blastn'] = True
-        link_16S_MAG.link_16S_MAG(args, config_dict)
 
     elif sys.argv[1] == 'OneLineAln':
         from BioSAK import OneLineAln
