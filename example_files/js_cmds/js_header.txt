@@ -1,0 +1,9 @@
+#!/bin/bash
+#PBS -l walltime=11:59:00,mem=30Gb,ncpus=1
+#PBS -l jobfs=10G
+#PBS -q normal
+#PBS -M xxx@unsw.edu.au
+#PBS -l wd
+
+module load blast/2.10.1
+cd /srv/scratch/z5039045/

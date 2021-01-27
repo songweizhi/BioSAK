@@ -1,3 +1,18 @@
+1.31.1
+- bug fixing
+
+1.31.0
+- new module added: VisGeneFlk
+
+1.30.0
+- new module added: reads2bam
+
+1.29.2
+- bug fixing
+
+1.29.0
+- new module added: js_cmds
+
 1.28.0
 - new module added: MeanMappingDepth
 

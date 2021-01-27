@@ -1,0 +1,9 @@
+gapseq find -p rTCA1 -b 200 ../../mag_files_renamed/mag_5.fna > mag_5-rTCA1-stdout.tbl
+gapseq find -p 4HB3HP -b 200 ../../mag_files_renamed/mag_2.fna > mag_2-4HB3HP-stdout.tbl
+gapseq find -p DC4HB -b 200 ../../mag_files_renamed/mag_2.fna > mag_2-DC4HB-stdout.tbl
+gapseq find -p 3HP -b 200 ../../mag_files_renamed/mag_1.fna > mag_1-3HP-stdout.tbl
+gapseq find -p 3HP -b 200 ../../mag_files_renamed/mag_4.fna > mag_4-3HP-stdout.tbl
+gapseq find -p CALVIN-PWY -b 200 ../../mag_files_renamed/mag_4.fna > mag_4-CALVIN-PWY-stdout.tbl
+gapseq find -p CALVIN-PWY -b 200 ../../mag_files_renamed/mag_3.fna > mag_3-CALVIN-PWY-stdout.tbl
+gapseq find -p 4HB3HP -b 200 ../../mag_files_renamed/mag_6.fna > mag_6-4HB3HP-stdout.tbl
+gapseq find -p DC4HB -b 200 ../../mag_files_renamed/mag_6.fna > mag_6-DC4HB-stdout.tbl

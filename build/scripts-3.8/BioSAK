@@ -46,7 +46,6 @@ def print_main_help():
     16S-sequencing related
        SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
-       link_16S_MAG            ->   Link 16S to metagenomic assemblies/MAGs
 
     Sequence manipulator
        gbk2fa                  ->   gbk to fasta
@@ -71,6 +70,7 @@ def print_main_help():
                       
     Other modules
        split_folder            ->   Split folder
+       js_cmds                 ->   Commands to job scripts
        SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
        BestHit                 ->   Keep Best Hits only (blast outfmt 6)
        get_bin_abundance       ->   Get bin abundance
@@ -78,10 +78,14 @@ def print_main_help():
        get_Pfam_hmms           ->   Get Pfam profiles by id
        Reads_simulator         ->   Simulate NGS reads
        plot_sam_depth          ->   Plot sam depth
+       reads2bam               ->   mapping and sorting
+       VisGeneFlk              ->   visualize flanking regions of specified gene
 
     # for module specific help info
     BioSAK iTOL -h
     BioSAK dbCAN -h
+    
+    # update with: pip3 install --upgrade BioSAK
     
     ''' % version(config_dict)
 
@@ -448,31 +452,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         rename_reads_for_Reago.rename_reads_for_Reago(args)
 
-    elif sys.argv[1] == 'link_16S_MAG':
-        from BioSAK import link_16S_MAG
-        link_16S_MAG_parser = subparsers.add_parser('link_16S_MAG', description='Link 16S to metagenomic assemblies/MAGs', usage=link_16S_MAG.link_16S_MAG_usage)
-        link_16S_MAG_parser.add_argument('-p',      required=True,                           help='Output prefix')
-        link_16S_MAG_parser.add_argument('-r1',     required=True,                           help='Paired reads r1')
-        link_16S_MAG_parser.add_argument('-r2',     required=True,                           help='Paired reads r2')
-        link_16S_MAG_parser.add_argument('-m',      required=True,                           help='Marker gene sequences')
-        link_16S_MAG_parser.add_argument('-g',      required=False, default=None,            help='Genomic sequences')
-        link_16S_MAG_parser.add_argument('-mag',    required=False, default=None,            help='Metagenome-assembled-genome (MAG) folder')
-        link_16S_MAG_parser.add_argument('-x',      required=False, default='fasta',         help='MAG file extension, default: fasta')
-        link_16S_MAG_parser.add_argument('-iden',   required=False, type=float, default=100, help='identity cutoff, default: 100')
-        link_16S_MAG_parser.add_argument('-cov',    required=False, type=float, default=100, help='coverage cutoff, default: 100')
-        link_16S_MAG_parser.add_argument('-cigarM', required=False, type=int, default=50,    help='cigarM cutoff, default: 50')
-        link_16S_MAG_parser.add_argument('-cigarS', required=False, type=int, default=50,    help='cigarS cutoff, default: 50')
-        link_16S_MAG_parser.add_argument('-num',    required=False, type=int, default=5,     help='minimum number of reads for a link to plot, default: 5')
-        link_16S_MAG_parser.add_argument('-len',    required=False, type=int, default=500,   help='minimum length of reads for a link to plot, default: 500')
-        link_16S_MAG_parser.add_argument('-t',      required=False, type=int, default=1,     help='number of threads, default: 1')
-        link_16S_MAG_parser.add_argument('-quiet',  required=False, action="store_true",     help='not report progress')
-        link_16S_MAG_parser.add_argument('-force',  required=False, action="store_true",     help='force overwrite existing results')
-        link_16S_MAG_parser.add_argument('-tmp',    required=False, action="store_true",     help='keep temporary files')
-        args = vars(parser.parse_args())
-        args['run_mapping'] = True
-        args['run_blastn'] = True
-        link_16S_MAG.link_16S_MAG(args, config_dict)
-
     elif sys.argv[1] == 'OneLineAln':
         from BioSAK import OneLineAln
         OneLineAln_parser = subparsers.add_parser('OneLineAln', description='One-line fasta format alignments', usage=OneLineAln.OneLineAln_usage)
@@ -499,6 +478,43 @@ if __name__ == '__main__':
         MeanMappingDepth_parser.add_argument('-T',      required=False, action="store_true",    help='get overall stats')
         args = vars(parser.parse_args())
         MeanMappingDepth.MeanMappingDepth(args)
+
+    elif sys.argv[1] == 'js_cmds':
+        from BioSAK import js_cmds
+        js_cmds_parser = subparsers.add_parser('js_cmds', description='put commands into job scripts', usage=js_cmds.js_cmds_usage)
+        js_cmds_parser.add_argument('-p',      required=True,                       help='js prefix')
+        js_cmds_parser.add_argument('-cmds',   required=True,                       help='cmds file')
+        js_cmds_parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next js')
+        js_cmds_parser.add_argument('-header', required=True,                       help='js header')
+        js_cmds_parser.add_argument('-n',      required=True, type=int,             help='number of cmds per js')
+        js_cmds_parser.add_argument('-js_hpc', required=False, default=None,        help='Full path to js folder on HPC')
+        js_cmds_parser.add_argument('-force',  required=False, action="store_true", help='force overwrite existing results')
+        args = vars(parser.parse_args())
+        js_cmds.js_cmds(args)
+
+    elif sys.argv[1] == 'reads2bam':
+        from BioSAK import reads2bam
+        reads2bam_parser = subparsers.add_parser('reads2bam', usage=reads2bam.reads2bam_usage)
+        reads2bam_parser.add_argument('-p',               required=True,                                     help='output prefix')
+        reads2bam_parser.add_argument('-ref',             required=True,                                     help='reference sequences')
+        reads2bam_parser.add_argument('-index_ref',       required=False, action="store_true",               help='index reference')
+        reads2bam_parser.add_argument('-r1',              required=False, default=None,                      help='paired reads r1')
+        reads2bam_parser.add_argument('-r2',              required=False, default=None,                      help='paired reads r2')
+        reads2bam_parser.add_argument('-u',               required=False, default=None,                      help='unpaired reads')
+        reads2bam_parser.add_argument('-fastq',           required=False, action="store_true",               help='reads in fastq format')
+        reads2bam_parser.add_argument('-t',               required=False, type=int, default=1,               help='number of threads, default: 1')
+        reads2bam_parser.add_argument('-tmp',             required=False, action="store_true",               help='keep temporary files')
+        args = vars(parser.parse_args())
+        reads2bam.reads2bam(args)
+
+    elif sys.argv[1] == 'VisGeneFlk':
+        from BioSAK import VisGeneFlk
+        VisGeneFlk_parser = subparsers.add_parser('VisGeneFlk', usage=VisGeneFlk.VisGeneFlk_usage)
+        VisGeneFlk_parser.add_argument('-gene',         required=True,                                      help='gene id')
+        VisGeneFlk_parser.add_argument('-gbk',          required=True,                                      help='gbk file')
+        VisGeneFlk_parser.add_argument('-len',          required=True, type=int,                            help='length of flanking region to plot')
+        args = vars(parser.parse_args())
+        VisGeneFlk.VisGeneFlk(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
@@ -531,3 +547,4 @@ shan88
 pip3 install --upgrade BioSAK
 
 '''
+

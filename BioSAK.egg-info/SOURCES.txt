@@ -28,6 +28,7 @@ BioSAK/SankeyTaxon.py
 BioSAK/SubsetAlnCols.py
 BioSAK/Subset_tree.py
 BioSAK/VERSION
+BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
 BioSAK/boxplot_matrix_COG.py
 BioSAK/boxplot_matrix_COG_backup.py
@@ -56,6 +57,7 @@ BioSAK/get_top_hit.py
 BioSAK/get_total_length.py
 BioSAK/global_functions.py
 BioSAK/iTOL.py
+BioSAK/js_cmds.py
 BioSAK/keep_best_hit.py
 BioSAK/ko00001.keg
 BioSAK/label_tree.R
@@ -67,6 +69,7 @@ BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
 BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_sam_depth.py
+BioSAK/reads2bam.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/select_seq.py
@@ -76,6 +79,7 @@ BioSAK/tmp_1.py
 BioSAK/tmp_2.py
 BioSAK/tmp_3.py
 BioSAK/tmp_4.py
+BioSAK/tmp_5.py
 BioSAK.egg-info/PKG-INFO
 BioSAK.egg-info/SOURCES.txt
 BioSAK.egg-info/dependency_links.txt
