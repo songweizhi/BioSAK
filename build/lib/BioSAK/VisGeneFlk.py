@@ -23,7 +23,6 @@ def get_flanking_region(input_gbk_file, HGT_candidate, flanking_length):
     wd, gbk_file = os.path.split(input_gbk_file)
     new_gbk_file = '%s/%s_%sbp_temp.gbk' % (wd, HGT_candidate, flanking_length)
     new_gbk_final_file = '%s/%s_%sbp.gbk' % (wd, HGT_candidate, flanking_length)
-    new_fasta_final_file = '%s/%s_%sbp.fasta' % (wd, HGT_candidate, flanking_length)
 
     # get flanking range of candidate
     input_gbk = SeqIO.parse(input_gbk_file, "genbank")
@@ -81,7 +80,6 @@ def get_flanking_region(input_gbk_file, HGT_candidate, flanking_length):
     # remove sequences not in flanking region
     new_gbk_full_length = SeqIO.parse(new_gbk_file, "genbank")
     new_gbk_final = open(new_gbk_final_file, 'w')
-    new_fasta_final = open(new_fasta_final_file, 'w')
     for record in new_gbk_full_length:
         # get new sequence
         new_seq = record.seq[new_start:new_end]
@@ -127,14 +125,13 @@ def get_flanking_region(input_gbk_file, HGT_candidate, flanking_length):
                 new_record_features_2.append(gene)
         new_record.features = new_record_features_2
         SeqIO.write(new_record, new_gbk_final, 'genbank')
-        SeqIO.write(new_record, new_fasta_final, 'fasta')
 
     new_gbk_final.close()
-    new_fasta_final.close()
     os.system('rm %s' % new_gbk_file)
 
 
 def set_contig_track_features(gene_contig, candidate_list, feature_set):
+
     # add features to feature set
     for feature in gene_contig.features:
         if feature.type == "CDS":
@@ -158,21 +155,6 @@ def set_contig_track_features(gene_contig, candidate_list, feature_set):
                 color = colors.lightgreen
             # add feature
             feature_set.add_feature(feature, color=color, label=True, sigil='ARROW', arrowshaft_height=0.5, arrowhead_length=0.4, label_color=label_color, label_size=label_size, label_angle=label_angle, label_position="middle")
-
-
-def check_match_direction(blast_hit_splitted):
-    query_start = int(blast_hit_splitted[6])
-    query_end = int(blast_hit_splitted[7])
-    subject_start = int(blast_hit_splitted[8])
-    subject_end = int(blast_hit_splitted[9])
-    query_direction = query_end - query_start
-    subject_direction = subject_end - subject_start
-
-    same_match_direction = True
-    if ((query_direction > 0) and (subject_direction < 0)) or ((query_direction < 0) and (subject_direction > 0)):
-        same_match_direction = False
-
-    return same_match_direction
 
 
 def VisGeneFlk(args):
@@ -253,7 +235,7 @@ def VisGeneFlk(args):
                      start=0,
                      end=len(gene1_contig))
 
-        diagram.write('%s_flk%sbp.pdf' % (gene_1, flanking_length), "pdf")
+        diagram.write('%s_flk%sbp.svg' % (gene_1, flanking_length), "svg")
 
 
 if __name__ == '__main__':

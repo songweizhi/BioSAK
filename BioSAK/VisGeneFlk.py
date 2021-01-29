@@ -235,7 +235,7 @@ def VisGeneFlk(args):
                      start=0,
                      end=len(gene1_contig))
 
-        diagram.write('%s_flk%sbp.pdf' % (gene_1, flanking_length), "pdf")
+        diagram.write('%s_flk%sbp.svg' % (gene_1, flanking_length), "svg")
 
 
 if __name__ == '__main__':
