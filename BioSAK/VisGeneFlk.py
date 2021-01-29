@@ -9,6 +9,7 @@ from Bio.SeqFeature import FeatureLocation
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 
+
 VisGeneFlk_usage = '''
 =========================== VisGeneFlk example commands ===========================
 
@@ -81,12 +82,11 @@ def get_flanking_region(input_gbk_file, HGT_candidate, flanking_length):
     new_gbk_full_length = SeqIO.parse(new_gbk_file, "genbank")
     new_gbk_final = open(new_gbk_final_file, 'w')
     for record in new_gbk_full_length:
+
         # get new sequence
         new_seq = record.seq[new_start:new_end]
         new_contig_length = len(new_seq)
-        new_record = SeqRecord(new_seq,
-                               id=record.id,
-                               name=record.name,
+        new_record = SeqRecord(new_seq, id=record.id, name=record.name,
                                description=record.description,
                                annotations=record.annotations)
 
@@ -130,14 +130,14 @@ def get_flanking_region(input_gbk_file, HGT_candidate, flanking_length):
     os.system('rm %s' % new_gbk_file)
 
 
-def set_contig_track_features(gene_contig, candidate_list, feature_set):
+def set_contig_track_features(gene_contig, gene_to_highlight, feature_set):
 
     # add features to feature set
     for feature in gene_contig.features:
         if feature.type == "CDS":
 
             # define label color
-            if feature.qualifiers['locus_tag'][0] in candidate_list:
+            if feature.qualifiers['locus_tag'][0] == gene_to_highlight:
                 label_color = colors.blue
                 label_size = 16
             else:
@@ -153,17 +153,21 @@ def set_contig_track_features(gene_contig, candidate_list, feature_set):
             elif feature.location.strand == -1:
                 label_angle = -225
                 color = colors.lightgreen
+
             # add feature
             feature_set.add_feature(feature, color=color, label=True, sigil='ARROW', arrowshaft_height=0.5, arrowhead_length=0.4, label_color=label_color, label_size=label_size, label_angle=label_angle, label_position="middle")
 
 
 def VisGeneFlk(args):
 
-    gene_1              = args['gene']
-    pwd_genome_1_gbk    = args['gbk']
-    flanking_length     = args['len']
+    gene_id         = args['gene']
+    input_gbk       = args['gbk']
+    flanking_length = args['len']
 
-    plot_wd = '%s_flk%s_wd' % (gene_1, flanking_length)
+    plot_wd                  = '%s_flk%s_wd'    % (gene_id, flanking_length)
+    gbk_subset_located_seq   = '%s/%s.gbk'      % (plot_wd, gene_id)
+    gbk_subset_flanking_gene = '%s/%s_%sbp.gbk' % (plot_wd, gene_id, flanking_length)
+    plot_file                = '%s_flk%sbp.svg' % (gene_id, flanking_length)
 
     if os.path.isdir(plot_wd) is False:
         os.mkdir(plot_wd)
@@ -172,77 +176,46 @@ def VisGeneFlk(args):
         os.mkdir(plot_wd)
 
     dict_value_list = []
-    # Extract gbk and fasta files for gene 1
-    for genome_1_record in SeqIO.parse(pwd_genome_1_gbk, 'genbank'):
-        for gene_1_f in genome_1_record.features:
-            if 'locus_tag' in gene_1_f.qualifiers:
-                if gene_1 in gene_1_f.qualifiers["locus_tag"]:
-                    dict_value_list.append([gene_1, int(gene_1_f.location.start), int(gene_1_f.location.end), gene_1_f.location.strand, len(genome_1_record.seq)])
-                    pwd_gene_1_gbk_file = '%s/%s.gbk' % (plot_wd, gene_1)
-                    pwd_gene_1_fasta_file = '%s/%s.fasta' % (plot_wd, gene_1)
-                    SeqIO.write(genome_1_record, pwd_gene_1_gbk_file, 'genbank')
-                    SeqIO.write(genome_1_record, pwd_gene_1_fasta_file, 'fasta')
-                    get_flanking_region(pwd_gene_1_gbk_file, gene_1, flanking_length)
-
-
-    ############################## prepare for flanking plot ##############################
-
-    # read in gbk files
-    matche_pair_list = []
-    path_to_gbk_file = '%s/%s_%sbp.gbk' % (plot_wd, gene_1, flanking_length)
-    gene_contig = SeqIO.read(path_to_gbk_file, "genbank")
-    matche_pair_list.append(gene_contig)
+    for seq_record in SeqIO.parse(input_gbk, 'genbank'):
+        for gene_feature in seq_record.features:
+            if 'locus_tag' in gene_feature.qualifiers:
+                if gene_id in gene_feature.qualifiers["locus_tag"]:
+                    dict_value_list.append([gene_id, int(gene_feature.location.start), int(gene_feature.location.end), gene_feature.location.strand, len(seq_record.seq)])
+                    SeqIO.write(seq_record, gbk_subset_located_seq, 'genbank')
+                    get_flanking_region(gbk_subset_located_seq, gene_id, flanking_length)
 
     # get the distance of the gene to contig ends
     gene_1_left_len = dict_value_list[0][1]
     gene_1_right_len = dict_value_list[0][4] - dict_value_list[0][2]
 
+    # read in gbk file
+    sequence_record = SeqIO.read(gbk_subset_flanking_gene, "genbank")
+
     # create an empty diagram
     diagram = GenomeDiagram.Diagram()
 
     # add tracks to diagram
-    for gene1_contig in matche_pair_list:
+    track_footnote = '%s (left %sbp, right %sbp)' % (sequence_record.name, gene_1_left_len, gene_1_right_len)
+    seq_track = diagram.new_track(1, name=track_footnote, greytrack=True,
+                                  greytrack_labels=1, greytrack_font='Helvetica', greytrack_fontsize=12,
+                                  height=0.35, start=0, end=len(sequence_record),
+                                  scale=True, scale_fontsize=6, scale_ticks=1,
+                                  scale_smalltick_interval=10000, scale_largetick_interval=10000)
 
-        # add gene content track for gene1_contig
-        contig_1_gene_content_track = diagram.new_track(1,
-                                                        name='%s (left %sbp, right %sbp)' % (gene1_contig.name, gene_1_left_len, gene_1_right_len),
-                                                        greytrack=True,
-                                                        greytrack_labels=1,
-                                                        greytrack_font='Helvetica',
-                                                        greytrack_fontsize=12,
-                                                        height=0.35,
-                                                        start=0,
-                                                        end=len(gene1_contig),
-                                                        scale=True,
-                                                        scale_fontsize=6,
-                                                        scale_ticks=1,
-                                                        scale_smalltick_interval=10000,
-                                                        scale_largetick_interval=10000)
+    # create blank feature set and add gene features to it
+    feature_set = seq_track.new_set(type='feature')
+    set_contig_track_features(sequence_record, gene_id, feature_set)
 
-
-        # add blank feature/graph sets to each track
-        feature_sets_1 = contig_1_gene_content_track.new_set(type='feature')
-
-        # add gene features to 2 blank feature sets
-        set_contig_track_features(gene1_contig, [gene_1], feature_sets_1)
-
-        ############################################### Draw and Export ################################################
-
-        diagram.draw(format="linear",
-                     orientation="landscape",
-                     pagesize=(75 * cm, 25 * cm),
-                     fragments=1,
-                     start=0,
-                     end=len(gene1_contig))
-
-        diagram.write('%s_flk%sbp.svg' % (gene_1, flanking_length), "svg")
+    # draw and export
+    diagram.draw(format='linear', orientation='landscape', pagesize=(75*cm, 25*cm), fragments=1, start=0, end=len(sequence_record))
+    diagram.write(plot_file, 'svg')
 
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-gene',    required=True,           help='gene id')
-    parser.add_argument('-gbk',     required=True,           help='gbk file')
-    parser.add_argument('-len',     required=True, type=int, help='length of flanking region to plot')
+    parser.add_argument('-gene', required=True,           help='gene id')
+    parser.add_argument('-gbk',  required=True,           help='gbk file')
+    parser.add_argument('-len',  required=True, type=int, help='length (in bp) of flanking region to plot')
     args = vars(parser.parse_args())
     VisGeneFlk(args)
