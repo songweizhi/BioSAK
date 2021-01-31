@@ -510,9 +510,11 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'VisGeneFlk':
         from BioSAK import VisGeneFlk
         VisGeneFlk_parser = subparsers.add_parser('VisGeneFlk', usage=VisGeneFlk.VisGeneFlk_usage)
-        VisGeneFlk_parser.add_argument('-gene',         required=True,                                      help='gene id')
-        VisGeneFlk_parser.add_argument('-gbk',          required=True,                                      help='gbk file')
-        VisGeneFlk_parser.add_argument('-len',          required=True, type=int,                            help='length of flanking region to plot')
+        VisGeneFlk_parser.add_argument('-gene',    required=True,                          help='gene id')
+        VisGeneFlk_parser.add_argument('-gbk',     required=True,                          help='gbk file')
+        VisGeneFlk_parser.add_argument('-len',     required=True, type=int,                help='length (in bp) of flanking sequences to plot')
+        VisGeneFlk_parser.add_argument('-scale',   required=False, type=int, default=200,  help='scale for plotting, default: 200bp per cm')
+        VisGeneFlk_parser.add_argument('-fmt',     required=False, default='svg',          help='output format (svg or pdf), default: svg')
         args = vars(parser.parse_args())
         VisGeneFlk.VisGeneFlk(args)
 
