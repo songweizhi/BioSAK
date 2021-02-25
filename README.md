@@ -101,12 +101,7 @@ BioSAK modules
        dwnld_GenBank_genome   ->   Batch download GenBank genomes
        get_Pfam_hmms          ->   Get Pfam profiles by id
        reads_simulator        ->   Simulate NGS reads
+       plot_sam_depth         ->   Plot sam depth
+       reads2bam              ->   mapping and sorting
+       VisGeneFlk             ->   visualize flanking regions of specified gene
 
-Help information
----
-
-    BioSAK -h
-    BioSAK COG2014 -h
-    BioSAK select_seq -h
-    BioSAK dwnld_GenBank_genome -h
-    etc.
