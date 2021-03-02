@@ -38,6 +38,7 @@ def print_main_help():
        CheckM_op_parser        ->   Parse (combined) CheckM outputs
        COG2003                 ->   COG annotation (v2003, by rpsblast)
        COG2014                 ->   COG annotation (v2014, by blastp/diamond)
+       COG2020                 ->   COG annotation (v2020, by blastp/diamond)
        KEGG                    ->   KEGG annotation
        dbCAN                   ->   CAZy annotation with dbCAN
        NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
@@ -79,6 +80,7 @@ def print_main_help():
        Reads_simulator         ->   Simulate NGS reads
        plot_sam_depth          ->   Plot sam depth
        reads2bam               ->   mapping and sorting
+       sam2bam                 ->   sam to bam with samtools
        VisGeneFlk              ->   visualize flanking regions of specified gene
 
     # for module specific help info
@@ -144,6 +146,23 @@ if __name__ == '__main__':
         COG2014_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
         args = vars(parser.parse_args())
         COG2014.COG2014(args)
+
+
+    elif sys.argv[1] == 'COG2020':
+        from BioSAK import COG2020
+        COG2020_parser = subparsers.add_parser('COG2020', description='Wrapper for COG annotation (v2020)', usage=COG2020.COG2020_parser_usage)
+        COG2020_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+        COG2020_parser.add_argument('-x',                   required=False,                                 help='file extension')
+        COG2020_parser.add_argument('-m',                   required=True,                                  help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
+        COG2020_parser.add_argument('-depth',               required=False, default=None,                   help='gene depth file/folder')
+        COG2020_parser.add_argument('-pct_by_all',          required=False, action='store_true',            help='normalize by all query genes, rather than those with COG assignment')
+        COG2020_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
+        COG2020_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
+        COG2020_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
+        COG2020_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+        args = vars(parser.parse_args())
+        COG2020.COG2020(args)
+
 
     elif sys.argv[1] == 'KEGG':
         from BioSAK import KEGG
@@ -281,12 +300,12 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'get_bin_abundance':
         from BioSAK import get_bin_abundance
         get_bin_abundance_parser = subparsers.add_parser('get_bin_abundance', description='Get bin abundance', usage=get_bin_abundance.get_bin_abundance_usage)
-        get_bin_abundance_parser.add_argument('-sam',       required=True,                                  help='input sam file')
-        get_bin_abundance_parser.add_argument('-bin',       required=True,                                  help='bin folder')
-        get_bin_abundance_parser.add_argument('-x',         required=True, default='fasta',                 help='bin file extension, default: fasta')
-        get_bin_abundance_parser.add_argument('-o',         required=True,                                  help='output abundance file')
-        get_bin_abundance_parser.add_argument('-cluster',   required=False, default=None,                   help='cluster info')
-        get_bin_abundance_parser.add_argument('-Cdb',       required=False, default=None,                   help='cluster info from dRep (Cdb.csv)')
+        get_bin_abundance_parser.add_argument('-sam',     required=True,                  help='input sam file')
+        get_bin_abundance_parser.add_argument('-bin',     required=True,                  help='bin folder')
+        get_bin_abundance_parser.add_argument('-x',       required=True, default='fasta', help='bin file extension, default: fasta')
+        get_bin_abundance_parser.add_argument('-o',       required=True,                  help='output abundance file')
+        get_bin_abundance_parser.add_argument('-g',       required=False, default=None,   help='bin grouping info')
+        get_bin_abundance_parser.add_argument('-Cdb',     required=False, default=None,   help='cluster info from dRep (Cdb.csv)')
         args = vars(parser.parse_args())
         get_bin_abundance.get_bin_abundance(args)
 
@@ -507,6 +526,13 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         reads2bam.reads2bam(args)
 
+    elif sys.argv[1] == 'sam2bam':
+        from BioSAK import sam2bam
+        sam2bam_parser = subparsers.add_parser('sam2bam', usage=sam2bam.sam2bam_usage)
+        sam2bam_parser.add_argument('-sam', required=True, help='sam file')
+        args = vars(parser.parse_args())
+        sam2bam.sam2bam(args)
+
     elif sys.argv[1] == 'VisGeneFlk':
         from BioSAK import VisGeneFlk
         VisGeneFlk_parser = subparsers.add_parser('VisGeneFlk', usage=VisGeneFlk.VisGeneFlk_usage)
@@ -546,6 +572,8 @@ songweizhi
 
 shan88
 
+module load python/3.7.3
+source ~/mypython3env/bin/activate
 pip3 install --upgrade BioSAK
 
 '''

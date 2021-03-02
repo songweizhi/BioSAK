@@ -152,3 +152,4 @@ def get_gene_list_TotalDepth(gene_list, gene_to_depth_dict):
         total_depth += gene_depth
 
     return total_depth
+

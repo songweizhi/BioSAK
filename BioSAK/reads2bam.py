@@ -1,5 +1,6 @@
 import os
 import argparse
+from BioSAK.global_functions import sep_path_basename_ext
 
 
 reads2bam_usage = '''
@@ -7,9 +8,9 @@ reads2bam_usage = '''
 
 module load bowtie/2.3.5.1
 module load samtools/1.10
-BioSAK reads2bam -p Demo -ref ref.fa -1 R1.fa -2 R1.fa -u unpaired.fa -t 12
-BioSAK reads2bam -p Demo -ref ref.fa -1 R1.fq -2 R1.fq -fastq -t 12
-BioSAK reads2bam -p Demo -ref ref.fa -u unpaired.fa -t 12 -tmp
+BioSAK reads2bam -p Demo -ref ref.fa -r1 R1.fa -r2 R1.fa -u unpaired.fa -index_ref -t 12
+BioSAK reads2bam -p Demo -ref ref.fa -r1 R1.fq -r2 R1.fq -fastq -index_ref -t 12
+BioSAK reads2bam -p Demo -ref ref.fa -u unpaired.fa -index_ref -t 12 -tmp
 
 ==================================================================================================
 '''
@@ -27,23 +28,26 @@ def reads2bam(args):
     thread_num      = args['t']
     keep_tmp        = args['tmp']
 
-    cmd_bowtie2_build   = 'bowtie2-build -f %s %s_ref' % (ref_seq, output_prefix)
+
+    ref_path, ref_basename, ref_ext = sep_path_basename_ext(ref_seq)
+
+    cmd_bowtie2_build   = 'bowtie2-build -f %s %s --threads %s' % (ref_seq, ref_basename, thread_num)
 
     cmd_bowtie2 = ''
     if (r1_seq is not None) and (r2_seq is not None) and (unpaired_seq is None):
-        cmd_bowtie2     = 'bowtie2 -x %s_ref -1 %s -2 %s -S %s.sam -p %s -f' % (output_prefix, r1_seq, r2_seq, output_prefix, thread_num)
+        cmd_bowtie2     = 'bowtie2 -x %s -1 %s -2 %s -S %s.sam -p %s -f' % (ref_basename, r1_seq, r2_seq, output_prefix, thread_num)
         if fq_format is True:
-            cmd_bowtie2 = 'bowtie2 -x %s_ref -1 %s -2 %s -S %s.sam -p %s -q' % (output_prefix, r1_seq, r2_seq, output_prefix, thread_num)
+            cmd_bowtie2 = 'bowtie2 -x %s -1 %s -2 %s -S %s.sam -p %s -q' % (ref_basename, r1_seq, r2_seq, output_prefix, thread_num)
 
     elif (r1_seq is not None) and (r2_seq is not None) and (unpaired_seq is not None):
-        cmd_bowtie2     = 'bowtie2 -x %s_ref -1 %s -2 %s -U %s -S %s.sam -p %s -f' % (output_prefix, r1_seq, r2_seq, unpaired_seq, output_prefix, thread_num)
+        cmd_bowtie2     = 'bowtie2 -x %s -1 %s -2 %s -U %s -S %s.sam -p %s -f' % (ref_basename, r1_seq, r2_seq, unpaired_seq, output_prefix, thread_num)
         if fq_format is True:
-            cmd_bowtie2 = 'bowtie2 -x %s_ref -1 %s -2 %s -U %s -S %s.sam -p %s -q' % (output_prefix, r1_seq, r2_seq, unpaired_seq, output_prefix, thread_num)
+            cmd_bowtie2 = 'bowtie2 -x %s -1 %s -2 %s -U %s -S %s.sam -p %s -q' % (ref_basename, r1_seq, r2_seq, unpaired_seq, output_prefix, thread_num)
 
     elif (r1_seq is None) and (r2_seq is None) and (unpaired_seq is not None):
-        cmd_bowtie2     = 'bowtie2 -x %s_ref -U %s -S %s.sam -p %s -f' % (output_prefix, unpaired_seq, output_prefix, thread_num)
+        cmd_bowtie2     = 'bowtie2 -x %s -U %s -S %s.sam -p %s -f' % (ref_basename, unpaired_seq, output_prefix, thread_num)
         if fq_format is True:
-            cmd_bowtie2 = 'bowtie2 -x %s_ref -U %s -S %s.sam -p %s -q' % (output_prefix, unpaired_seq, output_prefix, thread_num)
+            cmd_bowtie2 = 'bowtie2 -x %s -U %s -S %s.sam -p %s -q' % (ref_basename, unpaired_seq, output_prefix, thread_num)
     else:
         print('Please check your input reads files')
         exit()

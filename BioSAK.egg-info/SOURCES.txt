@@ -6,6 +6,7 @@ BioSAK/Barrnap.py
 BioSAK/BioSAK_config.py
 BioSAK/COG2003.py
 BioSAK/COG2014.py
+BioSAK/COG2020.py
 BioSAK/CheckM.py
 BioSAK/Enrichment.py
 BioSAK/FastaSplitler_by_num.py
@@ -47,7 +48,6 @@ BioSAK/get_SCG_tree.py
 BioSAK/get_TopHits_taxonomy.py
 BioSAK/get_aa_composition.py
 BioSAK/get_bin_abundance.py
-BioSAK/get_bin_abundance_old.py
 BioSAK/get_gc.py
 BioSAK/get_gene_depth.py
 BioSAK/get_ko_gene_seqs.py
@@ -67,11 +67,13 @@ BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
+BioSAK/mean_MAG_depth.py
 BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_sam_depth.py
 BioSAK/reads2bam.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
+BioSAK/sam2bam.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/split_folder.py

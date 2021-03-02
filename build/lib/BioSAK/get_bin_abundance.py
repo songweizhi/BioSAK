@@ -188,7 +188,7 @@ def get_bin_abundance(args):
         group_ctg_list = group_2_ctg_dict[group]
         group_to_read_num_dict[group] = 0
         for ctg in group_ctg_list:
-            group_to_read_num_dict[group] += ref_to_read_num_dict[ctg]
+            group_to_read_num_dict[group] += ref_to_read_num_dict.get(ctg, 0)
 
     output_file_handle = open(output_file, 'w')
     output_file_handle.write('cluster\tread_num\tread_pct\n')

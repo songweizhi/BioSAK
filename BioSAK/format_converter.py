@@ -3,9 +3,7 @@ import argparse
 from Bio import SeqIO
 from Bio import AlignIO
 from Bio.Seq import Seq
-from Bio.Alphabet import IUPAC
 from Bio.SeqRecord import SeqRecord
-from Bio.Alphabet import generic_dna
 
 
 sequence_manipulator_usage = '''
@@ -56,13 +54,7 @@ def sep_path_basename_ext(file_in):
 
 def export_seq_record(gene_seq, gene_id, gene_description, seq_type, output_handle):
 
-    IUPAC_type = None
-    if seq_type == 'N':
-        IUPAC_type = IUPAC.unambiguous_dna
-    if seq_type == 'P':
-        IUPAC_type = IUPAC.protein
-
-    seq_object = Seq(gene_seq, IUPAC_type)
+    seq_object = Seq(gene_seq)
     seq_record = SeqRecord(seq_object)
     seq_record.id = gene_id
     seq_record.description = gene_description
@@ -92,7 +84,7 @@ def gbk2ffn(args):
                 feature_seq = str(seq_record.seq)[feature.location.start-1:feature.location.end]
             else:
                 feature_seq_rc = str(seq_record.seq)[feature.location.start-1:feature.location.end]
-                feature_seq = str(Seq(feature_seq_rc, generic_dna).reverse_complement())
+                feature_seq = str(Seq(feature_seq_rc).reverse_complement())
 
             export_seq_record(feature_seq, feature_locus_tag, '', 'N', ffn_out_handle)
 
@@ -155,7 +147,7 @@ def get_rc(args):
             nc_bases_count += seq_in.count(nc_base)
 
         if nc_bases_count == len(seq_in):
-            seq_in_rc = str(Seq(seq_in, generic_dna).reverse_complement())
+            seq_in_rc = str(Seq(seq_in).reverse_complement())
             print('>seq_in_rc\n%s\n' % seq_in_rc)
 
         else:
@@ -181,6 +173,3 @@ def convert_align_format(args):
 
     AlignIO.convert(aln_in, aln_in_format, aln_out, aln_out_format)
 
-
-# gbk2faa({'gbk': '/Users/songweizhi/Desktop/111/SOC_00007.gbk'})
-# ffn2faa({'ffn': '/Users/songweizhi/Desktop/111/SOC_00007.ffn'})
