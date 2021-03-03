@@ -4,6 +4,10 @@ from Bio.Alphabet import IUPAC
 from Bio.SeqRecord import SeqRecord
 
 
+# put sequence in single line
+# SeqIO.write(seq_record, output_handle, 'fasta-2line')
+
+
 def export_dna_record(gene_seq, gene_id, gene_description, output_handle):
     seq_object = Seq(gene_seq, IUPAC.unambiguous_dna)
     seq_record = SeqRecord(seq_object)

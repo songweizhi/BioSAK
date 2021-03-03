@@ -103,5 +103,6 @@ BioSAK modules
        reads_simulator        ->   Simulate NGS reads
        plot_sam_depth         ->   Plot sam depth
        reads2bam              ->   mapping and sorting
+       sam2bam                ->   sam to bam with samtools
        VisGeneFlk             ->   visualize flanking regions of specified gene
 

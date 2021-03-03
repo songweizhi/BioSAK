@@ -9,31 +9,26 @@ from BioSAK.global_functions import sep_path_basename_ext
 
 
 select_seq_usage = '''
-=================== select_seq example commands ===================
+======================= select_seq example commands =======================
 
-# Extract sequences with provided id in seq_id.txt
-BioSAK select_seq -seq ctg.fasta -id seq_id.txt -option 1
+# Extract sequences with provided id
+BioSAK select_seq -seq ctg.fasta -id seq_id.txt -out output.1.fa -option 1
 
 # Extract sequences except those in seq_id.txt
-BioSAK select_seq -seq ctg.fasta -id seq_id.txt -option 0
+BioSAK select_seq -seq ctg.fasta -id seq_id.txt -out output.0.fa -option 0
 
-# seq_id.txt file format (one id per line): 
-NP_414542.1
-NP_414548.1
+# seq_id.txt file format: one id per line, great than symbol exculded.
 
-===================================================================
+===========================================================================
 '''
 
 def select_seq(args):
 
     # read in argument
-    seq_file = args['seq']
-    id_file = args['id']
-    select_option = args['option']
-
-    # define output file name
-    seq_file_path, seq_file_basename, seq_file_extension = sep_path_basename_ext(seq_file)
-    output_file = '%s/%s_option_%s%s' % (seq_file_path, seq_file_basename, select_option, seq_file_extension)
+    seq_file        = args['seq']
+    id_file         = args['id']
+    select_option   = args['option']
+    output_file     = args['out']
 
     # report
     if select_option == 1:
@@ -42,22 +37,24 @@ def select_seq(args):
         print(datetime.now().strftime(time_format) + 'Extracting sequences except those in %s' % id_file)
 
     # get provided id list
-    seq_id_list = []
+    seq_id_list = set()
     for seq_id in open(id_file):
-        seq_id_list.append(seq_id.strip())
+        seq_id_list.add(seq_id.strip())
 
     # extract sequences
     output_file_handle = open(output_file, 'w')
-    for seq in SeqIO.parse(seq_file, 'fasta'):
-        seq_id = seq.id
+    for seq_record in SeqIO.parse(seq_file, 'fasta'):
+        seq_id = seq_record.id
 
         if select_option == 1:
             if seq_id in seq_id_list:
-                SeqIO.write(seq, output_file_handle, 'fasta')
+                output_file_handle.write('>%s\n' % seq_record.id)
+                output_file_handle.write('%s\n' % seq_record.seq)
 
         if select_option == 0:
             if seq_id not in seq_id_list:
-                SeqIO.write(seq, output_file_handle, 'fasta')
+                output_file_handle.write('>%s\n' % seq_record.id)
+                output_file_handle.write('%s\n' % seq_record.seq)
 
     output_file_handle.close()
 
@@ -72,8 +69,9 @@ if __name__ == '__main__':
 
     # arguments for select_seq
     parser.add_argument('-seq',       required=True,            help='sequence file')
-    parser.add_argument('-id',        required=True,            help='sequence id file, one id per line')
-    parser.add_argument('-option',    required=True, type=int,  help='select option')
+    parser.add_argument('-id',        required=True,            help='sequence ids,one id per line')
+    parser.add_argument('-option',    required=True, type=int,  help='choose from 0 and 1')
+    parser.add_argument('-out',       required=True,            help='output file')
 
     args = vars(parser.parse_args())
     select_seq(args)

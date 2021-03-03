@@ -369,9 +369,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'select_seq':
         from BioSAK import select_seq
         select_seq_parser = subparsers.add_parser('select_seq', description='select sequences by id', usage=select_seq.select_seq_usage)
-        select_seq_parser.add_argument('-seq',              required=True,                                  help='sequence file')
-        select_seq_parser.add_argument('-id',               required=True,                                  help='sequence id file, one id per line')
-        select_seq_parser.add_argument('-option',           required=True,  type=int,                       help='select option, either 1 or 0')
+        select_seq_parser.add_argument('-seq',       required=True,            help='sequence file')
+        select_seq_parser.add_argument('-id',        required=True,            help='sequence ids,one id per line')
+        select_seq_parser.add_argument('-option',    required=True, type=int,  help='choose from 0 and 1')
+        select_seq_parser.add_argument('-out',       required=True,            help='output file')
         args = vars(parser.parse_args())
         select_seq.select_seq(args)
 
