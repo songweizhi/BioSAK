@@ -24,14 +24,14 @@ Module dependent, see module-specific help info for details. E.g.
 Installation
 ---
 
-1. BioSAK has been tested on Linux/Mac, but **NOT** supported on Windows.
+1. BioSAK has been tested on Linux/Mac, but **NOT** on Windows.
 
 1. BioSAK is implemented in python3, you can install it with pip3:
 
        # for the first time installation
        pip3 install BioSAK
       
-       # for later updating
+       # for updating
        pip3 install --upgrade BioSAK
       
 1. For UNSW Katana users
@@ -107,4 +107,11 @@ BioSAK modules
        VisGeneFlk             ->   visualize flanking regions of specified gene
        usearch_uc             ->   Usearch uc file parser
 
+Get help
+---
 
+Example commands can be found from module-specific help information 
+
+Several short tutorials for specific modules of BioSAK can also be found here:
+
+https://github.com/songweizhi/BioSAK/tree/master/BioSAK_tutorial
