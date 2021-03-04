@@ -19,7 +19,7 @@ Dependencies
 Module dependent, see module-specific help info for details. E.g.
 
     BioSAK KEGG -h
-    BioSAK COG2014 -h
+    BioSAK COG2020 -h
 
 Installation
 ---
@@ -110,8 +110,12 @@ BioSAK modules
 Get help
 ---
 
-Example commands can be found from module-specific help information 
+1. Example usage for most of BioSAK modules can be found from their specific help information, e.g.
+        
+       BioSAK KEGG -h
+       BioSAK iTOL -h 
+       BioSAK VisGeneFlk -h 
 
-Several short tutorials for specific modules of BioSAK can also be found here:
+1. Several short tutorials for specific modules of BioSAK can also be found here:
 
-https://github.com/songweizhi/BioSAK/tree/master/BioSAK_tutorial
+    https://github.com/songweizhi/BioSAK/tree/master/BioSAK_tutorial
