@@ -68,6 +68,7 @@ BioSAK modules
        Enrichment             ->   Gene set enrichment analysis (to be added)
     
     16S rRNA sequencing related modules
+       GTDB_16S               ->   Classify 16S against GTDB via best-hit approach
        SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
        
@@ -105,4 +106,6 @@ BioSAK modules
        reads2bam              ->   mapping and sorting
        sam2bam                ->   sam to bam with samtools
        VisGeneFlk             ->   visualize flanking regions of specified gene
+       usearch_uc             ->   Usearch uc file parser
+
 

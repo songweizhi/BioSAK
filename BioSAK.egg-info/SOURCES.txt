@@ -11,6 +11,7 @@ BioSAK/CheckM.py
 BioSAK/Enrichment.py
 BioSAK/FastaSplitler_by_num.py
 BioSAK/FastaSplitler_by_size.py
+BioSAK/GTDB_16S.py
 BioSAK/GTDB_for_BLCA.py
 BioSAK/Gene2Ctg.py
 BioSAK/KEGG.py
@@ -77,11 +78,7 @@ BioSAK/sam2bam.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/split_folder.py
-BioSAK/tmp_1.py
-BioSAK/tmp_2.py
-BioSAK/tmp_3.py
-BioSAK/tmp_4.py
-BioSAK/tmp_5.py
+BioSAK/usearch_uc.py
 BioSAK.egg-info/PKG-INFO
 BioSAK.egg-info/SOURCES.txt
 BioSAK.egg-info/dependency_links.txt

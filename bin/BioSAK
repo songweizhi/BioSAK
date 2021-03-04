@@ -36,15 +36,14 @@ def print_main_help():
        Prodigal                ->   Wrapper for running Prodigal
        CheckM                  ->   Wrapper for running CheckM
        CheckM_op_parser        ->   Parse (combined) CheckM outputs
-       COG2003                 ->   COG annotation (v2003, by rpsblast)
-       COG2014                 ->   COG annotation (v2014, by blastp/diamond)
        COG2020                 ->   COG annotation (v2020, by blastp/diamond)
        KEGG                    ->   KEGG annotation
        dbCAN                   ->   CAZy annotation with dbCAN
        NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
        Enrichment              ->   Gene set enrichment analysis (to be added)
 
-    16S-sequencing related
+    16S related
+       GTDB_16S                ->   Classify 16S against GTDB SSU database via best-blast-hit
        SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
 
@@ -81,7 +80,8 @@ def print_main_help():
        plot_sam_depth          ->   Plot sam depth
        reads2bam               ->   mapping and sorting
        sam2bam                 ->   sam to bam with samtools
-       VisGeneFlk              ->   visualize flanking regions of specified gene
+       VisGeneFlk              ->   visualize gene flanking regions
+       usearch_uc              ->   Usearch uc file parser
 
     # for module specific help info
     BioSAK iTOL -h
@@ -544,6 +544,26 @@ if __name__ == '__main__':
         VisGeneFlk_parser.add_argument('-fmt',     required=False, default='svg',          help='output format (svg or pdf), default: svg')
         args = vars(parser.parse_args())
         VisGeneFlk.VisGeneFlk(args)
+
+    elif sys.argv[1] == 'usearch_uc':
+        from BioSAK import usearch_uc
+        usearch_uc_parser = subparsers.add_parser('usearch_uc', usage=usearch_uc.usearch_uc_usage)
+        usearch_uc_parser.add_argument('-uc', required=True,                        help='uc file from Usearch')
+        usearch_uc_parser.add_argument('-n',  required=False, type=int, default=1,  help='minimum number of sequence in a cluster, default: 1')
+        usearch_uc_parser.add_argument('-o',  required=True,                        help='output file')
+        args = vars(parser.parse_args())
+        usearch_uc.usearch_uc(args)
+
+    elif sys.argv[1] == 'GTDB_16S':
+        from BioSAK import GTDB_16S
+        gtdb_16s_parser = subparsers.add_parser('GTDB_16S', usage=GTDB_16S.gtdb_16s_usage)
+        gtdb_16s_parser.add_argument('-p',           required=True,                           help='output prefix')
+        gtdb_16s_parser.add_argument('-q',           required=True,                           help='query sequences')
+        gtdb_16s_parser.add_argument('-r',           required=True,                           help='GTDB SSU sequences file')
+        gtdb_16s_parser.add_argument('-evalue',      required=False, default='1e-20',         help='evalue cutoff, default: 1e-20')
+        gtdb_16s_parser.add_argument('-t',           required=False, type=int, default=1,     help='number of threads')
+        args = vars(parser.parse_args())
+        GTDB_16S.gtdb_16s(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
