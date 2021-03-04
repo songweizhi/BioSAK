@@ -67,7 +67,7 @@ BioSAK modules
        NetEnzymes             ->   Get network of enzymes (based on MetaCyc, under development)   
        Enrichment             ->   Gene set enrichment analysis (to be added)
     
-    16S rRNA sequencing related modules
+    16S related modules
        GTDB_16S               ->   Classify 16S against GTDB via best-hit approach
        SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
