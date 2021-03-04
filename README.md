@@ -60,8 +60,7 @@ BioSAK modules
        Prodigal               ->   Wrapper for running Prodigal
        CheckM                 ->   Wrapper for running CheckM
        CheckM_op_parser       ->   Parse (combined) CheckM outputs
-       COG2003                ->   COG annotation (v2003, by rpsblast)
-       COG2014                ->   COG annotation (v2014, by blastp/diamond)
+       COG2020                ->   COG annotation (v2020, by blastp/diamond)
        KEGG                   ->   KEGG annotation
        dbCAN                  ->   CAZy annotation with dbCAN
        NetEnzymes             ->   Get network of enzymes (based on MetaCyc, under development)   
