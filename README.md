@@ -13,14 +13,16 @@ Contact
 + Center for Marine Science & Innovation, University of New South Wales, Sydney, Australia
 + E-mail: songwz03@gmail.com
 
+
 Dependencies
 ---
 
 Module dependent, see module-specific help info for details. E.g.
 
-    BioSAK KEGG -h
     BioSAK COG2020 -h
-
+    BioSAK dbCAN -h
+    
+    
 Installation
 ---
 
@@ -112,7 +114,7 @@ Get help
 
 1. Example usage for most of BioSAK modules can be found from their specific help information, e.g.
         
-       BioSAK KEGG -h
+       BioSAK COG2020 -h
        BioSAK iTOL -h 
        BioSAK VisGeneFlk -h 
 
