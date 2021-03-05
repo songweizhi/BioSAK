@@ -103,7 +103,7 @@ You can install it on Katana with Python's virtual environment.
 
 ### Output files (take COG as an example)
 
-1. Annotation result for each query gene
+1. Annotation result for each query gene.
 
     | Query | ID | Category | Description |
     |:---:|:---:|:---:|---|
@@ -113,7 +113,7 @@ You can install it on Katana with Python's virtual environment.
     | gene_4 | COG1309 | K | DNA-binding protein, AcrR family, includes nucleoid occlusion protein SlmA |
     | gene_5 | COG0514 | L | Superfamily II DNA helicase RecQ |
 
-1. The number/percentage of genes annotated to each ID/category
+1. The number/percentage of genes annotated to each ID/category.
 
     | ID | GeneNumber | Description |
     |:---:|:---:|---|
@@ -121,7 +121,7 @@ You can install it on Katana with Python's virtual environment.
     | COG0801 | 1 | 7,8-dihydro-6-hydroxymethylpterin pyrophosphokinase |
     | COG1309 | 1 | DNA-binding protein, AcrR family, includes nucleoid occlusion protein SlmA |
 
-1. A data matrix if you annotated multiple sequence files together in batch manner
+1. A data matrix, if you annotated multiple sequence files together.
 
     | | COG0514 | COG0801 | COG1309 | ... |
     |:---:|:---:|:---:|:---:|:---:|
