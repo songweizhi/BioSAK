@@ -124,11 +124,12 @@ BioSAK is a place where I put together some of my frequently used python scripts
 
     | | COG0514 | COG0801 | COG1309 | ... |
     |:---:|:---:|:---:|:---:|:---:|
-    | file_1 | 8 | 0 | 1 |
-    | file_2 | 3 | 0 | 2 |
-    | file_3 | 5 | 1 | 4 |
-    | file_4 | 3 | 9 | 1 |
-    | file_5 | 4 | 0 | 3 |
+    | file_1 | 8 | 0 | 1 | ... |
+    | file_2 | 3 | 0 | 2 | ... |
+    | file_3 | 5 | 1 | 4 | ... |
+    | file_4 | 3 | 9 | 1 | ... |
+    | file_5 | 4 | 0 | 3 | ... |
+    |  ...   |   |   |   |     |
 
        
 ### References and online resources:
