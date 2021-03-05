@@ -4,6 +4,8 @@
 
 ### Install BioSAK with Python's virtual environment 
 
+BioSAK is a place where I put together some of my frequently used python scripts.
+
 1. Log into katana
 
        ssh z1234567@katana.restech.unsw.edu.au -o "ServerAliveInterval 10"
@@ -61,12 +63,13 @@
     wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/dbCAN-HMMdb-V9.txt
     mv CAZyDB.07302020.fam-activities.txt CAZyDB.fam-activities.txt
     mv dbCAN-HMMdb-V9.txt dbCAN-fam-HMMs.txt
+    module load hmmer/3.3
     hmmpress dbCAN-fam-HMMs.txt
 
 
-### Run BioSAK
+### Functional annotation 
 
-1. COG annotation
+1. COG
 
        module load python/3.7.3
        source ~/mypython3env/bin/activate
@@ -74,7 +77,7 @@
        cd /srv/scratch/z5039045/Kelp_coassembly
        BioSAK COG2020 -i faa_files -x faa -db_dir path/to/db_COG2020 -m P -t 6 -diamond
 
-1. CAZy annotation (with dbCAN)
+1. CAZy (using dbCAN)
 
        module load python/3.7.3
        source ~/mypython3env/bin/activate
@@ -82,7 +85,7 @@
        cd /srv/scratch/z5039045/Kelp_coassembly
        BioSAK dbCAN -i faa_files -x faa -db_dir path/to/db_dbCAN_V9 -m P -t 6
 
-1. KEGG annotation
+1. KEGG
 
    Please note that the KEGG database files (e.g. [genus_prokaryotes.pep.gz](https://www.kegg.jp/kegg/download/Readme/README.fasta)) are not for free, if you don't have permission to use these files, 
    you can use [BlastKOALA](https://www.kegg.jp/blastkoala/) or [GhostKOALA](https://www.kegg.jp/ghostkoala/) for KEGG annotation, which are free web-based online tools developed by the KEGG team.
@@ -96,7 +99,38 @@
        BioSAK KEGG -seq_in faa_files -x faa -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6 -diamond
        BioSAK KEGG -ko_in BlastKOALA_output_files -x txt -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6
 
-          
+
+### Output files (take COG as an example)
+
+1. Annotation result for each query gene
+
+    | Query | ID | Category | Description |
+    |:---:|:---:|:---:|---|
+    | gene_1 | COG0801 | H | 7,8-dihydro-6-hydroxymethylpterin pyrophosphokinase |
+    | gene_2 ||||
+    | gene_3 | COG0514 | L | Superfamily II DNA helicase RecQ |
+    | gene_4 | COG1309 | K | DNA-binding protein, AcrR family, includes nucleoid occlusion protein SlmA |
+    | gene_5 | COG0514 | L | Superfamily II DNA helicase RecQ |
+
+1. The number/percentage of genes annotated to each ID/category
+
+    | ID | GeneNumber | Description |
+    |:---:|:---:|---|
+    | COG0514 | 2 | Superfamily II DNA helicase RecQ |
+    | COG0801 | 1 | 7,8-dihydro-6-hydroxymethylpterin pyrophosphokinase |
+    | COG1309 | 1 | DNA-binding protein, AcrR family, includes nucleoid occlusion protein SlmA |
+
+1. A data matrix if you annotated multiple sequence files in batch manner
+
+    | | COG0514 | COG0801 | COG1309 | ... |
+    |:---:|:---:|:---:|:---:|:---:|
+    | file_1 | 8 | 0 | 1 |
+    | file_2 | 3 | 0 | 2 |
+    | file_3 | 5 | 1 | 4 |
+    | file_4 | 3 | 9 | 1 |
+    | file_5 | 4 | 0 | 3 |
+
+       
 ### References and online resources:
 
 + BlastKOALA: https://www.kegg.jp/blastkoala/ and https://www.kegg.jp/blastkoala/help_blastkoala.html

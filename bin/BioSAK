@@ -83,11 +83,9 @@ def print_main_help():
        VisGeneFlk              ->   visualize gene flanking regions
        usearch_uc              ->   Usearch uc file parser
 
-    # for module specific help info
-    BioSAK iTOL -h
+    # for module-specific help info
     BioSAK dbCAN -h
-    
-    # update with: pip3 install --upgrade BioSAK
+    BioSAK iTOL -h
     
     ''' % version(config_dict)
 
