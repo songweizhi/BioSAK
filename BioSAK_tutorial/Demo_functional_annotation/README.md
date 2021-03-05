@@ -4,7 +4,8 @@
 
 ### Install BioSAK with Python's virtual environment 
 
-BioSAK is a place where I put together some of my frequently used python scripts.
+BioSAK is a place where I put together some of my frequently used python scripts. 
+You can install it on Katana with Python's virtual environment. 
 
 1. Log into katana
 
@@ -120,7 +121,7 @@ BioSAK is a place where I put together some of my frequently used python scripts
     | COG0801 | 1 | 7,8-dihydro-6-hydroxymethylpterin pyrophosphokinase |
     | COG1309 | 1 | DNA-binding protein, AcrR family, includes nucleoid occlusion protein SlmA |
 
-1. A data matrix if you annotated multiple sequence files in batch manner
+1. A data matrix if you annotated multiple sequence files together in batch manner
 
     | | COG0514 | COG0801 | COG1309 | ... |
     |:---:|:---:|:---:|:---:|:---:|
