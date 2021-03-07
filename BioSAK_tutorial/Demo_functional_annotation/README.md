@@ -21,11 +21,9 @@ You can install it on Katana with Python's virtual environment.
        mkdir ~/mypython3env_BioSAK
        python3 -m venv --system-site-packages ~/mypython3env_BioSAK
        source ~/mypython3env_BioSAK/bin/activate
-        
-       # for the first time installation
        pip3 install BioSAK
   
-       # for later updating
+       # for future updating
        pip3 install --upgrade BioSAK
        
              
@@ -91,7 +89,7 @@ You can install it on Katana with Python's virtual environment.
    Please note that the KEGG database files (e.g. [genus_prokaryotes.pep.gz](https://www.kegg.jp/kegg/download/Readme/README.fasta)) are not for free, if you don't have permission to use these files, 
    you can use [BlastKOALA](https://www.kegg.jp/blastkoala/) or [GhostKOALA](https://www.kegg.jp/ghostkoala/) for KEGG annotation, which are free web-based online tools developed by the KEGG team.
    
-   If you have done KEGG annotation with BlastKOALA, you can still use BioSAK to summarize your annotation results (e.g. at different KO levels).  
+   If you have done KEGG annotation with BlastKOALA, you can still use BioSAK to summarize your annotation results (e.g. the number/percentage of query genes annotated to each KO at different levels).  
   
        module load python/3.7.3
        source ~/mypython3env/bin/activate
@@ -121,7 +119,7 @@ You can install it on Katana with Python's virtual environment.
     | COG0801 | 1 | 7,8-dihydro-6-hydroxymethylpterin pyrophosphokinase |
     | COG1309 | 1 | DNA-binding protein, AcrR family, includes nucleoid occlusion protein SlmA |
 
-1. A data matrix, if you annotated multiple sequence files together.
+1. A data matrix of the number/percentage of genes annotated to each COG ID/category for each of your query file, if you annotated multiple sequence files together.
 
     | | COG0514 | COG0801 | COG1309 | ... |
     |:---:|:---:|:---:|:---:|:---:|
