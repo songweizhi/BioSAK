@@ -54,7 +54,7 @@ You can install it on Katana with Python's virtual environment.
     diamond makedb --in cog-20.fa --db cog-20.fa.dmnd --quiet
 
 
-### Prepare dbCAN (CAZy) database files (version 9)
+### Prepare dbCAN (CAZy) database files (version 9, released August 2020)
 
     cd db_dbCAN_V9
     wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/hmmscan-parser.sh
@@ -65,6 +65,14 @@ You can install it on Katana with Python's virtual environment.
     module load hmmer/3.3
     hmmpress dbCAN-fam-HMMs.txt
 
+### Prepare KEGG database files
+
++ Please note that the KEGG database files (e.g. [genus_prokaryotes.pep.gz](https://www.kegg.jp/kegg/download/Readme/README.fasta)) are not for free, if you don't have permission to use these files, 
+  you can use [BlastKOALA](https://www.kegg.jp/blastkoala/) or [GhostKOALA](https://www.kegg.jp/ghostkoala/) for KEGG annotation, which are free web-based online tools developed by the KEGG team.
+
++ BlastKOALA: https://www.kegg.jp/blastkoala/
++ GhostKOALA: https://www.kegg.jp/ghostkoala/
++ BlastKOALA Step-by-step Instructions: https://www.kegg.jp/blastkoala/help_blastkoala.html
 
 ### Functional annotation
 
@@ -86,9 +94,6 @@ You can install it on Katana with Python's virtual environment.
 
 1. KEGG
 
-   Please note that the KEGG database files (e.g. [genus_prokaryotes.pep.gz](https://www.kegg.jp/kegg/download/Readme/README.fasta)) are not for free, if you don't have permission to use these files, 
-   you can use [BlastKOALA](https://www.kegg.jp/blastkoala/) or [GhostKOALA](https://www.kegg.jp/ghostkoala/) for KEGG annotation, which are free web-based online tools developed by the KEGG team.
-   
    If you have done KEGG annotation with BlastKOALA, you can still use BioSAK to summarize your annotation results (e.g. the number/percentage of query genes annotated to each KO at different levels).  
   
        module load python/3.7.3
@@ -139,7 +144,6 @@ You can install it on Katana with Python's virtual environment.
        
 ### References and online resources:
 
-+ BlastKOALA: https://www.kegg.jp/blastkoala/ and https://www.kegg.jp/blastkoala/help_blastkoala.html
-+ GhostKOALA: https://www.kegg.jp/ghostkoala/
 + dbCAN2: http://bcb.unl.edu/dbCAN2/blast.php
+
 
