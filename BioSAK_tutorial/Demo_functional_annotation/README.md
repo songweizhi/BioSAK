@@ -34,45 +34,47 @@ You can install it on Katana with Python's virtual environment.
        BioSAK -h
 
 
-### Prepare COG database files (version 2020)
+### Prepare database files
 
-    # create a folder and download db files to this folder
-    cd db_COG2020
-    wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.fa.gz
-    wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.cog.csv
-    wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.def.tab
-    wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/fun-20.tab
-    wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/Readme.2020-11-25.txt
-    gunzip cog-20.fa.gz
+1. COG (version 2020)
+
+       # create a folder and download db files to this folder
+       cd db_COG2020
+       wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.fa.gz
+       wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.cog.csv
+       wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.def.tab
+       wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/fun-20.tab
+       wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/Readme.2020-11-25.txt
+       gunzip cog-20.fa.gz
+        
+       # make blast db
+       module load blast+/2.11.0
+       makeblastdb -in cog-20.fa -dbtype prot -parse_seqids -logfile cog-20.fa.log
+        
+       # make diamond db
+       module load diamond/0.9.31
+       diamond makedb --in cog-20.fa --db cog-20.fa.dmnd --quiet
+
+1. dbCAN (version 9, released August 2020)
+
+       cd db_dbCAN_V9
+       wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/hmmscan-parser.sh
+       wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/CAZyDB.07302020.fam-activities.txt
+       wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/dbCAN-HMMdb-V9.txt
+       mv CAZyDB.07302020.fam-activities.txt CAZyDB.fam-activities.txt
+       mv dbCAN-HMMdb-V9.txt dbCAN-fam-HMMs.txt
+       module load hmmer/3.3
+       hmmpress dbCAN-fam-HMMs.txt
+       
+1. KEGG
+
+   + Please note that the KEGG database files (e.g. [genus_prokaryotes.pep.gz](https://www.kegg.jp/kegg/download/Readme/README.fasta)) are not for free, if you don't have permission to use these files, 
+      you can use [BlastKOALA](https://www.kegg.jp/blastkoala/) or [GhostKOALA](https://www.kegg.jp/ghostkoala/) for KEGG annotation, which are free web-based online tools developed by the KEGG team.
     
-    # make blast db
-    module load blast+/2.11.0
-    makeblastdb -in cog-20.fa -dbtype prot -parse_seqids -logfile cog-20.fa.log
-    
-    # make diamond db
-    module load diamond/0.9.31
-    diamond makedb --in cog-20.fa --db cog-20.fa.dmnd --quiet
+   + BlastKOALA: https://www.kegg.jp/blastkoala/
+   + BlastKOALA Step-by-step Instructions: https://www.kegg.jp/blastkoala/help_blastkoala.html
+   + GhostKOALA: https://www.kegg.jp/ghostkoala/
 
-
-### Prepare dbCAN (CAZy) database files (version 9, released August 2020)
-
-    cd db_dbCAN_V9
-    wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/hmmscan-parser.sh
-    wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/CAZyDB.07302020.fam-activities.txt
-    wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/dbCAN-HMMdb-V9.txt
-    mv CAZyDB.07302020.fam-activities.txt CAZyDB.fam-activities.txt
-    mv dbCAN-HMMdb-V9.txt dbCAN-fam-HMMs.txt
-    module load hmmer/3.3
-    hmmpress dbCAN-fam-HMMs.txt
-
-### Prepare KEGG database files
-
-+ Please note that the KEGG database files (e.g. [genus_prokaryotes.pep.gz](https://www.kegg.jp/kegg/download/Readme/README.fasta)) are not for free, if you don't have permission to use these files, 
-  you can use [BlastKOALA](https://www.kegg.jp/blastkoala/) or [GhostKOALA](https://www.kegg.jp/ghostkoala/) for KEGG annotation, which are free web-based online tools developed by the KEGG team.
-
-+ BlastKOALA: https://www.kegg.jp/blastkoala/
-+ GhostKOALA: https://www.kegg.jp/ghostkoala/
-+ BlastKOALA Step-by-step Instructions: https://www.kegg.jp/blastkoala/help_blastkoala.html
 
 ### Functional annotation
 
