@@ -66,7 +66,7 @@ You can install it on Katana with Python's virtual environment.
     hmmpress dbCAN-fam-HMMs.txt
 
 
-### Functional annotation 
+### Functional annotation
 
 1. COG
 
@@ -111,13 +111,19 @@ You can install it on Katana with Python's virtual environment.
     | gene_4 | COG1309 | K | DNA-binding protein, AcrR family, includes nucleoid occlusion protein SlmA |
     | gene_5 | COG0514 | L | Superfamily II DNA helicase RecQ |
 
-1. The number/percentage of genes annotated to each ID/category.
+1. The number/percentage of genes annotated to each COG ID/category.
 
     | ID | GeneNumber | Description |
     |:---:|:---:|---|
     | COG0514 | 2 | Superfamily II DNA helicase RecQ |
     | COG0801 | 1 | 7,8-dihydro-6-hydroxymethylpterin pyrophosphokinase |
     | COG1309 | 1 | DNA-binding protein, AcrR family, includes nucleoid occlusion protein SlmA |
+
+    | Category | GeneNumber | Description |
+    |:---:|:---:|---|
+    | L | 2 | Replication, recombination and repair |
+    | H | 1 | Coenzyme transport and metabolism |
+    | K | 1 | Transcription |
 
 1. A data matrix of the number/percentage of genes annotated to each COG ID/category for each of your query file, if you annotated multiple sequence files together.
 

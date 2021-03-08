@@ -37,6 +37,7 @@ def print_main_help():
        CheckM                  ->   Wrapper for running CheckM
        CheckM_op_parser        ->   Parse (combined) CheckM outputs
        COG2020                 ->   COG annotation (v2020, by blastp/diamond)
+       arCOG                   ->   to be added
        KEGG                    ->   KEGG annotation
        dbCAN                   ->   CAZy annotation with dbCAN
        NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
