@@ -44,16 +44,18 @@ def print_main_help():
        Enrichment              ->   Gene set enrichment analysis (to be added)
 
     16S related
-       GTDB_16S                ->   Classify 16S against GTDB SSU database via best-blast-hit
+       GTDB_16S                ->   Classify 16S against GTDB SSU db via best-blast-hit approach
        SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
-
+       BLCA_op_parser          ->   Make the BLCA outputs bit easier to read
+    
     Sequence manipulator
        gbk2fa                  ->   gbk to fasta
        gbk2ffn                 ->   gbk to ffn
        gbk2faa                 ->   gbk to faa
        ffn2faa                 ->   ffn to faa
        get_rc                  ->   Get reverse complement sequence
+       slice_seq               ->   Get specified region of a sequence
        rename_seq              ->   Rename sequences in a file
        select_seq              ->   Select sequences by their ids
        get_gene_depth          ->   Get gene depth by contig depth
@@ -365,6 +367,17 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         format_converter.get_rc(args)
 
+    elif sys.argv[1] == 'slice_seq':
+        from BioSAK import slice_seq
+        slice_seq_parser = subparsers.add_parser('slice_seq', description='slice sequence', usage=slice_seq.slice_seq_usage)
+        slice_seq_parser.add_argument('-in',    required=True,                        help='sequence file')
+        slice_seq_parser.add_argument('-id',    required=True,                        help='sequence id')
+        slice_seq_parser.add_argument('-range', required=True,                        help='sequence range, start-end (in bp). e.g. 200-4000')
+        slice_seq_parser.add_argument('-rc',    required=False, action='store_true',  help='write out reverse complement sequence')
+        slice_seq_parser.add_argument('-out',   required=True,                        help='output file')
+        args = vars(parser.parse_args())
+        slice_seq.slice_seq(args)
+
     elif sys.argv[1] == 'select_seq':
         from BioSAK import select_seq
         select_seq_parser = subparsers.add_parser('select_seq', description='select sequences by id', usage=select_seq.select_seq_usage)
@@ -532,6 +545,13 @@ if __name__ == '__main__':
         sam2bam_parser.add_argument('-sam', required=True, help='sam file')
         args = vars(parser.parse_args())
         sam2bam.sam2bam(args)
+
+    elif sys.argv[1] == 'BLCA_op_parser':
+        from BioSAK import BLCA_op_parser
+        BLCA_op_parser_parser = subparsers.add_parser('BLCA_op_parser', usage=BLCA_op_parser.BLCA_op_parser_usage)
+        BLCA_op_parser_parser.add_argument('-in', required=True, help='BLCA output')
+        args = vars(parser.parse_args())
+        BLCA_op_parser.BLCA_op_parser(args)
 
     elif sys.argv[1] == 'VisGeneFlk':
         from BioSAK import VisGeneFlk

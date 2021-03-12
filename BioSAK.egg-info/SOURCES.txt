@@ -1,6 +1,7 @@
 MANIFEST.in
 README.md
 setup.py
+BioSAK/BLCA_op_parser.py
 BioSAK/BacDive.py
 BioSAK/Barrnap.py
 BioSAK/BioSAK_config.py
@@ -77,6 +78,7 @@ BioSAK/rename_seq.py
 BioSAK/sam2bam.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
+BioSAK/slice_seq.py
 BioSAK/split_folder.py
 BioSAK/usearch_uc.py
 BioSAK.egg-info/PKG-INFO
