@@ -12,7 +12,6 @@ BioSAK/CheckM.py
 BioSAK/Enrichment.py
 BioSAK/FastaSplitler_by_num.py
 BioSAK/FastaSplitler_by_size.py
-BioSAK/GTDB_16S.py
 BioSAK/GTDB_for_BLCA.py
 BioSAK/Gene2Ctg.py
 BioSAK/KEGG.py
@@ -80,6 +79,7 @@ BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/slice_seq.py
 BioSAK/split_folder.py
+BioSAK/top_16S_hits.py
 BioSAK/usearch_uc.py
 BioSAK.egg-info/PKG-INFO
 BioSAK.egg-info/SOURCES.txt

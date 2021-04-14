@@ -13,9 +13,18 @@ print(np.log(2.7182780911361077))
 num = 123.456789
 num_1 = float("{0:.2f}".format(num))
 num_2 = float("{0:.3f}".format(num))
-
 print(num_1)    # 123.46
 print(num_2)    # 123.457
+
+
+def norm_num_list(num_list, norm_by, decimal_to_keep):
+
+    num_list_after_norm = []
+    for each_num in num_list:
+        each_num_after_norm = float(("{0:.%sf}" % decimal_to_keep).format(each_num/norm_by))
+        num_list_after_norm.append(each_num_after_norm)
+
+    return num_list_after_norm
 
 
 ################################### cluster number list ##################################

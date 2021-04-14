@@ -70,10 +70,15 @@ You can install it on Katana with Python's virtual environment.
 
    + Please note that the KEGG database files (e.g. [genus_prokaryotes.pep.gz](https://www.kegg.jp/kegg/download/Readme/README.fasta)) are not for free, if you don't have permission to use these files, 
       you can use [BlastKOALA](https://www.kegg.jp/blastkoala/) or [GhostKOALA](https://www.kegg.jp/ghostkoala/) for KEGG annotation, which are free web-based online tools developed by the KEGG team.
-    
-   + BlastKOALA: https://www.kegg.jp/blastkoala/
+      BlastKOALA and GhostKOALA assign K numbers to the user's sequence data by BLAST and GHOSTX searches, respectively, against a nonredundant set of KEGG GENES.
+     
+   + BlastKOALA: https://www.kegg.jp/blastkoala/ 
+     (Up to **ten thousand** sequences may be uploaded)
+   
+   + GhostKOALA: https://www.kegg.jp/ghostkoala/ 
+     (The file size of up to **300 MB** (one million sequences with average length of 300 or three million sequences with average length of 100) may be uploaded)
+   
    + BlastKOALA Step-by-step Instructions: https://www.kegg.jp/blastkoala/help_blastkoala.html
-   + GhostKOALA: https://www.kegg.jp/ghostkoala/
 
 
 ### Functional annotation
