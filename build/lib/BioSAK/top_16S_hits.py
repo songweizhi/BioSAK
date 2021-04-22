@@ -8,8 +8,8 @@ top_16S_hits_usage = '''
 ======================================= top_16S_hits example commands =======================================
 
 module load blast+/2.9.0
-BioSAK Top_16S_hits -p 16S_vs_GTDB -q 16S_sequences.fa -r GTDB_ssu_all_r95.fna -t 6
-BioSAK Top_16S_hits -p 16S_vs_SILVA -q 16S_sequences.fa -r SILVA_138_SSURef_NR99_tax_silva.fasta -t 6 -top 5
+BioSAK top_16S_hits -p 16S_vs_GTDB -q 16S_sequences.fa -r GTDB_ssu_all_r95.fna -t 6
+BioSAK top_16S_hits -p 16S_vs_SILVA -q 16S_sequences.fa -r SILVA_138_SSURef_NR99_tax_silva.fasta -t 6 -top 5
 
 # prepare GTDB SSU database file
 wget https://data.gtdb.ecogenomic.org/releases/release95/95.0/genomic_files_all/ssu_all_r95.tar.gz
@@ -172,8 +172,8 @@ if __name__ == '__main__':
 
     top_16S_hits_parser = argparse.ArgumentParser()
     top_16S_hits_parser.add_argument('-p',           required=True,                           help='output prefix')
-    top_16S_hits_parser.add_argument('-q',           required=True,                           help='query sequences')
-    top_16S_hits_parser.add_argument('-r',           required=True,                           help='GTDB SSU sequences file')
+    top_16S_hits_parser.add_argument('-q',           required=True,                           help='query sequence file')
+    top_16S_hits_parser.add_argument('-r',           required=True,                           help='SILVA or GTDB SSU sequence file')
     top_16S_hits_parser.add_argument('-evalue',      required=False, default='1e-20',         help='evalue cutoff, default: 1e-20')
     top_16S_hits_parser.add_argument('-top',         required=False, type=int, default=1,     help='Number of top hits to report, default: 1')
     top_16S_hits_parser.add_argument('-t',           required=False, type=int, default=1,     help='number of threads')

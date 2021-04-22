@@ -577,8 +577,8 @@ if __name__ == '__main__':
         from BioSAK import top_16S_hits
         top_16S_hits_parser = subparsers.add_parser('top_16S_hits', usage=top_16S_hits.top_16S_hits_usage)
         top_16S_hits_parser.add_argument('-p',           required=True,                           help='output prefix')
-        top_16S_hits_parser.add_argument('-q',           required=True,                           help='query sequences')
-        top_16S_hits_parser.add_argument('-r',           required=True,                           help='GTDB SSU sequences file')
+        top_16S_hits_parser.add_argument('-q',           required=True,                           help='query sequence file')
+        top_16S_hits_parser.add_argument('-r',           required=True,                           help='SILVA or GTDB SSU sequence file')
         top_16S_hits_parser.add_argument('-evalue',      required=False, default='1e-20',         help='evalue cutoff, default: 1e-20')
         top_16S_hits_parser.add_argument('-top',         required=False, type=int, default=1,     help='Number of top hits to report, default: 1')
         top_16S_hits_parser.add_argument('-t',           required=False, type=int, default=1,     help='number of threads')
@@ -605,7 +605,7 @@ upload_to_pypi_cmd = '''
 GTDB_16S module: report identity to the best hit
 
 
-alias twine='/Users/songweizhi/Library/Python/3.7/bin/twine'
+#alias twine='/Users/songweizhi/Library/Python/3.7/bin/twine'
 cd /Users/songweizhi/PycharmProjects/BioSAK
 rm -r build
 rm -r dist

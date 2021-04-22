@@ -605,7 +605,7 @@ upload_to_pypi_cmd = '''
 GTDB_16S module: report identity to the best hit
 
 
-alias twine='/Users/songweizhi/Library/Python/3.7/bin/twine'
+#alias twine='/Users/songweizhi/Library/Python/3.7/bin/twine'
 cd /Users/songweizhi/PycharmProjects/BioSAK
 rm -r build
 rm -r dist
