@@ -15,28 +15,26 @@ BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -out ColorRange_taxon.txt
 BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -out SimpleBar_size.txt
 BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -out Heatmap_abundance.txt
 
-# Leaf to Group file format (-lg, tab separated, no header)
-NorthSea_bin001	Alphaproteobacteria
-NorthSea_bin003	Verrucomicrobiae
+# Leaf-to-Group file format (-lg, tab separated, no header)
+genome_1	Bacteria
+genome_2	Archaea
 
-# Group to Color file format (-gc, tab separated, no header)
-Alphaproteobacteria	#CCCC00
-Verrucomicrobiae	#9999FF
+# Group-to-Color file format (-gc, tab separated, no header)
+Bacteria	#CCCC00
+Archaea	#9999FF
 
-# Leaf to Value file format (-lv, tab separated, no header)
-NorthSea_bin001	6.15
-NorthSea_bin002	6.63
+# Leaf-to-Value file format (-lv, tab separated, no header)
+genome_1	6.15
+genome_2	6.63
 
-# Leaf to Matrix file format (-lm, tab separated, header required!!!)
-MAG_id Sample_A   Sample_B   Sample_C
-NorthSea_bin001	6.15    2.23    1.56
-NorthSea_bin002	6.63    1.72    2.55
+# Leaf-to-Matrix file format (-lm, tab separated, header required!!!)
+Genome_id Sample_A   Sample_B   Sample_C
+genome_1	6.15    2.23    1.56
+genome_2	6.63    1.72    2.55
 
 # Note!!!
 The purpose for developing this module is to generate iTOL-recognizable file for your dataset, 
-parameters (e.g. colour, font size and strip width) provided in the output file might need 
-further adjustment. The best way to optimize your plot is to visualize your tree with the 
-default output and optimize the parameters by looking at the tree.
+parameters (e.g. colours and font size) specified in the outputs might need further adjustments. 
 
 ===============================================================================================
 '''
@@ -310,6 +308,5 @@ if __name__ == '__main__':
     parser.add_argument('-out',         required=True,                         help='Output filename')
 
     args = vars(parser.parse_args())
-
     iTOL(args)
 

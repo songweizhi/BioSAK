@@ -411,13 +411,14 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'rename_seq':
         from BioSAK import rename_seq
         rename_seq_parser = subparsers.add_parser('rename_seq', description='rename contigs in a file', usage=rename_seq.rename_seq_usage)
-        rename_seq_parser.add_argument('-in',               required=True,                                  help='input sequence file')
-        rename_seq_parser.add_argument('-sep_in',           required=False,                                 help='separator for input sequences')
-        rename_seq_parser.add_argument('-sep_out',          required=False, default=None,                   help='separator for output sequences, default: same as sep_in')
-        rename_seq_parser.add_argument('-n',                required=False, type=int,                       help='the number of columns to keep')
-        rename_seq_parser.add_argument('-prefix',           required=False, default=None,                   help='add prefix to all sequences in a fasta file')
-        rename_seq_parser.add_argument('-oneline',          required=False, action="store_true",            help='put sequence in a single line')
-
+        rename_seq_parser.add_argument('-in',         required=True,                          help='input sequence file')
+        rename_seq_parser.add_argument('-x',          required=False, default='fasta',        help='file extension, default: fasta')
+        rename_seq_parser.add_argument('-sep_in',     required=False, default=None,           help='separator for input sequences')
+        rename_seq_parser.add_argument('-sep_out',    required=False, default=None,           help='separator for output sequences, default: same as sep_in')
+        rename_seq_parser.add_argument('-n',          required=False, default=None, type=int, help='the number of columns to keep')
+        rename_seq_parser.add_argument('-prefix',     required=False, default=None,           help='add prefix to sequence')
+        rename_seq_parser.add_argument('-oneline',    required=False, action="store_true",    help='put sequence in single line')
+        rename_seq_parser.add_argument('-t',          required=False, type=int, default=1,    help='number of threads')
         args = vars(parser.parse_args())
         rename_seq.rename_seq(args)
 
@@ -605,7 +606,6 @@ upload_to_pypi_cmd = '''
 GTDB_16S module: report identity to the best hit
 
 
-#alias twine='/Users/songweizhi/Library/Python/3.7/bin/twine'
 cd /Users/songweizhi/PycharmProjects/BioSAK
 rm -r build
 rm -r dist
