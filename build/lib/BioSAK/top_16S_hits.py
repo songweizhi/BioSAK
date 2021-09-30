@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import argparse
 from datetime import datetime
@@ -86,12 +88,13 @@ def keep_top_n_blast_hit(file_in, file_out, top_hit_num):
 
 def top_16S_hits(args):
 
-    output_prefix = args['p']
-    query_seq     = args['q']
-    gtdb_ssu_file = args['r']
-    num_threads   = args['t']
-    evalue_cutoff = args['evalue']
-    top_hit_num   = args['top']
+    output_prefix       = args['p']
+    query_seq           = args['q']
+    gtdb_ssu_file       = args['r']
+    num_threads         = args['t']
+    evalue_cutoff       = args['evalue']
+    top_hit_num         = args['top']
+    previous_blast_op   = args['b']
 
     # define output file name
     blast_op            = '%s_blastn.tab'           % output_prefix
@@ -127,9 +130,12 @@ def top_16S_hits(args):
 
 
     # run blast and keep best hits
-    print(datetime.now().strftime(time_format) + 'Running blast with %s cores, be patient!' % num_threads)
-    blastn_cmd = 'blastn -query %s -db %s -out %s -outfmt 6 -evalue %s -num_threads %s' % (query_seq, gtdb_ssu_file, blast_op, evalue_cutoff, num_threads)
-    os.system(blastn_cmd)
+    if previous_blast_op is None:
+        print(datetime.now().strftime(time_format) + 'Running blast with %s cores, be patient!' % num_threads)
+        blastn_cmd = 'blastn -query %s -db %s -out %s -outfmt 6 -evalue %s -num_threads %s' % (query_seq, gtdb_ssu_file, blast_op, evalue_cutoff, num_threads)
+        os.system(blastn_cmd)
+    else:
+        blast_op = previous_blast_op
 
     print(datetime.now().strftime(time_format) + 'Keep the top %s hits for each query' % top_hit_num)
     if top_hit_num == 1:
@@ -174,6 +180,7 @@ if __name__ == '__main__':
     top_16S_hits_parser.add_argument('-p',           required=True,                           help='output prefix')
     top_16S_hits_parser.add_argument('-q',           required=True,                           help='query sequence file')
     top_16S_hits_parser.add_argument('-r',           required=True,                           help='SILVA or GTDB SSU sequence file')
+    top_16S_hits_parser.add_argument('-b',           required=False, default=None,            help='blast results between query and reference sequences from previous analysis(if you have)')
     top_16S_hits_parser.add_argument('-evalue',      required=False, default='1e-20',         help='evalue cutoff, default: 1e-20')
     top_16S_hits_parser.add_argument('-top',         required=False, type=int, default=1,     help='Number of top hits to report, default: 1')
     top_16S_hits_parser.add_argument('-t',           required=False, type=int, default=1,     help='number of threads')

@@ -11,14 +11,20 @@ download_GenBank_genome_parser_usage = '''
 ================================== dwnld_GenBank_genome example commands ==================================
 
 # Usage:
-# 1. Go to https://www.ncbi.nlm.nih.gov/genome/browse#!/prokaryotes/refseq_category:reference
-# 2. Search genomes you want to download (e.g. prokaryotes, proteobacteria, psychrobacter)
-# 3. Click "Download" on the right side
-# 4. provide the downloaded csv file with '-csv'
+1. Go to https://www.ncbi.nlm.nih.gov/genome/browse#!/prokaryotes/refseq_category:reference
+2. Search the taxonomy of genomes you want to download (e.g. prokaryotes, proteobacteria)
+3. Click "Download" on the right side
+4. provide the downloaded csv file to BioSAK with '-csv'
 
-# Download genomes in file prokaryotes.csv
+# Example commands
 BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -fna -name
 BioSAK dwnld_GenBank_genome -csv prokaryotes.csv -fna -faa -gbff -name
+BioSAK dwnld_GenBank_genome -csv prokaryotes.csv assembly_id assembly_ids.txt -fna -name
+
+# assembly_id file format (the 6th col of the downloaded csv file, one id per line)
+GCA_009840555.1
+GCA_009840575.1
+GCA_002073495.2
 
 ===========================================================================================================
 '''
@@ -106,6 +112,7 @@ def genome_download_worker(argument_list):
 def download_GenBank_genome(args):
 
     csv_file =      args['csv']
+    assembly_id_file = args['assembly_id']
     get_fna =       args['fna']
     get_faa =       args['faa']
     get_gbff =      args['gbff']
@@ -125,13 +132,22 @@ def download_GenBank_genome(args):
     # report
     print(datetime.now().strftime(time_format) + 'Downloading genomes with %s cores' % (num_threads))
 
+    assembly_id_set = set()
+    if assembly_id_file is not None:
+        for each_id in open(assembly_id_file):
+            assembly_id_set.add(each_id.strip())
+
     # download genome with multiprocessing
     list_for_multiple_arguments_download_worker = []
     for genome_record in open(csv_file):
-
         if not genome_record.startswith('#Organism Name'):
             genome_record_split = genome_record.strip().split(',')
-            list_for_multiple_arguments_download_worker.append([genome_record_split, downloaded_genome_folder, get_fna, get_faa, get_gbff, with_name])
+            assembly_id = genome_record_split[5][1:-1]
+            if assembly_id_file is None:
+                list_for_multiple_arguments_download_worker.append([genome_record_split, downloaded_genome_folder, get_fna, get_faa, get_gbff, with_name])
+            else:
+                if assembly_id in assembly_id_set:
+                    list_for_multiple_arguments_download_worker.append([genome_record_split, downloaded_genome_folder, get_fna, get_faa, get_gbff, with_name])
 
     # run COG annotaion files with multiprocessing
     pool = mp.Pool(processes=num_threads)
@@ -143,15 +159,13 @@ def download_GenBank_genome(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-
-    parser.add_argument('-csv',  required=True,                       help='csv file downloaded from NCBI genome_browse')
-    parser.add_argument('-fna',  required=False, action="store_true", help='download gna file')
-    parser.add_argument('-faa',  required=False, action="store_true", help='download faa file')
-    parser.add_argument('-gbff', required=False, action="store_true", help='download gbff file')
-    parser.add_argument('-name', required=False, action="store_true", help='include genome name in the downloaded files')
-    parser.add_argument('-t',    required=False, default=1, type=int, help='number of threads')
-
+    parser.add_argument('-csv',         required=True,                       help='csv file downloaded from NCBI genome_browse')
+    parser.add_argument('-assembly_id', required=False, default=None,        help='assembly id (6th col in the csv file) of genomes to download')
+    parser.add_argument('-fna',         required=False, action="store_true", help='download gna file')
+    parser.add_argument('-faa',         required=False, action="store_true", help='download faa file')
+    parser.add_argument('-gbff',        required=False, action="store_true", help='download gbff file')
+    parser.add_argument('-name',        required=False, action="store_true", help='include genome name in the downloaded files')
+    parser.add_argument('-t',           required=False, default=1, type=int, help='number of threads')
     args = vars(parser.parse_args())
-
     download_GenBank_genome(args)
 

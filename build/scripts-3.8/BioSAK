@@ -66,6 +66,7 @@ def print_main_help():
        MeanMappingDepth        ->   Get mean mapping depth 
 
     Tree manipulator
+       fa2tree                 ->   fa2tree
        get_SCG_tree            ->   Construct SCG tree for query genomes
        label_tree              ->   Add labels to tree leaves
        subset_tree             ->   Subset tree
@@ -313,12 +314,13 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'dwnld_GenBank_genome':
         from BioSAK import download_GenBank_genome
         dwnld_GenBank_genome_parser = subparsers.add_parser('dwnld_GenBank_genome', description='Batch download GenBank genomes', usage=download_GenBank_genome.download_GenBank_genome_parser_usage)
-        dwnld_GenBank_genome_parser.add_argument('-csv',    required=True,                                  help='csv file from NCBI genome_browse')
-        dwnld_GenBank_genome_parser.add_argument('-fna',    required=False, action="store_true",            help='download gna file')
-        dwnld_GenBank_genome_parser.add_argument('-faa',    required=False, action="store_true",            help='download faa file')
-        dwnld_GenBank_genome_parser.add_argument('-gbff',   required=False, action="store_true",            help='download gbff file')
-        dwnld_GenBank_genome_parser.add_argument('-name',   required=False, action="store_true",            help='include genome name in the downloaded files')
-        dwnld_GenBank_genome_parser.add_argument('-t',      required=False, default=1, type=int,            help='number of threads')
+        dwnld_GenBank_genome_parser.add_argument('-csv',         required=True,                                     help='csv file from NCBI genome_browse')
+        dwnld_GenBank_genome_parser.add_argument('-assembly_id', required=False, default=None,                      help='assembly id (6th col in the csv file) of genomes to download')
+        dwnld_GenBank_genome_parser.add_argument('-fna',         required=False, action="store_true",               help='download gna file')
+        dwnld_GenBank_genome_parser.add_argument('-faa',         required=False, action="store_true",               help='download faa file')
+        dwnld_GenBank_genome_parser.add_argument('-gbff',        required=False, action="store_true",               help='download gbff file')
+        dwnld_GenBank_genome_parser.add_argument('-name',        required=False, action="store_true",               help='include genome name in the downloaded files')
+        dwnld_GenBank_genome_parser.add_argument('-t',           required=False, default=1, type=int,               help='number of threads')
         args = vars(parser.parse_args())
         download_GenBank_genome.download_GenBank_genome(args)
 
@@ -381,10 +383,12 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'select_seq':
         from BioSAK import select_seq
         select_seq_parser = subparsers.add_parser('select_seq', description='select sequences by id', usage=select_seq.select_seq_usage)
-        select_seq_parser.add_argument('-seq',       required=True,            help='sequence file')
-        select_seq_parser.add_argument('-id',        required=True,            help='sequence ids,one id per line')
-        select_seq_parser.add_argument('-option',    required=True, type=int,  help='choose from 0 and 1')
-        select_seq_parser.add_argument('-out',       required=True,            help='output file')
+        select_seq_parser.add_argument('-seq',       required=True,                        help='sequence file')
+        select_seq_parser.add_argument('-id',        required=True,                        help='sequence ids,one id per line')
+        select_seq_parser.add_argument('-option',    required=True, type=int,              help='choose from 0 and 1')
+        select_seq_parser.add_argument('-out',       required=True,                        help='output file')
+        select_seq_parser.add_argument('-fq',        required=False, action="store_true",  help='in fastq format, default: fa')
+        select_seq_parser.add_argument('-oneline',   required=False, action="store_true",  help='put sequence in single line')
         args = vars(parser.parse_args())
         select_seq.select_seq(args)
 
@@ -452,11 +456,12 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'Reads_simulator':
         from BioSAK import Reads_simulator
         Reads_simulator_parser = subparsers.add_parser('Reads_simulator', description='Simulate NGS reads', usage=Reads_simulator.Reads_simulator_usage)
-        Reads_simulator_parser.add_argument('-r',           required=True,                                  help='reference genomes')
-        Reads_simulator_parser.add_argument('-n',           required=True, type=int,                        help='reads number')
-        Reads_simulator_parser.add_argument('-l',           required=True, type=int,                        help='reads length')
-        Reads_simulator_parser.add_argument('-i',           required=True, type=int,                        help='insert size')
-        Reads_simulator_parser.add_argument('-split',       action="store_true",                            help='Export forward and reverse reads to separate files')
+        Reads_simulator_parser.add_argument('-p',     required=True,           help='output prefix')
+        Reads_simulator_parser.add_argument('-r',     required=True,           help='reference genome')
+        Reads_simulator_parser.add_argument('-n',     required=True, type=int, help='number of read pairs to simulate ')
+        Reads_simulator_parser.add_argument('-l',     required=True, type=int, help='read length')
+        Reads_simulator_parser.add_argument('-i',     required=True, type=int, help='insert size')
+        Reads_simulator_parser.add_argument('-split', action="store_true",     help='Export forward and reverse reads to separate files')
         args = vars(parser.parse_args())
         Reads_simulator.Reads_simulator(args)
 
@@ -535,6 +540,8 @@ if __name__ == '__main__':
         reads2bam_parser.add_argument('-r2',              required=False, default=None,                      help='paired reads r2')
         reads2bam_parser.add_argument('-u',               required=False, default=None,                      help='unpaired reads')
         reads2bam_parser.add_argument('-fastq',           required=False, action="store_true",               help='reads in fastq format')
+        reads2bam_parser.add_argument('-local',           required=False, action="store_true",               help='perform local alignment')
+        reads2bam_parser.add_argument('-mismatch',        required=False, type=int, default=100,             help='maximum mismatch pct allowed, between 1-100, default: 100')
         reads2bam_parser.add_argument('-t',               required=False, type=int, default=1,               help='number of threads, default: 1')
         reads2bam_parser.add_argument('-tmp',             required=False, action="store_true",               help='keep temporary files')
         args = vars(parser.parse_args())
@@ -546,6 +553,14 @@ if __name__ == '__main__':
         sam2bam_parser.add_argument('-sam', required=True, help='sam file')
         args = vars(parser.parse_args())
         sam2bam.sam2bam(args)
+
+    elif sys.argv[1] == 'fa2tree':
+        from BioSAK import fa2tree
+        fa2tree_parser = subparsers.add_parser('fa2tree', usage=fa2tree.fa2tree_usage)
+        fa2tree_parser.add_argument('-seq', required=True, help='sequence file')
+        fa2tree_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads, default: 1')
+        args = vars(parser.parse_args())
+        fa2tree.fa2tree(args)
 
     elif sys.argv[1] == 'BLCA_op_parser':
         from BioSAK import BLCA_op_parser
@@ -580,6 +595,7 @@ if __name__ == '__main__':
         top_16S_hits_parser.add_argument('-p',           required=True,                           help='output prefix')
         top_16S_hits_parser.add_argument('-q',           required=True,                           help='query sequence file')
         top_16S_hits_parser.add_argument('-r',           required=True,                           help='SILVA or GTDB SSU sequence file')
+        top_16S_hits_parser.add_argument('-b',           required=False, default=None,            help='blast results between query and reference sequences from previous analysis(if you have)')
         top_16S_hits_parser.add_argument('-evalue',      required=False, default='1e-20',         help='evalue cutoff, default: 1e-20')
         top_16S_hits_parser.add_argument('-top',         required=False, type=int, default=1,     help='Number of top hits to report, default: 1')
         top_16S_hits_parser.add_argument('-t',           required=False, type=int, default=1,     help='number of threads')
@@ -613,7 +629,6 @@ rm -r BioSAK.egg-info
 python setup.py sdist bdist_wheel
 twine upload dist/*
 songweizhi
-
 shan88
 
 module load python/3.7.3

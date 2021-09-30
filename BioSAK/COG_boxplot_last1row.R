@@ -98,7 +98,7 @@ ggplot() +
         axis.text.y = element_text(colour="black",size=6,angle=0,hjust=0,vjust=0,face="plain"),
         axis.title.x = element_text(colour="black",size=6,angle=0,hjust=.5,vjust=0,face="plain"),
         axis.title.y = element_text(colour="black",size=6,angle=90,hjust=.5,vjust=0,face="plain"))+
-  labs(x = "COG category", y = 'Proportion') # label of x and y axis
+  labs(x = "Category", y = 'Proportion') # label of x and y axis
 
 invisible(dev.off())
 

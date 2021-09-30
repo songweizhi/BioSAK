@@ -23,11 +23,11 @@ module load blast+/2.11.0
 module load diamond/0.9.31
 
 # annotate protein sequences
-BioSAK COG2020 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i recipient.faa 
+BioSAK COG2020 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i genes.faa 
 BioSAK COG2020 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i faa_files -x faa -depth depth_files
 
 # annotate DNA sequences (ORFs)
-BioSAK COG2020 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i recipient.ffn -depth recipient.depth
+BioSAK COG2020 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i genes.ffn -depth gene.depth
 BioSAK COG2020 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i ffn_files -x ffn
 
 # Depth file format (one gene per line, tab separated)
@@ -50,7 +50,7 @@ diamond makedb --in cog-20.fa --db cog-20.fa.dmnd --quiet
 # How it works:
 1. COG2020 module uses Blast+/Diamond to get the best hits of query genes in the database 
    with users defined e-value cutoff (default 0.001).
-2. The TotalDepth of a COG is calculated by summing up the depth of all genes assigned to it.
+2. The TotalDepth of a COG id/category is obtained by summing up the depth of all genes assigned to it.
 3. The percentage of GeneNumber/TotalDepth of genes assigned to a COG is calculated by dividing them 
    by the total number/depth of genes with COG assignment (default) or all query genes in a file (if "-pct_by_all" specified). 
 

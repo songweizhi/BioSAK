@@ -1,20 +1,14 @@
-1.37.14
-- bug fixing
+1.38.13
+- fix bug
 
-1.37.9
-- bug fixing
+1.38.0
+- new module added: fa2tree
 
 1.37.0
 - new module added: slice_seq
 
-1.36.1
-- bug fixing
-
 1.36.0
 - new module added: BLCA_op_parser
-
-1.35.1
-- bug fixing
 
 1.35.0
 - new module added: GTDB_16S
@@ -22,20 +16,11 @@
 1.34.0
 - new module added: usearch_uc
 
-1.33.6
-- bug fixing
-
 1.33.0
 - new module added: sam2bam
 
-1.32.2
-- bug fixing
-
 1.32.0
 - new module added: COG2020
-
-1.31.6
-- bug fixing
 
 1.31.0
 - new module added: VisGeneFlk
@@ -43,74 +28,41 @@
 1.30.0
 - new module added: reads2bam
 
-1.29.2
-- bug fixing
-
 1.29.0
 - new module added: js_cmds
 
 1.28.0
 - new module added: MeanMappingDepth
 
-1.27.2
-- bug fixing
-
 1.27.0
 - new module added: SubsetAlnCols
-
-1.26.1
-- bug fixing
 
 1.26.0
 - new module added: OneLineAln
 
-1.25.4
-- bug fixing
-
 1.25.0
 - new module added: link_16S_MAG
-
-1.24.4
-- bug fixing
 
 1.24.0
 - rename_reads_for_Reago
 
-1.23.8
-- bug fixing
-
 1.23.0
 - new module added: plot_sam_depth
-
-1.22.14
-- bug fixing
 
 1.22.0
 - new module added: iTOL
 
-1.21.4
-- bug fixing
-
 1.21.0
 - new module added: SILVA_for_BLCA and GTDB_for_BLCA
 
-1.20.23
-- bug fixing
-
 1.20.0
 - new module added: NetEnzymes
-
-1.19.8
-- bug fixing
 
 1.19.0
 - new module added: get_gene_depth
 
 1.18.9
 - supports gene depth info for COG2014, KEGG and dbCAN annotation
-
-1.17.23
-- bug fixing
 
 1.17.0
 - new module added: dbCAN

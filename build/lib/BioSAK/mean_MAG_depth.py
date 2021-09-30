@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import glob
 import argparse
@@ -56,10 +58,10 @@ def get_bin_abundance(args):
     ctg_len_dict = {}
     ctg_depth_dict = {}
     for each_line in open(metabat_depth_file):
-        if not each_line.startswith('contigName	contigLen	totalAvgDepth'):
+        if not each_line.startswith('contigName	contigLen'):
             each_line_split = each_line.strip().split('\t')
             ctg_id = each_line_split[0]
-            ctg_len = int(each_line_split[1])
+            ctg_len = float(each_line_split[1])
             ctg_depth = float(each_line_split[2])
             ctg_len_dict[ctg_id] = ctg_len
             ctg_depth_dict[ctg_id] = ctg_depth
@@ -69,6 +71,7 @@ def get_bin_abundance(args):
 
     gnm_mean_depth_dict = {}
     gnm_mean_depth_file_handle = open(output_file, 'w')
+    gnm_mean_depth_file_handle.write('MAG\tLength(bp)\tDepth\n')
     for genome in file_list:
         pwd_genome = '%s/%s' % (bin_folder, genome)
         gnm_total_len = 0

@@ -88,7 +88,7 @@ def rename_seq(args):
     if os.path.isfile(seq_file_in) is True:
         ctg_file_path, ctg_file_basename, ctg_file_ext = sep_path_basename_ext(seq_file_in)
         seq_file_out = '%s/%s_renamed%s' % (ctg_file_path, ctg_file_basename, ctg_file_ext)
-        if os.path.isfile(seq_file_in) is True:
+        if os.path.isfile(seq_file_out) is True:
             print('Output file detected, program exited: %s' % seq_file_out)
             exit()
         else:

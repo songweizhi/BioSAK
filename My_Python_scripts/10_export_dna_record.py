@@ -7,6 +7,11 @@ from Bio.SeqRecord import SeqRecord
 # put sequence in single line
 # SeqIO.write(seq_record, output_handle, 'fasta-2line')
 
+'''
+Turn a SeqRecord into a two-line FASTA formated string.
+This is used internally by the SeqRecord’s .format(“fasta-2line”) method and by the SeqIO.write(…, …, “fasta-2line”) function.
+'''
+
 
 def export_dna_record(gene_seq, gene_id, gene_description, output_handle):
     seq_object = Seq(gene_seq, IUPAC.unambiguous_dna)
