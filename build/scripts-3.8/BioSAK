@@ -456,12 +456,13 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'Reads_simulator':
         from BioSAK import Reads_simulator
         Reads_simulator_parser = subparsers.add_parser('Reads_simulator', description='Simulate NGS reads', usage=Reads_simulator.Reads_simulator_usage)
-        Reads_simulator_parser.add_argument('-p',     required=True,           help='output prefix')
-        Reads_simulator_parser.add_argument('-r',     required=True,           help='reference genome')
-        Reads_simulator_parser.add_argument('-n',     required=True, type=int, help='number of read pairs to simulate ')
-        Reads_simulator_parser.add_argument('-l',     required=True, type=int, help='read length')
-        Reads_simulator_parser.add_argument('-i',     required=True, type=int, help='insert size')
-        Reads_simulator_parser.add_argument('-split', action="store_true",     help='Export forward and reverse reads to separate files')
+        Reads_simulator_parser.add_argument('-p',     required=True,                            help='output prefix')
+        Reads_simulator_parser.add_argument('-r',     required=True,                            help='reference genome')
+        Reads_simulator_parser.add_argument('-n',     required=False, type=int,   default=None, help='number of read pairs to simulate')
+        Reads_simulator_parser.add_argument('-d',     required=False, type=float, default=None, help='desired read depth (X)')
+        Reads_simulator_parser.add_argument('-l',     required=True,  type=int,                 help='read length (bp)')
+        Reads_simulator_parser.add_argument('-i',     required=True,  type=int,                 help='insert size (bp)')
+        Reads_simulator_parser.add_argument('-split', action="store_true",                      help='Export forward and reverse reads to separate files')
         args = vars(parser.parse_args())
         Reads_simulator.Reads_simulator(args)
 
