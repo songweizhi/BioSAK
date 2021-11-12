@@ -10,8 +10,11 @@ from Bio.Seq import Seq
 Reads_simulator_usage = '''
 ===================== Reads_simulator example commands =====================
 
-BioSAK Reads_simulator -p Test -r ref.fa -l 130 -i 300 -split -n 100000
-BioSAK Reads_simulator -p Test -r ref.fa -l 130 -i 300 -split -d 50
+# simulate 100000 pairs of reads from ref.fa
+BioSAK Reads_simulator -p Test -r ref.fa -l 250 -i 300 -split -n 100000
+
+# simulate reads to a depth of 50X
+BioSAK Reads_simulator -p Test -r ref.fa -l 250 -i 300 -split -d 50
 
 ============================================================================
 '''

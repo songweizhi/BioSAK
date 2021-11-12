@@ -319,6 +319,9 @@ My_R_scripts/.DS_Store
 My_R_scripts/.Rhistory
 My_R_scripts/Learning_R.R
 My_R_scripts/README.md
+My_R_scripts/coloring_rarefaction_curves.R
+My_R_scripts/coloring_rarefaction_curves.png
+My_R_scripts/coloring_rarefaction_curves_otu_table.txt
 My_R_scripts/demo.R
 My_R_scripts/demo_01_data_structure.R
 My_R_scripts/demo_02_list_manipulation.R
