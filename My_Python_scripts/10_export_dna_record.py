@@ -50,3 +50,13 @@ def export_dna_record(gene_seq, gene_id, gene_description, output_handle):
     fasta_out.write_header()
     fasta_out.write_record(seq_record)
     fasta_out.write_footer()
+    
+    
+
+for record in SeqIO.parse('gbk_file', "genbank"):
+    taxonomy_list = record.annotations['taxonomy']
+    taxonomy_str = ','.join(taxonomy_list)
+
+    
+    
+    

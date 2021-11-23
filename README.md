@@ -58,56 +58,62 @@ Installation
 BioSAK modules
 ---
 
+                 ...::: BioSAK v1.38.17 :::...
+
     Annotation modules
-       Prodigal               ->   Wrapper for running Prodigal
-       CheckM                 ->   Wrapper for running CheckM
-       CheckM_op_parser       ->   Parse (combined) CheckM outputs
-       COG2020                ->   COG annotation (v2020, by blastp/diamond)
-       KEGG                   ->   KEGG annotation
-       dbCAN                  ->   CAZy annotation with dbCAN
-       NetEnzymes             ->   Get network of enzymes (based on MetaCyc, under development)   
-       Enrichment             ->   Gene set enrichment analysis (to be added)
+       Prodigal                ->   Wrapper for running Prodigal
+       CheckM                  ->   Wrapper for running CheckM
+       CheckM_op_parser        ->   Parse (combined) CheckM outputs
+       COG2020                 ->   COG annotation (v2020, by blastp/diamond)
+       arCOG                   ->   to be added
+       KEGG                    ->   KEGG annotation
+       dbCAN                   ->   CAZy annotation with dbCAN
+       NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
+       Enrichment              ->   Gene set enrichment analysis (to be added)
+
+    16S related
+       top_16S_hits            ->   Classify 16S by top-blast-hits approach
+       SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
+       GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
+       BLCA_op_parser          ->   Make the BLCA outputs bit easier to read
     
-    16S related modules
-       GTDB_16S               ->   Classify 16S against GTDB via best-hit approach
-       SILVA_for_BLCA         ->   Prepare BLCA-compatible SILVA SSU database
-       GTDB_for_BLCA          ->   Prepare BLCA-compatible GTDB SSU database
-       
     Sequence manipulator
-       gbk2fa                 ->   gbk to fasta
-       gbk2ffn                ->   gbk to ffn
-       gbk2faa                ->   gbk to faa
-       ffn2faa                ->   ffn to faa
-       get_rc                 ->   Get reverse complement sequence
-       rename_seq             ->   Rename sequences in a file
-       select_seq             ->   Select sequences by their id
-       get_gene_depth         ->   Get gene depth by contig depth
-       convert_align_format   ->   Convert alignment format
-       OneLineAln             ->   One-line fasta format alignments
-       SubsetAlnCols          ->   Subset MSA by column
-       rename_reads_for_Reago ->   Rename paired reads for Reago
-       MeanMappingDepth       ->   Get mean mapping depth 
+       gbk2fa                  ->   gbk to fasta
+       gbk2ffn                 ->   gbk to ffn
+       gbk2faa                 ->   gbk to faa
+       ffn2faa                 ->   ffn to faa
+       get_rc                  ->   Get reverse complement sequence
+       slice_seq               ->   Get specified region of a sequence
+       rename_seq              ->   Rename sequences in a file
+       select_seq              ->   Select sequences by their ids
+       get_gene_depth          ->   Get gene depth by contig depth
+       convert_align_format    ->   Convert alignment format
+       OneLineAln              ->   One-line fasta format alignments
+       SubsetAlnCols           ->   Subset MSA by column
+       rename_reads_for_Reago  ->   Rename paired reads for Reago
+       MeanMappingDepth        ->   Get mean mapping depth 
 
     Tree manipulator
-       get_SCG_tree           ->   Construct SCG tree for query genomes
-       label_tree             ->   Add labels to tree leaves
-       subset_tree            ->   Subset tree
-       iTOL                   ->   Prepare iTOL-compatible files for tree visualization
-         
+       fa2tree                 ->   fa2tree
+       get_SCG_tree            ->   Construct SCG tree for query genomes
+       label_tree              ->   Add labels to tree leaves
+       subset_tree             ->   Subset tree
+       iTOL                    ->   Prepare iTOL-compatible files for tree visualization
+                      
     Other modules
-       split_folder           ->   Split folder
-       SankeyTaxon            ->   Plot taxonomic classification with Sankey plot
-       BestHit                ->   Keep Best Hits only (blast outfmt 6)
-       get_bin_abundance      ->   Get bin abundance
-       sra_reads_downloader   ->   Download SRA read files
-       dwnld_GenBank_genome   ->   Batch download GenBank genomes
-       get_Pfam_hmms          ->   Get Pfam profiles by id
-       reads_simulator        ->   Simulate NGS reads
-       plot_sam_depth         ->   Plot sam depth
-       reads2bam              ->   mapping and sorting
-       sam2bam                ->   sam to bam with samtools
-       VisGeneFlk             ->   visualize flanking regions of specified gene
-       usearch_uc             ->   Usearch uc file parser
+       split_folder            ->   Split folder
+       js_cmds                 ->   Commands to job scripts
+       SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
+       BestHit                 ->   Keep Best Hits only (blast outfmt 6)
+       get_bin_abundance       ->   Get bin abundance
+       dwnld_GenBank_genome    ->   Batch download GenBank genomes
+       get_Pfam_hmms           ->   Get Pfam profiles by id
+       Reads_simulator         ->   Simulate NGS reads
+       plot_sam_depth          ->   Plot sam depth
+       reads2bam               ->   mapping and sorting
+       sam2bam                 ->   sam to bam with samtools
+       VisGeneFlk              ->   visualize gene flanking regions
+       usearch_uc              ->   Usearch uc file parser
 
 Get help
 ---
