@@ -1,5 +1,14 @@
-1.38.17
-- fix bug
+1.40.2
+- fixed bugs
+
+1.40.0
+- new module added: get_MAG_size
+
+1.39.3
+- fixed bugs
+
+1.39.0
+- new module added: Plot_MAG
 
 1.38.0
 - new module added: fa2tree
