@@ -43,12 +43,17 @@ def print_main_help():
        NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
        Enrichment              ->   Gene set enrichment analysis (to be added)
 
-    16S related
+    16S rRNA related
        top_16S_hits            ->   Classify 16S by top-blast-hits approach
        SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
        BLCA_op_parser          ->   Make the BLCA outputs bit easier to read
     
+    Genome databases
+       get_genome_NCBI         ->   Batch download GenBank genomes
+       get_genome_GTDB         ->   Batch download GTDB reference genomes
+       get_GTDB_taxon_gnm      ->   get id of genomes from specified GTDB taxons
+   
     Sequence manipulator
        gbk2fa                  ->   gbk to fasta
        gbk2ffn                 ->   gbk to ffn
@@ -68,27 +73,29 @@ def print_main_help():
     Tree manipulator
        fa2tree                 ->   fa2tree
        get_SCG_tree            ->   Construct SCG tree for query genomes
-       label_tree              ->   Add labels to tree leaves
+       label_tree              ->   Add labels to tree leaves (does not work)
        subset_tree             ->   Subset tree
        iTOL                    ->   Prepare iTOL-compatible files for tree visualization
-                      
+    
+    Visualization
+       SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
+       VisGeneFlk              ->   visualize gene flanking regions
+       plot_sam_depth          ->   Plot sam depth
+       Plot_MAG                ->   plot MAGs, (GC vs depth)
+                 
     Other modules
        split_folder            ->   Split folder
        js_cmds                 ->   Commands to job scripts
-       SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
        BestHit                 ->   Keep Best Hits only (blast outfmt 6)
        get_bin_abundance       ->   Get bin abundance
-       dwnld_GenBank_genome    ->   Batch download GenBank genomes
+       mean_MAG_cov            ->   MAG depth based on weighted mean contig depth 
        get_Pfam_hmms           ->   Get Pfam profiles by id
        Reads_simulator         ->   Simulate NGS reads
-       plot_sam_depth          ->   Plot sam depth
        reads2bam               ->   mapping and sorting
        sam2bam                 ->   sam to bam with samtools
-       VisGeneFlk              ->   visualize gene flanking regions
        usearch_uc              ->   Usearch uc file parser
-       Plot_MAG                ->   plot MAGs, (GC vs depth)
-       get_MAG_size            ->   get_MAG_size
-
+       get_gnm_size            ->   get the total length of genome(s)
+    
     # for module-specific help info
     BioSAK dbCAN -h
     BioSAK iTOL -h
@@ -313,18 +320,39 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         get_bin_abundance.get_bin_abundance(args)
 
-    elif sys.argv[1] == 'dwnld_GenBank_genome':
-        from BioSAK import download_GenBank_genome
-        dwnld_GenBank_genome_parser = subparsers.add_parser('dwnld_GenBank_genome', description='Batch download GenBank genomes', usage=download_GenBank_genome.download_GenBank_genome_parser_usage)
+    elif sys.argv[1] == 'get_genome_NCBI':
+        from BioSAK import get_genome_NCBI
+        dwnld_GenBank_genome_parser = subparsers.add_parser('get_genome_NCBI', description='Batch download GenBank genomes', usage=get_genome_NCBI.get_genome_NCBI_parser_usage)
         dwnld_GenBank_genome_parser.add_argument('-csv',         required=True,                                     help='csv file from NCBI genome_browse')
-        dwnld_GenBank_genome_parser.add_argument('-assembly_id', required=False, default=None,                      help='assembly id (6th col in the csv file) of genomes to download')
+        dwnld_GenBank_genome_parser.add_argument('-out',         required=True,                                     help='output folder')
+        dwnld_GenBank_genome_parser.add_argument('-id',          required=False, default=None,                      help='assembly id (6th col in the csv file), one id per line')
         dwnld_GenBank_genome_parser.add_argument('-fna',         required=False, action="store_true",               help='download gna file')
         dwnld_GenBank_genome_parser.add_argument('-faa',         required=False, action="store_true",               help='download faa file')
         dwnld_GenBank_genome_parser.add_argument('-gbff',        required=False, action="store_true",               help='download gbff file')
         dwnld_GenBank_genome_parser.add_argument('-name',        required=False, action="store_true",               help='include genome name in the downloaded files')
         dwnld_GenBank_genome_parser.add_argument('-t',           required=False, default=1, type=int,               help='number of threads')
         args = vars(parser.parse_args())
-        download_GenBank_genome.download_GenBank_genome(args)
+        get_genome_NCBI.download_GenBank_genome(args)
+
+    elif sys.argv[1] == 'get_genome_GTDB':
+        from BioSAK import get_genome_GTDB
+        get_genome_GTDB_parser = subparsers.add_parser('get_genome_GTDB', description='Batch download GTDB genomes', usage=get_genome_GTDB.get_genome_GTDB_parser_usage)
+        get_genome_GTDB_parser.add_argument('-id',              required=True, help='genome id')
+        get_genome_GTDB_parser.add_argument('-path',            required=True, help='genome_paths.tsv')
+        get_genome_GTDB_parser.add_argument('-dir',             required=True, help='the folder which hold genome_paths.tsv')
+        get_genome_GTDB_parser.add_argument('-out',             required=True, help='output folder')
+        args = vars(parser.parse_args())
+        get_genome_GTDB.get_genome_GTDB(args)
+
+    elif sys.argv[1] == 'get_GTDB_taxon_gnm':
+        from BioSAK import get_GTDB_taxon_gnm
+        get_GTDB_taxon_gnm_parser = subparsers.add_parser('get_GTDB_taxon_gnm', description='get id of GTDB genomes from specified taxons', usage=get_GTDB_taxon_gnm.get_GTDB_taxon_gnm_parser_usage)
+        get_GTDB_taxon_gnm_parser.add_argument('-meta',     required=True,              help='GTDB reference genome metadata')
+        get_GTDB_taxon_gnm_parser.add_argument('-path',     required=True,              help='GTDB genome paths')
+        get_GTDB_taxon_gnm_parser.add_argument('-taxon',    required=True,              help='interested taxons, one taxon per line')
+        get_GTDB_taxon_gnm_parser.add_argument('-p',        required=False, default='', help='output prefix')
+        args = vars(parser.parse_args())
+        get_GTDB_taxon_gnm.get_GTDB_taxon_gnm(args)
 
     elif sys.argv[1] == 'convert_align_format':
         from BioSAK import format_converter
@@ -615,14 +643,23 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         plot_mag.Plot_MAG(args)
 
-    elif sys.argv[1] == 'get_MAG_size':
-        from BioSAK import get_MAG_size
-        get_MAG_size_parser = subparsers.add_parser('get_MAG_size', usage=get_MAG_size.get_MAG_size_parser_usage)
-        get_MAG_size_parser.add_argument('-i',      required=True,                          help='MAG file/folder')
-        get_MAG_size_parser.add_argument('-x',      required=False,                         help='file extension')
-        get_MAG_size_parser.add_argument('-total',  required=False, action='store_true',    help='get total size')
+    elif sys.argv[1] == 'get_gnm_size':
+        from BioSAK import get_gnm_size
+        get_gnm_size_parser = subparsers.add_parser('get_gnm_size', usage=get_gnm_size.get_gnm_size_parser_usage)
+        get_gnm_size_parser.add_argument('-i',      required=True,                          help='MAG file/folder')
+        get_gnm_size_parser.add_argument('-x',      required=False,                         help='file extension')
+        get_gnm_size_parser.add_argument('-total',  required=False, action='store_true',    help='get total size')
         args = vars(parser.parse_args())
-        get_MAG_size.get_MAG_size(args)
+        get_gnm_size.get_gnm_size(args)
+
+    elif sys.argv[1] == 'mean_MAG_cov':
+        from BioSAK import mean_MAG_cov
+        mean_MAG_cov_parser = subparsers.add_parser('mean_MAG_cov', usage=mean_MAG_cov.mean_MAG_cov_usage)
+        mean_MAG_cov_parser.add_argument('-d', required=True, help='MetaBAT produced depth file')
+        mean_MAG_cov_parser.add_argument('-b', required=True, help='bin folder')
+        mean_MAG_cov_parser.add_argument('-x', required=True, help='file extension')
+        args = vars(parser.parse_args())
+        mean_MAG_cov.mean_MAG_cov(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
@@ -643,13 +680,12 @@ upload_to_pypi_cmd = '''
 
 
 cd /Users/songweizhi/PycharmProjects/BioSAK
-rm -r build
-rm -r dist
-rm -r BioSAK.egg-info
+rm -r build dist BioSAK.egg-info
 python setup.py sdist bdist_wheel
 twine upload dist/*
 songweizhi
-shan88
+
+shan88cd -
 
 
 module load python/3.7.3

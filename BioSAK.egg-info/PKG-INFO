@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: BioSAK
-Version: 1.40.2
+Version: 1.43.3
 Summary: BioSAK
 Home-page: https://github.com/songweizhi/BioSAK
 Author: Weizhi Song
@@ -10,5 +10,5 @@ Keywords: Bioinformatics
 Platform: UNKNOWN
 License-File: LICENSE
 
- BioSAK v1.40.2 
+ BioSAK v1.43.3 
 

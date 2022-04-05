@@ -9,6 +9,8 @@ BioSAK/BioSAK_config.py
 BioSAK/COG2003.py
 BioSAK/COG2014.py
 BioSAK/COG2020.py
+BioSAK/COG_boxplot_last1row.R
+BioSAK/COG_boxplot_last2row.R
 BioSAK/CheckM.py
 BioSAK/Enrichment.py
 BioSAK/FastaSplitler_by_num.py
@@ -16,6 +18,7 @@ BioSAK/FastaSplitler_by_size.py
 BioSAK/GTDB_for_BLCA.py
 BioSAK/Gene2Ctg.py
 BioSAK/KEGG.py
+BioSAK/KEGG_boxplot_last1row.R
 BioSAK/KEGG_get_eukaryotic_kos.py
 BioSAK/MeanMappingDepth.py
 BioSAK/MetaCHIP_phylo.hmm
@@ -33,13 +36,13 @@ BioSAK/Subset_tree.py
 BioSAK/VERSION
 BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
+BioSAK/boxplot_last1row.R
 BioSAK/boxplot_matrix_COG.py
 BioSAK/boxplot_matrix_COG_backup.py
 BioSAK/boxplot_matrix_KEGG.py
 BioSAK/boxplot_matrix_dbCAN.py
 BioSAK/cdd2cog.pl
 BioSAK/dbCAN.py
-BioSAK/download_GenBank_genome.py
 BioSAK/download_GenBank_genome_subset_prokaryotes_csv.py
 BioSAK/dwnld_sra_reads.py
 BioSAK/fa2tree.py
@@ -47,7 +50,7 @@ BioSAK/format_converter.py
 BioSAK/fq2fa.py
 BioSAK/gbk_to_ffn_faa.py
 BioSAK/get_EC_from_ko_stats_D.py
-BioSAK/get_MAG_size.py
+BioSAK/get_GTDB_taxon_gnm.py
 BioSAK/get_Pfam_hmms.py
 BioSAK/get_SCG_tree.py
 BioSAK/get_TopHits_taxonomy.py
@@ -55,6 +58,9 @@ BioSAK/get_aa_composition.py
 BioSAK/get_bin_abundance.py
 BioSAK/get_gc.py
 BioSAK/get_gene_depth.py
+BioSAK/get_genome_GTDB.py
+BioSAK/get_genome_NCBI.py
+BioSAK/get_gnm_size.py
 BioSAK/get_ko_gene_seqs.py
 BioSAK/get_reads_from_sam.py
 BioSAK/get_sankey_plot.R
@@ -72,11 +78,12 @@ BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
-BioSAK/mean_MAG_depth.py
+BioSAK/mean_MAG_cov.py
 BioSAK/ncbi_dataset.py
 BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_mag.py
 BioSAK/plot_sam_depth.py
+BioSAK/plot_tree.R
 BioSAK/reads2bam.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
@@ -85,6 +92,7 @@ BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/slice_seq.py
 BioSAK/split_folder.py
+BioSAK/test.py
 BioSAK/tmp_1.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py

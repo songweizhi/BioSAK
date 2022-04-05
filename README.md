@@ -58,7 +58,7 @@ Installation
 BioSAK modules
 ---
 
-                 ...::: BioSAK v1.38.17 :::...
+                 ...::: BioSAK v1.43.2 :::...
 
     Annotation modules
        Prodigal                ->   Wrapper for running Prodigal
@@ -71,12 +71,17 @@ BioSAK modules
        NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
        Enrichment              ->   Gene set enrichment analysis (to be added)
 
-    16S related
+    16S rRNA related
        top_16S_hits            ->   Classify 16S by top-blast-hits approach
        SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
        BLCA_op_parser          ->   Make the BLCA outputs bit easier to read
     
+    Genome databases
+       get_genome_NCBI         ->   Batch download GenBank genomes
+       get_genome_GTDB         ->   Batch download GTDB reference genomes
+       get_GTDB_taxon_gnm      ->   get id of genomes from specified GTDB taxons
+   
     Sequence manipulator
        gbk2fa                  ->   gbk to fasta
        gbk2ffn                 ->   gbk to ffn
@@ -96,24 +101,28 @@ BioSAK modules
     Tree manipulator
        fa2tree                 ->   fa2tree
        get_SCG_tree            ->   Construct SCG tree for query genomes
-       label_tree              ->   Add labels to tree leaves
+       label_tree              ->   Add labels to tree leaves (does not work)
        subset_tree             ->   Subset tree
        iTOL                    ->   Prepare iTOL-compatible files for tree visualization
-                      
+    
+    Visualization
+       SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
+       VisGeneFlk              ->   visualize gene flanking regions
+       plot_sam_depth          ->   Plot sam depth
+       Plot_MAG                ->   plot MAGs, (GC vs depth)
+                 
     Other modules
        split_folder            ->   Split folder
        js_cmds                 ->   Commands to job scripts
-       SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
        BestHit                 ->   Keep Best Hits only (blast outfmt 6)
        get_bin_abundance       ->   Get bin abundance
-       dwnld_GenBank_genome    ->   Batch download GenBank genomes
+       mean_MAG_cov            ->   MAG depth based on weighted mean contig depth 
        get_Pfam_hmms           ->   Get Pfam profiles by id
        Reads_simulator         ->   Simulate NGS reads
-       plot_sam_depth          ->   Plot sam depth
        reads2bam               ->   mapping and sorting
        sam2bam                 ->   sam to bam with samtools
-       VisGeneFlk              ->   visualize gene flanking regions
        usearch_uc              ->   Usearch uc file parser
+       get_gnm_size            ->   get the total length of genome(s)
 
 Get help
 ---

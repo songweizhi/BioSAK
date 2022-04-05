@@ -1,11 +1,9 @@
 #!/usr/bin/env python
-from __future__ import division
 import os
 import argparse
 from Bio import SeqIO
 from datetime import datetime
 from BioSAK.global_functions import time_format
-from BioSAK.global_functions import sep_path_basename_ext
 
 
 select_seq_usage = '''

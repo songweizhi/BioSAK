@@ -1,4 +1,19 @@
-1.40.2
+1.43.3
+- fixed bugs
+
+1.43.0
+- new module added: get_genome_GTDB
+
+1.42.0
+- new module added: get_GTDB_taxon_gnm
+
+1.41.1
+- renamed dwnld_GenBank_genome to get_genome_NCBI
+
+1.41.0
+- new module added: mean_MAG_cov
+
+1.40.5
 - fixed bugs
 
 1.40.0
