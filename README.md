@@ -57,19 +57,18 @@ Installation
 
 BioSAK modules
 ---
-
-                 ...::: BioSAK v1.43.2 :::...
+   
+                 ...::: BioSAK v1.48.0 :::...
 
     Annotation modules
        Prodigal                ->   Wrapper for running Prodigal
+       Prokka                  ->   Wrapper for running Prokka
        CheckM                  ->   Wrapper for running CheckM
        CheckM_op_parser        ->   Parse (combined) CheckM outputs
        COG2020                 ->   COG annotation (v2020, by blastp/diamond)
        arCOG                   ->   to be added
        KEGG                    ->   KEGG annotation
        dbCAN                   ->   CAZy annotation with dbCAN
-       NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
-       Enrichment              ->   Gene set enrichment analysis (to be added)
 
     16S rRNA related
        top_16S_hits            ->   Classify 16S by top-blast-hits approach
@@ -77,11 +76,6 @@ BioSAK modules
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
        BLCA_op_parser          ->   Make the BLCA outputs bit easier to read
     
-    Genome databases
-       get_genome_NCBI         ->   Batch download GenBank genomes
-       get_genome_GTDB         ->   Batch download GTDB reference genomes
-       get_GTDB_taxon_gnm      ->   get id of genomes from specified GTDB taxons
-   
     Sequence manipulator
        gbk2fa                  ->   gbk to fasta
        gbk2ffn                 ->   gbk to ffn
@@ -91,24 +85,35 @@ BioSAK modules
        slice_seq               ->   Get specified region of a sequence
        rename_seq              ->   Rename sequences in a file
        select_seq              ->   Select sequences by their ids
+       split_fasta             ->   Split a fasta file into multiple files
        get_gene_depth          ->   Get gene depth by contig depth
        convert_align_format    ->   Convert alignment format
        OneLineAln              ->   One-line fasta format alignments
        SubsetAlnCols           ->   Subset MSA by column
        rename_reads_for_Reago  ->   Rename paired reads for Reago
        MeanMappingDepth        ->   Get mean mapping depth 
+    
+    SAM and BAM
+       plot_sam_depth          ->   Plot SAM depth
+       reads2bam               ->   Mapping and sorting
+       sam2bam                 ->   Sam to BAM with samtools
+       split_sam               ->   Split SAM/BAM file by reference
 
     Tree manipulator
-       fa2tree                 ->   fa2tree
-       get_SCG_tree            ->   Construct SCG tree for query genomes
+       GTDB_tree_r207          ->   Infer GTDB (r207) archaeal/bacterial tree
        label_tree              ->   Add labels to tree leaves (does not work)
        subset_tree             ->   Subset tree
        iTOL                    ->   Prepare iTOL-compatible files for tree visualization
+       compare_trees           ->   Compare trees with mantel test
     
+    Genome databases
+       get_GTDB_taxon_gnm      ->   Get id of all genomes from specified GTDB taxons
+       get_genome_GTDB         ->   Batch download GTDB representative genomes
+       get_genome_NCBI         ->   Batch download GenBank genomes
+   
     Visualization
        SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
-       VisGeneFlk              ->   visualize gene flanking regions
-       plot_sam_depth          ->   Plot sam depth
+       VisGeneFlk              ->   Visualize gene flanking regions
        Plot_MAG                ->   plot MAGs, (GC vs depth)
                  
     Other modules
@@ -119,20 +124,18 @@ BioSAK modules
        mean_MAG_cov            ->   MAG depth based on weighted mean contig depth 
        get_Pfam_hmms           ->   Get Pfam profiles by id
        Reads_simulator         ->   Simulate NGS reads
-       reads2bam               ->   mapping and sorting
-       sam2bam                 ->   sam to bam with samtools
        usearch_uc              ->   Usearch uc file parser
-       get_gnm_size            ->   get the total length of genome(s)
+       get_gnm_size            ->   Get the total length of genome(s)
+       exe_cmds                ->   Execute commands in a file (one per line)
 
 Get help
 ---
 
-1. Example usage for most of BioSAK modules can be found from their specific help information, e.g.
+1. Example usage for most of BioSAK modules can be found from their own help information, e.g.
         
        BioSAK COG2020 -h
        BioSAK iTOL -h 
-       BioSAK VisGeneFlk -h 
 
-1. Several short tutorials for specific modules of BioSAK can also be found here:
+1. Short tutorials for some BioSAK modules can be found here:
 
     https://github.com/songweizhi/BioSAK/tree/master/BioSAK_tutorial
