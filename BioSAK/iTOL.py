@@ -14,12 +14,13 @@ BioSAK iTOL -ColorStrip -lg MagTaxon.txt -lt Phylum -out ColorStrip_taxon.txt
 BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -out ColorRange_taxon.txt
 BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -out SimpleBar_size.txt
 BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -out Heatmap_abundance.txt
+BioSAK iTOL -ExternalShape -lm identity_matrix.txt -lt Identity -out ExternalShape_identity.txt -scale 25-50-75-100
 
 # Leaf-to-Group file format (-lg, tab separated, no header)
 genome_1	Bacteria
 genome_2	Archaea
 
-# Group-to-Color file format (-gc, tab separated, no header)
+# Group-to-Color and Column-to-Color file format (-gc and -cc, tab separated, no header)
 Bacteria	#CCCC00
 Archaea	#9999FF
 
@@ -75,6 +76,32 @@ def get_color_list(color_num):
     return color_list_to_return_sorted
 
 
+def scale_str_to_size_list(scale_str):
+
+    scale_list = scale_str.split('-')
+    scale_list = [float(i) for i in scale_list]
+
+    shape_size_list = []
+    if scale_list[0] == 0:
+        shape_size_list = [0]
+        for each_value in scale_list[1:-1]:
+            current_size = each_value/scale_list[-1]
+            shape_size_list.append(current_size)
+        shape_size_list.append(1)
+
+    if scale_list[0] != 0:
+        shape_size_list = [0.1]
+        interval_num = len(scale_list) - 1
+        interval_value = (1 - 0.1)/interval_num
+        n = 1
+        for each_value in scale_list[1:-1]:
+            shape_size_list.append(interval_value * n + 0.1)
+            n += 1
+        shape_size_list.append(1)
+
+    return shape_size_list
+
+
 def iTOL(args):
 
     # read in arguments
@@ -82,8 +109,10 @@ def iTOL(args):
     ColorRange      = args['ColorRange']
     SimpleBar       = args['SimpleBar']
     Heatmap         = args['Heatmap']
+    ExternalShape   = args['ExternalShape']
     LeafGroup       = args['lg']
     GroupColor      = args['gc']
+    ColumnColor     = args['cc']
     LeafValue       = args['lv']
     LeafMatrix      = args['lm']
     scale_str       = args['scale']
@@ -107,18 +136,22 @@ def iTOL(args):
     # Heatmap
     Heatmap_STRIP_WIDTH         = 60
 
+    # ExternalShape
+
     # check the number of specified file type
     True_num = 0
-    for file_type in [ColorStrip, ColorRange, SimpleBar, Heatmap]:
+    for file_type in [ColorStrip, ColorRange, SimpleBar, Heatmap, ExternalShape]:
         if file_type is True:
             True_num += 1
 
     if True_num == 0:
-        print('Please specify one file type, choose from -ColorStrip, -ColorRange, -SimpleBar or -Heatmap')
+        print('Please specify one file type, choose from -ColorStrip, -ColorRange, -SimpleBar, -Heatmap or -ExternalShape')
         exit()
     if True_num > 1:
-        print('Please specify one file type ONLY, choose from -ColorStrip, -ColorRange, -SimpleBar or -Heatmap')
+        print('Please specify one file type ONLY, choose from -ColorStrip, -ColorRange, -SimpleBar, -Heatmap or -ExternalShape')
         exit()
+
+    ####################################################################################################################
 
     # Prepare ColorStrip and ColorRange file
     if (ColorStrip is True) or (ColorRange is True):
@@ -137,9 +170,28 @@ def iTOL(args):
             color_list = get_color_list(len(Group_list))
             Group_to_Color_dict = dict(zip(Group_list, color_list))
         else:
+            # get groups with provided color
+            Group_to_provided_Color_dict = dict()
+            group_with_provided_color_list = []
             for each_group in open(GroupColor):
                 each_group_split = each_group.strip().split('\t')
-                Group_to_Color_dict[each_group_split[0]] = each_group_split[1]
+                Group_to_provided_Color_dict[each_group_split[0]] = each_group_split[1]
+                group_with_provided_color_list.append(each_group_split[0])
+
+            # assign colors to the rest groups
+            group_without_color_list = []
+            for each_group in Group_list:
+                if each_group not in group_with_provided_color_list:
+                    group_without_color_list.append(each_group)
+            if len(group_without_color_list) > 0:
+                color_list_unprovided = get_color_list(len(group_without_color_list))
+                Group_to_Color_dict_unprovided = dict(zip(group_without_color_list, color_list_unprovided))
+                for each_group in Group_to_Color_dict_unprovided:
+                    Group_to_Color_dict[each_group] = Group_to_Color_dict_unprovided[each_group]
+
+            # combine two dict
+            for each_group in Group_to_provided_Color_dict:
+                Group_to_Color_dict[each_group] = Group_to_provided_Color_dict[each_group]
 
         group_list = [i for i in Group_to_Color_dict]
         color_list = [Group_to_Color_dict[i] for i in group_list]
@@ -182,6 +234,7 @@ def iTOL(args):
 
         FileOut_handle.close()
 
+    ####################################################################################################################
 
     # Prepare SimpleBar file
     if SimpleBar is True:
@@ -239,6 +292,8 @@ def iTOL(args):
 
         SimpleBar_FileOut_handle.close()
 
+    ####################################################################################################################
+
     # Prepare Heatmap file
     if Heatmap is True:
 
@@ -289,24 +344,116 @@ def iTOL(args):
 
         Heatmap_FileOut_handle.close()
 
+    ####################################################################################################################
+
+    # Prepare ExternalShape file
+    if ExternalShape is True:
+
+        # read in leaf matrix into dict
+        n = 0
+        col_name_list = []
+        leaf_matrix_dict = {}
+        for leaf_matrix in open(LeafMatrix):
+            leaf_matrix_split = leaf_matrix.strip().split('\t')
+            if n == 0:
+                col_name_list = leaf_matrix_split[1:]
+            else:
+                leaf_matrix_dict[leaf_matrix_split[0]] = leaf_matrix_split[1:]
+            n += 1
+
+        Column_to_Color_dict = {}
+        if ColumnColor is not None:
+            for each_col in open(ColumnColor):
+                each_col_split = each_col.strip().split('\t')
+                Column_to_Color_dict[each_col_split[0]] = each_col_split[1]
+
+        # check if all columns in data matrix are in Column_to_Color_dict
+        if ColumnColor is not None:
+            unfound_cols = []
+            for each_col_header in col_name_list:
+                if each_col_header not in Column_to_Color_dict:
+                    unfound_cols.append(each_col_header)
+            if len(unfound_cols) > 0:
+                print('Color code for the following columns are not provided, program exited!')
+                print(','.join(unfound_cols))
+                exit()
+
+        ExternalShape_FileOut_handle = open(FileOut, 'w')
+
+        # write out header
+        ExternalShape_FileOut_handle.write('DATASET_EXTERNALSHAPE\n')
+        ExternalShape_FileOut_handle.write('# Reference https://itol.embl.de/help/dataset_external_shapes_template.txt\n')
+        ExternalShape_FileOut_handle.write('\nSEPARATOR TAB\n')
+
+        # define scale here
+        if scale_str is None:
+            print('Please provide scale values for ExternalShapes, e.g., 25-50-75-100, 2-4-6-8-10')
+            exit()
+
+        scale_list = scale_str.split('-')
+        LEGEND_SHAPES_list = ['2'] * len(scale_list)
+        LEGEND_COLORS_list = ['grey'] * len(scale_list)
+        SHAPE_SCALES_list = scale_str_to_size_list(scale_str)
+
+        ExternalShape_FileOut_handle.write('LEGEND_TITLE\t%s\n' % LegendTitle)
+        ExternalShape_FileOut_handle.write('LEGEND_SHAPES\t%s\n' % '\t'.join(LEGEND_SHAPES_list))
+        ExternalShape_FileOut_handle.write('LEGEND_COLORS\t%s\n' % '\t'.join(LEGEND_COLORS_list))
+        ExternalShape_FileOut_handle.write('LEGEND_LABELS\t%s\n' % '\t'.join(scale_list))
+        ExternalShape_FileOut_handle.write('LEGEND_SHAPE_SCALES\t%s\n' % '\t'.join(str(i) for i in SHAPE_SCALES_list))
+
+        # write out ExternalShape attributes
+        ExternalShape_FileOut_handle.write('\n# customize attributes here\n')
+        ExternalShape_FileOut_handle.write('VERTICAL_GRID\t0\n')
+        ExternalShape_FileOut_handle.write('HORIZONTAL_GRID\t0\n')
+        ExternalShape_FileOut_handle.write('SHAPE_TYPE\t2\n')
+        ExternalShape_FileOut_handle.write('COLOR_FILL\t1\n')
+        ExternalShape_FileOut_handle.write('SHAPE_SPACING\t1\n')
+        ExternalShape_FileOut_handle.write('SHOW_LABELS\t0\n')
+        ExternalShape_FileOut_handle.write('SHOW_VALUES\t0\n')
+        ExternalShape_FileOut_handle.write('DASHED_LINES\t0\n')
+
+        if LegendTitle is None:
+            ExternalShape_FileOut_handle.write('DATASET_LABEL\tExternalShape\n')
+        else:
+            ExternalShape_FileOut_handle.write('DATASET_LABEL\t%s\n' % LegendTitle)
+
+        # write column header/color information
+        ExternalShape_FileOut_handle.write('\n# customize column header/color here\n')
+        ExternalShape_FileOut_handle.write('FIELD_LABELS\t%s\n' % '\t'.join(col_name_list))
+
+        color_list = get_color_list(len(col_name_list))
+        random.shuffle(color_list)
+        if ColumnColor is not None:
+            color_list = [Column_to_Color_dict[i] for i in col_name_list]
+        ExternalShape_FileOut_handle.write('FIELD_COLORS\t%s\n' % '\t'.join(color_list))
+
+        # write out data info
+        ExternalShape_FileOut_handle.write('\n# Provide data here\n')
+        ExternalShape_FileOut_handle.write('DATA\n')
+        for leaf in leaf_matrix_dict:
+            ExternalShape_FileOut_handle.write('%s\t%s\n' % (leaf, '\t'.join(leaf_matrix_dict[leaf])))
+
+        ExternalShape_FileOut_handle.close()
+
+    ####################################################################################################################
+
 
 if __name__ == '__main__':
 
     # initialize the options parser
     parser = argparse.ArgumentParser()
-
-    parser.add_argument('-ColorStrip',  required=False, action='store_true',   help='ColorStrip')
-    parser.add_argument('-ColorRange',  required=False, action='store_true',   help='ColorRange')
-    parser.add_argument('-SimpleBar',   required=False, action='store_true',   help='SimpleBar')
-    parser.add_argument('-Heatmap',     required=False, action='store_true',   help='Heatmap')
-    parser.add_argument('-lg',          required=False, default=None,          help='Leaf Group')
-    parser.add_argument('-gc',          required=False, default=None,          help='Specify Group Color (optional)')
-    parser.add_argument('-lv',          required=False, default=None,          help='Leaf Value')
-    parser.add_argument('-lm',          required=False, default=None,          help='Leaf Matrix')
-    parser.add_argument('-scale',       required=False, default=None,          help='Scale Values, in format 0-3-6-9')
-    parser.add_argument('-lt',          required=False, default=None,          help='Legend Title')
-    parser.add_argument('-out',         required=True,                         help='Output filename')
-
+    parser.add_argument('-ColorStrip',      required=False, action='store_true',   help='ColorStrip')
+    parser.add_argument('-ColorRange',      required=False, action='store_true',   help='ColorRange')
+    parser.add_argument('-SimpleBar',       required=False, action='store_true',   help='SimpleBar')
+    parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
+    parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
+    parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
+    parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
+    parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
+    parser.add_argument('-lv',              required=False, default=None,          help='Leaf Value')
+    parser.add_argument('-lm',              required=False, default=None,          help='Leaf Matrix')
+    parser.add_argument('-scale',           required=False, default=None,          help='Scale Values, in format 0-3-6-9')
+    parser.add_argument('-lt',              required=False, default=None,          help='Legend Title')
+    parser.add_argument('-out',             required=True,                         help='Output filename')
     args = vars(parser.parse_args())
     iTOL(args)
-

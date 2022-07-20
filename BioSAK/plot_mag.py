@@ -13,14 +13,14 @@ from matplotlib.patches import Patch
 
 
 Plot_MAG_parser_usage = '''
-====================================== Plot_MAG example commands ======================================
+============================== Plot_MAG example commands ==============================
 
-# annotate protein sequences
-BioSAK Plot_MAG -i refined_MAGs -x fasta -d contig_depth.txt -o refined_MAGs.pdf
+BioSAK Plot_MAG -i refined_MAGs -x fasta -d contig_depth.txt 
+BioSAK Plot_MAG -i refined_MAGs -x fasta -d contig_depth.txt -sep
 
 # depth file: tab separated, no header
 
-======================================================================================================
+=======================================================================================
 '''
 
 
@@ -59,19 +59,65 @@ def get_color_list(color_num):
     return color_list_to_return_sorted
 
 
+def just_plot(num_list_depth, num_list_gc, ctg_len_list, ctg_color_list, legend_elements, output_plot):
+
+    ctg_len_list_adjusted = [l/2 for l in ctg_len_list]
+
+    num_array_depth = np.array(num_list_depth)
+    num_array_gc = np.array(num_list_gc)
+    num_array_len = np.array(ctg_len_list_adjusted)
+
+    plt.scatter(num_array_depth, num_array_gc, c=ctg_color_list, s=num_array_len, alpha=0.3, linewidths=0)
+    #plt.scatter(num_array_depth, num_array_gc, c=ctg_color_list, s=5, alpha=0.6, linewidths=0)
+    #plt.title('Number of genome: %s' % len(bin_file_list), fontsize=9)
+    plt.title('Range of sequence length (Kbp): %s - %s' % (min(ctg_len_list), max(ctg_len_list)), fontsize=8)
+    plt.xlabel("Depth (X)", size=9)
+    plt.ylabel("GC (%)", size=9)
+    plt.legend(handles=legend_elements, title='Genome', loc='upper left', prop={'size': 6}, bbox_to_anchor=(1, 1))
+    #plt.legend(handles=legend_elements, loc='lower left', prop={'size': 6}, bbox_to_anchor=(1, 0.5))
+    plt.tight_layout()
+    plt.savefig(output_plot)
+    plt.close()
+
+
+def just_plot_backup(num_list_depth, num_list_gc, ctg_len_list, ctg_color_list, legend_elements, output_plot):
+
+    num_array_depth = np.array(num_list_depth)
+    num_array_gc = np.array(num_list_gc)
+    num_array_len = np.array(ctg_len_list)
+    fig, ax = plt.subplots()
+    scatter = plt.scatter(num_array_depth, num_array_gc, c=ctg_color_list, s=num_array_len, alpha=0.3, linewidths=0)
+    plt.title('Contig length (Kbp): %s - %s' % (min(ctg_len_list), max(ctg_len_list)), fontsize=9)
+    plt.xlabel("Depth (X)", size=9)
+    plt.ylabel("GC (%)", size=9)
+
+    # add size legend
+    # kw = dict(prop="sizes", num=6, color='grey', fmt="{x:.2f}", func=lambda s: np.sqrt(s/.3)/3)
+    # handles, labels = scatter.legend_elements(**kw, alpha=0.5)
+    # legend2 = ax.legend(handles, labels, loc="upper left", title="Size", prop={'size': 5}, bbox_to_anchor=(1, 1))
+    # ax.add_artist(legend2)
+
+    # add color legend
+    plt.legend(handles=legend_elements, title='MAG', loc='upper left', prop={'size': 6}, bbox_to_anchor=(1, 0.5))
+
+    # save and close
+    plt.tight_layout()
+    plt.savefig(output_plot)
+    plt.close()
+
+
 def Plot_MAG(argument_list):
 
-    bin_folder =  argument_list['i']
-    bin_ext =     argument_list['x']
-    depth_file =  argument_list['d']
-    output_plot = argument_list['o']
+    bin_folder  = argument_list['i']
+    bin_ext     = argument_list['x']
+    depth_file  = argument_list['d']
+    plot_sep    = argument_list['sep']
 
     # read in depth info
     ctg_depth_dict = dict()
     for each_ctg in open(depth_file):
         each_ctg_split = each_ctg.strip().split('\t')
-        if not each_ctg.startswith('contigName	contigLen	totalAvgDepth	sample1	sample1-var'):
-            ctg_depth_dict[each_ctg_split[0]] = float(each_ctg_split[1])
+        ctg_depth_dict[each_ctg_split[0]] = float(each_ctg_split[1])
 
     # get mag file list
     bin_file_re = '%s/*.%s' % (bin_folder, bin_ext)
@@ -83,46 +129,74 @@ def Plot_MAG(argument_list):
 
     color_list = get_color_list(len(bin_file_list))
 
+    output_txt  = '%s_plot_GC_vs_depth.txt'     % bin_folder
+    output_plot = '%s_plot_GC_vs_depth.pdf'     % bin_folder
+    plot_folder = '%s_plot_GC_vs_depth'         % bin_folder
+    txt_folder  = '%s_plot_GC_vs_depth/data'    % bin_folder
+    if plot_sep is True:
+        os.mkdir(plot_folder)
+        os.mkdir(txt_folder)
+
+    output_txt_handle = open(output_txt, 'w')
+    output_txt_handle.write('Genome\tContig\tDepth\tGC\tLength(bp)\n')
     legend_elements = []
     num_list_depth = []
     num_list_gc = []
-    ctg_color_list = []
     ctg_len_list = []
+    ctg_color_list = []
     index = 0
     for each_mag in bin_file_list:
-        pwd_each_mag = '%s/%s' % (bin_folder, each_mag)
+
+        mag_no_ext          = each_mag[:-(len(bin_ext) + 1)]
+        pwd_each_mag        = '%s/%s'       % (bin_folder, each_mag)
+        pwd_each_mag_plot   = '%s/%s.pdf'   % (plot_folder, mag_no_ext)
+        pwd_each_mag_txt    = '%s/%s.txt'   % (txt_folder, mag_no_ext)
+
+        pwd_each_mag_txt_handle = open(pwd_each_mag_txt, 'w')
+        pwd_each_mag_txt_handle.write('Contig\tDepth\tGC\tLength(bp)\n')
+        legend_elements_sep = []
+        num_list_depth_sep = []
+        num_list_gc_sep = []
+        ctg_len_list_sep = []
+        ctg_color_list_sep = []
         for each_ctg in SeqIO.parse(pwd_each_mag, 'fasta'):
             ctg_depth = ctg_depth_dict[each_ctg.id]
             ctg_seq = str(each_ctg.seq).upper()
             ctg_gc = ((ctg_seq.count('G')) + (ctg_seq.count('C')))*100/len(ctg_seq)
+            ctg_len_kbp = len(ctg_seq) / (1024)
+            ctg_len_kbp = float("{0:.2f}".format(ctg_len_kbp))
+
             num_list_depth.append(ctg_depth)
+            num_list_depth_sep.append(ctg_depth)
+
             num_list_gc.append(ctg_gc)
+            num_list_gc_sep.append(ctg_gc)
+
+            ctg_len_list.append(ctg_len_kbp)
+            ctg_len_list_sep.append(ctg_len_kbp)
+
             ctg_color_list.append(color_list[index])
-            ctg_len_list.append(len(ctg_seq)/2000)
-        legend_elements.append(Patch(facecolor=color_list[index], edgecolor=color_list[index], label=each_mag))
+            ctg_color_list_sep.append(color_list[index])
+
+            pwd_each_mag_txt_handle.write('%s\t%s\t%s\t%s\n' % (each_ctg.id, ctg_depth, float("{0:.2f}".format(ctg_gc)), len(ctg_seq)))
+            output_txt_handle.write('%s\t%s\t%s\t%s\t%s\n'   % (mag_no_ext, each_ctg.id, ctg_depth, float("{0:.2f}".format(ctg_gc)), len(ctg_seq)))
+
+        legend_elements.append(Patch(facecolor=color_list[index], edgecolor=color_list[index], label=mag_no_ext))
+        legend_elements_sep.append(Patch(facecolor=color_list[index], edgecolor=color_list[index], label=mag_no_ext))
+        just_plot(num_list_depth_sep, num_list_gc_sep, ctg_len_list_sep, ctg_color_list_sep, legend_elements_sep, pwd_each_mag_plot)
+        pwd_each_mag_txt_handle.close()
         index += 1
 
-    num_array_depth = np.array(num_list_depth)
-    num_array_gc = np.array(num_list_gc)
-    num_array_len = np.array(ctg_len_list)
-
-    plt.scatter(num_array_depth, num_array_gc, c=ctg_color_list, s=num_array_len, alpha=0.3, linewidths=0)
-    #plt.scatter(num_array_depth, num_array_gc, c=ctg_color_list, s=5, alpha=0.6, linewidths=0)
-    plt.title('Number of genome: %s' % len(bin_file_list), fontsize=9)
-    plt.xlabel("Depth (X)", size=9)
-    plt.ylabel("GC (%)", size=9)
-    plt.legend(handles=legend_elements, loc='center left', prop={'size': 6}, bbox_to_anchor=(1, 0.5))
-    plt.tight_layout()
-    plt.savefig(output_plot)
-    plt.close()
+    just_plot(num_list_depth, num_list_gc, ctg_len_list, ctg_color_list, legend_elements, output_plot)
+    output_txt_handle.close()
 
 
 if __name__ == '__main__':
 
     Plot_MAG_parser = argparse.ArgumentParser()
-    Plot_MAG_parser.add_argument('-i',   required=True,  help='MAG folder')
-    Plot_MAG_parser.add_argument('-x',   required=True,  help='file extension')
-    Plot_MAG_parser.add_argument('-d',   required=True,  help='contig depth')
-    Plot_MAG_parser.add_argument('-o',   required=True,  help='output plot')
+    Plot_MAG_parser.add_argument('-i',   required=True,                         help='MAG folder')
+    Plot_MAG_parser.add_argument('-x',   required=True,                         help='file extension')
+    Plot_MAG_parser.add_argument('-d',   required=True,                         help='contig depth')
+    Plot_MAG_parser.add_argument('-sep', required=False, action='store_true',   help='plot MAGs separately')
     args = vars(Plot_MAG_parser.parse_args())
     Plot_MAG(args)

@@ -36,8 +36,7 @@ def get_gnm_size(argument_list):
         total_len_Mbp = total_len/(1024*1024)
         total_len_Mbp = float("{0:.2f}".format(total_len_Mbp))
 
-        print('Genome\tlength(bp)\tlength(Kbp)\tlength(Mbp)')
-        print('%s\t%s\t%s\t%s' % (mag_folder, total_len, total_len_Kbp, total_len_Mbp))
+        print('%s\t%s (bp)\t%s (Kbp)\t%s (Mbp)' % (mag_folder, total_len, total_len_Kbp, total_len_Mbp))
 
 
     elif os.path.isdir(mag_folder) is True:
@@ -73,7 +72,7 @@ def get_gnm_size(argument_list):
             get_total_size_Mbp = all_mag_size/(1024*1024)
             get_total_size_Kbp = float("{0:.2f}".format(get_total_size_Kbp))
             get_total_size_Mbp = float("{0:.2f}".format(get_total_size_Mbp))
-            print('Number of genome: %s, total size: %s bp, %s Kbp, %s Mbp' % (len(mag_file_list), all_mag_size, get_total_size_Kbp, get_total_size_Mbp))
+            print('Folder: %s, Number of genome: %s, total size: %s (bp)\t%s (Kbp)\t%s (Mbp)' % (mag_folder, len(mag_file_list), all_mag_size, get_total_size_Kbp, get_total_size_Mbp))
 
 
 if __name__ == '__main__':

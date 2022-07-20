@@ -9,10 +9,12 @@ import matplotlib.pyplot as plt
 plot_sam_depth_usage = '''
 ================================== plot_sam_depth example commands ==================================
 
+BioSAK plot_sam_depth -r ref.fa -d 12D9.bam.depth
+BioSAK plot_sam_depth -r ref.fa -d 12D9.bam.depth -i contig_01 -s 100 -e 900 -k 300 -l 500,550,600
+
 # get depth file 
-samtools depth 12D9.bam > 12D9.depth
-BioSAK plot_sam_depth -r ref.fa -d 12D9.depth
-BioSAK plot_sam_depth -r ref.fa -d 12D9.depth -i contig_01 -s 100 -e 900 -k 1 -l 500,550,600
+module load samtools/1.15
+samtools depth 12D9.bam > 12D9.bam.depth
 
 =====================================================================================================
 '''
@@ -121,7 +123,8 @@ def plot_sam(depth_file, seq_to_plot, start_pos, end_pos, bps_to_marker, plot_fi
     #print('Calculating k-mer means')
     y = take_kmer_mean(y, k_mer)
 
-    fig = plt.figure(figsize=(plot_width, plot_height), dpi=100)
+    cm = 1/2.54
+    fig = plt.figure(figsize=(plot_width*cm, plot_height*cm), dpi=100)
 
     # Change the color and its transparency
     plt.plot(x, y, color="skyblue", alpha=0.7, linewidth=0.7)
@@ -144,6 +147,7 @@ def plot_sam(depth_file, seq_to_plot, start_pos, end_pos, bps_to_marker, plot_fi
             plt.axvline(x=int(each_line), c='red', linewidth=0.2, linestyle='dashed')
 
     # Get plot
+    plt.tight_layout()
     plt.savefig('%s.pdf' % plot_filename, dpi=300)
     plt.close()
 
@@ -202,10 +206,7 @@ if __name__ == '__main__':
     plot_sam_depth_parser.add_argument('-e',            required=False, type=int, default=None,         help='end position to plot')
     plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth')
     plot_sam_depth_parser.add_argument('-l',            required=False, type=str, default=None,         help='position to mark')
-    plot_sam_depth_parser.add_argument('-x',            required=False, type=int, default=8,            help='plot width')
-    plot_sam_depth_parser.add_argument('-y',            required=False, type=int, default=3,            help='plot height')
-
-
+    plot_sam_depth_parser.add_argument('-x',            required=False, type=float, default=30,         help='plot width, default: 30')
+    plot_sam_depth_parser.add_argument('-y',            required=False, type=float, default=10,         help='plot height, default: 10')
     args = vars(plot_sam_depth_parser.parse_args())
-
     plot_sam_depth(args)

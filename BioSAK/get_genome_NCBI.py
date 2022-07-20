@@ -149,7 +149,7 @@ def download_GenBank_genome(args):
             if assembly_id_file is None:
                 list_for_multiple_arguments_download_worker.append([genome_record_split, output_folder, get_fna, get_faa, get_gbff, with_name])
                 genomes_in_csv.add(assembly_id)
-                genomes_in_csv_no_version.add(assembly_id.split('.'))
+                genomes_in_csv_no_version.add(assembly_id.split('.')[0])
             else:
                 if assembly_id in assembly_id_set:
                     list_for_multiple_arguments_download_worker.append([genome_record_split, output_folder, get_fna, get_faa, get_gbff, with_name])

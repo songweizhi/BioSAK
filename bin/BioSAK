@@ -34,14 +34,13 @@ def print_main_help():
 
     Annotation modules
        Prodigal                ->   Wrapper for running Prodigal
+       Prokka                  ->   Wrapper for running Prokka
        CheckM                  ->   Wrapper for running CheckM
        CheckM_op_parser        ->   Parse (combined) CheckM outputs
        COG2020                 ->   COG annotation (v2020, by blastp/diamond)
        arCOG                   ->   to be added
        KEGG                    ->   KEGG annotation
        dbCAN                   ->   CAZy annotation with dbCAN
-       NetEnzymes              ->   Get network of enzymes (based on MetaCyc, under development)   
-       Enrichment              ->   Gene set enrichment analysis (to be added)
 
     16S rRNA related
        top_16S_hits            ->   Classify 16S by top-blast-hits approach
@@ -49,11 +48,6 @@ def print_main_help():
        GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
        BLCA_op_parser          ->   Make the BLCA outputs bit easier to read
     
-    Genome databases
-       get_genome_NCBI         ->   Batch download GenBank genomes
-       get_genome_GTDB         ->   Batch download GTDB reference genomes
-       get_GTDB_taxon_gnm      ->   get id of genomes from specified GTDB taxons
-   
     Sequence manipulator
        gbk2fa                  ->   gbk to fasta
        gbk2ffn                 ->   gbk to ffn
@@ -63,24 +57,35 @@ def print_main_help():
        slice_seq               ->   Get specified region of a sequence
        rename_seq              ->   Rename sequences in a file
        select_seq              ->   Select sequences by their ids
+       split_fasta             ->   Split a fasta file into multiple files
        get_gene_depth          ->   Get gene depth by contig depth
        convert_align_format    ->   Convert alignment format
        OneLineAln              ->   One-line fasta format alignments
        SubsetAlnCols           ->   Subset MSA by column
        rename_reads_for_Reago  ->   Rename paired reads for Reago
        MeanMappingDepth        ->   Get mean mapping depth 
+    
+    SAM and BAM
+       plot_sam_depth          ->   Plot SAM depth
+       reads2bam               ->   Mapping and sorting
+       sam2bam                 ->   Sam to BAM with samtools
+       split_sam               ->   Split SAM/BAM file by reference
 
     Tree manipulator
-       fa2tree                 ->   fa2tree
-       get_SCG_tree            ->   Construct SCG tree for query genomes
+       GTDB_tree_r207          ->   Infer GTDB (r207) archaeal/bacterial tree
        label_tree              ->   Add labels to tree leaves (does not work)
        subset_tree             ->   Subset tree
        iTOL                    ->   Prepare iTOL-compatible files for tree visualization
+       compare_trees           ->   Compare trees with mantel test
     
+    Genome databases
+       get_GTDB_taxon_gnm      ->   Get id of all genomes from specified GTDB taxons
+       get_genome_GTDB         ->   Batch download GTDB representative genomes
+       get_genome_NCBI         ->   Batch download GenBank genomes
+   
     Visualization
        SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
-       VisGeneFlk              ->   visualize gene flanking regions
-       plot_sam_depth          ->   Plot sam depth
+       VisGeneFlk              ->   Visualize gene flanking regions
        Plot_MAG                ->   plot MAGs, (GC vs depth)
                  
     Other modules
@@ -91,15 +96,9 @@ def print_main_help():
        mean_MAG_cov            ->   MAG depth based on weighted mean contig depth 
        get_Pfam_hmms           ->   Get Pfam profiles by id
        Reads_simulator         ->   Simulate NGS reads
-       reads2bam               ->   mapping and sorting
-       sam2bam                 ->   sam to bam with samtools
        usearch_uc              ->   Usearch uc file parser
-       get_gnm_size            ->   get the total length of genome(s)
-    
-    # for module-specific help info
-    BioSAK dbCAN -h
-    BioSAK iTOL -h
-    
+       get_gnm_size            ->   Get the total length of genome(s)
+       exe_cmds                ->   Execute commands in a file (one per line)
     ''' % version(config_dict)
 
     print(help_message)
@@ -158,7 +157,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         COG2014.COG2014(args)
 
-
     elif sys.argv[1] == 'COG2020':
         from BioSAK import COG2020
         COG2020_parser = subparsers.add_parser('COG2020', description='Wrapper for COG annotation (v2020)', usage=COG2020.COG2020_parser_usage)
@@ -173,7 +171,6 @@ if __name__ == '__main__':
         COG2020_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
         args = vars(parser.parse_args())
         COG2020.COG2020(args)
-
 
     elif sys.argv[1] == 'KEGG':
         from BioSAK import KEGG
@@ -277,17 +274,19 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'iTOL':
         from BioSAK import iTOL
         iTOL_parser = subparsers.add_parser('iTOL', description='Plot tree with iTOL', usage=iTOL.iTOL_usage)
-        iTOL_parser.add_argument('-ColorStrip',             required=False, action='store_true',            help='ColorStrip')
-        iTOL_parser.add_argument('-ColorRange',             required=False, action='store_true',            help='ColorRange')
-        iTOL_parser.add_argument('-SimpleBar',              required=False, action='store_true',            help='SimpleBar')
-        iTOL_parser.add_argument('-Heatmap',                required=False, action='store_true',            help='Heatmap')
-        iTOL_parser.add_argument('-lg',                     required=False, default=None,                   help='Leaf Group')
-        iTOL_parser.add_argument('-gc',                     required=False, default=None,                   help='Specify Group Color (optional)')
-        iTOL_parser.add_argument('-lv',                     required=False, default=None,                   help='Leaf Value')
-        iTOL_parser.add_argument('-lm',                     required=False, default=None,                   help='Leaf Matrix')
-        iTOL_parser.add_argument('-scale',                  required=False, default=None,                   help='Scale Values, in format 0-3-6-9')
-        iTOL_parser.add_argument('-lt',                     required=False, default=None,                   help='Legend Title')
-        iTOL_parser.add_argument('-out',                    required=True,                                  help='Output filename')
+        iTOL_parser.add_argument('-ColorStrip',      required=False, action='store_true',   help='ColorStrip')
+        iTOL_parser.add_argument('-ColorRange',      required=False, action='store_true',   help='ColorRange')
+        iTOL_parser.add_argument('-SimpleBar',       required=False, action='store_true',   help='SimpleBar')
+        iTOL_parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
+        iTOL_parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
+        iTOL_parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
+        iTOL_parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
+        iTOL_parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
+        iTOL_parser.add_argument('-lv',              required=False, default=None,          help='Leaf Value')
+        iTOL_parser.add_argument('-lm',              required=False, default=None,          help='Leaf Matrix')
+        iTOL_parser.add_argument('-scale',           required=False, default=None,          help='Scale Values, in format 0-3-6-9')
+        iTOL_parser.add_argument('-lt',              required=False, default=None,          help='Legend Title')
+        iTOL_parser.add_argument('-out',             required=True,                         help='Output filename')
         args = vars(parser.parse_args())
         iTOL.iTOL(args)
 
@@ -347,10 +346,12 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'get_GTDB_taxon_gnm':
         from BioSAK import get_GTDB_taxon_gnm
         get_GTDB_taxon_gnm_parser = subparsers.add_parser('get_GTDB_taxon_gnm', description='get id of GTDB genomes from specified taxons', usage=get_GTDB_taxon_gnm.get_GTDB_taxon_gnm_parser_usage)
-        get_GTDB_taxon_gnm_parser.add_argument('-meta',     required=True,              help='GTDB reference genome metadata')
-        get_GTDB_taxon_gnm_parser.add_argument('-path',     required=True,              help='GTDB genome paths')
-        get_GTDB_taxon_gnm_parser.add_argument('-taxon',    required=True,              help='interested taxons, one taxon per line')
-        get_GTDB_taxon_gnm_parser.add_argument('-p',        required=False, default='', help='output prefix')
+        get_GTDB_taxon_gnm_parser.add_argument('-p',           required=False, default='Genomes',          help='output prefix')
+        get_GTDB_taxon_gnm_parser.add_argument('-meta',        required=True,                              help='GTDB reference genome metadata')
+        get_GTDB_taxon_gnm_parser.add_argument('-path',        required=True,                              help='GTDB genome_paths.tsv')
+        get_GTDB_taxon_gnm_parser.add_argument('-taxon',       required=True,                              help='interested taxons, one taxon per line')
+        get_GTDB_taxon_gnm_parser.add_argument('-cpl',         required=False, default=None, type=float,   help='completeness cutoff (0-100), default: None')
+        get_GTDB_taxon_gnm_parser.add_argument('-ctm',         required=False, default=None, type=float,   help='contamination cutoff, default: None')
         args = vars(parser.parse_args())
         get_GTDB_taxon_gnm.get_GTDB_taxon_gnm(args)
 
@@ -506,8 +507,8 @@ if __name__ == '__main__':
         plot_sam_depth_parser.add_argument('-e',            required=False, type=int, default=None,         help='end position to plot')
         plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth')
         plot_sam_depth_parser.add_argument('-l',            required=False, type=str, default=None,         help='position to mark')
-        plot_sam_depth_parser.add_argument('-x',            required=False, type=int, default=8,            help='plot width')
-        plot_sam_depth_parser.add_argument('-y',            required=False, type=int, default=3,            help='plot height')
+        plot_sam_depth_parser.add_argument('-x',            required=False, type=float, default=30,         help='plot width, default: 30')
+        plot_sam_depth_parser.add_argument('-y',            required=False, type=float, default=10,         help='plot height, default: 10')
         args = vars(parser.parse_args())
         plot_sam_depth.plot_sam_depth(args)
 
@@ -581,7 +582,8 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'sam2bam':
         from BioSAK import sam2bam
         sam2bam_parser = subparsers.add_parser('sam2bam', usage=sam2bam.sam2bam_usage)
-        sam2bam_parser.add_argument('-sam', required=True, help='sam file')
+        sam2bam_parser.add_argument('-sam', required=True,                          help='sam file')
+        sam2bam_parser.add_argument('-t',   required=False, type=int, default=1,    help='number of threads')
         args = vars(parser.parse_args())
         sam2bam.sam2bam(args)
 
@@ -639,7 +641,7 @@ if __name__ == '__main__':
         Plot_MAG_parser.add_argument('-i', required=True, help='MAG folder')
         Plot_MAG_parser.add_argument('-x', required=True, help='file extension')
         Plot_MAG_parser.add_argument('-d', required=True, help='contig depth')
-        Plot_MAG_parser.add_argument('-o', required=True, help='output plot')
+        Plot_MAG_parser.add_argument('-sep', required=False, action='store_true', help='plot MAGs separately')
         args = vars(parser.parse_args())
         plot_mag.Plot_MAG(args)
 
@@ -661,32 +663,70 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         mean_MAG_cov.mean_MAG_cov(args)
 
+    elif sys.argv[1] == 'GTDB_tree_r207':
+        from BioSAK import GTDB_tree_r207
+        GTDB_tree_r207_parser = subparsers.add_parser('GTDB_tree_r207', usage=GTDB_tree_r207.GTDB_tree_r207_usage)
+        GTDB_tree_r207_parser.add_argument('-p', required=True,                         help='output prefix')
+        GTDB_tree_r207_parser.add_argument('-i', required=True,                         help='genome folder')
+        GTDB_tree_r207_parser.add_argument('-x', required=True,                         help='genome file extension')
+        GTDB_tree_r207_parser.add_argument('-t', required=False, type=int, default=1,   help='number of threads')
+        args = vars(parser.parse_args())
+        GTDB_tree_r207.GTDB_tree_r207(args)
+
+    elif sys.argv[1] == 'exe_cmds':
+        from BioSAK import exe_cmds
+        exe_cmds_parser = subparsers.add_parser('exe_cmds', usage=exe_cmds.exe_cmds_usage)
+        exe_cmds_parser.add_argument('-c', required=True, help='cmds file')
+        exe_cmds_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads')
+        args = vars(parser.parse_args())
+        exe_cmds.exe_cmds(args)
+
+    elif sys.argv[1] == 'compare_trees':
+        from BioSAK import compare_trees
+        compare_trees_parser = subparsers.add_parser('compare_trees', usage=compare_trees.compare_trees_usage)
+        compare_trees_parser.add_argument('-t1', required=True, help='tree 1')
+        compare_trees_parser.add_argument('-t2', required=True, help='tree 2')
+        args = vars(parser.parse_args())
+        compare_trees.compare_trees(args)
+
+    elif sys.argv[1] == 'split_fasta':
+        from BioSAK import split_fasta
+        split_fasta_parser = subparsers.add_parser('split_fasta', usage=split_fasta.split_fasta_usage)
+        split_fasta_parser.add_argument('-i', required=True, help='input fasta file')
+        split_fasta_parser.add_argument('-n', required=False, type=int, default=1, help='sequence per file, default: 1')
+        split_fasta_parser.add_argument('-o', required=True, help='output dir')
+        args = vars(parser.parse_args())
+        split_fasta.split_fasta(args)
+
+    elif sys.argv[1] == 'split_sam':
+        from BioSAK import split_sam
+        split_sam_parser = subparsers.add_parser('split_sam', usage=split_sam.split_sam_usage)
+        split_sam_parser.add_argument('-p', required=True, help='output prefix')
+        split_sam_parser.add_argument('-i', required=True, help='input SAM/BAM file')
+        split_sam_parser.add_argument('-r', required=True, help='reference id')
+        split_sam_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads')
+        args = vars(parser.parse_args())
+        split_sam.split_sam(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
 
 
 upload_to_pypi_cmd = '''
-
-    Barrnap_parser =                    subparsers.add_parser('Barrnap_Runner',             description='Wrapper for running Barrnap',                          usage='')
-    get_total_len_parser =              subparsers.add_parser('get_total_len',              description='Wrapper for running Prodigal',                         usage='')
     get_fasta_stats_parser =            subparsers.add_parser('get_fasta_stats',            description='Wrapper for running Prodigal',                         usage='')
-    FastaSplitler_parser =              subparsers.add_parser('FastaSplitler',              description='Wrapper for running Prodigal',                         usage='')
     extract_sam_reads_parser =          subparsers.add_parser('Extract_sam_reads',          description='Extract reads from SAM file',                          usage='')
-    plot_tree_parser =                  subparsers.add_parser('Plot_tree',                  description='Plot tree in Newick format',                           usage='')
     sra_reads_downloader_parser =       subparsers.add_parser('sra_reads_downloader',       description='Download SRA read files',                              usage=dwnld_sra_reads.sra_reads_downloader_usage)
     subsample_reads_parser =            subparsers.add_parser('subsample_reads',            description='Wrapper for running Prodigal',                         usage='')
     GTDB_16S module: report identity to the best hit
-
 
 cd /Users/songweizhi/PycharmProjects/BioSAK
 rm -r build dist BioSAK.egg-info
 python setup.py sdist bdist_wheel
 twine upload dist/*
+
 songweizhi
-
-shan88cd -
-
+shan88
 
 module load python/3.7.3
 source ~/mypython3env/bin/activate

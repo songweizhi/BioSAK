@@ -1,0 +1,736 @@
+#!python
+
+# Copyright (C) 2017, Weizhi Song.
+# songwz03@gmail.com
+
+# BioSAK is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# BioSAK is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys
+import warnings
+import argparse
+from BioSAK.BioSAK_config import config_dict
+
+
+def version(config_dict):
+    version_file = open('%s/VERSION' % config_dict['config_file_path'])
+    return version_file.readline().strip()
+
+
+def print_main_help():
+
+    help_message = ''' 
+                 ...::: BioSAK v%s :::...
+
+    Annotation modules
+       Prodigal                ->   Wrapper for running Prodigal
+       Prokka                  ->   Wrapper for running Prokka
+       CheckM                  ->   Wrapper for running CheckM
+       CheckM_op_parser        ->   Parse (combined) CheckM outputs
+       COG2020                 ->   COG annotation (v2020, by blastp/diamond)
+       arCOG                   ->   to be added
+       KEGG                    ->   KEGG annotation
+       dbCAN                   ->   CAZy annotation with dbCAN
+
+    16S rRNA related
+       top_16S_hits            ->   Classify 16S by top-blast-hits approach
+       SILVA_for_BLCA          ->   Prepare BLCA-compatible SILVA SSU database
+       GTDB_for_BLCA           ->   Prepare BLCA-compatible GTDB SSU database
+       BLCA_op_parser          ->   Make the BLCA outputs bit easier to read
+    
+    Sequence manipulator
+       gbk2fa                  ->   gbk to fasta
+       gbk2ffn                 ->   gbk to ffn
+       gbk2faa                 ->   gbk to faa
+       ffn2faa                 ->   ffn to faa
+       get_rc                  ->   Get reverse complement sequence
+       slice_seq               ->   Get specified region of a sequence
+       rename_seq              ->   Rename sequences in a file
+       select_seq              ->   Select sequences by their ids
+       split_fasta             ->   Split a fasta file into multiple files
+       get_gene_depth          ->   Get gene depth by contig depth
+       convert_align_format    ->   Convert alignment format
+       OneLineAln              ->   One-line fasta format alignments
+       SubsetAlnCols           ->   Subset MSA by column
+       rename_reads_for_Reago  ->   Rename paired reads for Reago
+       MeanMappingDepth        ->   Get mean mapping depth 
+    
+    SAM and BAM
+       plot_sam_depth          ->   Plot SAM depth
+       reads2bam               ->   Mapping and sorting
+       sam2bam                 ->   Sam to BAM with samtools
+       split_sam               ->   Split SAM/BAM file by reference
+
+    Tree manipulator
+       GTDB_tree_r207          ->   Infer GTDB (r207) archaeal/bacterial tree
+       label_tree              ->   Add labels to tree leaves (does not work)
+       subset_tree             ->   Subset tree
+       iTOL                    ->   Prepare iTOL-compatible files for tree visualization
+       compare_trees           ->   Compare trees with mantel test
+    
+    Genome databases
+       get_GTDB_taxon_gnm      ->   Get id of all genomes from specified GTDB taxons
+       get_genome_GTDB         ->   Batch download GTDB representative genomes
+       get_genome_NCBI         ->   Batch download GenBank genomes
+   
+    Visualization
+       SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
+       VisGeneFlk              ->   Visualize gene flanking regions
+       Plot_MAG                ->   plot MAGs, (GC vs depth)
+                 
+    Other modules
+       split_folder            ->   Split folder
+       js_cmds                 ->   Commands to job scripts
+       BestHit                 ->   Keep Best Hits only (blast outfmt 6)
+       get_bin_abundance       ->   Get bin abundance
+       mean_MAG_cov            ->   MAG depth based on weighted mean contig depth 
+       get_Pfam_hmms           ->   Get Pfam profiles by id
+       Reads_simulator         ->   Simulate NGS reads
+       usearch_uc              ->   Usearch uc file parser
+       get_gnm_size            ->   Get the total length of genome(s)
+       exe_cmds                ->   Execute commands in a file (one per line)
+    ''' % version(config_dict)
+
+    print(help_message)
+
+
+if __name__ == '__main__':
+
+    ########################################################################################### initialize subparsers ############################################################################################
+
+    # initialize the options parser
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers(help="--", dest='subparser_name')
+
+    # disable warning message
+    warnings.filterwarnings('ignore')
+
+    # parse options
+    if (len(sys.argv) == 1) or (sys.argv[1] in ['-h', '-help', '--help']):
+        print_main_help()
+        sys.exit(0)
+
+    elif sys.argv[1] == 'Prodigal':
+        from BioSAK import Prodigal
+        Prodigal_parser = subparsers.add_parser('Prodigal', description='Wrapper for running Prodigal', usage=Prodigal.Prodigal_parser_usage)
+        Prodigal_parser.add_argument('-i',                  required=True,                                  help='input genome folder')
+        Prodigal_parser.add_argument('-x',                  required=False, default='fasta',                help='file extension')
+        Prodigal_parser.add_argument('-p',                  required=True,                                  help='output prefix')
+        Prodigal_parser.add_argument('-meta',               required=False, action="store_true",            help='annotation mode for metagenome assembled genomes (MAGs)')
+        Prodigal_parser.add_argument('-t',                  required=False, type=int, default=1,            help='number of threads')
+        args = vars(parser.parse_args())
+        Prodigal.Annotation_Prodigal(args)
+
+    elif sys.argv[1] == 'COG2003':
+        from BioSAK import COG2003
+        COG2003_parser = subparsers.add_parser('COG2003', description='Wrapper for COG annotation (v2003)', usage=COG2003.COG_parser_usage)
+        COG2003_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+        COG2003_parser.add_argument('-x',                   required=False,                                 help='file extension')
+        COG2003_parser.add_argument('-m',                   required=True,                                  help='The type of input sequences, "N" for "nucleotide", "P" for "protein"')
+        COG2003_parser.add_argument('-db_dir',              required=True,                                  help='folder holds whog, fun.txt, cddid.tbl and Cog.* files')
+        COG2003_parser.add_argument('-t',                   required=False, type=int, default=1,            help='number of threads')
+        args = vars(parser.parse_args())
+        COG2003.COG2003(args, config_dict)
+
+    elif sys.argv[1] == 'COG2014':
+        from BioSAK import COG2014
+        COG2014_parser = subparsers.add_parser('COG2014', description='Wrapper for COG annotation (v2014)', usage=COG2014.COG2014_parser_usage)
+        COG2014_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+        COG2014_parser.add_argument('-x',                   required=False,                                 help='file extension')
+        COG2014_parser.add_argument('-m',                   required=True,                                  help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
+        COG2014_parser.add_argument('-depth',               required=False, default=None,                   help='gene depth file/folder')
+        COG2014_parser.add_argument('-pct_by_all',          required=False, action='store_true',            help='normalize by all query genes, rather than those with COG assignment')
+        COG2014_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
+        COG2014_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
+        COG2014_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
+        COG2014_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+        args = vars(parser.parse_args())
+        COG2014.COG2014(args)
+
+    elif sys.argv[1] == 'COG2020':
+        from BioSAK import COG2020
+        COG2020_parser = subparsers.add_parser('COG2020', description='Wrapper for COG annotation (v2020)', usage=COG2020.COG2020_parser_usage)
+        COG2020_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+        COG2020_parser.add_argument('-x',                   required=False,                                 help='file extension')
+        COG2020_parser.add_argument('-m',                   required=True,                                  help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
+        COG2020_parser.add_argument('-depth',               required=False, default=None,                   help='gene depth file/folder')
+        COG2020_parser.add_argument('-pct_by_all',          required=False, action='store_true',            help='normalize by all query genes, rather than those with COG assignment')
+        COG2020_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
+        COG2020_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
+        COG2020_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
+        COG2020_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+        args = vars(parser.parse_args())
+        COG2020.COG2020(args)
+
+    elif sys.argv[1] == 'KEGG':
+        from BioSAK import KEGG
+        KEGG_parser = subparsers.add_parser('KEGG', description='Wrapper for KEGG annotation', usage=KEGG.KEGG_parser_usage)
+        KEGG_parser.add_argument('-seq_in',                 required=False,                                 help='faa file')
+        KEGG_parser.add_argument('-ko_in',                  required=False,                                 help='annotation results from BlastKOALA/GhostKOALA, normally with name user_ko.txt')
+        KEGG_parser.add_argument('-x',                      required=False,                                 help='file extension')
+        KEGG_parser.add_argument('-depth',                  required=False, default=None,                   help='gene depth file/folder')
+        KEGG_parser.add_argument('-pct_by_all',             required=False, action='store_true',            help='normalize by all query genes, rather than those with ko assignment')
+        KEGG_parser.add_argument('-db_dir',                 required=True,                                  help='folder holds sequence, seq2ko and ko00001.keg files')
+        KEGG_parser.add_argument('-diamond',                required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
+        KEGG_parser.add_argument('-t',                      required=False, default=1,     type=int,        help='number of threads, default: 1')
+        KEGG_parser.add_argument('-evalue',                 required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+        args = vars(parser.parse_args())
+        KEGG.Annotation_KEGG(args)
+
+    elif sys.argv[1] == 'dbCAN':
+        from BioSAK import dbCAN
+        dbCAN_parser = subparsers.add_parser('dbCAN', description='Wrapper for running dbCAN', usage=dbCAN.dbCAN_parser_usage)
+        dbCAN_parser.add_argument('-i',                     required=True,                                  help='path to input sequences (in multi-fasta format)')
+        dbCAN_parser.add_argument('-x',                     required=False,                                 help='file extension')
+        dbCAN_parser.add_argument('-m',                     required=False, default='P',                    help='The type of input sequences, "N/n" for "nucleotide", "P/p" for "protein"')
+        dbCAN_parser.add_argument('-depth',                 required=False, default=None,                   help='gene depth file/folder')
+        dbCAN_parser.add_argument('-db_dir',                required=True,                                  help='db folder')
+        dbCAN_parser.add_argument('-t',                     required=False, type=int, default=1,            help='number of threads')
+        args = vars(parser.parse_args())
+        dbCAN.dbCAN(args)
+
+    elif sys.argv[1] == 'CheckM_Runner':
+        from BioSAK import CheckM
+        CheckM_parser = subparsers.add_parser('CheckM_Runner', description='Wrapper for running CheckM', usage=CheckM.CheckM_Runner_usage)
+        CheckM_parser.add_argument('-i',                    required=True,                                  help='input bin folder')
+        CheckM_parser.add_argument('-x',                    required=True,                                  help='bin file extension')
+        CheckM_parser.add_argument('-e',                    required=False,                                 help='your email address')
+        CheckM_parser.add_argument('-nodes',                required=False, default=1,   type=int,          help='nodes number needed (default = 1)')
+        CheckM_parser.add_argument('-ppn',                  required=False, default=1,   type=int,          help='ppn number needed (default = 1)')
+        CheckM_parser.add_argument('-memory',               required=False, default=120, type=int,          help='memory needed (default = 120)')
+        CheckM_parser.add_argument('-walltime',             required=False, default='2:59:00',              help='walltime needed (default = 2:59:00)')
+        CheckM_parser.add_argument('-python',               required=False, default='python/2.7.15',        help='python version (default: python/2.7.15)')
+        CheckM_parser.add_argument('-hmmer',                required=False, default='hmmer/3.2.1',          help='hmmer version (default: hmmer/3.2.1)')
+        CheckM_parser.add_argument('-pplacer',              required=False, default='pplacer/1.1.alpha19',  help='pplacer version (default: pplacer/1.1.alpha19)')
+        CheckM_parser.add_argument('-prodigal',             required=False, default='prodigal/2.6.3',       help='prodigal version (default: prodigal/2.6.3)')
+        CheckM_parser.add_argument('-qsub',                 action="store_true",                            help='submit generated PBS job scripts')
+        args = vars(parser.parse_args())
+        CheckM.CheckM_Runner(args)
+
+    elif sys.argv[1] == 'CheckM_op_parser':
+        from BioSAK import CheckM
+        CheckM_output_parser = subparsers.add_parser('CheckM_op_parser', description='Parse combined CheckM outputs', usage=CheckM.CheckM_output_parser_usage)
+        CheckM_output_parser.add_argument('-i',             required=True,                                  help='input quality file')
+        CheckM_output_parser.add_argument('-bin',           required=False,                                 help='bin folder')
+        CheckM_output_parser.add_argument('-x',             required=False, default='fasta',                help='bin file extension')
+        CheckM_output_parser.add_argument('-complete',      required=False, type=float,                     help='completeness cutoff (0-100)')
+        CheckM_output_parser.add_argument('-contain',       required=False, type=float,                     help='contamination cutoff (0-100)')
+        CheckM_output_parser.add_argument('-o',             required=True,                                  help='output quality file')
+        args = vars(parser.parse_args())
+        CheckM.CheckM_output_parser(args)
+
+    elif sys.argv[1] == 'SankeyTaxon':
+        from BioSAK import SankeyTaxon
+        SankeyTaxon_parser = subparsers.add_parser('SankeyTaxon', description='Visualize GTDB output with Sankey diagram', usage=SankeyTaxon.SankeyTaxon_parser_usage)
+        SankeyTaxon_parser.add_argument('-taxon',           required=True,                                  help='taxon classification results')
+        SankeyTaxon_parser.add_argument('-r',               required=True,                                  help='taxon ranks to plot, e.g. dpcofgs, pco, pcf, cfs')
+        SankeyTaxon_parser.add_argument('-p',               required=True,                                  help='output prefix')
+        SankeyTaxon_parser.add_argument('-ec',              required=False, action='store_true',            help='only plot explicit classifications')
+        SankeyTaxon_parser.add_argument('-x',               required=False, type=int,                       help='plot width')
+        SankeyTaxon_parser.add_argument('-y',               required=False, type=int,                       help='plot height')
+        args = vars(parser.parse_args())
+        SankeyTaxon.SankeyTaxon(args)
+
+    elif sys.argv[1] == 'get_SCG_tree':
+        from BioSAK import get_SCG_tree
+        get_SCG_tree_parser = subparsers.add_parser('get_SCG_tree', description='get SCG tree', usage=get_SCG_tree.get_SCG_tree_usage)
+        get_SCG_tree_parser.add_argument('-i',              required=True,                                  help='input genome folder')
+        get_SCG_tree_parser.add_argument('-p',              required=True,                                  help='output prefix')
+        get_SCG_tree_parser.add_argument('-x',              required=False, default='fasta',                help='file extension')
+        get_SCG_tree_parser.add_argument('-nonmeta',        required=False, action="store_true",            help='annotate Non-metagenome-assembled genomes (Non-MAGs)')
+        get_SCG_tree_parser.add_argument('-t',              required=False, type=int, default=1,            help='number of threads, default: 1')
+        args = vars(parser.parse_args())
+        get_SCG_tree.get_SCG_tree(args, config_dict)
+
+    elif sys.argv[1] == 'subset_tree':
+        from BioSAK import Subset_tree
+        subset_tree_parser = subparsers.add_parser('subset_tree', description='Subset tree', usage=Subset_tree.subset_tree_parser_usage)
+        subset_tree_parser.add_argument('-tree',            required=True,                                  help='input tree file')
+        subset_tree_parser.add_argument('-taxon',           required=True,                                  help='A file containing list of nodes to keep, one node per line')
+        subset_tree_parser.add_argument('-out',             required=True,                                  help='Output tree file')
+        args = vars(parser.parse_args())
+        Subset_tree.subset_tree(args)
+
+    elif sys.argv[1] == 'label_tree':
+        from BioSAK import label_tree
+        label_tree_parser = subparsers.add_parser('label_tree', description='Add labels to tree leaves', usage=label_tree.label_tree_usage)
+        label_tree_parser.add_argument('-tree',             required=True,                                  help='tree file in newick format')
+        label_tree_parser.add_argument('-label',            required=False,  default=None,                  help='label file (label,leaf)')
+        label_tree_parser.add_argument('-taxon',            required=False,  default=None,                  help='taxonomic classification')
+        label_tree_parser.add_argument('-rank',             required=False,  default=None,                  help='taxonomic rank to label')
+        args = vars(parser.parse_args())
+        label_tree.label_tree(args, config_dict)
+
+    elif sys.argv[1] == 'iTOL':
+        from BioSAK import iTOL
+        iTOL_parser = subparsers.add_parser('iTOL', description='Plot tree with iTOL', usage=iTOL.iTOL_usage)
+        iTOL_parser.add_argument('-ColorStrip',      required=False, action='store_true',   help='ColorStrip')
+        iTOL_parser.add_argument('-ColorRange',      required=False, action='store_true',   help='ColorRange')
+        iTOL_parser.add_argument('-SimpleBar',       required=False, action='store_true',   help='SimpleBar')
+        iTOL_parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
+        iTOL_parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
+        iTOL_parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
+        iTOL_parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
+        iTOL_parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
+        iTOL_parser.add_argument('-lv',              required=False, default=None,          help='Leaf Value')
+        iTOL_parser.add_argument('-lm',              required=False, default=None,          help='Leaf Matrix')
+        iTOL_parser.add_argument('-scale',           required=False, default=None,          help='Scale Values, in format 0-3-6-9')
+        iTOL_parser.add_argument('-lt',              required=False, default=None,          help='Legend Title')
+        iTOL_parser.add_argument('-out',             required=True,                         help='Output filename')
+        args = vars(parser.parse_args())
+        iTOL.iTOL(args)
+
+    elif sys.argv[1] == 'split_folder':
+        from BioSAK import split_folder
+        split_folder_parser = subparsers.add_parser('split_folder', description='Split folder', usage=split_folder.split_folder_parser_usage)
+        split_folder_parser.add_argument('-in',             required=True,                                  help='file folder')
+        split_folder_parser.add_argument('-x',              required=True,                                  help='file extension')
+        split_folder_parser.add_argument('-n',              required=False, type=int,                       help='number of subfolder')
+        args = vars(parser.parse_args())
+        split_folder.split_folder(args)
+
+    elif sys.argv[1] == 'BestHit':
+        from BioSAK import keep_best_hit
+        BestHit_parser = subparsers.add_parser('BestHit', description='Keep blast hits with highest bit score', usage=keep_best_hit.BestHit_parser_usage)
+        BestHit_parser.add_argument('-i',                   required=True,                                  help='input blast results (outfmt: 6)')
+        BestHit_parser.add_argument('-o',                   required=True,                                  help='output file')
+        args = vars(parser.parse_args())
+        keep_best_hit.best_hit(args)
+
+    elif sys.argv[1] == 'get_bin_abundance':
+        from BioSAK import get_bin_abundance
+        get_bin_abundance_parser = subparsers.add_parser('get_bin_abundance', description='Get bin abundance', usage=get_bin_abundance.get_bin_abundance_usage)
+        get_bin_abundance_parser.add_argument('-sam',     required=True,                  help='input sam file')
+        get_bin_abundance_parser.add_argument('-bin',     required=True,                  help='bin folder')
+        get_bin_abundance_parser.add_argument('-x',       required=True, default='fasta', help='bin file extension, default: fasta')
+        get_bin_abundance_parser.add_argument('-o',       required=True,                  help='output abundance file')
+        get_bin_abundance_parser.add_argument('-g',       required=False, default=None,   help='bin grouping info')
+        get_bin_abundance_parser.add_argument('-Cdb',     required=False, default=None,   help='cluster info from dRep (Cdb.csv)')
+        args = vars(parser.parse_args())
+        get_bin_abundance.get_bin_abundance(args)
+
+    elif sys.argv[1] == 'get_genome_NCBI':
+        from BioSAK import get_genome_NCBI
+        dwnld_GenBank_genome_parser = subparsers.add_parser('get_genome_NCBI', description='Batch download GenBank genomes', usage=get_genome_NCBI.get_genome_NCBI_parser_usage)
+        dwnld_GenBank_genome_parser.add_argument('-csv',         required=True,                                     help='csv file from NCBI genome_browse')
+        dwnld_GenBank_genome_parser.add_argument('-out',         required=True,                                     help='output folder')
+        dwnld_GenBank_genome_parser.add_argument('-id',          required=False, default=None,                      help='assembly id (6th col in the csv file), one id per line')
+        dwnld_GenBank_genome_parser.add_argument('-fna',         required=False, action="store_true",               help='download gna file')
+        dwnld_GenBank_genome_parser.add_argument('-faa',         required=False, action="store_true",               help='download faa file')
+        dwnld_GenBank_genome_parser.add_argument('-gbff',        required=False, action="store_true",               help='download gbff file')
+        dwnld_GenBank_genome_parser.add_argument('-name',        required=False, action="store_true",               help='include genome name in the downloaded files')
+        dwnld_GenBank_genome_parser.add_argument('-t',           required=False, default=1, type=int,               help='number of threads')
+        args = vars(parser.parse_args())
+        get_genome_NCBI.download_GenBank_genome(args)
+
+    elif sys.argv[1] == 'get_genome_GTDB':
+        from BioSAK import get_genome_GTDB
+        get_genome_GTDB_parser = subparsers.add_parser('get_genome_GTDB', description='Batch download GTDB genomes', usage=get_genome_GTDB.get_genome_GTDB_parser_usage)
+        get_genome_GTDB_parser.add_argument('-id',              required=True, help='genome id')
+        get_genome_GTDB_parser.add_argument('-path',            required=True, help='genome_paths.tsv')
+        get_genome_GTDB_parser.add_argument('-dir',             required=True, help='the folder which hold genome_paths.tsv')
+        get_genome_GTDB_parser.add_argument('-out',             required=True, help='output folder')
+        args = vars(parser.parse_args())
+        get_genome_GTDB.get_genome_GTDB(args)
+
+    elif sys.argv[1] == 'get_GTDB_taxon_gnm':
+        from BioSAK import get_GTDB_taxon_gnm
+        get_GTDB_taxon_gnm_parser = subparsers.add_parser('get_GTDB_taxon_gnm', description='get id of GTDB genomes from specified taxons', usage=get_GTDB_taxon_gnm.get_GTDB_taxon_gnm_parser_usage)
+        get_GTDB_taxon_gnm_parser.add_argument('-p',           required=False, default='Genomes',          help='output prefix')
+        get_GTDB_taxon_gnm_parser.add_argument('-meta',        required=True,                              help='GTDB reference genome metadata')
+        get_GTDB_taxon_gnm_parser.add_argument('-path',        required=True,                              help='GTDB genome_paths.tsv')
+        get_GTDB_taxon_gnm_parser.add_argument('-taxon',       required=True,                              help='interested taxons, one taxon per line')
+        get_GTDB_taxon_gnm_parser.add_argument('-cpl',         required=False, default=None, type=float,   help='completeness cutoff (0-100), default: None')
+        get_GTDB_taxon_gnm_parser.add_argument('-ctm',         required=False, default=None, type=float,   help='contamination cutoff, default: None')
+        args = vars(parser.parse_args())
+        get_GTDB_taxon_gnm.get_GTDB_taxon_gnm(args)
+
+    elif sys.argv[1] == 'convert_align_format':
+        from BioSAK import format_converter
+        convert_align_fmt_parser = subparsers.add_parser('convert_align_format', description='Convert alignment format', usage=format_converter.convert_align_format_usage)
+        convert_align_fmt_parser.add_argument('-in',        required=True,                                  help='input alignment')
+        convert_align_fmt_parser.add_argument('-inf',       required=True,                                  help='format of input alignment')
+        convert_align_fmt_parser.add_argument('-out',       required=True,                                  help='output alignment')
+        convert_align_fmt_parser.add_argument('-outf',      required=True,                                  help='format of output alignment')
+        args = vars(parser.parse_args())
+        format_converter.convert_align_format(args)
+
+    elif sys.argv[1] == 'gbk2fa':
+        from BioSAK import format_converter
+        gbk2fa_parser = subparsers.add_parser('gbk2fa', description='gbk to fasta', usage=format_converter.sequence_manipulator_usage)
+        gbk2fa_parser.add_argument('-gbk', required=True, help='input gbk file')
+        args = vars(parser.parse_args())
+        format_converter.gbk2fa(args)
+
+    elif sys.argv[1] == 'gbk2ffn':
+        from BioSAK import format_converter
+        gbk2ffn_parser = subparsers.add_parser('gbk2ffn', description='gbk to ffn', usage=format_converter.sequence_manipulator_usage)
+        gbk2ffn_parser.add_argument('-gbk', required=True, help='input gbk file')
+        args = vars(parser.parse_args())
+        format_converter.gbk2ffn(args)
+
+    elif sys.argv[1] == 'gbk2faa':
+        from BioSAK import format_converter
+        gbk2faa_parser = subparsers.add_parser('gbk2faa', description='gbk to faa', usage=format_converter.sequence_manipulator_usage)
+        gbk2faa_parser.add_argument('-gbk', required=True, help='input gbk file')
+        args = vars(parser.parse_args())
+        format_converter.gbk2faa(args)
+
+    elif sys.argv[1] == 'ffn2faa':
+        from BioSAK import format_converter
+        ffn2faa_parser = subparsers.add_parser('ffn2faa', description='ffn to faa', usage=format_converter.sequence_manipulator_usage)
+        ffn2faa_parser.add_argument('-ffn', required=True, help='input ffn file')
+        args = vars(parser.parse_args())
+        format_converter.ffn2faa(args)
+
+    elif sys.argv[1] == 'get_rc':
+        from BioSAK import format_converter
+        get_rc_parser = subparsers.add_parser('get_rc', description='get reverse complement sequence', usage=format_converter.sequence_manipulator_usage)
+        get_rc_parser.add_argument('-seq', required=True, help='input sequence(s)')
+        args = vars(parser.parse_args())
+        format_converter.get_rc(args)
+
+    elif sys.argv[1] == 'slice_seq':
+        from BioSAK import slice_seq
+        slice_seq_parser = subparsers.add_parser('slice_seq', description='slice sequence', usage=slice_seq.slice_seq_usage)
+        slice_seq_parser.add_argument('-in',    required=True,                        help='sequence file')
+        slice_seq_parser.add_argument('-id',    required=True,                        help='sequence id')
+        slice_seq_parser.add_argument('-range', required=True,                        help='sequence range, start-end (in bp). e.g. 200-4000')
+        slice_seq_parser.add_argument('-rc',    required=False, action='store_true',  help='write out reverse complement sequence')
+        slice_seq_parser.add_argument('-out',   required=True,                        help='output file')
+        args = vars(parser.parse_args())
+        slice_seq.slice_seq(args)
+
+    elif sys.argv[1] == 'select_seq':
+        from BioSAK import select_seq
+        select_seq_parser = subparsers.add_parser('select_seq', description='select sequences by id', usage=select_seq.select_seq_usage)
+        select_seq_parser.add_argument('-seq',       required=True,                        help='sequence file')
+        select_seq_parser.add_argument('-id',        required=True,                        help='sequence ids,one id per line')
+        select_seq_parser.add_argument('-option',    required=True, type=int,              help='choose from 0 and 1')
+        select_seq_parser.add_argument('-out',       required=True,                        help='output file')
+        select_seq_parser.add_argument('-fq',        required=False, action="store_true",  help='in fastq format, default: fa')
+        select_seq_parser.add_argument('-oneline',   required=False, action="store_true",  help='put sequence in single line')
+        args = vars(parser.parse_args())
+        select_seq.select_seq(args)
+
+    elif sys.argv[1] == 'get_Pfam_hmms':
+        from BioSAK import get_Pfam_hmms
+        get_Pfam_hmms_parser = subparsers.add_parser('get_Pfam_hmms', description='Get Pfam profiles by id', usage=get_Pfam_hmms.get_Pfam_hmms_usage)
+        get_Pfam_hmms_parser.add_argument('-pfam',          required=True,                                  help='Pfam db file, normally with name Pfam-A.hmm')
+        get_Pfam_hmms_parser.add_argument('-id',            required=True,                                  help='ids of profiles need to be extracted, one id per line')
+        args = vars(parser.parse_args())
+        get_Pfam_hmms.get_Pfam_hmms(args)
+
+    elif sys.argv[1] == 'get_gene_depth':
+        from BioSAK import get_gene_depth
+        get_gene_depth_parser = subparsers.add_parser('get_gene_depth', description='Get gene depth by contig depth', usage=get_gene_depth.get_gene_depth_parser_usage)
+        get_gene_depth_parser.add_argument('-gbk',          required=False, default=None,                   help='gbk file')
+        get_gene_depth_parser.add_argument('-gff',          required=False, default=None,                   help='gff file')
+        get_gene_depth_parser.add_argument('-ctg_depth',    required=True,                                  help='contig depth file')
+        get_gene_depth_parser.add_argument('-id_column',    required=False, default=1, type=int,            help='contig id column, default is 1')
+        get_gene_depth_parser.add_argument('-depth_column', required=False, default=2, type=int,            help='contig depth column, default is 2')
+        get_gene_depth_parser.add_argument('-skip_header',  required=False, action='store_true',            help='skip the 1st line in contig depth file')
+        args = vars(parser.parse_args())
+        get_gene_depth.get_gene_depth(args)
+
+    elif sys.argv[1] == 'rename_seq':
+        from BioSAK import rename_seq
+        rename_seq_parser = subparsers.add_parser('rename_seq', description='rename contigs in a file', usage=rename_seq.rename_seq_usage)
+        rename_seq_parser.add_argument('-in',         required=True,                          help='input sequence file')
+        rename_seq_parser.add_argument('-x',          required=False, default='fasta',        help='file extension, default: fasta')
+        rename_seq_parser.add_argument('-sep_in',     required=False, default=None,           help='separator for input sequences')
+        rename_seq_parser.add_argument('-sep_out',    required=False, default=None,           help='separator for output sequences, default: same as sep_in')
+        rename_seq_parser.add_argument('-n',          required=False, default=None, type=int, help='the number of columns to keep')
+        rename_seq_parser.add_argument('-prefix',     required=False, default=None,           help='add prefix to sequence')
+        rename_seq_parser.add_argument('-oneline',    required=False, action="store_true",    help='put sequence in single line')
+        rename_seq_parser.add_argument('-t',          required=False, type=int, default=1,    help='number of threads')
+        args = vars(parser.parse_args())
+        rename_seq.rename_seq(args)
+
+    elif sys.argv[1] == 'NetEnzymes':
+        from BioSAK import NetEnzymes
+        NetEnzymes_parser = subparsers.add_parser('NetEnzymes', description='Get network of enzymes (based on MetaCyc)', usage=NetEnzymes.NetEnzymes_parser_usage)
+        NetEnzymes_parser.add_argument('-ec',               required=True,                                  help='EC list file')
+        NetEnzymes_parser.add_argument('-ko',               required=False, default=None,                   help='get network of enzymes from specified ko')
+        NetEnzymes_parser.add_argument('-to_skip',          required=False, default=None,                   help='substrates/products to ignore (e.g. H2O, CO2, H+, ATP, ADP)')
+        NetEnzymes_parser.add_argument('-NoHyphen',         required=False, action='store_true',            help='ignore enzymes with "-" in EC')
+        NetEnzymes_parser.add_argument('-plot',             required=False, action='store_true',            help='plot network, slow and messy layout for complicated network')
+        NetEnzymes_parser.add_argument('-lfs',              required=False,  default=3, type=float,         help='Font size of node labels, default is 3')
+        NetEnzymes_parser.add_argument('-ns',               required=False, default=20, type=float,         help='Node size, default is 20')
+        args = vars(parser.parse_args())
+        NetEnzymes.NetEnzymes(args, config_dict)
+
+    elif sys.argv[1] == 'SILVA_for_BLCA':
+        from BioSAK import SILVA_for_BLCA
+        SILVA_for_BLCA_parser = subparsers.add_parser('SILVA_for_BLCA', description='Prepare BLCA-compatible SILVA SSU database', usage=SILVA_for_BLCA.SILVA_for_BLCA_usage)
+        SILVA_for_BLCA_parser.add_argument('-SILVA_ssu',    required=True,                                  help='SILVA SSU sequence file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
+        args = vars(parser.parse_args())
+        SILVA_for_BLCA.SILVA_for_BLCA(args)
+
+    elif sys.argv[1] == 'GTDB_for_BLCA':
+        from BioSAK import GTDB_for_BLCA
+        GTDB_for_BLCA_parser = subparsers.add_parser('GTDB_for_BLCA', description='Prepare BLCA-compatible GTDB SSU database', usage=GTDB_for_BLCA.GTDB_for_BLCA_usage)
+        GTDB_for_BLCA_parser.add_argument('-GTDB_ssu',      required=True,                                  help='GTDB SSU sequence file, e.g. bac120_ar122_ssu_r89.fna')
+        args = vars(parser.parse_args())
+        GTDB_for_BLCA.GTDB_for_BLCA(args)
+
+    elif sys.argv[1] == 'Reads_simulator':
+        from BioSAK import Reads_simulator
+        Reads_simulator_parser = subparsers.add_parser('Reads_simulator', description='Simulate NGS reads', usage=Reads_simulator.Reads_simulator_usage)
+        Reads_simulator_parser.add_argument('-p',     required=True,                            help='output prefix')
+        Reads_simulator_parser.add_argument('-r',     required=True,                            help='reference genome')
+        Reads_simulator_parser.add_argument('-n',     required=False, type=int,   default=None, help='number of read pairs to simulate')
+        Reads_simulator_parser.add_argument('-d',     required=False, type=float, default=None, help='desired read depth (X)')
+        Reads_simulator_parser.add_argument('-l',     required=True,  type=int,                 help='read length (bp)')
+        Reads_simulator_parser.add_argument('-i',     required=True,  type=int,                 help='insert size (bp)')
+        Reads_simulator_parser.add_argument('-split', action="store_true",                      help='Export forward and reverse reads to separate files')
+        args = vars(parser.parse_args())
+        Reads_simulator.Reads_simulator(args)
+
+    elif sys.argv[1] == 'plot_sam_depth':
+        from BioSAK import plot_sam_depth
+        plot_sam_depth_parser = subparsers.add_parser('plot_sam_depth', description='plot sam depth', usage=plot_sam_depth.plot_sam_depth_usage)
+        plot_sam_depth_parser.add_argument('-r',            required=True, type=str,                        help='reference sequence file')
+        plot_sam_depth_parser.add_argument('-d',            required=True, type=str,                        help='depth file')
+        plot_sam_depth_parser.add_argument('-i',            required=False, type=str, default=None,         help='id of sequence to plot')
+        plot_sam_depth_parser.add_argument('-s',            required=False, type=int, default=None,         help='start position to plot')
+        plot_sam_depth_parser.add_argument('-e',            required=False, type=int, default=None,         help='end position to plot')
+        plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth')
+        plot_sam_depth_parser.add_argument('-l',            required=False, type=str, default=None,         help='position to mark')
+        plot_sam_depth_parser.add_argument('-x',            required=False, type=float, default=30,         help='plot width, default: 30')
+        plot_sam_depth_parser.add_argument('-y',            required=False, type=float, default=10,         help='plot height, default: 10')
+        args = vars(parser.parse_args())
+        plot_sam_depth.plot_sam_depth(args)
+
+    elif sys.argv[1] == 'rename_reads_for_Reago':
+        from BioSAK import rename_reads_for_Reago
+        rename_reads_for_Reago_parser = subparsers.add_parser('rename_reads_for_Reago', description='rename_reads_for_Reago', usage=rename_reads_for_Reago.rename_reads_for_Reago_usage)
+        rename_reads_for_Reago_parser.add_argument('-in',  required=True, type=str, help='input fasta file')
+        rename_reads_for_Reago_parser.add_argument('-out', required=True, type=str, help='renamed fasta file')
+        rename_reads_for_Reago_parser.add_argument('-p',   required=True, type=str, help='prefix of renamed reads')
+        rename_reads_for_Reago_parser.add_argument('-d',   required=True, type=int, help='chose from 1 (forward) or 2 (reverse)')
+        args = vars(parser.parse_args())
+        rename_reads_for_Reago.rename_reads_for_Reago(args)
+
+    elif sys.argv[1] == 'OneLineAln':
+        from BioSAK import OneLineAln
+        OneLineAln_parser = subparsers.add_parser('OneLineAln', description='One-line fasta format alignments', usage=OneLineAln.OneLineAln_usage)
+        OneLineAln_parser.add_argument('-in',       required=True,                       help='input MSA in fasta format')
+        OneLineAln_parser.add_argument('-out',      required=False, default=None,        help='output file')
+        OneLineAln_parser.add_argument('-upper',    required=False, action='store_true', help='turn to uppercase')
+        args = vars(parser.parse_args())
+        OneLineAln.OneLineAln(args)
+
+    elif sys.argv[1] == 'SubsetAlnCols':
+        from BioSAK import SubsetAlnCols
+        SubsetAlnCols_parser = subparsers.add_parser('SubsetAlnCols', description='Subset MSA by column', usage=SubsetAlnCols.SubsetAlnCols_usage)
+        SubsetAlnCols_parser.add_argument('-in',  required=True,                help='input MSA in fasta format')
+        SubsetAlnCols_parser.add_argument('-r',   required=True,                help='columns to keep, e.g. 200-300, one based')
+        SubsetAlnCols_parser.add_argument('-pct', required=False, default=None, help='minimum percentage of nonempty bases (e.g. 70), default keep all')
+        SubsetAlnCols_parser.add_argument('-out', required=True,                help='output file')
+        args = vars(parser.parse_args())
+        SubsetAlnCols.SubsetAlnCols(args)
+
+    elif sys.argv[1] == 'MeanMappingDepth':
+        from BioSAK import MeanMappingDepth
+        MeanMappingDepth_parser = subparsers.add_parser('MeanMappingDepth', description='get mean mapping depth', usage=MeanMappingDepth.MeanMappingDepth_usage)
+        MeanMappingDepth_parser.add_argument('-depth',  required=True,                          help='input depth file from "samtools depth" ')
+        MeanMappingDepth_parser.add_argument('-T',      required=False, action="store_true",    help='get overall stats')
+        args = vars(parser.parse_args())
+        MeanMappingDepth.MeanMappingDepth(args)
+
+    elif sys.argv[1] == 'js_cmds':
+        from BioSAK import js_cmds
+        js_cmds_parser = subparsers.add_parser('js_cmds', description='put commands into job scripts', usage=js_cmds.js_cmds_usage)
+        js_cmds_parser.add_argument('-p',      required=True,                       help='js prefix')
+        js_cmds_parser.add_argument('-cmds',   required=True,                       help='cmds file')
+        js_cmds_parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next js')
+        js_cmds_parser.add_argument('-header', required=True,                       help='js header')
+        js_cmds_parser.add_argument('-n',      required=True, type=int,             help='number of cmds per js')
+        js_cmds_parser.add_argument('-js_hpc', required=False, default=None,        help='Full path to js folder on HPC')
+        js_cmds_parser.add_argument('-force',  required=False, action="store_true", help='force overwrite existing results')
+        args = vars(parser.parse_args())
+        js_cmds.js_cmds(args)
+
+    elif sys.argv[1] == 'reads2bam':
+        from BioSAK import reads2bam
+        reads2bam_parser = subparsers.add_parser('reads2bam', usage=reads2bam.reads2bam_usage)
+        reads2bam_parser.add_argument('-p',               required=True,                                     help='output prefix')
+        reads2bam_parser.add_argument('-ref',             required=True,                                     help='reference sequences')
+        reads2bam_parser.add_argument('-index_ref',       required=False, action="store_true",               help='index reference')
+        reads2bam_parser.add_argument('-r1',              required=False, default=None,                      help='paired reads r1')
+        reads2bam_parser.add_argument('-r2',              required=False, default=None,                      help='paired reads r2')
+        reads2bam_parser.add_argument('-u',               required=False, default=None,                      help='unpaired reads')
+        reads2bam_parser.add_argument('-fastq',           required=False, action="store_true",               help='reads in fastq format')
+        reads2bam_parser.add_argument('-local',           required=False, action="store_true",               help='perform local alignment')
+        reads2bam_parser.add_argument('-mismatch',        required=False, type=int, default=100,             help='maximum mismatch pct allowed, between 1-100, default: 100')
+        reads2bam_parser.add_argument('-t',               required=False, type=int, default=1,               help='number of threads, default: 1')
+        reads2bam_parser.add_argument('-tmp',             required=False, action="store_true",               help='keep temporary files')
+        args = vars(parser.parse_args())
+        reads2bam.reads2bam(args)
+
+    elif sys.argv[1] == 'sam2bam':
+        from BioSAK import sam2bam
+        sam2bam_parser = subparsers.add_parser('sam2bam', usage=sam2bam.sam2bam_usage)
+        sam2bam_parser.add_argument('-sam', required=True,                          help='sam file')
+        sam2bam_parser.add_argument('-t',   required=False, type=int, default=1,    help='number of threads')
+        args = vars(parser.parse_args())
+        sam2bam.sam2bam(args)
+
+    elif sys.argv[1] == 'fa2tree':
+        from BioSAK import fa2tree
+        fa2tree_parser = subparsers.add_parser('fa2tree', usage=fa2tree.fa2tree_usage)
+        fa2tree_parser.add_argument('-seq', required=True, help='sequence file')
+        fa2tree_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads, default: 1')
+        args = vars(parser.parse_args())
+        fa2tree.fa2tree(args)
+
+    elif sys.argv[1] == 'BLCA_op_parser':
+        from BioSAK import BLCA_op_parser
+        BLCA_op_parser_parser = subparsers.add_parser('BLCA_op_parser', usage=BLCA_op_parser.BLCA_op_parser_usage)
+        BLCA_op_parser_parser.add_argument('-in', required=True, help='BLCA output')
+        args = vars(parser.parse_args())
+        BLCA_op_parser.BLCA_op_parser(args)
+
+    elif sys.argv[1] == 'VisGeneFlk':
+        from BioSAK import VisGeneFlk
+        VisGeneFlk_parser = subparsers.add_parser('VisGeneFlk', usage=VisGeneFlk.VisGeneFlk_usage)
+        VisGeneFlk_parser.add_argument('-gene',    required=True,                          help='gene id')
+        VisGeneFlk_parser.add_argument('-gbk',     required=True,                          help='gbk file')
+        VisGeneFlk_parser.add_argument('-len',     required=True, type=int,                help='length (in bp) of flanking sequences to plot')
+        VisGeneFlk_parser.add_argument('-scale',   required=False, type=int, default=200,  help='scale for plotting, default: 200bp per cm')
+        VisGeneFlk_parser.add_argument('-fmt',     required=False, default='svg',          help='output format (svg or pdf), default: svg')
+        args = vars(parser.parse_args())
+        VisGeneFlk.VisGeneFlk(args)
+
+    elif sys.argv[1] == 'usearch_uc':
+        from BioSAK import usearch_uc
+        usearch_uc_parser = subparsers.add_parser('usearch_uc', usage=usearch_uc.usearch_uc_usage)
+        usearch_uc_parser.add_argument('-uc', required=True,                        help='uc file from Usearch')
+        usearch_uc_parser.add_argument('-n',  required=False, type=int, default=1,  help='minimum number of sequence in a cluster, default: 1')
+        usearch_uc_parser.add_argument('-o',  required=True,                        help='output file')
+        args = vars(parser.parse_args())
+        usearch_uc.usearch_uc(args)
+
+    elif sys.argv[1] == 'top_16S_hits':
+        from BioSAK import top_16S_hits
+        top_16S_hits_parser = subparsers.add_parser('top_16S_hits', usage=top_16S_hits.top_16S_hits_usage)
+        top_16S_hits_parser.add_argument('-p',           required=True,                           help='output prefix')
+        top_16S_hits_parser.add_argument('-q',           required=True,                           help='query sequence file')
+        top_16S_hits_parser.add_argument('-r',           required=True,                           help='SILVA or GTDB SSU sequence file')
+        top_16S_hits_parser.add_argument('-b',           required=False, default=None,            help='blast results between query and reference sequences from previous analysis(if you have)')
+        top_16S_hits_parser.add_argument('-evalue',      required=False, default='1e-20',         help='evalue cutoff, default: 1e-20')
+        top_16S_hits_parser.add_argument('-top',         required=False, type=int, default=1,     help='Number of top hits to report, default: 1')
+        top_16S_hits_parser.add_argument('-t',           required=False, type=int, default=1,     help='number of threads')
+        args = vars(parser.parse_args())
+        top_16S_hits.top_16S_hits(args)
+
+    elif sys.argv[1] == 'Plot_MAG':
+        from BioSAK import plot_mag
+        Plot_MAG_parser = subparsers.add_parser('Plot_MAG', usage=plot_mag.Plot_MAG_parser_usage)
+        Plot_MAG_parser.add_argument('-i', required=True, help='MAG folder')
+        Plot_MAG_parser.add_argument('-x', required=True, help='file extension')
+        Plot_MAG_parser.add_argument('-d', required=True, help='contig depth')
+        Plot_MAG_parser.add_argument('-sep', required=False, action='store_true', help='plot MAGs separately')
+        args = vars(parser.parse_args())
+        plot_mag.Plot_MAG(args)
+
+    elif sys.argv[1] == 'get_gnm_size':
+        from BioSAK import get_gnm_size
+        get_gnm_size_parser = subparsers.add_parser('get_gnm_size', usage=get_gnm_size.get_gnm_size_parser_usage)
+        get_gnm_size_parser.add_argument('-i',      required=True,                          help='MAG file/folder')
+        get_gnm_size_parser.add_argument('-x',      required=False,                         help='file extension')
+        get_gnm_size_parser.add_argument('-total',  required=False, action='store_true',    help='get total size')
+        args = vars(parser.parse_args())
+        get_gnm_size.get_gnm_size(args)
+
+    elif sys.argv[1] == 'mean_MAG_cov':
+        from BioSAK import mean_MAG_cov
+        mean_MAG_cov_parser = subparsers.add_parser('mean_MAG_cov', usage=mean_MAG_cov.mean_MAG_cov_usage)
+        mean_MAG_cov_parser.add_argument('-d', required=True, help='MetaBAT produced depth file')
+        mean_MAG_cov_parser.add_argument('-b', required=True, help='bin folder')
+        mean_MAG_cov_parser.add_argument('-x', required=True, help='file extension')
+        args = vars(parser.parse_args())
+        mean_MAG_cov.mean_MAG_cov(args)
+
+    elif sys.argv[1] == 'GTDB_tree_r207':
+        from BioSAK import GTDB_tree_r207
+        GTDB_tree_r207_parser = subparsers.add_parser('GTDB_tree_r207', usage=GTDB_tree_r207.GTDB_tree_r207_usage)
+        GTDB_tree_r207_parser.add_argument('-p', required=True,                         help='output prefix')
+        GTDB_tree_r207_parser.add_argument('-i', required=True,                         help='genome folder')
+        GTDB_tree_r207_parser.add_argument('-x', required=True,                         help='genome file extension')
+        GTDB_tree_r207_parser.add_argument('-t', required=False, type=int, default=1,   help='number of threads')
+        args = vars(parser.parse_args())
+        GTDB_tree_r207.GTDB_tree_r207(args)
+
+    elif sys.argv[1] == 'exe_cmds':
+        from BioSAK import exe_cmds
+        exe_cmds_parser = subparsers.add_parser('exe_cmds', usage=exe_cmds.exe_cmds_usage)
+        exe_cmds_parser.add_argument('-c', required=True, help='cmds file')
+        exe_cmds_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads')
+        args = vars(parser.parse_args())
+        exe_cmds.exe_cmds(args)
+
+    elif sys.argv[1] == 'compare_trees':
+        from BioSAK import compare_trees
+        compare_trees_parser = subparsers.add_parser('compare_trees', usage=compare_trees.compare_trees_usage)
+        compare_trees_parser.add_argument('-t1', required=True, help='tree 1')
+        compare_trees_parser.add_argument('-t2', required=True, help='tree 2')
+        args = vars(parser.parse_args())
+        compare_trees.compare_trees(args)
+
+    elif sys.argv[1] == 'split_fasta':
+        from BioSAK import split_fasta
+        split_fasta_parser = subparsers.add_parser('split_fasta', usage=split_fasta.split_fasta_usage)
+        split_fasta_parser.add_argument('-i', required=True, help='input fasta file')
+        split_fasta_parser.add_argument('-n', required=False, type=int, default=1, help='sequence per file, default: 1')
+        split_fasta_parser.add_argument('-o', required=True, help='output dir')
+        args = vars(parser.parse_args())
+        split_fasta.split_fasta(args)
+
+    elif sys.argv[1] == 'split_sam':
+        from BioSAK import split_sam
+        split_sam_parser = subparsers.add_parser('split_sam', usage=split_sam.split_sam_usage)
+        split_sam_parser.add_argument('-p', required=True, help='output prefix')
+        split_sam_parser.add_argument('-i', required=True, help='input SAM/BAM file')
+        split_sam_parser.add_argument('-r', required=True, help='reference id')
+        split_sam_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads')
+        args = vars(parser.parse_args())
+        split_sam.split_sam(args)
+
+    else:
+        print('Unrecognized command: %s, program exited' % sys.argv[1])
+        exit()
+
+
+upload_to_pypi_cmd = '''
+    get_fasta_stats_parser =            subparsers.add_parser('get_fasta_stats',            description='Wrapper for running Prodigal',                         usage='')
+    extract_sam_reads_parser =          subparsers.add_parser('Extract_sam_reads',          description='Extract reads from SAM file',                          usage='')
+    sra_reads_downloader_parser =       subparsers.add_parser('sra_reads_downloader',       description='Download SRA read files',                              usage=dwnld_sra_reads.sra_reads_downloader_usage)
+    subsample_reads_parser =            subparsers.add_parser('subsample_reads',            description='Wrapper for running Prodigal',                         usage='')
+    GTDB_16S module: report identity to the best hit
+
+cd /Users/songweizhi/PycharmProjects/BioSAK
+rm -r build dist BioSAK.egg-info
+python setup.py sdist bdist_wheel
+twine upload dist/*
+
+songweizhi
+shan88
+
+module load python/3.7.3
+source ~/mypython3env/bin/activate
+pip3 install --upgrade BioSAK
+
+'''
+
