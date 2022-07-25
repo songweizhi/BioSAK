@@ -1,3 +1,6 @@
+1.48.10
+- fixed bugs
+
 1.48.0
 - new module added: split_fasta and split_sam
 

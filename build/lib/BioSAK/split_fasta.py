@@ -1,7 +1,6 @@
 import os
 import argparse
 from Bio import SeqIO
-from global_functions import sep_path_basename_ext
 
 split_fasta_usage = '''
 ============ split_fasta example command ============
@@ -11,6 +10,19 @@ BioSAK split_fasta -i input.fa -o output_dir -n 6
 
 =====================================================
 '''
+
+
+def sep_path_basename_ext(file_in):
+
+    # separate path and file name
+    file_path, file_name = os.path.split(file_in)
+    if file_path == '':
+        file_path = '.'
+
+    # separate file basename and extension
+    file_basename, file_ext = os.path.splitext(file_name)
+
+    return file_path, file_basename, file_ext
 
 
 def split_fasta(args):

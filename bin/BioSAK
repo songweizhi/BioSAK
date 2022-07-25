@@ -64,41 +64,40 @@ def print_main_help():
        SubsetAlnCols           ->   Subset MSA by column
        rename_reads_for_Reago  ->   Rename paired reads for Reago
        MeanMappingDepth        ->   Get mean mapping depth 
-    
-    SAM and BAM
+       mean_MAG_cov            ->   MAG depth based on weighted mean contig depth 
+       get_gnm_size            ->   Get the total length of genome(s)
+       get_bin_abundance       ->   Get bin abundance
+
+    Sam and Bam
        plot_sam_depth          ->   Plot SAM depth
        reads2bam               ->   Mapping and sorting
        sam2bam                 ->   Sam to BAM with samtools
        split_sam               ->   Split SAM/BAM file by reference
 
-    Tree manipulator
+    Tree related
        GTDB_tree_r207          ->   Infer GTDB (r207) archaeal/bacterial tree
-       label_tree              ->   Add labels to tree leaves (does not work)
        subset_tree             ->   Subset tree
-       iTOL                    ->   Prepare iTOL-compatible files for tree visualization
-       compare_trees           ->   Compare trees with mantel test
+       compare_trees           ->   Compare trees with Mantel test
+       iTOL                    ->   Prepare iTOL files for tree visualization
     
     Genome databases
-       get_GTDB_taxon_gnm      ->   Get id of all genomes from specified GTDB taxons
-       get_genome_GTDB         ->   Batch download GTDB representative genomes
+       get_GTDB_taxon_gnm      ->   Get id of genomes from specified GTDB taxons
+       get_genome_GTDB         ->   Batch download GTDB genomes
        get_genome_NCBI         ->   Batch download GenBank genomes
    
     Visualization
-       SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
-       VisGeneFlk              ->   Visualize gene flanking regions
        Plot_MAG                ->   plot MAGs, (GC vs depth)
+       VisGeneFlk              ->   Visualize gene flanking regions
+       SankeyTaxon             ->   Plot taxonomic classification with Sankey plot
                  
     Other modules
        split_folder            ->   Split folder
        js_cmds                 ->   Commands to job scripts
-       BestHit                 ->   Keep Best Hits only (blast outfmt 6)
-       get_bin_abundance       ->   Get bin abundance
-       mean_MAG_cov            ->   MAG depth based on weighted mean contig depth 
+       BestHit                 ->   Keep best blast hits (outfmt 6)
        get_Pfam_hmms           ->   Get Pfam profiles by id
        Reads_simulator         ->   Simulate NGS reads
-       usearch_uc              ->   Usearch uc file parser
-       get_gnm_size            ->   Get the total length of genome(s)
-       exe_cmds                ->   Execute commands in a file (one per line)
+       usearch_uc              ->   Parse Usearch uc file
+       exe_cmds                ->   Execute commands in a file (one cmd per line)
     ''' % version(config_dict)
 
     print(help_message)
@@ -253,13 +252,14 @@ if __name__ == '__main__':
         get_SCG_tree.get_SCG_tree(args, config_dict)
 
     elif sys.argv[1] == 'subset_tree':
-        from BioSAK import Subset_tree
-        subset_tree_parser = subparsers.add_parser('subset_tree', description='Subset tree', usage=Subset_tree.subset_tree_parser_usage)
+        from BioSAK import subset_tree
+        subset_tree_parser = subparsers.add_parser('subset_tree', description='Subset tree', usage=subset_tree.subset_tree_usage)
         subset_tree_parser.add_argument('-tree',            required=True,                                  help='input tree file')
         subset_tree_parser.add_argument('-taxon',           required=True,                                  help='A file containing list of nodes to keep, one node per line')
         subset_tree_parser.add_argument('-out',             required=True,                                  help='Output tree file')
+        subset_tree_parser.add_argument('-q',               required=False, action="store_true",            help='do not report progress')
         args = vars(parser.parse_args())
-        Subset_tree.subset_tree(args)
+        subset_tree.subset_tree(args)
 
     elif sys.argv[1] == 'label_tree':
         from BioSAK import label_tree
@@ -684,8 +684,11 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'compare_trees':
         from BioSAK import compare_trees
         compare_trees_parser = subparsers.add_parser('compare_trees', usage=compare_trees.compare_trees_usage)
-        compare_trees_parser.add_argument('-t1', required=True, help='tree 1')
-        compare_trees_parser.add_argument('-t2', required=True, help='tree 2')
+        compare_trees_parser.add_argument('-t1',  required=True,                       help='tree 1')
+        compare_trees_parser.add_argument('-t2',  required=True,                       help='tree 2')
+        compare_trees_parser.add_argument('-tx',  required=False, default='newick',    help='extention of tree files, default: newick')
+        compare_trees_parser.add_argument('-t',   required=False, type=int, default=1, help='number of threads')
+        compare_trees_parser.add_argument('-tmp', required=False, action="store_true", help='keep tmp files')
         args = vars(parser.parse_args())
         compare_trees.compare_trees(args)
 

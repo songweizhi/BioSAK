@@ -5,12 +5,17 @@ from Bio import Phylo
 from datetime import datetime
 
 
-subset_tree_parser_usage = '''
+subset_tree_usage = '''
+========================== subset_tree example command ==========================
 
+BioSAK subset_tree -tree tree_in.newick -taxon leaves.txt -out tree_out.newick
+
+=================================================================================
 '''
 
 
 def check_to_keep(clade_name_str, identified_taxon_list):
+
     # remove colon form clade name
     clade_name_str_no_colon = clade_name_str
     if ':' in clade_name_str_no_colon:
@@ -43,6 +48,7 @@ def check_to_keep(clade_name_str, identified_taxon_list):
 
 
 def remove_unwanted_leaf_nodes(tree, identified_taxon_list):
+
     # copy tree
     tree_copy = copy.deepcopy(tree)
 
@@ -63,18 +69,17 @@ def subset_tree(args):
 
     ################################################# input #################################################
 
-    tree_file_in =          args['tree']
-    group_to_taxon_file =   args['taxon']
-    tree_file_out =         args['out']
+    tree_file_in        = args['tree']
+    group_to_taxon_file = args['taxon']
+    tree_file_out       = args['out']
+    keep_quiet          = args['q']
 
     # define tmp file name
     tree_file_tmp_1 = '%s.tmp_1.tree' % tree_file_out
     tree_file_tmp_2 = '%s.tmp_2.tree' % tree_file_out
+    time_format     = '[%Y-%m-%d %H:%M:%S] '
 
-    time_format = '[%Y-%m-%d %H:%M:%S] '
-
-
-    ################################################ store input information ###############################################
+    ################################################ store input information ###########################################
 
     # read in tree
     tree_in = Phylo.read(tree_file_in, 'newick')
@@ -83,26 +88,28 @@ def subset_tree(args):
     identified_taxon_list = set()
     for each_group in open(group_to_taxon_file):
         identified_taxon_list.add(each_group.strip())
-    print(datetime.now().strftime(time_format) + 'The number of provided taxon: %s' % len(identified_taxon_list))
 
+    if keep_quiet is False:
+        print(datetime.now().strftime(time_format) + 'The number of provided taxon: %s' % len(identified_taxon_list))
 
-    ########################################## remove unwanted nodes recursively ###########################################
+    ########################################## remove unwanted nodes recursively #######################################
 
     # remove unwanted nodes recursively
-    print(datetime.now().strftime(time_format) + 'Recursively removing unwanted nodes')
+    if keep_quiet is False:
+        print(datetime.now().strftime(time_format) + 'Recursively removing unwanted nodes')
     deleted_leaf_num = 1
     n = 0
     tree_in_copy = copy.deepcopy(tree_in)
     while deleted_leaf_num > 0:
         tree_in_copy, deleted_leaf_num = remove_unwanted_leaf_nodes(tree_in_copy, identified_taxon_list)
         n += 1
-        print(datetime.now().strftime(time_format) + 'Removed %s nodes in %sth round' % (deleted_leaf_num, n))
+        if keep_quiet is False:
+            print(datetime.now().strftime(time_format) + 'Removed %s nodes in %sth round' % (deleted_leaf_num, n))
 
     # write out tree
     Phylo.write(tree_in_copy, tree_file_tmp_1, 'newick')
 
-
-    ############################################# remove "100:" in clade name ##############################################
+    ############################################# remove "100:" in clade name ##########################################
 
     # read in tree
     tree_tmp_1 = Phylo.read(tree_file_tmp_1, 'newick')
@@ -115,8 +122,7 @@ def subset_tree(args):
 
     Phylo.write(tree_tmp_1_copy, tree_file_tmp_2, 'newick')
 
-
-    ################################################ rename leaf nodes name ################################################
+    ################################################ rename leaf nodes name ############################################
 
     # read in tree
     tree_tmp_2 = Phylo.read(tree_file_tmp_2, 'newick')
@@ -149,10 +155,9 @@ def subset_tree(args):
     # write out tree
     Phylo.write(tree_tmp_2_copy, tree_file_out, 'newick')
 
-
     # report
-    print(datetime.now().strftime(time_format) + 'Tree subset exported to: %s' % tree_file_out)
-
+    if keep_quiet is False:
+        print(datetime.now().strftime(time_format) + 'Tree subset exported to: %s' % tree_file_out)
 
     # print warning message if some provided node(s) were not found
     extracted_leaf_nodes = tree_tmp_2_copy.get_terminals()
@@ -167,10 +172,10 @@ def subset_tree(args):
             if provided_node not in extracted_leaf_node_list:
                 un_extracted_nodes.append(provided_node)
 
-        print(datetime.now().strftime(time_format) + 'Warning!!! Found %s of %s provided nodes, missed: %s' % (len(extracted_leaf_nodes), len(identified_taxon_list), ', '.join(un_extracted_nodes)))
+        if keep_quiet is False:
+            print(datetime.now().strftime(time_format) + 'Warning!!! Found %s of %s provided nodes, missed: %s' % (len(extracted_leaf_nodes), len(identified_taxon_list), ', '.join(un_extracted_nodes)))
 
-
-    ################################################### remove tmp files ###################################################
+    ################################################### remove tmp files ###############################################
 
     # remove tmp files
     os.remove(tree_file_tmp_1)
@@ -178,12 +183,10 @@ def subset_tree(args):
 
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser(description='', add_help=False)
-
-    parser.add_argument('-h',     action='help', help='Show this help message and exit')
-    parser.add_argument('-tree',  required=True,  type=str, help='input tree file')
-    parser.add_argument('-taxon', required=True,  type=str, help='A file containing list of nodes to keep, one node per line')
-    parser.add_argument('-out',   required=True,  type=str, help='Output tree file')
-
+    parser.add_argument('-h',     action='help',                        help='Show this help message and exit')
+    parser.add_argument('-tree',  required=True,  type=str,             help='input tree file')
+    parser.add_argument('-taxon', required=True,  type=str,             help='A file containing list of leaves to keep, one leaf per line')
+    parser.add_argument('-out',   required=True,  type=str,             help='Output tree file')
+    parser.add_argument('-q',     required=False, action="store_true",  help='do not report progress')
     args = vars(parser.parse_args())

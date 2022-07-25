@@ -25,7 +25,7 @@ config_dict = {'config_file_path'       : config_file_path,
                'label_tree_R'           : '%s/label_tree.R'                   % config_file_path,
                'cdd2cog_perl'           : '%s/cdd2cog.pl'                     % config_file_path,
                'get_sankey_plot_R'      : '%s/get_sankey_plot.R'              % config_file_path,
-               'compare_trees_R'        : '%s/Compare_trees.R'                % config_file_path,
+               'compare_trees_R'        : '%s/compare_trees.R'                % config_file_path,
                'ko00001_keg'            : '%s/ko00001.keg'                    % config_file_path,
                'MetaCyc_rxns_with_ec'   : '%s/MetaCyc_reactions_with_ec.txt'  % config_file_path
                }

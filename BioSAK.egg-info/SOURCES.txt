@@ -40,7 +40,6 @@ BioSAK/Reads_simulator.py
 BioSAK/SILVA_for_BLCA.py
 BioSAK/SankeyTaxon.py
 BioSAK/SubsetAlnCols.py
-BioSAK/Subset_tree.py
 BioSAK/VERSION
 BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
@@ -51,6 +50,7 @@ BioSAK/boxplot_matrix_KEGG.py
 BioSAK/boxplot_matrix_dbCAN.py
 BioSAK/cdd2cog.pl
 BioSAK/checkm_marker.py
+BioSAK/compare_trees copy.py
 BioSAK/compare_trees.R
 BioSAK/compare_trees.py
 BioSAK/dbCAN.py
@@ -107,6 +107,7 @@ BioSAK/slice_seq.py
 BioSAK/split_fasta.py
 BioSAK/split_folder.py
 BioSAK/split_sam.py
+BioSAK/subset_tree.py
 BioSAK/test.py
 BioSAK/tmp_1.py
 BioSAK/top_16S_hits.py
@@ -476,7 +477,6 @@ tmp_scripts/InPrep_Get_homologues.py
 tmp_scripts/NCBI_taxonomy_Extract_interested_taxon_from_nodes_and_names_files.py
 tmp_scripts/NCBI_taxonomy_get_ancestors.py
 tmp_scripts/Phylogenetic_back.py
-tmp_scripts/Test_6666_3.py
 tmp_scripts/Test_get_average_distance.py
 tmp_scripts/Test_this_one.py
 tmp_scripts/chemical_solution_calculator.py
@@ -498,20 +498,9 @@ tmp_scripts/remove_unpaired_reads.py
 tmp_scripts/rpy.py
 tmp_scripts/simple_path.png
 tmp_scripts/split_paired_reads.py
-tmp_scripts/test_1.py
 tmp_scripts/test_16_get_failed_prediction.py
-tmp_scripts/test_2.py
-tmp_scripts/test_3.py
-tmp_scripts/test_4_googleVis.py
-tmp_scripts/test_5.py
 tmp_scripts/test_6_get_core_genes.py
 tmp_scripts/test_sankey.py
 tmp_scripts/tmp_1.py
-tmp_scripts/tmp_2.py
 tmp_scripts/tmp_3.py
 tmp_scripts/tmp_4.py
-tmp_scripts/tmp_5.py
-tmp_scripts/tmp_6.py
-tmp_scripts/tmp_7.py
-tmp_scripts/tmp_8.py
-tmp_scripts/tmp_9.py
