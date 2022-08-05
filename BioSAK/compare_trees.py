@@ -10,7 +10,7 @@ compare_trees_usage = '''
 
 module load R/3.5.3
 BioSAK compare_trees -t1 tree_1.newick -t2 tree_2.newick
-BioSAK compare_trees -t1 tree_dir -t2 tree_dir -tx newick
+BioSAK compare_trees -t1 tree_dir -t2 tree_dir -tx newick -dm -t 12
 
 ===============================================================
 '''
@@ -29,6 +29,16 @@ def sep_path_basename_ext(file_in):
     return file_path, file_basename, file_extension
 
 
+def check_numeric(str_in):
+    is_numeric = True
+    try:
+        x = float(str_in)
+    except ValueError:
+        is_numeric = False
+
+    return is_numeric
+
+
 def parse_mantel_stats(mantel_stats_txt):
 
     mantel_similarity = 'na'
@@ -38,12 +48,13 @@ def parse_mantel_stats(mantel_stats_txt):
     return mantel_similarity
 
 
-def get_matrix(query_tree_list, subject_tree_list, mantel_stats_dir, output_matrix):
-
-    output_matrix_handle = open(output_matrix, 'w')
+def get_matrix(query_tree_list, subject_tree_list, mantel_stats_dir, write_out_dm, output_matrix, output_matrix_distance):
 
     header_line_str = '\t' + '\t'.join(subject_tree_list) + '\n'
+
+    output_matrix_handle = open(output_matrix, 'w')
     output_matrix_handle.write(header_line_str)
+    distance_lol = []
     for each_qt in query_tree_list:
 
         current_qt_mantel_stats_value_list = [each_qt]
@@ -60,9 +71,29 @@ def get_matrix(query_tree_list, subject_tree_list, mantel_stats_dir, output_matr
 
             current_qt_mantel_stats_value_list.append(tree_similarity)
 
+        current_qt_mantel_stats_value_list_distance = [each_qt]
+        for each_value in current_qt_mantel_stats_value_list[1:]:
+            if check_numeric(each_value) is True:
+                in_distance = 1 - float(each_value)
+                in_distance = float("{0:.4f}".format(in_distance))
+                if in_distance == 0:
+                    in_distance = '0'
+                current_qt_mantel_stats_value_list_distance.append(str(in_distance))
+            else:
+                current_qt_mantel_stats_value_list_distance.append('na')
+
+        distance_lol.append(current_qt_mantel_stats_value_list_distance)
         current_qt_mantel_stats_value_str = '\t'.join(current_qt_mantel_stats_value_list)
         output_matrix_handle.write(current_qt_mantel_stats_value_str + '\n')
     output_matrix_handle.close()
+
+    # write out distance matrix
+    if write_out_dm is True:
+        output_matrix_distance_handle = open(output_matrix_distance, 'w')
+        output_matrix_distance_handle.write(header_line_str)
+        for each_list in distance_lol:
+            output_matrix_distance_handle.write('\t'.join(each_list) + '\n')
+        output_matrix_distance_handle.close()
 
 
 def compare_trees_worker(arg_list):
@@ -131,6 +162,7 @@ def compare_trees(args):
     tree_file_1     = args['t1']
     tree_file_2     = args['t2']
     tree_file_ext   = args['tx']
+    export_dm       = args['dm']
     num_threads     = args['t']
     keep_tmp        = args['tmp']
 
@@ -162,7 +194,8 @@ def compare_trees(args):
                 to_be_calculated_set.add(tree_1_vs_2)
                 to_be_calculated_set.add(tree_2_vs_1)
 
-    print('Total number of similarities to calculate: %s' % len(list_for_compare_trees_worker))
+    print('Total pairs of trees to compare: %s' % len(list_for_compare_trees_worker))
+
     # compare trees with multiprocessing
     pool = mp.Pool(processes=num_threads)
     pool.map(compare_trees_worker, list_for_compare_trees_worker)
@@ -170,7 +203,8 @@ def compare_trees(args):
     pool.join()
 
     # get matrix
-    output_matrix = 'Mantel_similarity_matrix.txt'
+    output_matrix_similarity    = 'Matrix_similarity.txt'
+    output_matrix_distance      = 'Matrix_distance.txt'
     query_tree_list_basename = []
     for each_q_tree in query_tree_list:
         q_tree_path, q_tree_basename, q_tree_ext = sep_path_basename_ext(each_q_tree)
@@ -181,10 +215,14 @@ def compare_trees(args):
         s_tree_path, s_tree_basename, s_tree_ext = sep_path_basename_ext(each_s_tree)
         subject_tree_list_basename.append(s_tree_basename)
 
-    get_matrix(sorted(query_tree_list_basename), sorted(subject_tree_list_basename), '.', output_matrix)
+    get_matrix(sorted(query_tree_list_basename), sorted(subject_tree_list_basename), '.', export_dm, output_matrix_similarity, output_matrix_distance)
 
     # final report
-    print('Data matrix exported to: %s' % output_matrix)
+    if export_dm is True:
+        print('Data matrix exported to: %s and %s' % (output_matrix_similarity, output_matrix_distance))
+    else:
+        print('Data matrix exported to: %s' % output_matrix_similarity)
+
     print('Done!')
 
 
@@ -195,6 +233,7 @@ if __name__ == '__main__':
     compare_trees_parser.add_argument('-t1',  required=True,                       help='tree (folder) 1')
     compare_trees_parser.add_argument('-t2',  required=True,                       help='tree (folder) 2')
     compare_trees_parser.add_argument('-tx',  required=False, default='newick',    help='extention of tree files, default: newick')
+    compare_trees_parser.add_argument('-dm',  required=False, action="store_true", help='export distance-alike matrix, obtained by subtract the similarity value from 1')
     compare_trees_parser.add_argument('-t',   required=False, type=int, default=1, help='number of threads')
     compare_trees_parser.add_argument('-tmp', required=False, action="store_true", help='keep tmp files')
     args = vars(compare_trees_parser.parse_args())

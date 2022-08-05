@@ -1,31 +1,34 @@
 import numpy as np
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 
 
-a = np.random.normal(0, 2, 20)
-b = np.random.normal(-2, 7, 20)
-data = [a, b]
+def boxplot_with_dots(num_lol, name_list, output_plot):
 
-box_plot = plt.boxplot(data,
-                       patch_artist=True,
-                       whiskerprops=dict(color='lightblue', linewidth=2),
-                       capprops=dict(color='lightblue'))
+    data = [np.array(i) for i in num_lol]
+
+    box_plot = plt.boxplot(data, labels=name_list, patch_artist=True,
+                           whiskerprops=dict(color='lightblue', linewidth=2), capprops=dict(color='lightblue'))
+    # set the color pf box
+    for box in box_plot['boxes']:
+        box.set(linewidth=0)
+        box.set_facecolor('lightblue')
+
+    # add dots, https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html
+    col_index = 1
+    for num_arrary in data:
+        plt.plot(np.random.normal(col_index, 0.02, len(num_arrary)), num_arrary, '.', alpha=0.8, color='orange', markersize=6, markeredgewidth=0)
+        col_index += 1
+
+    # write out
+    plt.tight_layout()
+    plt.savefig(output_plot, bbox_inches='tight', dpi=300)
+    plt.close()
 
 
-# set the color pf box
-for box in box_plot['boxes']:
-    box.set(linewidth=0)
-    box.set_facecolor('lightblue')
+num_lol     = [[1, 2, 3, 4], [4, 5, 6, 7], [6, 7, 8, 9]]
+name_list   = ['apple', 'banana', 'orange']
+output_plot = '/Users/songweizhi/Desktop/boxplot.png'
 
-
-# add dots, https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html
-plt.plot(np.random.normal(1, 0.02, len(a)), a, '.', alpha=0.8, marker='o', color='orange', markersize=6, markeredgewidth=0)
-plt.plot(np.random.normal(2, 0.02, len(b)), b, '.', alpha=0.8, marker='o', color='orange', markersize=6, markeredgewidth=0)
-
-
-# for i in [1,2]:
-#     y = data[i-1]
-#     x = np.random.normal(i, 0.02, len(y))
-#     plt.plot(x, y, 'r.', alpha=0.2)
-
-plt.show()
+boxplot_with_dots(num_lol, name_list, output_plot)

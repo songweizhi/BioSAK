@@ -58,6 +58,7 @@ def print_main_help():
        rename_seq              ->   Rename sequences in a file
        select_seq              ->   Select sequences by their ids
        split_fasta             ->   Split a fasta file into multiple files
+       fa2id                   ->   export sequence id
        get_gene_depth          ->   Get gene depth by contig depth
        convert_align_format    ->   Convert alignment format
        OneLineAln              ->   One-line fasta format alignments
@@ -687,6 +688,7 @@ if __name__ == '__main__':
         compare_trees_parser.add_argument('-t1',  required=True,                       help='tree 1')
         compare_trees_parser.add_argument('-t2',  required=True,                       help='tree 2')
         compare_trees_parser.add_argument('-tx',  required=False, default='newick',    help='extention of tree files, default: newick')
+        compare_trees_parser.add_argument('-dm', required=False, action="store_true",  help='export distance-alike matrix, obtained by subtract the similarity value from 1')
         compare_trees_parser.add_argument('-t',   required=False, type=int, default=1, help='number of threads')
         compare_trees_parser.add_argument('-tmp', required=False, action="store_true", help='keep tmp files')
         args = vars(parser.parse_args())
@@ -710,6 +712,15 @@ if __name__ == '__main__':
         split_sam_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads')
         args = vars(parser.parse_args())
         split_sam.split_sam(args)
+
+    elif sys.argv[1] == 'fa2id':
+        from BioSAK import fa2id
+        fa2id_parser = subparsers.add_parser('fa2id', usage=fa2id.fa2id_usage)
+        fa2id_parser.add_argument('-i', required=True,                          help='input fasta file')
+        fa2id_parser.add_argument('-o', required=True,                          help='output txt')
+        fa2id_parser.add_argument('-fq', required=False, action="store_true",   help='in fastq format, default: fasta')
+        args = vars(parser.parse_args())
+        fa2id.fa2id(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
