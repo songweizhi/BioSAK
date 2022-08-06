@@ -50,7 +50,6 @@ BioSAK/boxplot_matrix_KEGG.py
 BioSAK/boxplot_matrix_dbCAN.py
 BioSAK/cdd2cog.pl
 BioSAK/checkm_marker.py
-BioSAK/compare_trees copy.py
 BioSAK/compare_trees.R
 BioSAK/compare_trees.py
 BioSAK/dbCAN.py
@@ -99,6 +98,7 @@ BioSAK/plot_mag.py
 BioSAK/plot_sam_depth.py
 BioSAK/plot_tree.R
 BioSAK/reads2bam.py
+BioSAK/rename_leaves.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/sam2bam.py
@@ -505,3 +505,4 @@ tmp_scripts/test_sankey.py
 tmp_scripts/tmp_1.py
 tmp_scripts/tmp_3.py
 tmp_scripts/tmp_4.py
+tmp_scripts/tmp_5.py

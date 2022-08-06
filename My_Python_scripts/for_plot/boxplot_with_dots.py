@@ -10,6 +10,7 @@ def boxplot_with_dots(num_lol, name_list, output_plot):
 
     box_plot = plt.boxplot(data, labels=name_list, patch_artist=True,
                            whiskerprops=dict(color='lightblue', linewidth=2), capprops=dict(color='lightblue'))
+
     # set the color pf box
     for box in box_plot['boxes']:
         box.set(linewidth=0)
@@ -18,7 +19,8 @@ def boxplot_with_dots(num_lol, name_list, output_plot):
     # add dots, https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.plot.html
     col_index = 1
     for num_arrary in data:
-        plt.plot(np.random.normal(col_index, 0.02, len(num_arrary)), num_arrary, '.', alpha=0.8, color='orange', markersize=6, markeredgewidth=0)
+        plt.plot(np.random.normal(col_index, 0.02, len(num_arrary)), num_arrary, '.', alpha=0.8, color='orange',
+                 markersize=6, markeredgewidth=0)
         col_index += 1
 
     # write out

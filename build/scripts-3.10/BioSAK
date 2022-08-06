@@ -80,6 +80,7 @@ def print_main_help():
        subset_tree             ->   Subset tree
        compare_trees           ->   Compare trees with Mantel test
        iTOL                    ->   Prepare iTOL files for tree visualization
+       rename_leaves           ->   Rename tree leaves
     
     Genome databases
        get_GTDB_taxon_gnm      ->   Get id of genomes from specified GTDB taxons
@@ -721,6 +722,16 @@ if __name__ == '__main__':
         fa2id_parser.add_argument('-fq', required=False, action="store_true",   help='in fastq format, default: fasta')
         args = vars(parser.parse_args())
         fa2id.fa2id(args)
+
+    elif sys.argv[1] == 'rename_leaves':
+        from BioSAK import rename_leaves
+        rename_leaves_parser = subparsers.add_parser('rename_leaves', usage=rename_leaves.rename_leaves_usage)
+        rename_leaves_parser.add_argument('-tree', required=True,             help='input tree')
+        rename_leaves_parser.add_argument('-txt',  required=True,             help='rename file')
+        rename_leaves_parser.add_argument('-fmt',  required=False, default=1, help='tree format, default: 1')
+        rename_leaves_parser.add_argument('-out',  required=True,             help='output tree')
+        args = vars(parser.parse_args())
+        rename_leaves.rename_leaves(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
