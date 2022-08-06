@@ -79,8 +79,8 @@ def print_main_help():
        GTDB_tree_r207          ->   Infer GTDB (r207) archaeal/bacterial tree
        subset_tree             ->   Subset tree
        compare_trees           ->   Compare trees with Mantel test
-       iTOL                    ->   Prepare iTOL files for tree visualization
        rename_leaves           ->   Rename tree leaves
+       iTOL                    ->   Prepare iTOL files for tree visualization
     
     Genome databases
        get_GTDB_taxon_gnm      ->   Get id of genomes from specified GTDB taxons

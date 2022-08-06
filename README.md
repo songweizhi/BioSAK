@@ -103,9 +103,10 @@ BioSAK modules
        GTDB_tree_r207          ->   Infer GTDB (r207) archaeal/bacterial tree
        label_tree              ->   Add labels to tree leaves (does not work)
        subset_tree             ->   Subset tree
-       iTOL                    ->   Prepare iTOL-compatible files for tree visualization
        compare_trees           ->   Compare trees with mantel test
-    
+       rename_leaves           ->   Rename tree leaves
+       iTOL                    ->   Prepare iTOL-compatible files for tree visualization
+
     Genome databases
        get_GTDB_taxon_gnm      ->   Get id of all genomes from specified GTDB taxons
        get_genome_GTDB         ->   Batch download GTDB representative genomes
