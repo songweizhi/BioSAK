@@ -27,7 +27,7 @@ def rename_leaves(args):
         each_mag_split = each_mag.strip().split('\t')
         before_rename = each_mag_split[0]
         after_rename = each_mag_split[1]
-        mag_rename_dict[after_rename] = before_rename
+        mag_rename_dict[before_rename] = after_rename
 
     t = Tree(tree_file_in, format=tree_format)
 
@@ -47,12 +47,14 @@ def rename_leaves(args):
         print('No leaf on input tree found in rename file, please double check!')
         exit()
     elif leaves_without_new_name > 0:
-        print('Found %s leaves in input tree, %s of them were found in the rename file' % (len(input_tree_leaf_name_list), leaves_with_new_name))
+        print('Found %s leaves in input tree, %s of them were found in the rename file.' % (len(input_tree_leaf_name_list), leaves_with_new_name))
 
     for leaf in t:
         leaf_name_new = mag_rename_dict.get(leaf.name, leaf.name)
         leaf.name = leaf_name_new
     t.write(format=tree_format, outfile=tree_file_out)
+
+    print('Done!')
 
 
 if __name__ == '__main__':

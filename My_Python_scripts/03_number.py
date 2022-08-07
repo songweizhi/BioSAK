@@ -13,8 +13,13 @@ print(np.log(2.7182780911361077))
 num = 123.456789
 num_1 = float("{0:.2f}".format(num))
 num_2 = float("{0:.3f}".format(num))
-print(num_1)    # 123.46
-print(num_2)    # 123.457
+
+
+num_str = '123.456789'
+try:
+    pwy_cpl = int(num_str)
+except:
+    pwy_cpl = float(num_str)
 
 
 def norm_num_list(num_list, norm_by, decimal_to_keep):
@@ -137,7 +142,6 @@ import os
 import numpy as np
 import pandas as pd
 from scipy import stats
-import Kelp_HGT_config
 
 
 def transpose_csv(file_in, file_out, sep_symbol, column_name_pos, row_name_pos):
