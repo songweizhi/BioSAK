@@ -323,15 +323,16 @@ if __name__ == '__main__':
 
     elif sys.argv[1] == 'get_genome_NCBI':
         from BioSAK import get_genome_NCBI
-        dwnld_GenBank_genome_parser = subparsers.add_parser('get_genome_NCBI', description='Batch download GenBank genomes', usage=get_genome_NCBI.get_genome_NCBI_parser_usage)
-        dwnld_GenBank_genome_parser.add_argument('-csv',         required=True,                                     help='csv file from NCBI genome_browse')
-        dwnld_GenBank_genome_parser.add_argument('-out',         required=True,                                     help='output folder')
-        dwnld_GenBank_genome_parser.add_argument('-id',          required=False, default=None,                      help='assembly id (6th col in the csv file), one id per line')
-        dwnld_GenBank_genome_parser.add_argument('-fna',         required=False, action="store_true",               help='download gna file')
-        dwnld_GenBank_genome_parser.add_argument('-faa',         required=False, action="store_true",               help='download faa file')
-        dwnld_GenBank_genome_parser.add_argument('-gbff',        required=False, action="store_true",               help='download gbff file')
-        dwnld_GenBank_genome_parser.add_argument('-name',        required=False, action="store_true",               help='include genome name in the downloaded files')
-        dwnld_GenBank_genome_parser.add_argument('-t',           required=False, default=1, type=int,               help='number of threads')
+        get_genome_NCBI_parser = subparsers.add_parser('get_genome_NCBI', description='Batch download NCBI genomes', usage=get_genome_NCBI.get_genome_NCBI_parser_usage)
+        get_genome_NCBI_parser.add_argument('-db',          required=True,                       help='local path to prokaryotes.txt')
+        get_genome_NCBI_parser.add_argument('-out',         required=True,                       help='output folder')
+        get_genome_NCBI_parser.add_argument('-id',          required=False, default=None,        help='IDs of genomes to download')
+        get_genome_NCBI_parser.add_argument('-fna',         required=False, action="store_true", help='download fna file')
+        get_genome_NCBI_parser.add_argument('-faa',         required=False, action="store_true", help='download faa file')
+        get_genome_NCBI_parser.add_argument('-gbff',        required=False, action="store_true", help='download gbff file')
+        get_genome_NCBI_parser.add_argument('-name',        required=False, action="store_true", help='include genome name in the downloaded files')
+        get_genome_NCBI_parser.add_argument('-force',       required=False, action="store_true", help='force overwrite existing genome directory')
+        get_genome_NCBI_parser.add_argument('-t',           required=False, default=1, type=int, help='number of threads')
         args = vars(parser.parse_args())
         get_genome_NCBI.download_GenBank_genome(args)
 
