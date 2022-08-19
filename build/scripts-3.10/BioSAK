@@ -763,9 +763,9 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'fln':
         from BioSAK import format_leaf_name
         format_leaf_name_parser = subparsers.add_parser('fln', usage=format_leaf_name.format_leaf_name_usage)
-        format_leaf_name_parser.add_argument('-tree',               required=True,                          help='input tree')
+        format_leaf_name_parser.add_argument('-i',                  required=True,                          help='input tree')
         format_leaf_name_parser.add_argument('-fmt',                required=False, default=1,              help='tree format, default: 1')
-        format_leaf_name_parser.add_argument('-out',                required=True,                          help='output tree')
+        format_leaf_name_parser.add_argument('-o',                  required=True,                          help='output tree')
         format_leaf_name_parser.add_argument('-s2u',                required=False, action="store_true",    help='change space in tree leaves to underscore')
         format_leaf_name_parser.add_argument('-ns',                 required=False, action="store_true",    help='remove space from leaf names')
         format_leaf_name_parser.add_argument('-nsqm',               required=False, action="store_true",    help='remove single quotation marks from leaf names')

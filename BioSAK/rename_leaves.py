@@ -17,10 +17,10 @@ leaf_2  leaf_2_new_name
 
 def rename_leaves(args):
 
-    tree_file_in      = args['tree']
+    tree_file_in      = args['i']
     rename_file       = args['txt']
     tree_format       = args['fmt']
-    tree_file_out     = args['out']
+    tree_file_out     = args['o']
 
     mag_rename_dict = {}
     for each_mag in open(rename_file):
@@ -60,9 +60,9 @@ def rename_leaves(args):
 if __name__ == '__main__':
 
     rename_leaves_parser = argparse.ArgumentParser()
-    rename_leaves_parser.add_argument('-tree', required=True,             help='input tree')
+    rename_leaves_parser.add_argument('-i', required=True,                help='input tree')
     rename_leaves_parser.add_argument('-txt',  required=True,             help='rename file')
     rename_leaves_parser.add_argument('-fmt',  required=False, default=1, help='tree format, default: 1')
-    rename_leaves_parser.add_argument('-out',  required=True,             help='output tree')
+    rename_leaves_parser.add_argument('-i',  required=True,               help='output tree')
     args = vars(rename_leaves_parser.parse_args())
     rename_leaves(args)

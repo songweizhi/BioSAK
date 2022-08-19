@@ -3,21 +3,21 @@ from ete3 import Tree
 
 
 format_leaf_name_usage = '''
-============ format_leaf_name example commands ============
+========= format_leaf_name example commands =========
 
-BioSAK fln -tree input.tree -out output.tree -s2u
-BioSAK fln -tree input.tree -out output.tree -ns -nsqm
-BioSAK fln -tree input.tree -out output.tree -ndqm
+BioSAK fln -i input.tree -o output.tree -s2u
+BioSAK fln -i input.tree -o output.tree -ns -nsqm
+BioSAK fln -i input.tree -o output.tree -ndqm
 
-===========================================================
+=====================================================
 '''
 
 
 def format_leaf_name(args):
 
-    tree_file_in                = args['tree']
+    tree_file_in                = args['i']
     tree_format                 = args['fmt']
-    tree_file_out               = args['out']
+    tree_file_out               = args['o']
     no_space                    = args['ns']
     space_to_underscore         = args['s2u']
     no_single_quotation_mark    = args['nsqm']
@@ -54,9 +54,9 @@ def format_leaf_name(args):
 if __name__ == '__main__':
 
     format_leaf_name_parser = argparse.ArgumentParser()
-    format_leaf_name_parser.add_argument('-tree',               required=True,                          help='input tree')
+    format_leaf_name_parser.add_argument('-i',                  required=True,                          help='input tree')
     format_leaf_name_parser.add_argument('-fmt',                required=False, default=1,              help='tree format, default: 1')
-    format_leaf_name_parser.add_argument('-out',                required=True,                          help='output tree')
+    format_leaf_name_parser.add_argument('-o',                  required=True,                          help='output tree')
     format_leaf_name_parser.add_argument('-s2u',                required=False, action="store_true",    help='change space in tree leaves to underscore')
     format_leaf_name_parser.add_argument('-ns',                 required=False, action="store_true",    help='remove space from leaf names')
     format_leaf_name_parser.add_argument('-nsqm',               required=False, action="store_true",    help='remove single quotation marks from leaf names')
