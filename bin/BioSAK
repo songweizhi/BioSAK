@@ -80,13 +80,16 @@ def print_main_help():
        subset_tree             ->   Subset tree
        compare_trees           ->   Compare trees with Mantel test
        rename_leaves           ->   Rename tree leaves
-       iTOL                    ->   Prepare iTOL files for tree visualization
+       fln                     ->   format leaf names (e.g. remove spaces in names)
+       iTOL                    ->   Prepare iTOL-compatible files for tree visualization
     
     Genome databases
        get_GTDB_taxon_gnm      ->   Get id of genomes from specified GTDB taxons
        get_genome_GTDB         ->   Batch download GTDB genomes
        get_genome_NCBI         ->   Batch download GenBank genomes
-   
+       sampling_GTDB_gnms      ->   Select GTDB genomes from a specified taxon at specified sampling rank
+       subset_GTDB_meta        ->   Subset metadata of GTDB reference genomes
+        
     Visualization
        Plot_MAG                ->   plot MAGs, (GC vs depth)
        VisGeneFlk              ->   Visualize gene flanking regions
@@ -556,10 +559,10 @@ if __name__ == '__main__':
         from BioSAK import js_cmds
         js_cmds_parser = subparsers.add_parser('js_cmds', description='put commands into job scripts', usage=js_cmds.js_cmds_usage)
         js_cmds_parser.add_argument('-p',      required=True,                       help='js prefix')
-        js_cmds_parser.add_argument('-cmds',   required=True,                       help='cmds file')
-        js_cmds_parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next js')
-        js_cmds_parser.add_argument('-header', required=True,                       help='js header')
+        js_cmds_parser.add_argument('-cmd',    required=True,                       help='cmds file')
+        js_cmds_parser.add_argument('-hd',     required=True,                       help='js header')
         js_cmds_parser.add_argument('-n',      required=True, type=int,             help='number of cmds per js')
+        js_cmds_parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next js')
         js_cmds_parser.add_argument('-js_hpc', required=False, default=None,        help='Full path to js folder on HPC')
         js_cmds_parser.add_argument('-force',  required=False, action="store_true", help='force overwrite existing results')
         args = vars(parser.parse_args())
@@ -687,8 +690,8 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'compare_trees':
         from BioSAK import compare_trees
         compare_trees_parser = subparsers.add_parser('compare_trees', usage=compare_trees.compare_trees_usage)
-        compare_trees_parser.add_argument('-t1',  required=True,                       help='tree 1')
-        compare_trees_parser.add_argument('-t2',  required=True,                       help='tree 2')
+        compare_trees_parser.add_argument('-t1',  required=True,                       help='tree (folder) 1')
+        compare_trees_parser.add_argument('-t2',  required=True,                       help='tree (folder) 2')
         compare_trees_parser.add_argument('-tx',  required=False, default='newick',    help='extention of tree files, default: newick')
         compare_trees_parser.add_argument('-dm', required=False, action="store_true",  help='export distance-alike matrix, obtained by subtract the similarity value from 1')
         compare_trees_parser.add_argument('-t',   required=False, type=int, default=1, help='number of threads')
@@ -734,17 +737,54 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         rename_leaves.rename_leaves(args)
 
+    elif sys.argv[1] == 'sampling_GTDB_gnms':
+        from BioSAK import sampling_GTDB_gnms
+        sampling_GTDB_gnms_parser = subparsers.add_parser('sampling_GTDB_gnms', usage=sampling_GTDB_gnms.sampling_GTDB_gnms_usage)
+        sampling_GTDB_gnms_parser.add_argument('-p',           required=False, default='Genomes',          help='output prefix')
+        sampling_GTDB_gnms_parser.add_argument('-meta',        required=True,                              help='GTDB reference genome metadata')
+        sampling_GTDB_gnms_parser.add_argument('-taxon',       required=True,                              help='interested taxon')
+        sampling_GTDB_gnms_parser.add_argument('-r',           required=True,                              help='sampling rank, select from p, c, o, f, g and s')
+        sampling_GTDB_gnms_parser.add_argument('-n',           required=False, default=1, type=int,        help='numer of genome to retain per taxon')
+        sampling_GTDB_gnms_parser.add_argument('-cpl',         required=False, default=None, type=float,   help='completeness cutoff (0-100), default: None')
+        sampling_GTDB_gnms_parser.add_argument('-ctm',         required=False, default=None, type=float,   help='contamination cutoff, default: None')
+        sampling_GTDB_gnms_parser.add_argument('-ts',          required=False, action='store_true',        help='only consider type strain')
+        args = vars(parser.parse_args())
+        sampling_GTDB_gnms.sampling_GTDB_gnms(args)
+
+    elif sys.argv[1] == 'subset_GTDB_meta':
+        from BioSAK import subset_GTDB_meta
+        subset_GTDB_meta_parser = subparsers.add_parser('subset_GTDB_meta', usage=subset_GTDB_meta.subset_GTDB_meta_usage)
+        subset_GTDB_meta_parser.add_argument('-meta',    required=True, help='GTDB reference genome metadata')
+        subset_GTDB_meta_parser.add_argument('-id',      required=True, help='id of genomes')
+        subset_GTDB_meta_parser.add_argument('-out',     required=True, help='output file')
+        args = vars(parser.parse_args())
+        subset_GTDB_meta.subset_GTDB_meta(args)
+
+    elif sys.argv[1] == 'fln':
+        from BioSAK import format_leaf_name
+        format_leaf_name_parser = subparsers.add_parser('fln', usage=format_leaf_name.format_leaf_name_usage)
+        format_leaf_name_parser.add_argument('-i',                  required=True,                          help='input tree')
+        format_leaf_name_parser.add_argument('-fmt',                required=False, default=1,              help='tree format, default: 1')
+        format_leaf_name_parser.add_argument('-o',                  required=True,                          help='output tree')
+        format_leaf_name_parser.add_argument('-s2u',                required=False, action="store_true",    help='change space in tree leaves to underscore')
+        format_leaf_name_parser.add_argument('-ns',                 required=False, action="store_true",    help='remove space from leaf names')
+        format_leaf_name_parser.add_argument('-nsqm',               required=False, action="store_true",    help='remove single quotation marks from leaf names')
+        format_leaf_name_parser.add_argument('-ndqm',               required=False, action="store_true",    help='remove double quotation marks from leaf names')
+        args = vars(parser.parse_args())
+        format_leaf_name.format_leaf_name(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
 
 
 upload_to_pypi_cmd = '''
-    get_fasta_stats_parser =            subparsers.add_parser('get_fasta_stats',            description='Wrapper for running Prodigal',                         usage='')
-    extract_sam_reads_parser =          subparsers.add_parser('Extract_sam_reads',          description='Extract reads from SAM file',                          usage='')
-    sra_reads_downloader_parser =       subparsers.add_parser('sra_reads_downloader',       description='Download SRA read files',                              usage=dwnld_sra_reads.sra_reads_downloader_usage)
-    subsample_reads_parser =            subparsers.add_parser('subsample_reads',            description='Wrapper for running Prodigal',                         usage='')
-    GTDB_16S module: report identity to the best hit
+
+get_fasta_stats_parser      = subparsers.add_parser('get_fasta_stats',      description='Wrapper for running Prodigal', usage='')
+extract_sam_reads_parser    = subparsers.add_parser('Extract_sam_reads',    description='Extract reads from SAM file',  usage='')
+sra_reads_downloader_parser = subparsers.add_parser('sra_reads_downloader', description='Download SRA read files',      usage=dwnld_sra_reads.sra_reads_downloader_usage)
+subsample_reads_parser      = subparsers.add_parser('subsample_reads',      description='Wrapper for running Prodigal', usage='')
+GTDB_16S module: report identity to the best hit
 
 cd /Users/songweizhi/PycharmProjects/BioSAK
 rm -r build dist BioSAK.egg-info

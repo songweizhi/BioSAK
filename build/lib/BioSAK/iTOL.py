@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import math
 import random
 import argparse
@@ -12,6 +10,7 @@ iTOL_usage = '''
 # Example commands
 BioSAK iTOL -ColorStrip -lg MagTaxon.txt -lt Phylum -out ColorStrip_taxon.txt
 BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -out ColorRange_taxon.txt
+BioSAK iTOL -ColorRange -taxon Taxonomy.txt -rank f -lt Family -out ColorRange_taxon.txt
 BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -out SimpleBar_size.txt
 BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -out Heatmap_abundance.txt
 BioSAK iTOL -ExternalShape -lm identity_matrix.txt -lt Identity -out ExternalShape_identity.txt -scale 25-50-75-100
@@ -19,6 +18,10 @@ BioSAK iTOL -ExternalShape -lm identity_matrix.txt -lt Identity -out ExternalSha
 # Leaf-to-Group file format (-lg, tab separated, no header)
 genome_1	Bacteria
 genome_2	Archaea
+
+# taxonomy file format (-taxon, tab separated, GTDB-format taxononomy string)
+genome_1	d__Bacteria;p__Proteobacteria;c__Alphaproteobacteria;o__Dongiales;f__Dongiaceae;g__Dongia;s__Dongia mobilis
+genome_2	d__Bacteria;p__Proteobacteria;c__Gammaproteobacteria;o__Arenicellales;f__LS-SOB;g__VYGS01;s__
 
 # Group-to-Color and Column-to-Color file format (-gc and -cc, tab separated, no header)
 Bacteria	#CCCC00
@@ -448,6 +451,8 @@ if __name__ == '__main__':
     parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
     parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
     parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
+    # parser.add_argument('-taxon',           required=False, default=None,          help='Leaf taxonomy, gtdb format')
+    # parser.add_argument('-rank',            required=False, default=None,          help='Taxonomy rank, select from p, c, o, f, g or s')
     parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
     parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
     parser.add_argument('-lv',              required=False, default=None,          help='Leaf Value')

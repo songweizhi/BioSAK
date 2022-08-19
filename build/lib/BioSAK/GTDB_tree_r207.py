@@ -2,7 +2,7 @@ import os
 import argparse
 
 GTDB_tree_r207_usage = '''
-============== GTDB_tree_r207 example command ==============
+==================== GTDB_tree_r207 example command ====================
 
 module load python/3.7.3
 source ~/mypython3env/bin/activate
@@ -19,7 +19,8 @@ export GTDBTK_DATA_PATH=/srv/scratch/z5039045/DB/GTDB_r207/release207
 
 BioSAK GTDB_tree_r207 -p Demo -i gnm_folder -x fa -t 12
 
-============================================================
+========================================================================
+
 '''
 
 def GTDB_tree_r207(args):
@@ -79,9 +80,3 @@ if __name__ == '__main__':
     GTDB_tree_r207_parser.add_argument('-t',               required=False, type=int, default=1,      help='number of threads')
     args = vars(GTDB_tree_r207_parser.parse_args())
     GTDB_tree_r207(args)
-
-
-'''
-Test2_ar53.unrooted.tree
-Test2_bac120.unrooted.tree
-'''

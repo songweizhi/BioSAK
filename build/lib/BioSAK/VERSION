@@ -1,4 +1,16 @@
-1.50.2
+1.52.1
+- fixed bugs
+
+1.52.0
+- new module added: subset_GTDB_meta
+
+1.51.2
+- fixed bugs
+
+1.51.0
+- new module added: sampling_GTDB_gnms
+
+1.50.4
 - fixed bugs
 
 1.50.0

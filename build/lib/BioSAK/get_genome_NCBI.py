@@ -1,6 +1,7 @@
 import os
 import glob
 import argparse
+from subprocess import Popen
 from datetime import datetime
 import multiprocessing as mp
 
@@ -9,21 +10,18 @@ get_genome_NCBI_parser_usage = '''
 ===================================== get_genome_NCBI example commands =====================================
 
 # Usage:
-Before you start, you need to download https://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prokaryotes.txt,
+Before you start, you need to download https://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prokaryotes.txt
 and provide it to get_genome_NCBI with '-db'.
 
-# Download all genomes in prokaryotes.csv
-BioSAK get_genome_NCBI -db prokaryotes.csv -out gnm_dir -fna -name -t 8
+# Download genomes in the gnms_to_download.txt
+BioSAK get_genome_NCBI -db prokaryotes.txt -out gnm_dir -id gnms_to_download.txt -t 8 -fna
+BioSAK get_genome_NCBI -db prokaryotes.txt -out gnm_dir -id gnms_to_download.txt -t 8 -fna -faa -name
 
-# Only download genomes in gnm_to_download.txt
-BioSAK get_genome_NCBI -db prokaryotes.csv -out gnm_dir -fna -name -t 8 -id gnm_to_download.txt
-
-# Format of genome id file (specify with "-id")
-# Genome ID can be found in the "Assembly Accession" column of the prokaryotes.txt, one id per line
+# Format of gnms_to_download.txt (genome ID can be found in the "Assembly Accession" column of the prokaryotes.txt)
 GCA_009840555.1
 GCA_009840575.1
 
-# You may want to get the id of genomes from a specific taxon using:
+# You can get the id of genomes from a specific taxon using this link, IDs are in the "Assembly" column.
 https://www.ncbi.nlm.nih.gov/genome/browse#!/prokaryotes/refseq_category:reference
 
 ============================================================================================================
@@ -63,6 +61,9 @@ def genome_download_worker(argument_list):
     wget_fna_cmd =              'wget %s -P %s -q'                      % (ftp_fna_file, downloaded_genome_folder)
     wget_faa_cmd =              'wget %s -P %s -q'                      % (ftp_faa_file, downloaded_genome_folder)
     wget_gbff_cmd =             'wget %s -P %s -q'                      % (ftp_gbff_file, downloaded_genome_folder)
+    curl_fna_cmd  =             'curl %s -o %s/%s -s'                   % (ftp_fna_file,  downloaded_genome_folder, fna_file)
+    curl_faa_cmd  =             'curl %s -o %s/%s -s'                   % (ftp_faa_file,  downloaded_genome_folder, faa_file)
+    curl_gbff_cmd =             'curl %s -o %s/%s -s'                   % (ftp_gbff_file, downloaded_genome_folder, gbff_file)
     gunzip_fna_cmd =            'gunzip %s'                             % (pwd_fna_file)
     gunzip_faa_cmd =            'gunzip %s'                             % (pwd_faa_file)
     gunzip_gbff_cmd =           'gunzip %s'                             % (pwd_gbff_file)
@@ -76,6 +77,10 @@ def genome_download_worker(argument_list):
     # download, decompress and rename
     if get_fna is True:
         os.system(wget_fna_cmd)
+        #wget_fna_cmd.replace('ftp', 'https')
+        #print(curl_fna_cmd)
+        #os.system(curl_fna_cmd)
+        #Popen(curl_fna_cmd, shell=True).wait()
         if os.path.isfile(pwd_fna_file) is True:
             os.system(gunzip_fna_cmd)
             if with_name is False:
@@ -83,7 +88,7 @@ def genome_download_worker(argument_list):
             else:
                 os.system(rename_fna_cmd_with_name)
         else:
-            print('fna file not found in: %s/' % (GenBank_FTP))
+            print('fna file not found in: %s/' % GenBank_FTP)
 
     if get_faa is True:
         os.system(wget_faa_cmd)
@@ -94,7 +99,7 @@ def genome_download_worker(argument_list):
             else:
                 os.system(rename_faa_cmd_with_name)
         else:
-            print('faa file not found in: %s/' % (GenBank_FTP))
+            print('faa file not found in: %s/' % GenBank_FTP)
 
     if get_gbff is True:
         os.system(wget_gbff_cmd)
@@ -105,7 +110,7 @@ def genome_download_worker(argument_list):
             else:
                 os.system(rename_gbff_cmd_with_name)
         else:
-            print('gbff file not found in: %s/' % (GenBank_FTP))
+            print('gbff file not found in: %s/' % GenBank_FTP)
 
 
 def download_GenBank_genome(args):
@@ -230,11 +235,3 @@ if __name__ == '__main__':
     parser.add_argument('-t',           required=False, default=1, type=int, help='number of threads')
     args = vars(parser.parse_args())
     download_GenBank_genome(args)
-
-'''
-BioSAK get_genome_NCBI -csv /Users/songweizhi/DB/NCBI/prokaryotes-2022-05-18.txt -out gnm_dir -fna -t 10
-python3 ~/PycharmProjects/BioSAK/BioSAK/get_genome_NCBI.py -csv /Users/songweizhi/DB/NCBI/prokaryotes-2022-05-18.txt -out gnm_dir -fna -t 10
-
-python3 ~/PycharmProjects/BioSAK/BioSAK/get_genome_NCBI.py -db /Users/songweizhi/DB/NCBI/prokaryotes-2022-05-18.txt -id prokaryotes_to_download.txt -out gnm_dir -fna -t 10
-
-'''

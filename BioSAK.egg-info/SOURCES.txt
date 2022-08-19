@@ -59,6 +59,7 @@ BioSAK/exe_cmds.py
 BioSAK/fa2id.py
 BioSAK/fa2tree.py
 BioSAK/format_converter.py
+BioSAK/format_leaf_name.py
 BioSAK/fq2fa.py
 BioSAK/gbk_to_ffn_faa.py
 BioSAK/get_EC_from_ko_stats_D.py
@@ -102,12 +103,14 @@ BioSAK/rename_leaves.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/sam2bam.py
+BioSAK/sampling_GTDB_gnms.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/slice_seq.py
 BioSAK/split_fasta.py
 BioSAK/split_folder.py
 BioSAK/split_sam.py
+BioSAK/subset_GTDB_meta.py
 BioSAK/subset_tree.py
 BioSAK/test.py
 BioSAK/tmp_1.py

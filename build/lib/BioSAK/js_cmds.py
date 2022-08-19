@@ -3,21 +3,21 @@ import argparse
 
 
 js_cmds_usage = '''
-========================= js_cmds example commands =========================
+====================== js_cmds example commands ======================
 
-BioSAK js_cmds -p Test -cmd cmds.txt -header js_header.txt -n 3 -force
+BioSAK js_cmds -p Demo -cmd cmds.txt -hd js_header.txt -n 3 -force
 
-============================================================================
+======================================================================
 '''
 
 
 def js_cmds(args):
 
     js_prefix       = args['p']
-    cmd_file        = args['cmds']
-    auto_submit     = args['auto']
-    js_header_file  = args['header']
+    cmd_file        = args['cmd']
+    js_header_file  = args['hd']
     cmd_num_per_js  = args['n']
+    auto_submit     = args['auto']
     js_folder_hpc   = args['js_hpc']
     force_overwrite = args['force']
 
@@ -77,14 +77,12 @@ def js_cmds(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-
     parser.add_argument('-p',      required=True,                       help='js prefix')
-    parser.add_argument('-cmds',   required=True,                       help='cmds file')
-    parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next js')
-    parser.add_argument('-header', required=True,                       help='js header')
+    parser.add_argument('-cmd',    required=True,                       help='cmds file')
+    parser.add_argument('-hd',     required=True,                       help='js header')
     parser.add_argument('-n',      required=True, type=int,             help='number of cmds per js')
+    parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next js')
     parser.add_argument('-js_hpc', required=False, default=None,        help='Full path to js folder on HPC')
     parser.add_argument('-force',  required=False, action="store_true", help='force overwrite existing results')
-
     args = vars(parser.parse_args())
     js_cmds(args)
