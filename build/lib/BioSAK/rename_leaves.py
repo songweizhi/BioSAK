@@ -1,3 +1,4 @@
+import os
 import argparse
 from ete3 import Tree
 
@@ -5,7 +6,7 @@ from ete3 import Tree
 rename_leaves_usage = '''
 ==================== rename_leaves example commands ====================
 
-BioSAK rename_leaves -tree input.tree -txt rename.txt -out output.tree
+BioSAK rename_leaves -i input.tree -r rename.txt -o output.tree
 
 # format of rename.txt (tab separated)
 leaf_1  leaf_1_new_name
@@ -17,10 +18,18 @@ leaf_2  leaf_2_new_name
 
 def rename_leaves(args):
 
-    tree_file_in      = args['tree']
-    rename_file       = args['txt']
-    tree_format       = args['fmt']
-    tree_file_out     = args['out']
+    tree_file_in  = args['i']
+    rename_file   = args['r']
+    tree_format   = args['f']
+    tree_file_out = args['o']
+
+    if os.path.isdir(tree_file_in) is False:
+        print('Tree file not found, program exited!')
+        exit()
+
+    if os.path.isdir(rename_file) is False:
+        print('Rename file not found, program exited!')
+        exit()
 
     mag_rename_dict = {}
     for each_mag in open(rename_file):
@@ -60,9 +69,9 @@ def rename_leaves(args):
 if __name__ == '__main__':
 
     rename_leaves_parser = argparse.ArgumentParser()
-    rename_leaves_parser.add_argument('-tree', required=True,             help='input tree')
-    rename_leaves_parser.add_argument('-txt',  required=True,             help='rename file')
-    rename_leaves_parser.add_argument('-fmt',  required=False, default=1, help='tree format, default: 1')
-    rename_leaves_parser.add_argument('-out',  required=True,             help='output tree')
+    rename_leaves_parser.add_argument('-i',    required=True,                       help='input tree')
+    rename_leaves_parser.add_argument('-r',    required=True,                       help='rename file')
+    rename_leaves_parser.add_argument('-f',    required=False, default=1, type=int, help='tree format, default: 1')
+    rename_leaves_parser.add_argument('-o',    required=True,                       help='output tree')
     args = vars(rename_leaves_parser.parse_args())
     rename_leaves(args)

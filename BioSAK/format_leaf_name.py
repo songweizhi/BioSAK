@@ -1,27 +1,31 @@
+import os
 import argparse
 from ete3 import Tree
 
 
 format_leaf_name_usage = '''
-========= format_leaf_name example commands =========
+============ format_leaf_name example commands ============
 
-BioSAK fln -i input.tree -o output.tree -s2u
+BioSAK fln -i input.tree -o output.tree -s2u -nsqm -ndqm
 BioSAK fln -i input.tree -o output.tree -ns -nsqm
-BioSAK fln -i input.tree -o output.tree -ndqm
 
-=====================================================
+===========================================================
 '''
 
 
 def format_leaf_name(args):
 
-    tree_file_in                = args['i']
-    tree_format                 = args['fmt']
-    tree_file_out               = args['o']
-    no_space                    = args['ns']
-    space_to_underscore         = args['s2u']
-    no_single_quotation_mark    = args['nsqm']
-    no_double_quotation_mark    = args['ndqm']
+    tree_file_in             = args['i']
+    tree_format              = args['fmt']
+    tree_file_out            = args['o']
+    no_space                 = args['ns']
+    space_to_underscore      = args['s2u']
+    no_single_quotation_mark = args['nsqm']
+    no_double_quotation_mark = args['ndqm']
+
+    if os.path.isdir(tree_file_in) is False:
+        print('Tree file not found, program exited!')
+        exit()
 
     if (no_space is True) and (space_to_underscore is True):
         print('Two actions (-ns and -s2u) specified to spaces in tree leaves, program exited!')
@@ -44,7 +48,8 @@ def format_leaf_name(args):
         mag_rename_dict[leaf.name] = leaf_name
 
     for leaf in t:
-        leaf_name_new = mag_rename_dict[leaf.name]
+        leaf_name = leaf.name
+        leaf_name_new = mag_rename_dict[leaf_name]
         leaf.name = leaf_name_new
     t.write(format=tree_format, outfile=tree_file_out)
 

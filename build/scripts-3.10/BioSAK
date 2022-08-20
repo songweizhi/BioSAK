@@ -730,10 +730,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'rename_leaves':
         from BioSAK import rename_leaves
         rename_leaves_parser = subparsers.add_parser('rename_leaves', usage=rename_leaves.rename_leaves_usage)
-        rename_leaves_parser.add_argument('-tree', required=True,             help='input tree')
-        rename_leaves_parser.add_argument('-txt',  required=True,             help='rename file')
-        rename_leaves_parser.add_argument('-fmt',  required=False, default=1, help='tree format, default: 1')
-        rename_leaves_parser.add_argument('-out',  required=True,             help='output tree')
+        rename_leaves_parser.add_argument('-i',    required=True,             help='input tree')
+        rename_leaves_parser.add_argument('-r',    required=True,             help='rename file')
+        rename_leaves_parser.add_argument('-f',    required=False, default=1, help='tree format, default: 1')
+        rename_leaves_parser.add_argument('-o',    required=True,             help='output tree')
         args = vars(parser.parse_args())
         rename_leaves.rename_leaves(args)
 
