@@ -23,11 +23,11 @@ def rename_leaves(args):
     tree_format   = args['f']
     tree_file_out = args['o']
 
-    if os.path.isdir(tree_file_in) is False:
+    if os.path.isfile(tree_file_in) is False:
         print('Tree file not found, program exited!')
         exit()
 
-    if os.path.isdir(rename_file) is False:
+    if os.path.isfile(rename_file) is False:
         print('Rename file not found, program exited!')
         exit()
 
@@ -56,7 +56,7 @@ def rename_leaves(args):
         print('No leaf on input tree found in rename file, please double check!')
         exit()
     elif leaves_without_new_name > 0:
-        print('Found %s leaves in input tree, %s of them were found in the rename file.' % (len(input_tree_leaf_name_list), leaves_with_new_name))
+        print('%s of the %s leaves in input tree were found in the rename file, the rests unchanged.' % (leaves_with_new_name, len(input_tree_leaf_name_list)))
 
     for leaf in t:
         leaf_name_new = mag_rename_dict.get(leaf.name, leaf.name)

@@ -13,16 +13,16 @@ from matplotlib.patches import Patch
 
 
 Plot_MAG_parser_usage = '''
-============================== Plot_MAG example commands ==============================
+================= Plot_MAG example commands =================
 
-BioSAK Plot_MAG -i refined_MAGs -x fasta -d contig_depth.txt 
-BioSAK Plot_MAG -i refined_MAGs -x fasta -d contig_depth.txt -sep
+BioSAK Plot_MAG -i MAG_dir -x fa -d ctg_depth.txt 
+BioSAK Plot_MAG -i MAG_dir -x fa -d ctg_depth.txt -sep
 
 # depth file: tab separated, no header
 contig_1    30
 contig_2    5
 
-=======================================================================================
+=============================================================
 '''
 
 
@@ -110,10 +110,10 @@ def just_plot_backup(num_list_depth, num_list_gc, ctg_len_list, ctg_color_list, 
 
 def Plot_MAG(argument_list):
 
-    bin_folder  = argument_list['i']
-    bin_ext     = argument_list['x']
-    depth_file  = argument_list['d']
-    plot_sep    = argument_list['sep']
+    bin_folder = argument_list['i']
+    bin_ext    = argument_list['x']
+    depth_file = argument_list['d']
+    plot_sep   = argument_list['sep']
 
     # read in depth info
     ctg_depth_dict = dict()
@@ -149,13 +149,14 @@ def Plot_MAG(argument_list):
     index = 0
     for each_mag in bin_file_list:
 
-        mag_no_ext          = each_mag[:-(len(bin_ext) + 1)]
-        pwd_each_mag        = '%s/%s'       % (bin_folder, each_mag)
-        pwd_each_mag_plot   = '%s/%s.pdf'   % (plot_folder, mag_no_ext)
-        pwd_each_mag_txt    = '%s/%s.txt'   % (txt_folder, mag_no_ext)
+        mag_no_ext        = each_mag[:-(len(bin_ext) + 1)]
+        pwd_each_mag      = '%s/%s'     % (bin_folder, each_mag)
+        pwd_each_mag_plot = '%s/%s.pdf' % (plot_folder, mag_no_ext)
+        pwd_each_mag_txt  = '%s/%s.txt' % (txt_folder, mag_no_ext)
 
-        pwd_each_mag_txt_handle = open(pwd_each_mag_txt, 'w')
-        pwd_each_mag_txt_handle.write('Contig\tDepth\tGC\tLength(bp)\n')
+        if plot_sep is True:
+            pwd_each_mag_txt_handle = open(pwd_each_mag_txt, 'w')
+            pwd_each_mag_txt_handle.write('Contig\tDepth\tGC\tLength(bp)\n')
         legend_elements_sep = []
         num_list_depth_sep = []
         num_list_gc_sep = []
@@ -180,13 +181,15 @@ def Plot_MAG(argument_list):
             ctg_color_list.append(color_list[index])
             ctg_color_list_sep.append(color_list[index])
 
-            pwd_each_mag_txt_handle.write('%s\t%s\t%s\t%s\n' % (each_ctg.id, ctg_depth, float("{0:.2f}".format(ctg_gc)), len(ctg_seq)))
-            output_txt_handle.write('%s\t%s\t%s\t%s\t%s\n'   % (mag_no_ext, each_ctg.id, ctg_depth, float("{0:.2f}".format(ctg_gc)), len(ctg_seq)))
+            output_txt_handle.write('%s\t%s\t%s\t%s\t%s\n' % (mag_no_ext, each_ctg.id, ctg_depth, float("{0:.2f}".format(ctg_gc)), len(ctg_seq)))
+            if plot_sep is True:
+                pwd_each_mag_txt_handle.write('%s\t%s\t%s\t%s\n' % (each_ctg.id, ctg_depth, float("{0:.2f}".format(ctg_gc)), len(ctg_seq)))
 
         legend_elements.append(Patch(facecolor=color_list[index], edgecolor=color_list[index], label=mag_no_ext))
         legend_elements_sep.append(Patch(facecolor=color_list[index], edgecolor=color_list[index], label=mag_no_ext))
-        just_plot(num_list_depth_sep, num_list_gc_sep, ctg_len_list_sep, ctg_color_list_sep, legend_elements_sep, pwd_each_mag_plot)
-        pwd_each_mag_txt_handle.close()
+        if plot_sep is True:
+            just_plot(num_list_depth_sep, num_list_gc_sep, ctg_len_list_sep, ctg_color_list_sep, legend_elements_sep, pwd_each_mag_plot)
+            pwd_each_mag_txt_handle.close()
         index += 1
 
     just_plot(num_list_depth, num_list_gc, ctg_len_list, ctg_color_list, legend_elements, output_plot)
@@ -199,6 +202,6 @@ if __name__ == '__main__':
     Plot_MAG_parser.add_argument('-i',   required=True,                         help='MAG folder')
     Plot_MAG_parser.add_argument('-x',   required=True,                         help='file extension')
     Plot_MAG_parser.add_argument('-d',   required=True,                         help='contig depth')
-    Plot_MAG_parser.add_argument('-sep', required=False, action='store_true',   help='plot MAGs separately')
+    Plot_MAG_parser.add_argument('-sep', required=False, action='store_true',   help='get plot for individual MAGs')
     args = vars(Plot_MAG_parser.parse_args())
     Plot_MAG(args)

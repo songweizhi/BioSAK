@@ -65,7 +65,7 @@ def print_main_help():
        SubsetAlnCols           ->   Subset MSA by column
        rename_reads_for_Reago  ->   Rename paired reads for Reago
        MeanMappingDepth        ->   Get mean mapping depth 
-       mean_MAG_cov            ->   MAG depth based on weighted mean contig depth 
+       mean_MAG_cov            ->   get mean MAG depth, weighted by contig length 
        get_gnm_size            ->   Get the total length of genome(s)
        get_bin_abundance       ->   Get bin abundance
 
@@ -80,7 +80,7 @@ def print_main_help():
        subset_tree             ->   Subset tree
        compare_trees           ->   Compare trees with Mantel test
        rename_leaves           ->   Rename tree leaves
-       fln                     ->   format leaf names (e.g. remove spaces in names)
+       FLN                     ->   format leaf names (e.g. remove spaces in names)
        iTOL                    ->   Prepare iTOL-compatible files for tree visualization
     
     Genome databases
@@ -596,8 +596,8 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'fa2tree':
         from BioSAK import fa2tree
         fa2tree_parser = subparsers.add_parser('fa2tree', usage=fa2tree.fa2tree_usage)
-        fa2tree_parser.add_argument('-seq', required=True, help='sequence file')
-        fa2tree_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads, default: 1')
+        fa2tree_parser.add_argument('-seq', required=True,                      help='sequence file')
+        fa2tree_parser.add_argument('-t', required=False, type=int, default=1,  help='number of threads, default: 1')
         args = vars(parser.parse_args())
         fa2tree.fa2tree(args)
 
@@ -644,10 +644,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'Plot_MAG':
         from BioSAK import plot_mag
         Plot_MAG_parser = subparsers.add_parser('Plot_MAG', usage=plot_mag.Plot_MAG_parser_usage)
-        Plot_MAG_parser.add_argument('-i', required=True, help='MAG folder')
-        Plot_MAG_parser.add_argument('-x', required=True, help='file extension')
-        Plot_MAG_parser.add_argument('-d', required=True, help='contig depth')
-        Plot_MAG_parser.add_argument('-sep', required=False, action='store_true', help='plot MAGs separately')
+        Plot_MAG_parser.add_argument('-i',   required=True,                         help='MAG folder')
+        Plot_MAG_parser.add_argument('-x',   required=True,                         help='file extension')
+        Plot_MAG_parser.add_argument('-d',   required=True,                         help='contig depth')
+        Plot_MAG_parser.add_argument('-sep', required=False, action='store_true',   help='get plot for individual MAGs')
         args = vars(parser.parse_args())
         plot_mag.Plot_MAG(args)
 
@@ -682,7 +682,7 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'exe_cmds':
         from BioSAK import exe_cmds
         exe_cmds_parser = subparsers.add_parser('exe_cmds', usage=exe_cmds.exe_cmds_usage)
-        exe_cmds_parser.add_argument('-c', required=True, help='cmds file')
+        exe_cmds_parser.add_argument('-c', required=True,                       help='cmds file')
         exe_cmds_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads')
         args = vars(parser.parse_args())
         exe_cmds.exe_cmds(args)
@@ -702,19 +702,19 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'split_fasta':
         from BioSAK import split_fasta
         split_fasta_parser = subparsers.add_parser('split_fasta', usage=split_fasta.split_fasta_usage)
-        split_fasta_parser.add_argument('-i', required=True, help='input fasta file')
-        split_fasta_parser.add_argument('-n', required=False, type=int, default=1, help='sequence per file, default: 1')
-        split_fasta_parser.add_argument('-o', required=True, help='output dir')
+        split_fasta_parser.add_argument('-i', required=True,                        help='input fasta file')
+        split_fasta_parser.add_argument('-n', required=False, type=int, default=1,  help='sequence per file, default: 1')
+        split_fasta_parser.add_argument('-o', required=True,                        help='output dir')
         args = vars(parser.parse_args())
         split_fasta.split_fasta(args)
 
     elif sys.argv[1] == 'split_sam':
         from BioSAK import split_sam
         split_sam_parser = subparsers.add_parser('split_sam', usage=split_sam.split_sam_usage)
-        split_sam_parser.add_argument('-p', required=True, help='output prefix')
-        split_sam_parser.add_argument('-i', required=True, help='input SAM/BAM file')
-        split_sam_parser.add_argument('-r', required=True, help='reference id')
-        split_sam_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads')
+        split_sam_parser.add_argument('-p', required=True,                          help='output prefix')
+        split_sam_parser.add_argument('-i', required=True,                          help='input SAM/BAM file')
+        split_sam_parser.add_argument('-r', required=True,                          help='reference id')
+        split_sam_parser.add_argument('-t', required=False, type=int, default=1,    help='number of threads')
         args = vars(parser.parse_args())
         split_sam.split_sam(args)
 
@@ -760,9 +760,9 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         subset_GTDB_meta.subset_GTDB_meta(args)
 
-    elif sys.argv[1] == 'fln':
+    elif sys.argv[1] == 'FLN':
         from BioSAK import format_leaf_name
-        format_leaf_name_parser = subparsers.add_parser('fln', usage=format_leaf_name.format_leaf_name_usage)
+        format_leaf_name_parser = subparsers.add_parser('FLN', usage=format_leaf_name.format_leaf_name_usage)
         format_leaf_name_parser.add_argument('-i',                  required=True,                          help='input tree')
         format_leaf_name_parser.add_argument('-fmt',                required=False, default=1,              help='tree format, default: 1')
         format_leaf_name_parser.add_argument('-o',                  required=True,                          help='output tree')
