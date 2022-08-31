@@ -5,18 +5,18 @@ import multiprocessing as mp
 
 
 split_sam_usage = '''
-================== split_sam example command ==================
+==================== split_sam example command ====================
 
 module load samtools/1.15
-BioSAK split_sam -p contig1 -i input.bam -r contig_1 -t 12
-BioSAK split_sam -p contigs -i input.bam -r ctgs.txt -t 12
+BioSAK split_sam -p single_ctg -i input.bam -r contig_1 -t 12
+BioSAK split_sam -p multi_ctgs -i input.bam -r ctgs.txt -t 12
 
 # Output files:
-contig_1.sam
-contig_1_sorted.bam
-contig_1_sorted.bam.bai
+prefix.sam, prefix_sorted.bam and prefix_sorted.bam.bai
 
-===============================================================
+# ctgs.txt file format: one id per line, ">" excluded.
+
+===================================================================
 '''
 
 

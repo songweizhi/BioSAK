@@ -77,6 +77,7 @@ BioSAK/get_genome_NCBI_v2.py
 BioSAK/get_gnm_size.py
 BioSAK/get_ko_gene_seqs.py
 BioSAK/get_reads_from_sam.py
+BioSAK/get_reads_id_in_sam.py
 BioSAK/get_sankey_plot.R
 BioSAK/get_top_hit.py
 BioSAK/get_total_length.py

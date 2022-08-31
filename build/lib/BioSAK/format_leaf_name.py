@@ -6,8 +6,8 @@ from ete3 import Tree
 format_leaf_name_usage = '''
 ============ format_leaf_name example commands ============
 
-BioSAK fln -i input.tree -o output.tree -s2u -nsqm -ndqm
-BioSAK fln -i input.tree -o output.tree -ns -nsqm
+BioSAK FLN -i input.tree -o output.tree -s2u -nsqm -ndqm
+BioSAK FLN -i input.tree -o output.tree -ns -nsqm
 
 ===========================================================
 '''

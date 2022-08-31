@@ -780,9 +780,7 @@ if __name__ == '__main__':
 
 upload_to_pypi_cmd = '''
 
-get_fasta_stats_parser      = subparsers.add_parser('get_fasta_stats',      description='Wrapper for running Prodigal', usage='')
 extract_sam_reads_parser    = subparsers.add_parser('Extract_sam_reads',    description='Extract reads from SAM file',  usage='')
-sra_reads_downloader_parser = subparsers.add_parser('sra_reads_downloader', description='Download SRA read files',      usage=dwnld_sra_reads.sra_reads_downloader_usage)
 subsample_reads_parser      = subparsers.add_parser('subsample_reads',      description='Wrapper for running Prodigal', usage='')
 GTDB_16S module: report identity to the best hit
 
