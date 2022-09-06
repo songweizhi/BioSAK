@@ -4,7 +4,7 @@ from ete3 import Tree
 
 
 format_leaf_name_usage = '''
-============ format_leaf_name example commands ============
+========= FLN (Format Leaf Name) example commands =========
 
 BioSAK FLN -i input.tree -o output.tree -s2u -nsqm -ndqm
 BioSAK FLN -i input.tree -o output.tree -ns -nsqm
@@ -23,7 +23,7 @@ def format_leaf_name(args):
     no_single_quotation_mark = args['nsqm']
     no_double_quotation_mark = args['ndqm']
 
-    if os.path.isdir(tree_file_in) is False:
+    if os.path.isfile(tree_file_in) is False:
         print('Tree file not found, program exited!')
         exit()
 

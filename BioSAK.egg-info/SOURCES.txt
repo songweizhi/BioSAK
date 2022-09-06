@@ -64,6 +64,7 @@ BioSAK/fq2fa.py
 BioSAK/gbk_to_ffn_faa.py
 BioSAK/get_EC_from_ko_stats_D.py
 BioSAK/get_GTDB_taxon_gnm.py
+BioSAK/get_MAG_reads_long.py
 BioSAK/get_Pfam_hmms.py
 BioSAK/get_SCG_tree.py
 BioSAK/get_TopHits_taxonomy.py
@@ -115,6 +116,7 @@ BioSAK/subset_GTDB_meta.py
 BioSAK/subset_tree.py
 BioSAK/test.py
 BioSAK/tmp_1.py
+BioSAK/tmp_2_cog.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/usearch_uc.py
