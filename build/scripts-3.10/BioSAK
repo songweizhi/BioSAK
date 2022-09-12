@@ -70,6 +70,7 @@ def print_main_help():
        reads2bam             ->  Mapping and sorting
        sam2bam               ->  Sam to BAM with samtools
        split_sam             ->  Split SAM/BAM file by reference
+       sam2reads             ->  Extract reads (id) from sam file
 
     Tree related
        GTDB_tree_r207        ->  Infer GTDB (r207) archaeal/bacterial tree
@@ -180,11 +181,11 @@ if __name__ == '__main__':
         CheckM_output_parser.add_argument('-i',             required=True,                                  help='input quality file')
         CheckM_output_parser.add_argument('-bin',           required=False,                                 help='bin folder')
         CheckM_output_parser.add_argument('-x',             required=False, default='fasta',                help='bin file extension')
-        CheckM_output_parser.add_argument('-complete',      required=False, type=float,                     help='completeness cutoff (0-100)')
-        CheckM_output_parser.add_argument('-contain',       required=False, type=float,                     help='contamination cutoff (0-100)')
+        CheckM_output_parser.add_argument('-cpl',           required=False, type=float,                     help='completeness cutoff (0-100)')
+        CheckM_output_parser.add_argument('-cont',          required=False, type=float,                     help='contamination cutoff (0-100)')
         CheckM_output_parser.add_argument('-o',             required=True,                                  help='output quality file')
         args = vars(parser.parse_args())
-        CheckM.CheckM_output_parser(args)
+        CheckM.CheckM_op_parser(args)
 
     elif sys.argv[1] == 'subset_tree':
         from BioSAK import subset_tree
@@ -428,7 +429,7 @@ if __name__ == '__main__':
         plot_sam_depth_parser.add_argument('-i',            required=False, type=str, default=None,         help='id of sequence to plot')
         plot_sam_depth_parser.add_argument('-s',            required=False, type=int, default=None,         help='start position to plot')
         plot_sam_depth_parser.add_argument('-e',            required=False, type=int, default=None,         help='end position to plot')
-        plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth')
+        plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth, default: 100')
         plot_sam_depth_parser.add_argument('-l',            required=False, type=str, default=None,         help='position to mark')
         plot_sam_depth_parser.add_argument('-x',            required=False, type=float, default=30,         help='plot width, default: 30')
         plot_sam_depth_parser.add_argument('-y',            required=False, type=float, default=10,         help='plot height, default: 10')
@@ -695,12 +696,23 @@ if __name__ == '__main__':
         get_MAG_reads_long_parser = subparsers.add_parser('get_MAG_reads_long', usage=get_MAG_reads_long.get_MAG_reads_long_usage)
         get_MAG_reads_long_parser.add_argument('-r',    required=True,                             help='reads file')
         get_MAG_reads_long_parser.add_argument('-s',    required=True,                             help='sam file')
-        get_MAG_reads_long_parser.add_argument('-m',    required=True,                             help='MAG folder')
-        get_MAG_reads_long_parser.add_argument('-x',    required=True,                             help='MAG extension')
-        get_MAG_reads_long_parser.add_argument('-l',    required=False, type=int, default=3000,    help='minimal read length, default: 3000bp')
-        get_MAG_reads_long_parser.add_argument('-o',    required=True,                             help='Output folder')
+        get_MAG_reads_long_parser.add_argument('-m',    required=True,                             help='MAG file/folder')
+        get_MAG_reads_long_parser.add_argument('-x',    required=False, default='fasta',           help='MAG extension, default: fasta')
+        get_MAG_reads_long_parser.add_argument('-l',    required=False, type=int, default=5000,    help='minimal read length (in bp), default: 5000')
+        get_MAG_reads_long_parser.add_argument('-o',    required=True,                             help='output folder')
         args = vars(parser.parse_args())
         get_MAG_reads_long.get_MAG_reads_long(args)
+
+    elif sys.argv[1] == 'sam2reads':
+        from BioSAK import sam2reads
+        sam2reads_parser = subparsers.add_parser('sam2reads', usage=sam2reads.sam2reads_usage)
+        sam2reads_parser.add_argument('-b',       required=True,                       help='Sorted Bam file')
+        sam2reads_parser.add_argument('-r',       required=True,                       help='Interested region')
+        sam2reads_parser.add_argument('-s',       required=False, default=None,        help='Read sequence file')
+        sam2reads_parser.add_argument('-o',       required=True,                       help='Output folder')
+        sam2reads_parser.add_argument('-force',   required=False, action="store_true", help='Force overwriting')
+        args = vars(parser.parse_args())
+        sam2reads.sam2reads(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

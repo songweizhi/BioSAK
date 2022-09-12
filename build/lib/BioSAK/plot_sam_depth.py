@@ -154,6 +154,8 @@ def plot_sam(depth_file, seq_to_plot, start_pos, end_pos, bps_to_marker, plot_fi
 
 def plot_sam_depth(args):
 
+    print('Running very slow, be patient!')
+
     sequence_file = args['r']
     depth_file = args['d']
     seq_to_plot = args['i']
@@ -204,7 +206,7 @@ if __name__ == '__main__':
     plot_sam_depth_parser.add_argument('-i',            required=False, type=str, default=None,         help='id of sequence to plot')
     plot_sam_depth_parser.add_argument('-s',            required=False, type=int, default=None,         help='start position to plot')
     plot_sam_depth_parser.add_argument('-e',            required=False, type=int, default=None,         help='end position to plot')
-    plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth')
+    plot_sam_depth_parser.add_argument('-k',            required=False, type=int, default=100,          help='k-mer mean depth, default: 100')
     plot_sam_depth_parser.add_argument('-l',            required=False, type=str, default=None,         help='position to mark')
     plot_sam_depth_parser.add_argument('-x',            required=False, type=float, default=30,         help='plot width, default: 30')
     plot_sam_depth_parser.add_argument('-y',            required=False, type=float, default=10,         help='plot height, default: 10')

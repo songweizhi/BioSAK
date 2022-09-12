@@ -105,6 +105,7 @@ BioSAK/rename_leaves.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/sam2bam.py
+BioSAK/sam2reads.py
 BioSAK/sampling_GTDB_gnms.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
