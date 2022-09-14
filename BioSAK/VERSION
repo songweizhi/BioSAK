@@ -1,59 +1,41 @@
-1.54.0
-- new module added: sam2reads
-
-1.53.12
+1.56.3
 - fixed bugs
+
+1.56.0
+- new module added: cross_link_seqs
+
+1.55.0
+- new module added: merge_seq
+
+1.54.1
+- new module added: bam2reads
 
 1.53.0
 - new module added: get_MAG_reads_long
 
-1.52.7
-- fixed bugs
-
 1.52.0
 - new module added: subset_GTDB_meta
-
-1.51.2
-- fixed bugs
 
 1.51.0
 - new module added: sampling_GTDB_gnms
 
-1.50.4
-- fixed bugs
-
 1.50.0
 - new module added: rename_leaves
-
-1.49.1
-- fixed bugs
 
 1.49.0
 - new module added: fa2id
 
-1.48.11
-- fixed bugs
-
 1.48.0
 - new module added: split_fasta and split_sam
 
-1.46.3
-- fixed bugs
-
 1.46.0
 - new module added: compare_trees
-
-1.45.13
-- fixed bugs
 
 1.45.0
 - new module added: exe_cmds
 
 1.44.0
 - new module added: GTDB_tree_r207
-
-1.43.26
-- fixed bugs
 
 1.43.0
 - new module added: get_genome_GTDB
@@ -67,14 +49,8 @@
 1.41.0
 - new module added: mean_MAG_cov
 
-1.40.5
-- fixed bugs
-
 1.40.0
 - new module added: get_MAG_size
-
-1.39.3
-- fixed bugs
 
 1.39.0
 - new module added: Plot_MAG

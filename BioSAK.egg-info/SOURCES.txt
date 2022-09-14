@@ -43,6 +43,7 @@ BioSAK/SubsetAlnCols.py
 BioSAK/VERSION
 BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
+BioSAK/bam2reads.py
 BioSAK/boxplot_last1row.R
 BioSAK/boxplot_matrix_COG.py
 BioSAK/boxplot_matrix_COG_backup.py
@@ -52,6 +53,7 @@ BioSAK/cdd2cog.pl
 BioSAK/checkm_marker.py
 BioSAK/compare_trees.R
 BioSAK/compare_trees.py
+BioSAK/cross_link_seqs.py
 BioSAK/dbCAN.py
 BioSAK/download_GenBank_genome_subset_prokaryotes_csv.py
 BioSAK/dwnld_sra_reads.py
@@ -95,6 +97,7 @@ BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
 BioSAK/mean_MAG_cov.py
+BioSAK/merge_seq.py
 BioSAK/ncbi_dataset.py
 BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_mag.py
@@ -105,7 +108,6 @@ BioSAK/rename_leaves.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/sam2bam.py
-BioSAK/sam2reads.py
 BioSAK/sampling_GTDB_gnms.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py

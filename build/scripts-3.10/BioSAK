@@ -64,13 +64,14 @@ def print_main_help():
        mean_MAG_cov          ->  get mean MAG depth, weighted by contig length 
        get_gnm_size          ->  Get the total length of genome(s)
        get_bin_abundance     ->  Get bin abundance
+       merge_seq             ->  Merge sequence files, remove duplicated ones if any
 
     Sam and Bam
        plot_sam_depth        ->  Plot SAM depth
        reads2bam             ->  Mapping and sorting
        sam2bam               ->  Sam to BAM with samtools
        split_sam             ->  Split SAM/BAM file by reference
-       sam2reads             ->  Extract reads (id) from sam file
+       bam2reads             ->  Extract reads (id) from sam file
 
     Tree related
        GTDB_tree_r207        ->  Infer GTDB (r207) archaeal/bacterial tree
@@ -91,7 +92,8 @@ def print_main_help():
        Plot_MAG              ->  plot MAGs, (GC vs depth)
        VisGeneFlk            ->  Visualize gene flanking regions
        SankeyTaxon           ->  Plot taxonomic classification with Sankey plot
-                 
+       cross_link_seqs       ->  Cross link matched regions between two sequences
+          
     Other modules
        split_folder          ->  Split folder
        js_cmds               ->  Commands to job scripts
@@ -703,16 +705,39 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         get_MAG_reads_long.get_MAG_reads_long(args)
 
-    elif sys.argv[1] == 'sam2reads':
-        from BioSAK import sam2reads
-        sam2reads_parser = subparsers.add_parser('sam2reads', usage=sam2reads.sam2reads_usage)
-        sam2reads_parser.add_argument('-b',       required=True,                       help='Sorted Bam file')
-        sam2reads_parser.add_argument('-r',       required=True,                       help='Interested region')
-        sam2reads_parser.add_argument('-s',       required=False, default=None,        help='Read sequence file')
-        sam2reads_parser.add_argument('-o',       required=True,                       help='Output folder')
-        sam2reads_parser.add_argument('-force',   required=False, action="store_true", help='Force overwriting')
+    elif sys.argv[1] == 'bam2reads':
+        from BioSAK import bam2reads
+        bam2reads_parser = subparsers.add_parser('bam2reads', usage=bam2reads.bam2reads_usage)
+        bam2reads_parser.add_argument('-b',       required=True,                       help='Sorted Bam file')
+        bam2reads_parser.add_argument('-r',       required=True,                       help='Interested region')
+        bam2reads_parser.add_argument('-s',       required=False, default=None,        help='Read sequence file')
+        bam2reads_parser.add_argument('-o',       required=True,                       help='Output folder')
+        bam2reads_parser.add_argument('-force',   required=False, action="store_true", help='Force overwriting')
         args = vars(parser.parse_args())
-        sam2reads.sam2reads(args)
+        bam2reads.bam2reads(args)
+
+    elif sys.argv[1] == 'merge_seq':
+        from BioSAK import merge_seq
+        merge_seq_parser = subparsers.add_parser('merge_seq', usage=merge_seq.merge_seq_usage)
+        merge_seq_parser.add_argument('-1',       required=True,                          help='input file 1')
+        merge_seq_parser.add_argument('-2',       required=True,                          help='input file 2')
+        merge_seq_parser.add_argument('-o',       required=True,                          help='output sequence file')
+        merge_seq_parser.add_argument('-fq',      required=False, action="store_true",    help='in fastq format, default: fasta')
+        merge_seq_parser.add_argument('-sl',      required=False, action="store_true",    help='write out sequence in single line format')
+        args = vars(parser.parse_args())
+        merge_seq.merge_seq(args)
+
+    elif sys.argv[1] == 'cross_link_seqs':
+        from BioSAK import cross_link_seqs
+        cross_link_seqs_parser = subparsers.add_parser('cross_link_seqs', usage=cross_link_seqs.cross_link_seqs_usage)
+        cross_link_seqs_parser.add_argument('-p', required=True,                 help='output prefix')
+        cross_link_seqs_parser.add_argument('-1', required=True,                 help='sequence 1, in fasta format')
+        cross_link_seqs_parser.add_argument('-2', required=True,                 help='sequence 2, in fasta format')
+        cross_link_seqs_parser.add_argument('-i', required=True, type=float,     help='identity cutoff, 0-100')
+        cross_link_seqs_parser.add_argument('-l', required=True, type=int,       help='alignment length cutoff, in bp')
+        cross_link_seqs_parser.add_argument('-f', required=False, default='PDF', help='plot format, choose from PDF, SVG, EPS and PNG, default: PDF')
+        args = vars(parser.parse_args())
+        cross_link_seqs.cross_link_seqs(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

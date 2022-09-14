@@ -1,5 +1,14 @@
-1.54.0
-- new module added: sam2reads
+1.56.3
+- fixed bugs
+
+1.56.0
+- new module added: cross_link_seqs
+
+1.55.0
+- new module added: merge_seq
+
+1.54.1
+- new module added: bam2reads
 
 1.53.12
 - fixed bugs
