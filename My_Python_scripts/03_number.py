@@ -1,20 +1,11 @@
 
-note = '''
-
-# ln in numpy: np.log()
-print(np.log(2.7182780911361077))
-# 0.9999986251147811
-
-'''
-
-
 ##########################################################################################
 
-num = 123.456789
-num_1 = float("{0:.2f}".format(num))
-num_2 = float("{0:.3f}".format(num))
+num_1 = float("{0:.2f}".format(123.456789))  # 123.45
+num_2 = float("{0:.3f}".format(123.456789))  # 123.456
 
 
+# try to int, if not float
 num_str = '123.456789'
 try:
     pwy_cpl = int(num_str)
@@ -23,14 +14,44 @@ except:
 
 
 def norm_num_list(num_list, norm_by, decimal_to_keep):
-
     num_list_after_norm = []
     for each_num in num_list:
         each_num_after_norm = float(("{0:.%sf}" % decimal_to_keep).format(each_num/norm_by))
         num_list_after_norm.append(each_num_after_norm)
-
     return num_list_after_norm
 
+
+################################################### Distance matrix ####################################################
+
+'''
+Format_of_symmetric_distance_matrix_file (tab separated)
+
+    A   B   C
+A   1   2   3
+B   4   5   6
+C   7   8   9
+'''
+
+import pandas as pd
+
+dm_file = 'demo_files/symmetric_distance_matrix.tab'
+
+# read in symmetric distance matrix file
+df = pd.read_table(dm_file, header=0, index_col=0)
+
+# df to arrary
+df_in_arrary = df.to_numpy()
+# [[1 2 3]
+#  [4 5 6]
+#  [7 8 9]]
+
+# get column name list
+column_name_list = list(df.columns)
+# ['A', 'B', 'C']
+
+# get row name list
+row_name_list = list(df.index)
+# ['A', 'B', 'C']
 
 ################################### cluster number list ##################################
 
@@ -135,7 +156,6 @@ Sample_3  7  8  9          Sample_3  8  7  9
 
 '''
 
-
 ##########################################################################################
 
 import os
@@ -145,7 +165,6 @@ from scipy import stats
 
 
 def transpose_csv(file_in, file_out, sep_symbol, column_name_pos, row_name_pos):
-
     csv = pd.read_csv(file_in, sep=sep_symbol, header=column_name_pos, index_col=row_name_pos)
     df_csv = pd.DataFrame(data=csv)
     transposed_csv = df_csv.T
@@ -155,7 +174,6 @@ def transpose_csv(file_in, file_out, sep_symbol, column_name_pos, row_name_pos):
 ##########################################################################################
 
 import math
-
 print(int(math.ceil(11/float(3))))    # 4
 
 # The divmod() returns a pair of numbers (a tuple) consisting of quotient q and remainder r
@@ -180,4 +198,12 @@ p = stats.ttest_ind(a,b)
 print(p)
 
 
+##########################################################################################
 
+note = '''
+
+# ln in numpy: np.log()
+print(np.log(2.7182780911361077))
+# 0.9999986251147811
+
+'''
