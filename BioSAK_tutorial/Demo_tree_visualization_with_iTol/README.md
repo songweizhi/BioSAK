@@ -38,16 +38,15 @@ Remember to turn on **Colored ranges legend**, if you are using **NorthSea_1_Tax
 ![Step_2](figures/Step_2.jpg)
 
 
-# How to prepare these files
+# How to prepare iTOL-recognizable files
 
-+ Some tools suggested by iTOL: https://itol.embl.de/help.cgi#external
+1. Some tools suggested by iTOL: https://itol.embl.de/help.cgi#external
 
-+ You can also use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to prepare these files. Please refers to the [help page](https://github.com/songweizhi/BioSAK) for its installation.
+2. You can also use [BioSAK](https://github.com/songweizhi/BioSAK)'s iTOL module to generate iTOL-recognizable files. Please refers to the "Installation" section [here](https://github.com/songweizhi/BioSAK) for its installation.
     
   The purpose for developing this module is to generate iTOL-recognizable file for your dataset, 
-  parameters (e.g. colour, font size and strip width) provided in the output file might need 
-  further adjustment. The best way to optimize your plot is to visualize your tree with the 
-  default output and optimize the parameters by looking at the tree.
+  parameters (e.g., colour, font size...) provided in the generated file might need 
+  further adjustment.
   
   Input files for the following commands can be found in `files_needed/raw_data`.
      
