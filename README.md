@@ -58,80 +58,82 @@ Installation
 BioSAK modules
 ---
    
-                 ...::: BioSAK v1.48.0 :::...
+                 ...::: BioSAK v1.60.2 :::...
 
     Annotation modules
-       CheckM                ->  Parse CheckM outputs
-       KEGG                  ->  KEGG annotation
-       COG2020               ->  COG annotation (v2020, by blastp/diamond)
-       dbCAN                 ->  CAZy annotation with dbCAN
+       CheckM                 ->  Parse CheckM outputs
+       KEGG                   ->  KEGG annotation
+       COG2020                ->  COG annotation (v2020, by blastp/diamond)
+       dbCAN                  ->  CAZy annotation with dbCAN
+
+    Metagenomics
+       magabund               ->  Calculate MAG abundance
+       mean_MAG_cov           ->  Get mean MAG depth (based on MetaBAT produced depth)
+       RunGraphMB             ->  Prepare input files for GraphMB
+       get_MAG_reads_long     ->  Extract MAG-specific long reads for reassembling
 
     16S rRNA related
-       top_16S_hits          ->  Classify 16S by top-blast-hits approach
-       SILVA_for_BLCA        ->  Prepare BLCA-compatible SILVA SSU database
-       GTDB_for_BLCA         ->  Prepare BLCA-compatible GTDB SSU database
-       BLCA_op_parser        ->  Make the BLCA outputs bit easier to read
+       top_16S_hits           ->  Classify 16S by top-blast-hits approach
+       SILVA_for_BLCA         ->  Prepare BLCA-compatible SILVA SSU database
+       GTDB_for_BLCA          ->  Prepare BLCA-compatible GTDB SSU database
+       BLCA_op_parser         ->  Make the BLCA outputs bit easier to read
     
     Sequence manipulator
-       gbk2fa                ->  gbk to fasta
-       gfa2fa                ->  gfa to fasta (to be added)
-       gbk2ffn               ->  gbk to ffn
-       gbk2faa               ->  gbk to faa
-       ffn2faa               ->  ffn to faa
-       get_rc                ->  Get reverse complement sequence
-       slice_seq             ->  Get specified region of a sequence
-       rename_seq            ->  Rename sequences in a file
-       select_seq            ->  Select sequences by their ids
-       split_fasta           ->  Split a fasta file into multiple files
-       fa2id                 ->  export sequence id
-       get_gene_depth        ->  Get gene depth by contig depth
-       convert_align_format  ->  Convert alignment format
-       OneLineAln            ->  One-line fasta format alignments
-       SubsetAlnCols         ->  Subset MSA by column
-       rename_reads_Reago    ->  Rename paired reads for Reago
-       MeanMappingDepth      ->  Get mean mapping depth 
-       mean_MAG_cov          ->  get mean MAG depth, weighted by contig length 
-       get_gnm_size          ->  Get the total length of genome(s)
-       get_bin_abundance     ->  Get bin abundance
-       merge_seq             ->  Merge sequence files, remove duplicated ones if any
+       gbk2fa/gbk2faa         ->  Format convertors
+       gbk2ffn/ffn2faa        ->  Format convertors
+       get_rc                 ->  Get reverse complement sequence
+       slice_seq              ->  Get specified region of a sequence
+       rename_seq             ->  Rename sequences in a file
+       select_seq             ->  Select sequences by their ids
+       split_fasta            ->  Split one fasta file into multiple files
+       merge_seq              ->  Merge sequence files, remove duplicated ones if any
+       cat_fa                 ->  Combine sequence files, prefix sequence id with file name
+       get_gene_depth         ->  Get gene depth by contig depth
+       get_gnm_size           ->  Get the total length of genome(s)
+       fa2id                  ->  Export sequence id
 
+    Multiple Sequence Alignment (MSA)
+       convert_align_format   ->  Convert alignment format
+       OneLineAln             ->  One-line fasta format alignments
+       SubsetAlnCols          ->  Subset MSA by column    
+    
     Sam and Bam
-       plot_sam_depth        ->  Plot SAM depth
-       reads2bam             ->  Mapping and sorting
-       sam2bam               ->  Sam to BAM with samtools
-       split_sam             ->  Split SAM/BAM file by reference
-       bam2reads             ->  Extract reads (id) from sam file
+       plot_sam_depth         ->  Plot SAM depth
+       reads2bam              ->  Mapping and sorting
+       sam2bam                ->  Sam to BAM with samtools
+       split_sam              ->  Split SAM/BAM file by reference
+       bam2reads              ->  Extract reads (id) from sam file
+       MeanMappingDepth       ->  Get mean mapping depth 
 
-    Tree related
-       GTDB_tree_r207        ->  Infer GTDB (r207) archaeal/bacterial tree
-       subset_tree           ->  Subset tree
-       compare_trees         ->  Compare trees with Mantel test
-       rename_leaves         ->  Rename tree leaves
-       FLN                   ->  format leaf names (e.g. remove spaces in names)
-       iTOL                  ->  Prepare iTOL-compatible files for tree visualization
+    Tree-related
+       GTDB_tree_r207         ->  Infer GTDB (r207) archaeal/bacterial tree
+       subset_tree            ->  Subset tree
+       compare_trees          ->  Compare trees with Mantel test
+       rename_leaves          ->  Rename tree leaves
+       FLN                    ->  Format leaf names (e.g. remove spaces in names)
+       iTOL                   ->  Prepare iTOL-compatible files for tree visualization
     
     Genome databases
-       get_GTDB_taxon_gnm    ->  Get id of genomes from specified GTDB taxons
-       get_genome_GTDB       ->  Batch download GTDB genomes
-       get_genome_NCBI       ->  Batch download GenBank genomes
-       sampling_GTDB_gnms    ->  Select GTDB genomes from a specified taxon at specified sampling rank
-       subset_GTDB_meta      ->  Subset metadata of GTDB reference genomes
+       get_GTDB_taxon_gnm     ->  Get id of genomes from specified GTDB taxons
+       get_genome_GTDB        ->  Batch download GTDB genomes
+       get_genome_NCBI        ->  Batch download GenBank genomes
+       sampling_GTDB_gnms     ->  Select GTDB genomes from a specified taxon at specified sampling rank
+       subset_GTDB_meta       ->  Subset metadata of GTDB reference genomes
         
     Visualization
-       Plot_MAG              ->  plot MAGs, (GC vs depth)
-       VisGeneFlk            ->  Visualize gene flanking regions
-       SankeyTaxon           ->  Plot taxonomic classification with Sankey plot
-       cross_link_seqs       ->  Cross link matched regions between two sequences
+       Plot_MAG               ->  plot MAGs, (GC vs depth)
+       VisGeneFlk             ->  Visualize gene flanking regions
+       cross_link_seqs        ->  Cross link matched regions between two sequences
           
     Other modules
-       split_folder          ->  Split folder
-       js_cmds               ->  Commands to job scripts
-       BestHit               ->  Keep best blast hits (outfmt 6)
-       get_Pfam_hmms         ->  Get Pfam profiles by id
-       Reads_simulator       ->  Simulate NGS reads
-       usearch_uc            ->  Parse Usearch uc file
-       exe_cmds              ->  Execute commands in a file (one cmd per line)
-       get_MAG_reads_long    ->  Extract MAG-specific long reads for reassembling
+       BestHit                ->  Keep best blast hits (outfmt 6)
+       js_cmds                ->  Commands to job scripts
+       exe_cmds               ->  Execute commands in a file with multiprocessing (one cmd per line)
+       split_folder           ->  Split folder
+       usearch_uc             ->  Parse Usearch uc file
+       get_Pfam_hmms          ->  Get Pfam profiles by id
+       Reads_simulator        ->  Simulate NGS reads
+       rename_reads_Reago     ->  Rename paired reads for Reago
 
 Get help
 ---
