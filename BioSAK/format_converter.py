@@ -10,6 +10,7 @@ sequence_manipulator_usage = '''
 ================================ Sequence manipulator example commands ===============================
 
 BioSAK gbk2fa -gbk bin_1.gbk
+BioSAK gfa2fa -gfa assembly.gfa -o assembly.gfa.fa  
 BioSAK gbk2ffn -gbk bin_1.gbk
 BioSAK gbk2faa -gbk bin_1.gbk
 BioSAK ffn2faa -ffn bin_1.ffn
@@ -67,6 +68,22 @@ def gbk2fa(args):
     gbk_path, gbk_basename, gbk_extension = sep_path_basename_ext(gbk_in)
     ffn_out = '%s/%s.fa' % (gbk_path, gbk_basename)
     SeqIO.convert(gbk_in, 'genbank', ffn_out, 'fasta')
+
+
+def gfa2fa(args):
+
+    gfa_file    = args['gfa']
+    fa_from_gfa = args['o']
+
+    fa_from_gfa_handle = open(fa_from_gfa, 'w')
+    for each_line in open(gfa_file):
+        each_line_split = each_line.strip().split('\t')
+        if each_line.startswith('S'):
+            segment_id = each_line_split[1]
+            segment_seq = each_line_split[2]
+            fa_from_gfa_handle.write('>%s\n' % segment_id)
+            fa_from_gfa_handle.write(segment_seq + '\n')
+    fa_from_gfa_handle.close()
 
 
 def gbk2ffn(args):

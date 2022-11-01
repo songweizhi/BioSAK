@@ -37,6 +37,7 @@ BioSAK/Prodigal.py
 BioSAK/Prokka.py
 BioSAK/Prokka_b.py
 BioSAK/Reads_simulator.py
+BioSAK/RunGraphMB.py
 BioSAK/SILVA_for_BLCA.py
 BioSAK/SankeyTaxon.py
 BioSAK/SubsetAlnCols.py
@@ -49,6 +50,7 @@ BioSAK/boxplot_matrix_COG.py
 BioSAK/boxplot_matrix_COG_backup.py
 BioSAK/boxplot_matrix_KEGG.py
 BioSAK/boxplot_matrix_dbCAN.py
+BioSAK/cat_fa.py
 BioSAK/cdd2cog.pl
 BioSAK/checkm_marker.py
 BioSAK/compare_trees.R
@@ -71,7 +73,7 @@ BioSAK/get_Pfam_hmms.py
 BioSAK/get_SCG_tree.py
 BioSAK/get_TopHits_taxonomy.py
 BioSAK/get_aa_composition.py
-BioSAK/get_bin_abundance.py
+BioSAK/get_bin_abundance copy.py
 BioSAK/get_gc.py
 BioSAK/get_gene_depth.py
 BioSAK/get_genome_GTDB.py
@@ -92,12 +94,14 @@ BioSAK/ko00001.keg
 BioSAK/label_tree.R
 BioSAK/label_tree.py
 BioSAK/link_16S_MAG.py
+BioSAK/magabund.py
 BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
 BioSAK/mean_MAG_cov.py
 BioSAK/merge_seq.py
+BioSAK/msa_to_distance_matrix.py
 BioSAK/ncbi_dataset.py
 BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_mag.py
@@ -288,6 +292,10 @@ My_Python_scripts/comparative_genomics/COG_number_count.py
 My_Python_scripts/comparative_genomics/Core_genome.py
 My_Python_scripts/comparative_genomics/gene_function_file_for_PGAP.py
 My_Python_scripts/comparative_genomics/put_each_orthology_in_one_line.py
+My_Python_scripts/demo_files/edge_20_wd39_PCoA.png
+My_Python_scripts/demo_files/edge_20_wd39_dm.tab
+My_Python_scripts/demo_files/edge_20_wd39_tree.png
+My_Python_scripts/demo_files/symmetric_distance_matrix.tab
 My_Python_scripts/for_plot/Boxplot_with_extra_values.png
 My_Python_scripts/for_plot/Boxplot_with_extra_values.py
 My_Python_scripts/for_plot/Grouped_boxplot_with_extra_values.csv

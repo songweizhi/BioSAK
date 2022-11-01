@@ -1,5 +1,20 @@
-1.56.3
+1.60.2
 - fixed bugs
+
+1.60.0
+- new module added: cat_fa
+
+1.59.2
+- fixed bugs
+
+1.59.0
+- new module added: magabund
+
+1.58.0
+- new module added: gfa2fa
+
+1.57.0
+- new module added: RunGraphMB
 
 1.56.0
 - new module added: cross_link_seqs

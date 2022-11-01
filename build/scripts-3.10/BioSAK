@@ -33,76 +33,79 @@ def print_main_help():
                  ...::: BioSAK v%s :::...
 
     Annotation modules
-       CheckM                ->  Parse CheckM outputs
-       KEGG                  ->  KEGG annotation
-       COG2020               ->  COG annotation (v2020, by blastp/diamond)
-       dbCAN                 ->  CAZy annotation with dbCAN
+       CheckM                 ->  Parse CheckM outputs
+       KEGG                   ->  KEGG annotation
+       COG2020                ->  COG annotation (v2020, by blastp/diamond)
+       dbCAN                  ->  CAZy annotation with dbCAN
+
+    Metagenomics
+       magabund               ->  Calculate MAG abundance
+       mean_MAG_cov           ->  Get mean MAG depth (based on MetaBAT produced depth)
+       RunGraphMB             ->  Prepare input files for GraphMB
+       get_MAG_reads_long     ->  Extract MAG-specific long reads for reassembling
 
     16S rRNA related
-       top_16S_hits          ->  Classify 16S by top-blast-hits approach
-       SILVA_for_BLCA        ->  Prepare BLCA-compatible SILVA SSU database
-       GTDB_for_BLCA         ->  Prepare BLCA-compatible GTDB SSU database
-       BLCA_op_parser        ->  Make the BLCA outputs bit easier to read
+       top_16S_hits           ->  Classify 16S by top-blast-hits approach
+       SILVA_for_BLCA         ->  Prepare BLCA-compatible SILVA SSU database
+       GTDB_for_BLCA          ->  Prepare BLCA-compatible GTDB SSU database
+       BLCA_op_parser         ->  Make the BLCA outputs bit easier to read
     
     Sequence manipulator
-       gbk2fa                ->  gbk to fasta
-       gbk2ffn               ->  gbk to ffn
-       gbk2faa               ->  gbk to faa
-       ffn2faa               ->  ffn to faa
-       get_rc                ->  Get reverse complement sequence
-       slice_seq             ->  Get specified region of a sequence
-       rename_seq            ->  Rename sequences in a file
-       select_seq            ->  Select sequences by their ids
-       split_fasta           ->  Split a fasta file into multiple files
-       fa2id                 ->  export sequence id
-       get_gene_depth        ->  Get gene depth by contig depth
-       convert_align_format  ->  Convert alignment format
-       OneLineAln            ->  One-line fasta format alignments
-       SubsetAlnCols         ->  Subset MSA by column
-       rename_reads_Reago    ->  Rename paired reads for Reago
-       MeanMappingDepth      ->  Get mean mapping depth 
-       mean_MAG_cov          ->  get mean MAG depth, weighted by contig length 
-       get_gnm_size          ->  Get the total length of genome(s)
-       get_bin_abundance     ->  Get bin abundance
-       merge_seq             ->  Merge sequence files, remove duplicated ones if any
+       gbk2fa/gbk2ffn/gbk2faa/ffn2faa   ->  convert file format
+       get_rc                 ->  Get reverse complement sequence
+       slice_seq              ->  Get specified region of a sequence
+       rename_seq             ->  Rename sequences in a file
+       select_seq             ->  Select sequences by their ids
+       split_fasta            ->  Split a fasta file into multiple files
+       merge_seq              ->  Merge sequence files, remove duplicated ones if any
+       cat_fa                 ->  Combine sequence files, prefix sequence id with file name
+       get_gene_depth         ->  Get gene depth by contig depth
+       get_gnm_size           ->  Get the total length of genome(s)
+       fa2id                  ->  Export sequence id
 
+    Multiple Sequence Alignment (MSA)
+       convert_align_format   ->  Convert alignment format
+       OneLineAln             ->  One-line fasta format alignments
+       SubsetAlnCols          ->  Subset MSA by column    
+    
     Sam and Bam
-       plot_sam_depth        ->  Plot SAM depth
-       reads2bam             ->  Mapping and sorting
-       sam2bam               ->  Sam to BAM with samtools
-       split_sam             ->  Split SAM/BAM file by reference
-       bam2reads             ->  Extract reads (id) from sam file
+       plot_sam_depth         ->  Plot SAM depth
+       reads2bam              ->  Mapping and sorting
+       sam2bam                ->  Sam to BAM with samtools
+       split_sam              ->  Split SAM/BAM file by reference
+       bam2reads              ->  Extract reads (id) from sam file
+       MeanMappingDepth       ->  Get mean mapping depth 
 
     Tree related
-       GTDB_tree_r207        ->  Infer GTDB (r207) archaeal/bacterial tree
-       subset_tree           ->  Subset tree
-       compare_trees         ->  Compare trees with Mantel test
-       rename_leaves         ->  Rename tree leaves
-       FLN                   ->  format leaf names (e.g. remove spaces in names)
-       iTOL                  ->  Prepare iTOL-compatible files for tree visualization
+       GTDB_tree_r207         ->  Infer GTDB (r207) archaeal/bacterial tree
+       subset_tree            ->  Subset tree
+       compare_trees          ->  Compare trees with Mantel test
+       rename_leaves          ->  Rename tree leaves
+       FLN                    ->  Format leaf names (e.g. remove spaces in names)
+       iTOL                   ->  Prepare iTOL-compatible files for tree visualization
     
     Genome databases
-       get_GTDB_taxon_gnm    ->  Get id of genomes from specified GTDB taxons
-       get_genome_GTDB       ->  Batch download GTDB genomes
-       get_genome_NCBI       ->  Batch download GenBank genomes
-       sampling_GTDB_gnms    ->  Select GTDB genomes from a specified taxon at specified sampling rank
-       subset_GTDB_meta      ->  Subset metadata of GTDB reference genomes
+       get_GTDB_taxon_gnm     ->  Get id of genomes from specified GTDB taxons
+       get_genome_GTDB        ->  Batch download GTDB genomes
+       get_genome_NCBI        ->  Batch download GenBank genomes
+       sampling_GTDB_gnms     ->  Select GTDB genomes from a specified taxon at specified sampling rank
+       subset_GTDB_meta       ->  Subset metadata of GTDB reference genomes
         
     Visualization
-       Plot_MAG              ->  plot MAGs, (GC vs depth)
-       VisGeneFlk            ->  Visualize gene flanking regions
-       SankeyTaxon           ->  Plot taxonomic classification with Sankey plot
-       cross_link_seqs       ->  Cross link matched regions between two sequences
+       Plot_MAG               ->  plot MAGs, (GC vs depth)
+       VisGeneFlk             ->  Visualize gene flanking regions
+       cross_link_seqs        ->  Cross link matched regions between two sequences
           
     Other modules
-       split_folder          ->  Split folder
-       js_cmds               ->  Commands to job scripts
-       BestHit               ->  Keep best blast hits (outfmt 6)
-       get_Pfam_hmms         ->  Get Pfam profiles by id
-       Reads_simulator       ->  Simulate NGS reads
-       usearch_uc            ->  Parse Usearch uc file
-       exe_cmds              ->  Execute commands in a file (one cmd per line)
-       get_MAG_reads_long    ->  Extract MAG-specific long reads for reassembling
+       BestHit                ->  Keep best blast hits (outfmt 6)
+       js_cmds                ->  Commands to job scripts
+       exe_cmds               ->  Execute commands in a file with multiprocessing (one cmd per line)
+       split_folder           ->  Split folder
+       usearch_uc             ->  Parse Usearch uc file
+       get_Pfam_hmms          ->  Get Pfam profiles by id
+       Reads_simulator        ->  Simulate NGS reads
+       rename_reads_Reago     ->  Rename paired reads for Reago
+
     ''' % version(config_dict)
 
     print(help_message)
@@ -245,17 +248,17 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         keep_best_hit.best_hit(args)
 
-    elif sys.argv[1] == 'get_bin_abundance':
-        from BioSAK import get_bin_abundance
-        get_bin_abundance_parser = subparsers.add_parser('get_bin_abundance', description='Get bin abundance', usage=get_bin_abundance.get_bin_abundance_usage)
-        get_bin_abundance_parser.add_argument('-sam',     required=True,                  help='input sam file')
-        get_bin_abundance_parser.add_argument('-bin',     required=True,                  help='bin folder')
-        get_bin_abundance_parser.add_argument('-x',       required=True, default='fasta', help='bin file extension, default: fasta')
-        get_bin_abundance_parser.add_argument('-o',       required=True,                  help='output abundance file')
-        get_bin_abundance_parser.add_argument('-g',       required=False, default=None,   help='bin grouping info')
-        get_bin_abundance_parser.add_argument('-Cdb',     required=False, default=None,   help='cluster info from dRep (Cdb.csv)')
+    elif sys.argv[1] == 'magabund':
+        from BioSAK import magabund
+        magabund_parser = subparsers.add_parser('magabund', description='Calculate MAG abundance', usage=magabund.magabund_usage)
+        magabund_parser.add_argument('-s',       required=True,                        help='input sam file')
+        magabund_parser.add_argument('-m',       required=True,                        help='MAG folder')
+        magabund_parser.add_argument('-x',       required=False, default='fasta',      help='MAG file extension, default: fasta')
+        magabund_parser.add_argument('-o',       required=True,                        help='output table')
+        #get_bin_abundance_parser.add_argument('-g',       required=False, default=None,         help='bin grouping info')
+        #get_bin_abundance_parser.add_argument('-Cdb',     required=False, default=None,         help='cluster info from dRep (Cdb.csv)')
         args = vars(parser.parse_args())
-        get_bin_abundance.get_bin_abundance(args)
+        magabund.magabund(args)
 
     elif sys.argv[1] == 'get_genome_NCBI':
         from BioSAK import get_genome_NCBI
@@ -738,6 +741,32 @@ if __name__ == '__main__':
         cross_link_seqs_parser.add_argument('-f', required=False, default='PDF', help='plot format, choose from PDF, SVG, EPS and PNG, default: PDF')
         args = vars(parser.parse_args())
         cross_link_seqs.cross_link_seqs(args)
+
+    elif sys.argv[1] == 'RunGraphMB':
+        from BioSAK import RunGraphMB
+        RunGraphMB_parser = subparsers.add_parser('RunGraphMB', usage=RunGraphMB.RunGraphMB_usage)
+        RunGraphMB_parser.add_argument('-gfa',  required=True, help='gfa file')
+        RunGraphMB_parser.add_argument('-o',    required=True, help='output folder (i.e., input folder to GraphMB)')
+        args = vars(parser.parse_args())
+        RunGraphMB.RunGraphMB(args)
+
+    elif sys.argv[1] == 'gfa2fa':
+        from BioSAK import format_converter
+        gfa2fa_parser = subparsers.add_parser('gfa2fa', description='gfa to fasta', usage=format_converter.sequence_manipulator_usage)
+        gfa2fa_parser.add_argument('-gfa', required=True, help='input gfa file')
+        gfa2fa_parser.add_argument('-o',   required=True, help='output fasta file')
+        args = vars(parser.parse_args())
+        format_converter.gfa2fa(args)
+
+    elif sys.argv[1] == 'cat_fa':
+        from BioSAK import cat_fa
+        cat_fa_parser = subparsers.add_parser('cat_fa', description='combine sequence files', usage=cat_fa.cat_fa_usage)
+        cat_fa_parser.add_argument('-i', required=True,                     help='sequence folder')
+        cat_fa_parser.add_argument('-x', required=False, default='fasta',   help='file extension, default: fasta')
+        cat_fa_parser.add_argument('-s', required=False, default='__',      help='separator, default: __')
+        cat_fa_parser.add_argument('-o', required=True,                     help='combined output file')
+        args = vars(parser.parse_args())
+        cat_fa.cat_fa(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
