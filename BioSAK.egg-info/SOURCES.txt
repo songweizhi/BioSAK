@@ -40,7 +40,9 @@ BioSAK/Reads_simulator.py
 BioSAK/RunGraphMB.py
 BioSAK/SILVA_for_BLCA.py
 BioSAK/SankeyTaxon.py
+BioSAK/SubsampleLongReads.py
 BioSAK/SubsetAlnCols.py
+BioSAK/Tax4Fun2IndOTU.py
 BioSAK/VERSION
 BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
@@ -124,6 +126,7 @@ BioSAK/subset_tree.py
 BioSAK/test.py
 BioSAK/tmp_1.py
 BioSAK/tmp_2_cog.py
+BioSAK/tmp_3.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/usearch_uc.py
@@ -239,6 +242,7 @@ My_Python_scripts/21_os_environ.py
 My_Python_scripts/22_blast_xml_parser.py
 My_Python_scripts/README.md
 My_Python_scripts/pandas_drop_small_value_cols_and_rows.py
+My_Python_scripts/rm_short_reads.py
 My_Python_scripts/NetEnzymes/.DS_Store
 My_Python_scripts/NetEnzymes/KO2EC.py
 My_Python_scripts/NetEnzymes/Prepare_MetaCyc_DB.py

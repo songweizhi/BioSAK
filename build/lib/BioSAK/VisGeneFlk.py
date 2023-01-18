@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 import argparse
 from Bio import SeqIO
@@ -11,12 +9,12 @@ from reportlab.lib.units import cm
 
 
 VisGeneFlk_usage = '''
-=========================== VisGeneFlk example commands ===========================
+====================== VisGeneFlk example commands ======================
 
 BioSAK VisGeneFlk -gene gene_01 -gbk input.gbk -len 2000 -fmt pdf
 BioSAK VisGeneFlk -gene gene_01 -gbk input.gbk -len 5000 -scale 300
 
-===================================================================================
+=========================================================================
 '''
 
 
@@ -224,6 +222,6 @@ if __name__ == '__main__':
     parser.add_argument('-len',     required=True, type=int,                help='length (in bp) of flanking sequences to plot')
     parser.add_argument('-scale',   required=False, type=int, default=200,  help='scale for plotting, default: 200bp per cm')
     parser.add_argument('-fmt',     required=False, default='svg',          help='output format (svg or pdf), default: svg')
-
+    # parser.add_argument('-fmt',     required=False, default='svg',          help='output format (svg or pdf), default: svg')
     args = vars(parser.parse_args())
     VisGeneFlk(args)

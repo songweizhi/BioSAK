@@ -1,5 +1,5 @@
 
-## BioSAK (A Swiss-Army-Knife for Biologists)
+## BioSAK (A Swiss-Army-Knife for Bioinformaticians)
 
 [![pypi licence ](https://img.shields.io/pypi/l/BioSAK.svg)](https://opensource.org/licenses/gpl-3.0.html)
 [![pypi version ](https://img.shields.io/pypi/v/BioSAK.svg)](https://pypi.python.org/pypi/BioSAK) 
@@ -13,15 +13,6 @@ Contact
 + Center for Marine Science & Innovation, University of New South Wales, Sydney, Australia
 + E-mail: songwz03@gmail.com
 
-
-Dependencies
----
-
-Module dependent, see module-specific help info for details. E.g.
-
-    BioSAK COG2020 -h
-    BioSAK dbCAN -h
-    
     
 Installation
 ---
@@ -36,7 +27,7 @@ Installation
        # for updating
        pip3 install --upgrade BioSAK
       
-1. For UNSW Katana users
+1. If you are an UNSW Katana user, install with:
 
        ######### Install BioSAK with Python's virtual environment ########
 
@@ -143,6 +134,6 @@ Get help
        BioSAK COG2020 -h
        BioSAK iTOL -h 
 
-1. Short tutorials for some BioSAK modules can be found here:
+2. Short tutorials for a few modules:
 
     https://github.com/songweizhi/BioSAK/tree/master/BioSAK_tutorial

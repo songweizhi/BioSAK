@@ -40,6 +40,18 @@ def Cdb_2_bin_cluster_file(Cdb_file, bin_cluster_file):
         bin_cluster_file_handle.write('cluster_%s\t%s\n' % (j, '\t'.join(cluster_to_bin_dict[j])))
     bin_cluster_file_handle.close()
 
+def cigar_to_aln_len(cigar_string):
+
+    # Given a CIGAR string, return the number of bases consumed from the query sequence
+    result = 0
+    cig_iter = groupby(cigar_string, lambda chr: chr.isdigit())
+    for _, length_digits in cig_iter:
+        length = int(''.join(length_digits))
+        op = next(next(cig_iter)[1])
+        if op in ("M", "=", "X"):
+            result += length
+    return result
+
 
 def cigar_to_read_len(cigar_string):
 
@@ -55,7 +67,7 @@ def cigar_to_read_len(cigar_string):
     return result
 
 
-def get_ref_to_total_read_len_from_sam(input_sam_file):
+def get_ref_to_total_read_len_from_sam(input_sam_file, by_aligned):
 
     ctg_to_aligned_read_len_dict = {}
     for each_read in open(input_sam_file):
@@ -66,7 +78,11 @@ def get_ref_to_total_read_len_from_sam(input_sam_file):
             read_seq = each_read_split[9]
             read_len = len(read_seq)
             if read_seq == '*':
-                read_len = cigar_to_read_len(cigar_str)
+
+                if by_aligned is True:
+                    read_len = cigar_to_aln_len(cigar_str)
+                else:
+                    read_len = cigar_to_read_len(cigar_str)
 
             if ref_id not in ctg_to_aligned_read_len_dict:
                 ctg_to_aligned_read_len_dict[ref_id] = read_len
@@ -84,6 +100,7 @@ def magabund(args):
     bin_folder    = args['m']
     bin_ext       = args['x']
     output_file   = args['o']
+    only_aligned  = args['a']
     # cluster_info  = args['g']
     # dRep_Cdb_file = args['Cdb']
 
@@ -160,7 +177,7 @@ def magabund(args):
 
     print('Get the total length of reads mapped to each reference sequence in sam file')
 
-    ctg_to_aligned_read_total_len_dict = get_ref_to_total_read_len_from_sam(sam_file)
+    ctg_to_aligned_read_total_len_dict = get_ref_to_total_read_len_from_sam(sam_file, only_aligned)
 
     gnm_to_aligned_read_total_len_dict = dict()
     for each_ctg in ctg_to_aligned_read_total_len_dict:
@@ -230,6 +247,7 @@ if __name__ == "__main__":
     magabund_parser.add_argument('-m',     required=True,                        help='MAG folder')
     magabund_parser.add_argument('-x',     required=True, default='fasta',       help='MAG file extension, default: fasta')
     magabund_parser.add_argument('-o',     required=True,                        help='output table')
+    magabund_parser.add_argument('-a',     required=False, action='store_true',  help='based on aligned length, rather than read length')
     #magabund_parser.add_argument('-g',       required=False, default=None,         help='bin grouping info')
     #magabund_parser.add_argument('-Cdb',     required=False, default=None,         help='cluster info from dRep (Cdb.csv)')
     args = vars(magabund_parser.parse_args())
