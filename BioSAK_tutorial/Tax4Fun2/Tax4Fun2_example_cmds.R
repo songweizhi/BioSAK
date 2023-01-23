@@ -42,9 +42,9 @@ install.packages(pkgs = "Tax4Fun2_1.1.5.tar.gz", repos = NULL, source = TRUE)
 library(Tax4Fun2)
 
 # modify the following 8 lines
-pwd_op_folder   = 'path/to/Tax4Fun2_outputs'            # specify output folder
-query_otu_seq   = 'path/to/your/OTU_sequence.fa'        # OTU sequence file
-query_otu_table = 'path/to/your/OTU_table.txt'          # OTU table
+pwd_op_folder   = 'path/to/Tax4Fun2_output_folder'      # specify output folder
+query_otu_seq   = 'path/to/demo_OTU.fasta'              # OTU sequence file
+query_otu_table = 'path/to/demo_OTU_table.csv'          # OTU table
 pwd_ref_data    = 'path/to/Tax4Fun2_ReferenceData_v2'   # path to Tax4Fun2's default database (i.e., Tax4Fun2_ReferenceData_v2), need to be decompressed before use
 norm_by_cn      = TRUE                                  # normalize_by_copy_number (TRUE or FALSE)
 norm_path       = TRUE                                  # normalize_pathways (TRUE or FALSE)
@@ -100,9 +100,9 @@ generateUserData(path_to_reference_data = pwd_ref_data, path_to_user_data = pwd_
 ###### 4.2 making functional predictions using the default database and the user-generated database ######
 
 # modify the following 10 lines
-pwd_op_folder   = 'path/to/Tax4Fun2_outputs'            # specify output folder
-query_otu_seq   = 'path/to/your/OTU_sequence.fa'        # OTU sequence file
-query_otu_table = 'path/to/your/OTU_table.txt'          # OTU table
+pwd_op_folder   = 'path/to/Tax4Fun2_output_folder'      # specify output folder
+query_otu_seq   = 'path/to/demo_OTU.fasta'              # OTU sequence file
+query_otu_table = 'path/to/demo_OTU_table.csv'          # OTU table
 pwd_ref_data    = 'path/to/Tax4Fun2_ReferenceData_v2'   # need to be the same as in 4.1
 pwd_user_data   = 'path/to/your/genome_folder'          # need to be the same as in 4.1
 name_user_data  = 'name_of_user_database'               # need to be the same as in 4.1 , specify only the name, do not include path here
