@@ -28,7 +28,7 @@ install.packages(pkgs = "Tax4Fun2_1.1.5.tar.gz", repos = NULL, source = TRUE)
 #######################################################################################################################
 
 # You'll need to have Tax4Fun2's default database (Tax4Fun2_ReferenceData_v2) to perform functional prediction
-# It's can be found in torsten/Weizhi_Song/Tax4Fun2/Tax4Fun2_1.1.5.tar.gz in Torsten's storage
+# It's can be found in torsten/Weizhi_Song/Software_Scripts_Databases/Tax4Fun2/Tax4Fun2_ReferenceData_v2.tar.gz in Torsten's storage
 
 # There are two ways of running Tax4Fun2
 # refers to section 3 if you want to make functional predictions with Tax4Fun2's default database
@@ -67,13 +67,13 @@ makeFunctionalPrediction(path_to_otu_table = query_otu_table, path_to_reference_
 # !!! You need to know the copy number of 16S rRNA genes in your reference genomes/MAGs, MarkerMAG might be able to help with this.
 
 # I have created a user database with MAGs derived from sponge-associated microbial community.
-# located at torsten/Weizhi_Song/Tax4Fun2/Sponge_associated_MAGs_with_added_16S.tar.gz
+# located at torsten/Weizhi_Song/Software_Scripts_Databases/Tax4Fun2/Sponge_associated_MAGs_with_added_16S.tar.gz
 # To use it, replace the corresponding lines in section 4.2 with
 # pwd_user_data  = 'path/to/Sponge_associated_MAGs_with_added_16S'
 # name_user_data = 'Sponge_associated_MAGs_Tax4Fun2_db'
 
 # Tahsin Khan has created a user database with Ecklonia radiata-associated MAGs,
-# located at torsten/Weizhi_Song/Tax4Fun2/Ulva_MAGs_w16S.tar.gz
+# located at torsten/Weizhi_Song/Software_Scripts_Databases/Tax4Fun2/Ulva_MAGs_w16S.tar.gz
 # To use it, replace the corresponding lines in section 4.2 with
 # pwd_user_data  = 'path/to/Ulva_MAGs_w16S'
 # name_user_data = 'Ulva_MAGs_db'

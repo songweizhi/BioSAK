@@ -97,6 +97,7 @@ BioSAK/label_tree.R
 BioSAK/label_tree.py
 BioSAK/link_16S_MAG.py
 BioSAK/magabund.py
+BioSAK/magabund2.py
 BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
@@ -218,6 +219,11 @@ BioSAK_tutorial/Demo_tree_visualization_with_iTol/files_needed/raw_data/raw_MAG_
 BioSAK_tutorial/Demo_tree_visualization_with_iTol/files_needed/raw_data/raw_MAG_size.txt
 BioSAK_tutorial/Demo_tree_visualization_with_iTol/files_needed/raw_data/raw_MAG_taxon.txt
 BioSAK_tutorial/Demo_tree_visualization_with_iTol/files_needed/raw_data/raw_taxon_color.txt
+BioSAK_tutorial/Tax4Fun2/Tax4Fun2_1.1.5.tar.gz
+BioSAK_tutorial/Tax4Fun2/Tax4Fun2_example_cmds.R
+BioSAK_tutorial/Tax4Fun2/demo_OTU.fasta
+BioSAK_tutorial/Tax4Fun2/demo_OTU_table.csv
+BioSAK_tutorial/Tax4Fun2/demo_Tax4Fun2_outputs.zip
 BioSAK_tutorial/example_files/js_cmds/cmds_gapseq.txt
 BioSAK_tutorial/example_files/js_cmds/js_header.txt
 My_Python_scripts/.DS_Store
@@ -364,6 +370,7 @@ My_R_scripts/README.md
 My_R_scripts/coloring_rarefaction_curves.R
 My_R_scripts/coloring_rarefaction_curves.png
 My_R_scripts/coloring_rarefaction_curves_otu_table.txt
+My_R_scripts/dbcan_annotation.R
 My_R_scripts/demo.R
 My_R_scripts/demo_01_data_structure.R
 My_R_scripts/demo_02_list_manipulation.R
@@ -383,6 +390,7 @@ My_R_scripts/heatmap.R
 My_R_scripts/important_R.R
 My_R_scripts/mtcars.txt
 My_R_scripts/plot_export_format.R
+My_R_scripts/zeta_diversity.R
 My_R_scripts/Environmental_Computing_tutorials/.Rhistory
 My_R_scripts/Environmental_Computing_tutorials/Generalised_linear_model_1.R
 My_R_scripts/Environmental_Computing_tutorials/Generalised_linear_model_2.R
@@ -447,6 +455,7 @@ My_R_scripts/Plot_examples/undone/networkD3.R
 My_R_scripts/Stats_in_R/.DS_Store
 My_R_scripts/Stats_in_R/.RData
 My_R_scripts/Stats_in_R/.Rhistory
+My_R_scripts/Stats_in_R/Partial_Pearson_correlation_coefficients.R
 My_R_scripts/Stats_in_R/stats_ANOVA.R
 My_R_scripts/Stats_in_R/stats_Dissimilarity_stats.R
 My_R_scripts/Stats_in_R/stats_Diversity_stats.R

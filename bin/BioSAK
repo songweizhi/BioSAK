@@ -626,9 +626,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'split_fasta':
         from BioSAK import split_fasta
         split_fasta_parser = subparsers.add_parser('split_fasta', usage=split_fasta.split_fasta_usage)
-        split_fasta_parser.add_argument('-i', required=True,                        help='input fasta file')
-        split_fasta_parser.add_argument('-n', required=False, type=int, default=1,  help='sequence per file, default: 1')
-        split_fasta_parser.add_argument('-o', required=True,                        help='output dir')
+        split_fasta_parser.add_argument('-i',  required=True,                          help='input fasta file')
+        split_fasta_parser.add_argument('-o',  required=True,                          help='output dir')
+        split_fasta_parser.add_argument('-ns', required=False, default=None, type=int, help='number of sequences per file')
+        split_fasta_parser.add_argument('-nf', required=False, default=None, type=int, help='number of files to be generated')
         args = vars(parser.parse_args())
         split_fasta.split_fasta(args)
 
