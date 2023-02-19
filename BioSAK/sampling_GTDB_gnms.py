@@ -6,12 +6,13 @@ sampling_GTDB_gnms_usage = '''
 ====================================== sampling_GTDB_gnms example commands ======================================
 
 # Example commands
-BioSAK sampling_GTDB_gnms -p Firm_o -meta bac120_metadata_r202.tsv -taxon p__Firmicutes -r o
-BioSAK sampling_GTDB_gnms -p Firm_f -meta bac120_metadata_r202.tsv -taxon p__Firmicutes -r f -cpl 85 -ctm 5
-BioSAK sampling_GTDB_gnms -p Firm_g -meta bac120_metadata_r202.tsv -taxon p__Firmicutes -r g -cpl 85 -ctm 5 -ts
+BioSAK sampling_GTDB_gnms -p Firm_o -meta bac120_metadata_r207.tsv -taxon p__Firmicutes -r o
+BioSAK sampling_GTDB_gnms -p Firm_f -meta bac120_metadata_r207.tsv -taxon p__Firmicutes -r f -cpl 85 -ctm 5 -rs
+BioSAK sampling_GTDB_gnms -p Firm_g -meta bac120_metadata_r207.tsv -taxon p__Firmicutes -r g -cpl 85 -ctm 5 -ts
 
-# -meta: bac120_metadata_r202.tsv or ar122_metadata_r202.tsv
-# Sampling rank need to be lower than the rank of taxon specified with "-taxon".
+# -meta: bac120_metadata_r207.tsv or ar122_metadata_r207.tsv
+# Sampling rank need to be lower than the rank of specified taxon (-taxon).
+# Genome(s) with highest quality score(s)(defined as completeness-5*contamination) will be selected.
 
 =================================================================================================================
 '''
@@ -19,14 +20,15 @@ BioSAK sampling_GTDB_gnms -p Firm_g -meta bac120_metadata_r202.tsv -taxon p__Fir
 
 def sampling_GTDB_gnms(args):
 
-    output_prefix     = args['p']
-    gtdb_gnm_metadata = args['meta']
-    interested_taxon  = args['taxon']
-    sampling_rank     = args['r']
-    gnm_num_per_taxon = args['n']
-    cpl_cutoff        = args['cpl']
-    ctm_cutoff        = args['ctm']
-    type_strain_only  = args['ts']
+    output_prefix           = args['p']
+    gtdb_gnm_metadata       = args['meta']
+    interested_taxon        = args['taxon']
+    sampling_rank           = args['r']
+    gnm_num_per_taxon       = args['n']
+    cpl_cutoff              = args['cpl']
+    ctm_cutoff              = args['ctm']
+    type_strain_only        = args['ts']
+    representative_species  = args['rs']
 
     # define output file name
     selected_gnm_id_txt   = '%s_selected_gnm_id.txt'       % output_prefix
@@ -63,6 +65,7 @@ def sampling_GTDB_gnms(args):
             gnm_size = each_ref_split[col_index['genome_size']]
             gtdb_taxonomy = each_ref_split[col_index['gtdb_taxonomy']]
             is_type = each_ref_split[col_index['gtdb_type_designation']]
+            is_representative = each_ref_split[col_index['gtdb_representative']]
 
             if interested_taxon in gtdb_taxonomy:
 
@@ -73,6 +76,14 @@ def sampling_GTDB_gnms(args):
                 else:
                     if is_type in ['type strain of species', 'type strain of species']:
                         type_pass = True
+
+                # check gtdb_representative
+                representative_pass = False
+                if representative_species is False:
+                    representative_pass = True
+                else:
+                    if is_representative == 't':
+                        representative_pass = True
 
                 # check completeness
                 cpl_passed = False
@@ -90,7 +101,7 @@ def sampling_GTDB_gnms(args):
                     if gnm_contamination <= float(ctm_cutoff):
                         ctm_passed = True
 
-                if (type_pass is True) and (cpl_passed is True) and (ctm_passed is True):
+                if (type_pass is True) and (representative_pass is True) and (cpl_passed is True) and (ctm_passed is True):
 
                     # add to dict
                     gnm_to_taxon_dict[ref_accession] = gtdb_taxonomy
@@ -111,13 +122,18 @@ def sampling_GTDB_gnms(args):
 
                     dod[sampling_rank_taxon][ref_accession] = gnm_quality_metric
 
+    # write out selection
     selected_gnm_id_txt_handle = open(selected_gnm_id_txt, 'w')
     selected_gnm_meta_txt_handle = open(selected_gnm_meta_txt, 'w')
     selected_gnm_meta_txt_handle.write('Rank\tGenome\tCompleteness\tContamination\tSelection_criterion(completeness-5*contamination)\tSize(bp)\tTaxonomy\n')
     selected_gnm_list = []
     for each_sampling_taxon in dod:
         current_taxon_gnm_quality_dict = dod[each_sampling_taxon]
+        print(each_sampling_taxon)
+        print(current_taxon_gnm_quality_dict)
         gnms_sorted_by_quality = sorted(current_taxon_gnm_quality_dict.items(), key=lambda x: x[1], reverse=True)
+        print(gnms_sorted_by_quality)
+        print()
         selected_gnm = 0
         for each_gnm in gnms_sorted_by_quality:
             if selected_gnm < gnm_num_per_taxon:
@@ -142,10 +158,11 @@ if __name__ == '__main__':
     parser.add_argument('-p',           required=False, default='Genomes',          help='output prefix')
     parser.add_argument('-meta',        required=True,                              help='GTDB reference genome metadata')
     parser.add_argument('-taxon',       required=True,                              help='interested taxon')
-    parser.add_argument('-r',           required=True,                              help='sampling rank, select from p, c, o, f, g and s')
+    parser.add_argument('-r',           required=True,                              help='sampling at rank, select from p, c, o, f, g and s')
     parser.add_argument('-n',           required=False, default=1, type=int,        help='numer of genome to retain per taxon')
     parser.add_argument('-cpl',         required=False, default=None, type=float,   help='completeness cutoff (0-100), default: None')
     parser.add_argument('-ctm',         required=False, default=None, type=float,   help='contamination cutoff, default: None')
     parser.add_argument('-ts',          required=False, action='store_true',        help='only consider type strain')
+    parser.add_argument('-rs',          required=False, action='store_true',        help='only consider representative species')
     args = vars(parser.parse_args())
     sampling_GTDB_gnms(args)

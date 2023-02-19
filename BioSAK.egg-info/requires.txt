@@ -7,5 +7,4 @@ networkx
 seaborn
 lxml
 beautifulsoup4
-reportlab
 ete3
