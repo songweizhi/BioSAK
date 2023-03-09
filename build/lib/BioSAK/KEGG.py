@@ -17,29 +17,24 @@ from BioSAK.global_functions import AnnotateNorm
 KEGG_parser_usage = '''
 ======================================== KEGG example commands =======================================
 
-# module needed
-module load python/3.7.3
-module load blast+/2.6.0
-module load diamond/0.9.24
+# Dependencies
+module load blast+
+module load diamond
 
 # annotation with NCBI blastp (default, for small dataset)
-BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 6 -seq_in input.faa -depth input.depth
+BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 6 -seq_in input.faa -depth input.depth
 
 # annotation with Diamond blastp (for big dataset)
-BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 12 -seq_in faa_folder -x faa -depth depth_files -diamond
+BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 12 -seq_in faa_folder -x faa -depth depth_files -diamond
 
 # get summary for BlastKOALA/GhostKOALA produced results
-BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 9 -ko_in user_ko.txt
-BioSAK KEGG -db_dir /srv/scratch/z5039045/DB/KEGG_2016-09-26 -t 9 -ko_in user_ko_folder -x txt
+BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 9 -ko_in user_ko.txt
+BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 9 -ko_in user_ko_folder -x txt
 
-# Depth file format (one gene per line, tab separated)
-gene_1	30
-gene_2	10.58
-
-# Files needed in db_dir:
-1. Sequence file, only needed for "-seq_in" mode, DECOMPRESS and RENAME to kegg_db_seq.fasta
+# Prepare DB files, you need to have the following three files in your KEGG_db_dir:
+1. Sequence file, only needed for "-seq_in" mode, DECOMPRESS and RENAME it to kegg_db_seq.fasta
    e.g. prokaryotes.pep.gz (https://www.kegg.jp/kegg/download/Readme/README.fasta)
-2. seq2ko file, only needed for "-seq_in" mode, DECOMPRESS and RENAME to kegg_db_seq2ko.txt
+2. seq2ko file, only needed for "-seq_in" mode, DECOMPRESS and RENAME it to kegg_db_seq2ko.txt
    e.g. prokaryotes.dat.gz (https://www.kegg.jp/kegg/download/Readme/README.fasta)
 3. ko00001.keg
    https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
@@ -57,6 +52,10 @@ gene_2	10.58
 2. Diamond requires quite a lot of memory for sequence comparison, especially for huge db file (e.g. KEGG db).
    Remember to request sufficient memory (e.g. 90 or 120gb) in your job script and specify a small number (e.g. -t 6) 
    of jobs executing in parallel. Otherwise, you may see some of your query genomes with no gene been annotated.
+
+# Depth file format (one gene per line, tab separated)
+gene_1	30
+gene_2	10.58
 
 # To do:
 1. level C stats: separate stats for Pathway, Brite and the rests

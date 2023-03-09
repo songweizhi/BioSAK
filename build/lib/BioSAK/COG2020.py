@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import glob
 import argparse
@@ -17,34 +16,29 @@ from BioSAK.global_functions import get_gene_list_TotalDepth
 COG2020_parser_usage = '''
 ===================================== COG2020 example commands =====================================
 
-# module needed
-module load python/3.7.3
-module load blast+/2.11.0
-module load diamond/0.9.31
+# Dependencies
+module load blast+
+module load diamond
 
 # annotate protein sequences
-BioSAK COG2020 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i genes.faa 
-BioSAK COG2020 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i faa_files -x faa -depth depth_files
+BioSAK COG2020 -m P -t 6 -db_dir path/to/your/COG_db_dir -i genes.faa 
+BioSAK COG2020 -m P -t 6 -db_dir path/to/your/COG_db_dir -i faa_files -x faa -depth depth_files
 
 # annotate DNA sequences (ORFs)
-BioSAK COG2020 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i genes.ffn -depth gene.depth
-BioSAK COG2020 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG2020 -i ffn_files -x ffn
-
-# Depth file format (one gene per line, tab separated)
-gene_1	30
-gene_2	10.58
+BioSAK COG2020 -m N -t 6 -db_dir path/to/your/COG_db_dir -i genes.ffn -depth gene.depth
+BioSAK COG2020 -m N -t 6 -db_dir path/to/your/COG_db_dir -i ffn_files -x ffn
 
 # Prepare DB files (version 2020):
-cd db_dir
+cd path/to/your/COG_db_dir
 wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.fa.gz
 wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.cog.csv
 wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.def.tab
 wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/fun-20.tab
 wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/Readme.2020-11-25.txt
 gunzip cog-20.fa.gz
-module load blast+/2.11.0
+module load blast
 makeblastdb -in cog-20.fa -dbtype prot -parse_seqids -logfile cog-20.fa.log
-module load diamond/0.9.31
+module load diamond
 diamond makedb --in cog-20.fa --db cog-20.fa.dmnd --quiet
 
 # How it works:
@@ -58,6 +52,10 @@ diamond makedb --in cog-20.fa --db cog-20.fa.dmnd --quiet
 If you run COG2020 for multiple files in a batch manner and want to have their depth info incorporated into the results, 
 you need to provide a folder containing individual depth file for each of your input sequence file.
 Name of the depth file needs to be exactly the same as its corresponding sequence file, except the extension is ".depth".
+
+# Depth file format (one gene per line, tab separated)
+gene_1	30
+gene_2	10.58
 
 ====================================================================================================
 '''
@@ -698,7 +696,7 @@ if __name__ == '__main__':
     COG_parser.add_argument('-m',               required=True,                              help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
     COG_parser.add_argument('-depth',           required=False, default=None,               help='gene depth file/folder')
     COG_parser.add_argument('-pct_by_all',      required=False, action='store_true',        help='normalize by all query genes, including those without COG assignment')
-    COG_parser.add_argument('-db_dir',          required=True,                              help='DB folder')
+    COG_parser.add_argument('-db_dir',          required=True,                              help='COG_db_dir')
     COG_parser.add_argument('-diamond',         required=False, action='store_true',        help='run diamond (for big dataset), default is NCBI blastp')
     COG_parser.add_argument('-t',               required=False, type=int, default=1,        help='number of threads')
     COG_parser.add_argument('-evalue',          required=False, default=0.001, type=float,  help='evalue cutoff, default: 0.001')

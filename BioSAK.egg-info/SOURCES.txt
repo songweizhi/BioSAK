@@ -44,6 +44,7 @@ BioSAK/SubsampleLongReads.py
 BioSAK/SubsetAlnCols.py
 BioSAK/Tax4Fun2IndOTU.py
 BioSAK/VERSION
+BioSAK/VisBlastOp.py
 BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
 BioSAK/bam2reads.py

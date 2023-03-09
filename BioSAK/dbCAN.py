@@ -16,26 +16,21 @@ from BioSAK.global_functions import AnnotateNorm
 dbCAN_parser_usage = '''
 ============================================== dbCAN example commands ==============================================
 
-# module needed
-module load hmmer/3.2.1
+# Dependencies
+module load hmmer
 
 # annotate protein sequences
-BioSAK dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN_V9 -i recipient.faa 
-BioSAK dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN_V9 -i recipient.faa -depth recipient.depth
-BioSAK dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN_V9 -i faa_files -x faa
-BioSAK dbCAN -m P -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN_V9 -i faa_files -x faa -depth depth_files
+BioSAK dbCAN -m P -t 6 -db_dir path/to/your/dbCAN_db_dir -i recipient.faa 
+BioSAK dbCAN -m P -t 6 -db_dir path/to/your/dbCAN_db_dir -i recipient.faa -depth recipient.depth
+BioSAK dbCAN -m P -t 6 -db_dir path/to/your/dbCAN_db_dir -i faa_files -x faa
+BioSAK dbCAN -m P -t 6 -db_dir path/to/your/dbCAN_db_dir -i faa_files -x faa -depth depth_files
 
 # annotate DNA sequences
 BioSAK dbCAN -m N -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN_V9 -i recipient.ffn
 BioSAK dbCAN -m N -t 6 -db_dir /srv/scratch/z5039045/DB/dbCAN_V9 -i ffn_files -x ffn
 
-# Depth file format (one gene per line, tab separated)
-gene_1	30
-gene_2	10.58
-gene_3	10.58
-
-# DB files (versions V9):
-cd dbCAN_V9
+# Prepare DB files (versions V9):
+cd path/to/your/dbCAN_db_dir
 wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/hmmscan-parser.sh
 wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/CAZyDB.07302020.fam-activities.txt
 wget http://bcb.unl.edu/dbCAN2/download/Databases/V9/dbCAN-HMMdb-V9.txt
@@ -53,6 +48,10 @@ hmmpress dbCAN-fam-HMMs.txt
 If you run dbCAN for multiple files in a batch manner and want to have their depth info incorporated into the results, 
 you need to provide a folder containing individual depth files for each of your input sequence file.
 Name of the depth file needs to be exactly the same as its corresponding sequence file, except the extension which is ".depth".
+
+# Depth file format (one gene per line, tab separated)
+gene_1	30
+gene_2	10.58
 
 ====================================================================================================================
 '''
@@ -94,28 +93,20 @@ def dbCAN_worker(argument_list):
         print('Specified input sequence type unrecognizable, program exited!')
         exit()
 
-    hmmscan_cmd = "hmmscan --domtblout %s/%s.out.dm %s %s > %s/%s.out" % (current_output_folder,
-                                                                          input_seq_no_ext,
-                                                                          pwd_dbCAN_fam_HMMs,
-                                                                          input_seq_aa,
-                                                                          current_output_folder,
-                                                                          input_seq_no_ext)
+    hmmscan_cmd = "hmmscan --domtblout %s/%s.out.dm %s %s > %s/%s.out" % (current_output_folder, input_seq_no_ext,
+                                                                          pwd_dbCAN_fam_HMMs, input_seq_aa,
+                                                                          current_output_folder, input_seq_no_ext)
 
-    hmmscan_parser_cmd = "sh %s %s/%s.out.dm > %s/%s.out.dm.ps" % (pwd_hmmscan_parser,
-                                                                   current_output_folder,
-                                                                   input_seq_no_ext,
-                                                                   current_output_folder,
+    hmmscan_parser_cmd = "sh %s %s/%s.out.dm > %s/%s.out.dm.ps" % (pwd_hmmscan_parser, current_output_folder,
+                                                                   input_seq_no_ext, current_output_folder,
                                                                    input_seq_no_ext)
 
-    final_cat_cmd = "cat %s/%s.out.dm.ps | awk '$5<1e-18&&$10>0.35' > %s/%s.out.dm.ps.stringent" % (current_output_folder,
-                                                                                                    input_seq_no_ext,
-                                                                                                    current_output_folder,
-                                                                                                    input_seq_no_ext)
+    final_cat_cmd = "cat %s/%s.out.dm.ps | awk '$5<1e-18&&$10>0.35' > %s/%s.out.dm.ps.stringent" % (current_output_folder, input_seq_no_ext,
+                                                                                                    current_output_folder, input_seq_no_ext)
 
     os.system(hmmscan_cmd)
     os.system(hmmscan_parser_cmd)
     os.system(final_cat_cmd)
-
 
     ################################### get functional descriptions for query genes ####################################
 
@@ -172,7 +163,6 @@ def dbCAN_worker(argument_list):
         pwd_annotation_results_handle.write('%s\t%s\t%s\n' % (query_id, matched_hmm, matched_hmm_activities))
 
     pwd_annotation_results_handle.close()
-
 
     #################### get summary of annotation results GeneNumber ####################
 
@@ -315,7 +305,6 @@ def dbCAN(args):
     if (os.path.isfile(CAZyDB_fam_activities_07312019) is True) and (os.path.isfile(CAZyDB_fam_activities) is False):
         os.system('mv %s %s' % (CAZyDB_fam_activities_07312019, CAZyDB_fam_activities))
 
-
     ############################################ check whether db file exist ###########################################
 
     # check whether db file exist
@@ -337,7 +326,6 @@ def dbCAN(args):
             fam_activities = each_fam_split[1]
             fam_to_activities_dict[fam_id] = fam_activities
 
-
     ################################################## if input is file ################################################
 
     # if input is file
@@ -353,7 +341,6 @@ def dbCAN(args):
 
         file_in_path, file_in_basename, file_in_ext = sep_path_basename_ext(file_in)
         dbCAN_worker([file_in, pwd_hmmscan_parser, pwd_dbCAN_fam_HMMs, sequence_type, file_in_path, fam_to_activities_dict, depth_file])
-
 
     ################################################ if input is folder ################################################
 
@@ -400,7 +387,6 @@ def dbCAN(args):
                         print(','.join(undetected_depth_file))
                         exit()
 
-
             ################################################### define file name ###################################################
 
             if '/' in file_in:
@@ -416,7 +402,6 @@ def dbCAN(args):
 
             # create output folder
             force_create_folder(output_folder)
-
 
             ######################################################### main #########################################################
 
@@ -441,7 +426,6 @@ def dbCAN(args):
             pool.map(dbCAN_worker, list_for_multiple_arguments_dbCAN)
             pool.close()
             pool.join()
-
 
             ######################################################### get dataframe #########################################################
 

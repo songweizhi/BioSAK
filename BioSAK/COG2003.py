@@ -18,15 +18,15 @@ module load perl/5.20.1
 module load blast+/2.6.0
 
 # annotate protein sequences
-BioSAK COG2003 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i recipient.faa
-BioSAK COG2003 -m P -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i faa_files -x faa
+BioSAK COG2003 -m P -t 6 -db_dir path/to/your/COG_db_dir -i recipient.faa
+BioSAK COG2003 -m P -t 6 -db_dir path/to/your/COG_db_dir -i faa_files -x faa
 
 # annotate DNA sequences
-BioSAK COG2003 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i recipient.ffn
-BioSAK COG2003 -m N -t 6 -db_dir /srv/scratch/z5039045/DB/COG_DB -i ffn_files -x ffn
+BioSAK COG2003 -m N -t 6 -db_dir path/to/your/COG_db_dir -i recipient.ffn
+BioSAK COG2003 -m N -t 6 -db_dir path/to/your/COG_db_dir -i ffn_files -x ffn
 
 # Prepare DB files:
-cd $db_dir
+cd COG_DB_dir
 wget ftp://ftp.ncbi.nih.gov/pub/mmdb/cdd/little_endian/Cog_LE.tar.gz
 wget ftp://ftp.ncbi.nlm.nih.gov/pub/mmdb/cdd/cddid.tbl.gz
 wget ftp://ftp.ncbi.nih.gov/pub/COG/COG/fun.txt
