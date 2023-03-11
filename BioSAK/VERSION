@@ -1,5 +1,8 @@
-1.61.10
+1.62.5
 - fixed bugs
+
+1.62.0
+- new module added: arCOG
 
 1.61.0
 - new module added: SubsampleLongReads

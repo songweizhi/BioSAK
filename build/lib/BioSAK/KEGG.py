@@ -43,7 +43,7 @@ BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 9 -ko_in user_ko_folder -x txt
 1. KEGG module uses Blast+/Diamond to get the best hits of query genes in the database with user defined e-value cutoff (default 0.001).
 2. The TotalDepth of a KO is calculated by summing up the depth of all genes assigned to it.
 3. The percentage of GeneNumber/TotalDepth of genes assigned to a KO is calculated by dividing them 
-   by the total number/depth of genes with KO assignment (default) or all query genes in a file (if "-pct_by_all" specified). 
+   by the total number/depth of genes with KO assignment (default) or by all genes in a genome ("-pct_by_all"). 
 
 # Note!!!
 1. If you run KEGG annotation for multiple files in a batch manner and want to have their depth info incorporated into the results, 

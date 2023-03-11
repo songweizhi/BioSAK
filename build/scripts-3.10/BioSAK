@@ -35,6 +35,7 @@ def print_main_help():
     Functional annotation
        KEGG                   ->  KEGG annotation
        COG2020                ->  COG annotation (v2020, by blastp/diamond)
+       arCOG                  ->  COG annotation for archaea (version ar18)
        dbCAN                  ->  CAZy annotation with dbCAN
        CheckM                 ->  Parse CheckM outputs
 
@@ -46,6 +47,14 @@ def print_main_help():
        get_gnm_size           ->  Get the total length of genome(s)
        get_gene_depth         ->  Get gene depth by contig depth
        MeanMappingDepth       ->  Get mean mapping depth 
+       Plot_MAG               ->  plot MAGs, (GC vs depth)
+
+    Genome databases
+       get_GTDB_taxon_gnm     ->  Get id of genomes from specified GTDB taxons
+       get_genome_GTDB        ->  Batch download GTDB genomes
+       get_genome_NCBI        ->  Batch download GenBank genomes
+       sampling_GTDB_gnms     ->  Select GTDB genomes from a specified taxon at specified sampling rank
+       subset_GTDB_meta       ->  Subset metadata of GTDB reference genomes
 
     16S rRNA related
        top_16S_hits           ->  Classify 16S by top-blast-hits approach
@@ -64,9 +73,6 @@ def print_main_help():
        split_fasta            ->  Split one fasta file into multiple files
        merge_seq              ->  Merge sequence files, remove duplicated ones if any
        cat_fa                 ->  Combine sequence files, prefix sequence id with file name
-       convert_align_format   ->  Convert alignment format
-       OneLineAln             ->  One-line fasta format alignments
-       SubsetAlnCols          ->  Subset MSA by column    
     
     Sam/Bam
        plot_sam_depth         ->  Plot SAM depth
@@ -74,28 +80,13 @@ def print_main_help():
        sam2bam                ->  Sam to BAM with samtools
        split_sam              ->  Split SAM/BAM file by reference
        bam2reads              ->  Extract reads (id) from sam file
-
-    Tree-related
-       GTDB_tree_r207         ->  Infer GTDB (r207) archaeal/bacterial tree
-       subset_tree            ->  Subset tree
-       compare_trees          ->  Compare trees with Mantel test
-       rename_leaves          ->  Rename tree leaves
-       FLN                    ->  Format leaf names (e.g. remove spaces in names)
-       iTOL                   ->  Prepare iTOL-compatible files for tree visualization
     
-    Genome databases
-       get_GTDB_taxon_gnm     ->  Get id of genomes from specified GTDB taxons
-       get_genome_GTDB        ->  Batch download GTDB genomes
-       get_genome_NCBI        ->  Batch download GenBank genomes
-       sampling_GTDB_gnms     ->  Select GTDB genomes from a specified taxon at specified sampling rank
-       subset_GTDB_meta       ->  Subset metadata of GTDB reference genomes
-
     Others
-       Plot_MAG               ->  plot MAGs, (GC vs depth)
-       VisGeneFlk             ->  Visualize gene flanking regions
-       BestHit                ->  Keep best blast hits (outfmt 6)
+       iTOL                   ->  Prepare iTOL-compatible files for tree visualization
        js_cmds                ->  Commands to job scripts
-       exe_cmds               ->  Execute commands in a file with multiprocessing (one cmd per line)
+       exe_cmds               ->  Execute commands with multiprocessing (one cmd per line)
+       BestHit                ->  Keep best blast hits (outfmt 6)
+       VisGeneFlk             ->  Visualize gene flanking regions
        split_folder           ->  Split folder
        usearch_uc             ->  Parse Usearch uc file
        get_Pfam_hmms          ->  Get Pfam profiles by id
@@ -103,6 +94,8 @@ def print_main_help():
        SubsampleLongReads     ->  Subsample Long Reads
        rename_reads_Reago     ->  Rename paired reads for Reago
        cross_link_seqs        ->  Cross link matched regions between two sequences (not working well!)
+       
+    Modules related to phylogenetic trees have been moved to TreeSAK, please go to its github page for details.
     ''' % version(config_dict)
 
     print(help_message)
@@ -124,17 +117,6 @@ if __name__ == '__main__':
         print_main_help()
         sys.exit(0)
 
-    elif sys.argv[1] == 'Prodigal':
-        from BioSAK import Prodigal
-        Prodigal_parser = subparsers.add_parser('Prodigal', description='Wrapper for running Prodigal', usage=Prodigal.Prodigal_parser_usage)
-        Prodigal_parser.add_argument('-i',                  required=True,                                  help='input genome folder')
-        Prodigal_parser.add_argument('-x',                  required=False, default='fasta',                help='file extension')
-        Prodigal_parser.add_argument('-p',                  required=True,                                  help='output prefix')
-        Prodigal_parser.add_argument('-meta',               required=False, action="store_true",            help='annotation mode for metagenome assembled genomes (MAGs)')
-        Prodigal_parser.add_argument('-t',                  required=False, type=int, default=1,            help='number of threads')
-        args = vars(parser.parse_args())
-        Prodigal.Annotation_Prodigal(args)
-
     elif sys.argv[1] == 'COG2020':
         from BioSAK import COG2020
         COG2020_parser = subparsers.add_parser('COG2020', description='Wrapper for COG annotation (v2020)', usage=COG2020.COG2020_parser_usage)
@@ -149,6 +131,21 @@ if __name__ == '__main__':
         COG2020_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
         args = vars(parser.parse_args())
         COG2020.COG2020(args)
+
+    elif sys.argv[1] == 'arCOG':
+        from BioSAK import arCOG
+        arCOG_parser = subparsers.add_parser('arCOG', description='Wrapper for arCOG', usage=arCOG.arCOG_parser_usage)
+        arCOG_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+        arCOG_parser.add_argument('-x',                   required=False,                                 help='file extension')
+        arCOG_parser.add_argument('-m',                   required=True,                                  help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
+        arCOG_parser.add_argument('-depth',               required=False, default=None,                   help='gene depth file/folder')
+        arCOG_parser.add_argument('-pct_by_all',          required=False, action='store_true',            help='normalize by all query genes, rather than those with COG assignment')
+        arCOG_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
+        arCOG_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
+        arCOG_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
+        arCOG_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+        args = vars(parser.parse_args())
+        arCOG.arCOG(args)
 
     elif sys.argv[1] == 'KEGG':
         from BioSAK import KEGG
@@ -189,26 +186,6 @@ if __name__ == '__main__':
         CheckM_parser.add_argument('-r',    required=False, action="store_true", help='recalculate contamination')
         args = vars(parser.parse_args())
         CheckM.CheckM(args)
-
-    elif sys.argv[1] == 'subset_tree':
-        from BioSAK import subset_tree
-        subset_tree_parser = subparsers.add_parser('subset_tree', description='Subset tree', usage=subset_tree.subset_tree_usage)
-        subset_tree_parser.add_argument('-tree',            required=True,                                  help='input tree file')
-        subset_tree_parser.add_argument('-taxon',           required=True,                                  help='A file containing list of nodes to keep, one node per line')
-        subset_tree_parser.add_argument('-out',             required=True,                                  help='Output tree file')
-        subset_tree_parser.add_argument('-q',               required=False, action="store_true",            help='do not report progress')
-        args = vars(parser.parse_args())
-        subset_tree.subset_tree(args)
-
-    elif sys.argv[1] == 'label_tree':
-        from BioSAK import label_tree
-        label_tree_parser = subparsers.add_parser('label_tree', description='Add labels to tree leaves', usage=label_tree.label_tree_usage)
-        label_tree_parser.add_argument('-tree',             required=True,                                  help='tree file in newick format')
-        label_tree_parser.add_argument('-label',            required=False,  default=None,                  help='label file (label,leaf)')
-        label_tree_parser.add_argument('-taxon',            required=False,  default=None,                  help='taxonomic classification')
-        label_tree_parser.add_argument('-rank',             required=False,  default=None,                  help='taxonomic rank to label')
-        args = vars(parser.parse_args())
-        label_tree.label_tree(args, config_dict)
 
     elif sys.argv[1] == 'iTOL':
         from BioSAK import iTOL
@@ -295,16 +272,6 @@ if __name__ == '__main__':
         get_GTDB_taxon_gnm_parser.add_argument('-ctm',         required=False, default=None, type=float,   help='contamination cutoff, default: None')
         args = vars(parser.parse_args())
         get_GTDB_taxon_gnm.get_GTDB_taxon_gnm(args)
-
-    elif sys.argv[1] == 'convert_align_format':
-        from BioSAK import format_converter
-        convert_align_fmt_parser = subparsers.add_parser('convert_align_format', description='Convert alignment format', usage=format_converter.convert_align_format_usage)
-        convert_align_fmt_parser.add_argument('-in',        required=True,                                  help='input alignment')
-        convert_align_fmt_parser.add_argument('-inf',       required=True,                                  help='format of input alignment')
-        convert_align_fmt_parser.add_argument('-out',       required=True,                                  help='output alignment')
-        convert_align_fmt_parser.add_argument('-outf',      required=True,                                  help='format of output alignment')
-        args = vars(parser.parse_args())
-        format_converter.convert_align_format(args)
 
     elif sys.argv[1] == 'gbk2fa':
         from BioSAK import format_converter
@@ -450,25 +417,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         rename_reads_for_Reago.rename_reads_for_Reago(args)
 
-    elif sys.argv[1] == 'OneLineAln':
-        from BioSAK import OneLineAln
-        OneLineAln_parser = subparsers.add_parser('OneLineAln', description='One-line fasta format alignments', usage=OneLineAln.OneLineAln_usage)
-        OneLineAln_parser.add_argument('-in',       required=True,                       help='input MSA in fasta format')
-        OneLineAln_parser.add_argument('-out',      required=False, default=None,        help='output file')
-        OneLineAln_parser.add_argument('-upper',    required=False, action='store_true', help='turn to uppercase')
-        args = vars(parser.parse_args())
-        OneLineAln.OneLineAln(args)
-
-    elif sys.argv[1] == 'SubsetAlnCols':
-        from BioSAK import SubsetAlnCols
-        SubsetAlnCols_parser = subparsers.add_parser('SubsetAlnCols', description='Subset MSA by column', usage=SubsetAlnCols.SubsetAlnCols_usage)
-        SubsetAlnCols_parser.add_argument('-in',  required=True,                help='input MSA in fasta format')
-        SubsetAlnCols_parser.add_argument('-r',   required=True,                help='columns to keep, e.g. 200-300, one based')
-        SubsetAlnCols_parser.add_argument('-pct', required=False, default=None, help='minimum percentage of nonempty bases (e.g. 70), default keep all')
-        SubsetAlnCols_parser.add_argument('-out', required=True,                help='output file')
-        args = vars(parser.parse_args())
-        SubsetAlnCols.SubsetAlnCols(args)
-
     elif sys.argv[1] == 'MeanMappingDepth':
         from BioSAK import MeanMappingDepth
         MeanMappingDepth_parser = subparsers.add_parser('MeanMappingDepth', description='get mean mapping depth', usage=MeanMappingDepth.MeanMappingDepth_usage)
@@ -609,18 +557,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         exe_cmds.exe_cmds(args)
 
-    elif sys.argv[1] == 'compare_trees':
-        from BioSAK import compare_trees
-        compare_trees_parser = subparsers.add_parser('compare_trees', usage=compare_trees.compare_trees_usage)
-        compare_trees_parser.add_argument('-t1',  required=True,                       help='tree (folder) 1')
-        compare_trees_parser.add_argument('-t2',  required=True,                       help='tree (folder) 2')
-        compare_trees_parser.add_argument('-tx',  required=False, default='newick',    help='extention of tree files, default: newick')
-        compare_trees_parser.add_argument('-dm', required=False, action="store_true",  help='export distance-alike matrix, obtained by subtract the similarity value from 1')
-        compare_trees_parser.add_argument('-t',   required=False, type=int, default=1, help='number of threads')
-        compare_trees_parser.add_argument('-tmp', required=False, action="store_true", help='keep tmp files')
-        args = vars(parser.parse_args())
-        compare_trees.compare_trees(args)
-
     elif sys.argv[1] == 'split_fasta':
         from BioSAK import split_fasta
         split_fasta_parser = subparsers.add_parser('split_fasta', usage=split_fasta.split_fasta_usage)
@@ -650,16 +586,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         fa2id.fa2id(args)
 
-    elif sys.argv[1] == 'rename_leaves':
-        from BioSAK import rename_leaves
-        rename_leaves_parser = subparsers.add_parser('rename_leaves', usage=rename_leaves.rename_leaves_usage)
-        rename_leaves_parser.add_argument('-i',    required=True,             help='input tree')
-        rename_leaves_parser.add_argument('-r',    required=True,             help='rename file')
-        rename_leaves_parser.add_argument('-f',    required=False, default=1, help='tree format, default: 1')
-        rename_leaves_parser.add_argument('-o',    required=True,             help='output tree')
-        args = vars(parser.parse_args())
-        rename_leaves.rename_leaves(args)
-
     elif sys.argv[1] == 'sampling_GTDB_gnms':
         from BioSAK import sampling_GTDB_gnms
         sampling_GTDB_gnms_parser = subparsers.add_parser('sampling_GTDB_gnms', usage=sampling_GTDB_gnms.sampling_GTDB_gnms_usage)
@@ -682,19 +608,6 @@ if __name__ == '__main__':
         subset_GTDB_meta_parser.add_argument('-out',     required=True, help='output file')
         args = vars(parser.parse_args())
         subset_GTDB_meta.subset_GTDB_meta(args)
-
-    elif sys.argv[1] == 'FLN':
-        from BioSAK import format_leaf_name
-        format_leaf_name_parser = subparsers.add_parser('FLN', usage=format_leaf_name.format_leaf_name_usage)
-        format_leaf_name_parser.add_argument('-i',                  required=True,                          help='input tree')
-        format_leaf_name_parser.add_argument('-fmt',                required=False, default=1,              help='tree format, default: 1')
-        format_leaf_name_parser.add_argument('-o',                  required=True,                          help='output tree')
-        format_leaf_name_parser.add_argument('-s2u',                required=False, action="store_true",    help='change space in tree leaves to underscore')
-        format_leaf_name_parser.add_argument('-ns',                 required=False, action="store_true",    help='remove space from leaf names')
-        format_leaf_name_parser.add_argument('-nsqm',               required=False, action="store_true",    help='remove single quotation marks from leaf names')
-        format_leaf_name_parser.add_argument('-ndqm',               required=False, action="store_true",    help='remove double quotation marks from leaf names')
-        args = vars(parser.parse_args())
-        format_leaf_name.format_leaf_name(args)
 
     elif sys.argv[1] == 'get_MAG_reads_long':
         from BioSAK import get_MAG_reads_long
@@ -786,21 +699,13 @@ if __name__ == '__main__':
 
 upload_to_pypi_cmd = '''
 
-extract_sam_reads_parser    = subparsers.add_parser('Extract_sam_reads',    description='Extract reads from SAM file',  usage='')
-subsample_reads_parser      = subparsers.add_parser('subsample_reads',      description='Wrapper for running Prodigal', usage='')
-GTDB_16S module: report identity to the best hit
-
 cd /Users/songweizhi/PycharmProjects/BioSAK
 rm -r build dist BioSAK.egg-info
 python setup.py sdist bdist_wheel
 twine upload dist/*
 
-songweizhi
-shan88
+songweizhi    shan88
 
-module load python/3.7.3
-source ~/mypython3env/bin/activate
 pip3 install --upgrade BioSAK
 
 '''
-

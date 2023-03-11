@@ -32,7 +32,6 @@ BioSAK/NS_SCG_tree_p_only_group.tree
 BioSAK/NS_SCG_tree_p_with_group.tree
 BioSAK/NetEnzymes.py
 BioSAK/Newick_tree_plotter.py
-BioSAK/OneLineAln.py
 BioSAK/Prodigal.py
 BioSAK/Prokka.py
 BioSAK/Prokka_b.py
@@ -41,12 +40,12 @@ BioSAK/RunGraphMB.py
 BioSAK/SILVA_for_BLCA.py
 BioSAK/SankeyTaxon.py
 BioSAK/SubsampleLongReads.py
-BioSAK/SubsetAlnCols.py
 BioSAK/Tax4Fun2IndOTU.py
 BioSAK/VERSION
 BioSAK/VisBlastOp.py
 BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
+BioSAK/arCOG.py
 BioSAK/bam2reads.py
 BioSAK/boxplot_last1row.R
 BioSAK/boxplot_matrix_COG.py
