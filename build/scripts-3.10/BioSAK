@@ -66,6 +66,7 @@ def print_main_help():
     Sequence/Alignment manipulator
        gbk2fa/gbk2faa/gbk2ffn ->  Format convertors
        ffn2faa/gfa2fa/get_rc  ->  Format convertors
+       fq2fa                  ->  Convert fastq to fasta
        fa2id                  ->  Export sequence id
        slice_seq              ->  Get specified region of a sequence
        rename_seq             ->  Rename sequences in a file
@@ -95,7 +96,7 @@ def print_main_help():
        rename_reads_Reago     ->  Rename paired reads for Reago
        cross_link_seqs        ->  Cross link matched regions between two sequences (not working well!)
        
-    Modules related to phylogenetic trees have been moved to TreeSAK, please go to its github page for details.
+    Phylogenetic tree-related modules have been moved to TreeSAK, please go to its github page for details.
     ''' % version(config_dict)
 
     print(help_message)
@@ -195,6 +196,7 @@ if __name__ == '__main__':
         iTOL_parser.add_argument('-SimpleBar',       required=False, action='store_true',   help='SimpleBar')
         iTOL_parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
         iTOL_parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
+        iTOL_parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
         iTOL_parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
         iTOL_parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
         iTOL_parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
@@ -441,17 +443,16 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'reads2bam':
         from BioSAK import reads2bam
         reads2bam_parser = subparsers.add_parser('reads2bam', usage=reads2bam.reads2bam_usage)
-        reads2bam_parser.add_argument('-p',               required=True,                                     help='output prefix')
-        reads2bam_parser.add_argument('-ref',             required=True,                                     help='reference sequences')
-        reads2bam_parser.add_argument('-index_ref',       required=False, action="store_true",               help='index reference')
-        reads2bam_parser.add_argument('-r1',              required=False, default=None,                      help='paired reads r1')
-        reads2bam_parser.add_argument('-r2',              required=False, default=None,                      help='paired reads r2')
-        reads2bam_parser.add_argument('-u',               required=False, default=None,                      help='unpaired reads')
-        reads2bam_parser.add_argument('-fastq',           required=False, action="store_true",               help='reads in fastq format')
-        reads2bam_parser.add_argument('-local',           required=False, action="store_true",               help='perform local alignment')
-        reads2bam_parser.add_argument('-mismatch',        required=False, type=int, default=100,             help='maximum mismatch pct allowed, between 1-100, default: 100')
-        reads2bam_parser.add_argument('-t',               required=False, type=int, default=1,               help='number of threads, default: 1')
-        reads2bam_parser.add_argument('-tmp',             required=False, action="store_true",               help='keep temporary files')
+        reads2bam_parser.add_argument('-ref',       required=True,                          help='reference sequences')
+        reads2bam_parser.add_argument('-index',     required=False, action="store_true",    help='index reference sequences')
+        reads2bam_parser.add_argument('-r1',        required=False, default=None,           help='paired reads r1')
+        reads2bam_parser.add_argument('-r2',        required=False, default=None,           help='paired reads r2')
+        reads2bam_parser.add_argument('-up',        required=False, default=None,           help='unpaired reads')
+        reads2bam_parser.add_argument('-fq',        required=False, action="store_true",    help='reads in fastq format')
+        reads2bam_parser.add_argument('-local',     required=False, action="store_true",    help='perform local alignment')
+        reads2bam_parser.add_argument('-no_unal',   required=False, action="store_true",    help='Suppress SAM records for reads that failed to align')
+        reads2bam_parser.add_argument('-t',         required=False, type=int, default=1,    help='number of threads, default: 1')
+        reads2bam_parser.add_argument('-tmp',       required=False, action="store_true",    help='keep temporary files')
         args = vars(parser.parse_args())
         reads2bam.reads2bam(args)
 
@@ -529,6 +530,14 @@ if __name__ == '__main__':
         get_gnm_size_parser.add_argument('-total',  required=False, action='store_true',    help='get total size')
         args = vars(parser.parse_args())
         get_gnm_size.get_gnm_size(args)
+
+    elif sys.argv[1] == 'fq2fa':
+        from BioSAK import fq2fa
+        fq2fa_parser = subparsers.add_parser('fq2fa', usage=fq2fa.fq2fa_usage)
+        fq2fa_parser.add_argument('-i', required=True, help='input fastq')
+        fq2fa_parser.add_argument('-o', required=True, help='output fasta')
+        args = vars(parser.parse_args())
+        fq2fa.fq2fa(args)
 
     elif sys.argv[1] == 'mean_MAG_cov':
         from BioSAK import mean_MAG_cov

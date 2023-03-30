@@ -13,6 +13,7 @@ BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -out ColorRange_taxon.txt
 BioSAK iTOL -ColorRange -taxon Taxonomy.txt -rank f -lt Family -out ColorRange_taxon.txt
 BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -out SimpleBar_size.txt
 BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -out Heatmap_abundance.txt
+BioSAK iTOL -Binary -lm Binary_matrix.txt -lt Presence_Absence -out Presence_Absence_iTOL.txt
 BioSAK iTOL -ExternalShape -lm identity_matrix.txt -lt Identity -out ExternalShape_identity.txt -scale 25-50-75-100
 
 # Leaf-to-Group file format (-lg, tab separated, no header)
@@ -113,6 +114,7 @@ def iTOL(args):
     SimpleBar       = args['SimpleBar']
     Heatmap         = args['Heatmap']
     ExternalShape   = args['ExternalShape']
+    Binary          = args['Binary']
     LeafGroup       = args['lg']
     GroupColor      = args['gc']
     ColumnColor     = args['cc']
@@ -143,15 +145,15 @@ def iTOL(args):
 
     # check the number of specified file type
     True_num = 0
-    for file_type in [ColorStrip, ColorRange, SimpleBar, Heatmap, ExternalShape]:
+    for file_type in [ColorStrip, ColorRange, SimpleBar, Heatmap, ExternalShape, Binary]:
         if file_type is True:
             True_num += 1
 
     if True_num == 0:
-        print('Please specify one file type, choose from -ColorStrip, -ColorRange, -SimpleBar, -Heatmap or -ExternalShape')
+        print('Please specify one file type, choose from -ColorStrip, -ColorRange, -SimpleBar, -Heatmap, -ExternalShape or -Binary')
         exit()
     if True_num > 1:
-        print('Please specify one file type ONLY, choose from -ColorStrip, -ColorRange, -SimpleBar, -Heatmap or -ExternalShape')
+        print('Please specify one file type ONLY, choose from -ColorStrip, -ColorRange, -SimpleBar, -Heatmap, -ExternalShape or -Binary')
         exit()
 
     ####################################################################################################################
@@ -294,6 +296,26 @@ def iTOL(args):
             SimpleBar_FileOut_handle.write('%s\t%s\n' % (leaf, leaf_value_dict[leaf]))
 
         SimpleBar_FileOut_handle.close()
+
+    ####################################################################################################################
+
+    # Prepare Binary file
+    if Binary is True:
+        Binary_FileOut_handle = open(FileOut, 'w')
+        line_index = 0
+        for each_line in open(LeafMatrix):
+            each_line_split = each_line.strip().split('\t')
+            if line_index == 0:
+                col_name_list = each_line_split[1:]
+                Binary_FileOut_handle.write('DATASET_BINARY\n\nSEPARATOR TAB\nDATASET_LABEL\tlabel1\nCOLOR\t#85C1E9\n')
+                Binary_FileOut_handle.write('SHOW_LABELS\t1\nLABEL_ROTATION\t45\nLABEL_SHIFT\t5\n')
+                Binary_FileOut_handle.write('FIELD_LABELS\t%s\n' % '\t'.join(col_name_list))
+                Binary_FileOut_handle.write('FIELD_SHAPES\t%s\n' % '\t'.join(['1'] * len(col_name_list)))
+                Binary_FileOut_handle.write('\nDATA\n')
+            else:
+                Binary_FileOut_handle.write(each_line)
+            line_index += 1
+        Binary_FileOut_handle.close()
 
     ####################################################################################################################
 
@@ -450,6 +472,7 @@ if __name__ == '__main__':
     parser.add_argument('-SimpleBar',       required=False, action='store_true',   help='SimpleBar')
     parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
     parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
+    parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
     parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
     # parser.add_argument('-taxon',           required=False, default=None,          help='Leaf taxonomy, gtdb format')
     # parser.add_argument('-rank',            required=False, default=None,          help='Taxonomy rank, select from p, c, o, f, g or s')

@@ -101,25 +101,18 @@ def get_flanking_region(input_gbk_file, HGT_candidate, flanking_length):
                 gene.location = gene_location_new
                 new_record_features_2.append(gene)
             elif 'locus_tag' in gene.qualifiers:
-                gene_location_new = ''
+
+                strand_index = ''
                 if gene.location.strand == 1:
-                    if gene.location.start - new_start < 0:
-                        gene_location_new = FeatureLocation(0,
-                                                            gene.location.end - new_start,
-                                                            strand=+1)
-                    else:
-                        gene_location_new = FeatureLocation(gene.location.start - new_start,
-                                                            gene.location.end - new_start,
-                                                            strand=+1)
+                    strand_index = +1
                 if gene.location.strand == -1:
-                    if gene.location.start - new_start < 0:
-                        gene_location_new = FeatureLocation(0,
-                                                            gene.location.end - new_start,
-                                                            strand=-1)
-                    else:
-                        gene_location_new = FeatureLocation(gene.location.start - new_start,
-                                                            gene.location.end - new_start,
-                                                            strand=-1)
+                    strand_index = -1
+
+                if gene.location.start - new_start < 0:
+                    gene_location_new = FeatureLocation(0, gene.location.end - new_start, strand=strand_index)
+                else:
+                    gene_location_new = FeatureLocation(gene.location.start - new_start, gene.location.end - new_start, strand=strand_index)
+
                 gene.location = gene_location_new
                 new_record_features_2.append(gene)
         new_record.features = new_record_features_2
@@ -129,7 +122,12 @@ def get_flanking_region(input_gbk_file, HGT_candidate, flanking_length):
     os.system('rm %s' % new_gbk_file)
 
 
-def set_contig_track_features(gene_contig, gene_to_highlight, feature_set):
+def set_contig_track_features(gene_contig, gene_to_highlight, feature_set, hide_label):
+
+    if hide_label is False:
+        show_label = True
+    else:
+        show_label = False
 
     # add features to feature set
     for feature in gene_contig.features:
@@ -154,7 +152,8 @@ def set_contig_track_features(gene_contig, gene_to_highlight, feature_set):
                 color = colors.lightgreen
 
             # add feature
-            feature_set.add_feature(feature, color=color, label=True, sigil='ARROW', arrowshaft_height=0.5, arrowhead_length=0.4, label_color=label_color, label_size=label_size, label_angle=label_angle, label_position="middle")
+            feature_set.add_feature(feature, color=color, sigil='BIGARROW', arrowshaft_height=0.5, arrowhead_length=0.3,
+                                    label=show_label, label_color=label_color, label_size=label_size, label_angle=label_angle, label_position="middle")
 
 
 def VisGeneFlk(args):
@@ -164,6 +163,7 @@ def VisGeneFlk(args):
     flanking_length = args['len']
     plot_scale      = args['scale']
     plot_fmt        = args['fmt']
+    hide_label      = args['no_label']
 
     plot_wd                  = '%s_flk%s_wd'    % (gene_id, flanking_length)
     gbk_subset_located_seq   = '%s/%s.gbk'      % (plot_wd, gene_id)
@@ -207,7 +207,7 @@ def VisGeneFlk(args):
 
     # create blank feature set and add gene features to it
     feature_set = seq_track.new_set(type='feature')
-    set_contig_track_features(sequence_record, gene_id, feature_set)
+    set_contig_track_features(sequence_record, gene_id, feature_set, hide_label)
 
     # draw and export
     diagram.draw(format='linear', orientation='landscape', pagesize=(20*cm, plot_len_cm*cm), fragments=1, start=0, end=len(sequence_record))
@@ -222,6 +222,13 @@ if __name__ == '__main__':
     parser.add_argument('-len',     required=True, type=int,                help='length (in bp) of flanking sequences to plot')
     parser.add_argument('-scale',   required=False, type=int, default=200,  help='scale for plotting, default: 200bp per cm')
     parser.add_argument('-fmt',     required=False, default='svg',          help='output format (svg or pdf), default: svg')
-    # parser.add_argument('-fmt',     required=False, default='svg',          help='output format (svg or pdf), default: svg')
+    parser.add_argument('-no_label',required=False, action='store_true',    help='output format (svg or pdf), default: svg')
     args = vars(parser.parse_args())
     VisGeneFlk(args)
+
+
+
+'''
+python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/VisGeneFlk.py -gene HEOOAKGO_03443 -gbk Afipia_birgiae_34632.gbk -len 50000 -fmt pdf
+
+'''

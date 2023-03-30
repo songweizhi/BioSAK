@@ -1,38 +1,28 @@
 import os
 import argparse
-from Bio import SeqIO
 
 
-def sep_path_basename_ext(file_in):
+fq2fa_usage = '''
+========== fq2fa example commands ==========
 
-    # separate path and file name
-    file_path, file_name = os.path.split(file_in)
-    if file_path == '':
-        file_path = '.'
+BioSAK fq2fa -i reads_R1.fq -o reads_R1.fa
+BioSAK fq2fa -i reads_R2.fq -o reads_R2.fa
 
-    # separate file basename and extension
-    file_basename, file_extension = os.path.splitext(file_name)
-
-    return file_path, file_basename, file_extension
+============================================
+'''
 
 
-# read in argument
-parser = argparse.ArgumentParser()
-parser.add_argument('-in', required=True, help='input fastq file')
-args = vars(parser.parse_args())
-fq_in = args['in']
+def fq2fa(args):
+    fq_in   = args['i']
+    fa_out  = args['o']
+    sed_cmd = "sed -n '1~4s/^@/>/p;2~4p' %s > %s" % (fq_in, fa_out)
+    os.system(sed_cmd)
 
 
-# define output fasta file name
-fq_in_path, fq_in_basename, fq_in_extension = sep_path_basename_ext(fq_in)
-fa_out = '%s/%s.fa' % (fq_in_path, fq_in_basename)
+if __name__ == "__main__":
 
-
-# extract sequences
-fa_out_handle = open(fa_out, 'w')
-for seq_record in SeqIO.parse(fq_in, 'fastq'):
-    seq_record_sequence = str(seq_record.seq)
-    seq_record_description = seq_record.description
-    fa_out_handle.write('>%s\n' % seq_record_description)
-    fa_out_handle.write('%s\n' % seq_record_sequence)
-fa_out_handle.close()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', required=True, help='input fastq')
+    parser.add_argument('-o', required=True, help='output fasta')
+    args = vars(parser.parse_args())
+    fq2fa(args)

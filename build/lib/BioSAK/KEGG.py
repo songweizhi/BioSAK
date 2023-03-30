@@ -17,9 +17,7 @@ from BioSAK.global_functions import AnnotateNorm
 KEGG_parser_usage = '''
 ======================================== KEGG example commands =======================================
 
-# Dependencies
-module load blast+
-module load diamond
+# Dependencies: blast+ or diamond
 
 # annotation with NCBI blastp (default, for small dataset)
 BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 6 -seq_in input.faa -depth input.depth
@@ -38,6 +36,10 @@ BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 9 -ko_in user_ko_folder -x txt
    e.g. prokaryotes.dat.gz (https://www.kegg.jp/kegg/download/Readme/README.fasta)
 3. ko00001.keg
    https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
+
+# seq2ko file format(tab separated)
+aaa:Acav_4596	K05375
+zpr:ZPR_0691	K21572
 
 # How it works:
 1. KEGG module uses Blast+/Diamond to get the best hits of query genes in the database with user defined e-value cutoff (default 0.001).
