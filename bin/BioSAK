@@ -601,11 +601,12 @@ if __name__ == '__main__':
         sampling_GTDB_gnms_parser.add_argument('-p',           required=False, default='Genomes',          help='output prefix')
         sampling_GTDB_gnms_parser.add_argument('-meta',        required=True,                              help='GTDB reference genome metadata')
         sampling_GTDB_gnms_parser.add_argument('-taxon',       required=True,                              help='interested taxon')
-        sampling_GTDB_gnms_parser.add_argument('-r',           required=True,                              help='sampling rank, select from p, c, o, f, g and s')
+        sampling_GTDB_gnms_parser.add_argument('-r',           required=True,                              help='sampling at rank, select from p, c, o, f, g and s')
         sampling_GTDB_gnms_parser.add_argument('-n',           required=False, default=1, type=int,        help='numer of genome to retain per taxon')
         sampling_GTDB_gnms_parser.add_argument('-cpl',         required=False, default=None, type=float,   help='completeness cutoff (0-100), default: None')
         sampling_GTDB_gnms_parser.add_argument('-ctm',         required=False, default=None, type=float,   help='contamination cutoff, default: None')
         sampling_GTDB_gnms_parser.add_argument('-ts',          required=False, action='store_true',        help='only consider type strain')
+        sampling_GTDB_gnms_parser.add_argument('-rs',          required=False, action='store_true',        help='only consider representative species')
         args = vars(parser.parse_args())
         sampling_GTDB_gnms.sampling_GTDB_gnms(args)
 

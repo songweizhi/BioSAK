@@ -56,9 +56,9 @@ BioSAK modules
        COG2020                ->  COG annotation (v2020, by blastp/diamond)
        arCOG                  ->  COG annotation for archaea (version ar18)
        dbCAN                  ->  CAZy annotation with dbCAN
-       CheckM                 ->  Parse CheckM outputs
 
     Metagenomics
+       CheckM                 ->  Parse CheckM outputs
        magabund               ->  Calculate MAG abundance
        mean_MAG_cov           ->  Get mean MAG depth (based on MetaBAT produced depth)
        RunGraphMB             ->  Prepare input files for GraphMB
@@ -82,7 +82,7 @@ BioSAK modules
        BLCA_op_parser         ->  Make the BLCA outputs bit easier to read
        Tax4Fun2IndOTU         ->  Get functional profile of individual OTUs (to be added)
     
-    Sequence/Alignment manipulator
+    Sequence manipulator
        gbk2fa/gbk2faa/gbk2ffn ->  Format convertors
        ffn2faa/gfa2fa/get_rc  ->  Format convertors
        fq2fa                  ->  Convert fastq to fasta

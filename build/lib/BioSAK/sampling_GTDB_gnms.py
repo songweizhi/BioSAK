@@ -129,11 +129,7 @@ def sampling_GTDB_gnms(args):
     selected_gnm_list = []
     for each_sampling_taxon in dod:
         current_taxon_gnm_quality_dict = dod[each_sampling_taxon]
-        print(each_sampling_taxon)
-        print(current_taxon_gnm_quality_dict)
         gnms_sorted_by_quality = sorted(current_taxon_gnm_quality_dict.items(), key=lambda x: x[1], reverse=True)
-        print(gnms_sorted_by_quality)
-        print()
         selected_gnm = 0
         for each_gnm in gnms_sorted_by_quality:
             if selected_gnm < gnm_num_per_taxon:

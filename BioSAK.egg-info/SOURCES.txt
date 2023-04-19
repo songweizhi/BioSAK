@@ -16,6 +16,7 @@ BioSAK/COG2020.py
 BioSAK/COG_boxplot_last1row.R
 BioSAK/COG_boxplot_last2row.R
 BioSAK/CheckM.py
+BioSAK/DnaFeaturesViewer.py
 BioSAK/Enrichment.py
 BioSAK/FastaSplitler_by_num.py
 BioSAK/FastaSplitler_by_size.py
@@ -219,6 +220,7 @@ BioSAK_tutorial/Demo_tree_visualization_with_iTol/files_needed/raw_data/raw_MAG_
 BioSAK_tutorial/Demo_tree_visualization_with_iTol/files_needed/raw_data/raw_MAG_size.txt
 BioSAK_tutorial/Demo_tree_visualization_with_iTol/files_needed/raw_data/raw_MAG_taxon.txt
 BioSAK_tutorial/Demo_tree_visualization_with_iTol/files_needed/raw_data/raw_taxon_color.txt
+BioSAK_tutorial/Tax4Fun2/README.md
 BioSAK_tutorial/Tax4Fun2/Tax4Fun2_1.1.5.tar.gz
 BioSAK_tutorial/Tax4Fun2/Tax4Fun2_example_cmds.R
 BioSAK_tutorial/Tax4Fun2/demo_OTU.fasta
