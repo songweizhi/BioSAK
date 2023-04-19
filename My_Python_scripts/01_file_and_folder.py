@@ -31,7 +31,7 @@ def sep_path_basename_ext(file_in):
     # separate file basename and extension
     f_base, f_ext = os.path.splitext(file_name)
 
-    return f_path, f_basename, f_ext
+    return f_path, f_base, f_ext
 
 
 file_demo = '/Users/weizhisong/Softwares/artemis/act.txt'
