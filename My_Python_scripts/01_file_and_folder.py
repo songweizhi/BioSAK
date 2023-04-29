@@ -3,7 +3,10 @@
 
 import glob
 
-file_re = '/Users/songweizhi/Desktop/test/*.fa'
+file_dir = '/Users/songweizhi/Desktop/DateArTree'
+file_ext = 'txt'
+
+file_re = '%s/*.%s' % (file_dir, file_ext)
 file_list = glob.glob(file_re)
 print(file_list)
 
