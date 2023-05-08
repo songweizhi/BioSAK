@@ -9,10 +9,6 @@
 Contact
 ---
 
-+ **Shan Zhang**, Postdoctoral Researcher
-+ Center for Marine Science & Innovation, University of New South Wales, Sydney, Australia
-+ E-mail: zzfanyi@gmail.com
-
 + **Weizhi Song**, Postdoctoral Researcher
 + Center for Marine Science & Innovation, University of New South Wales, Sydney, Australia
 + E-mail: songwz03@gmail.com
