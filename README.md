@@ -9,9 +9,13 @@
 Contact
 ---
 
-+ **Weizhi Song**, Postdoctoral Researcher
-+ Center for Marine Science & Innovation, University of New South Wales, Sydney, Australia
-+ E-mail: songwz03@gmail.com
+Shan Zhang<sup>1</sup> and Weizhi Song<sup>1,2</sup>
+
+<sup>1</sup> Center for Marine Science & Innovation, University of New South Wales, Sydney, Australia
+
+<sup>2</sup> School of Life Sciences, The Chinese University of Hong Kong, Hong Kong, China
+
+E-mail: zzfanyi@gmail.com and songwz03@gmail.com
 
     
 Installation
