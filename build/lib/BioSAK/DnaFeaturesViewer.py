@@ -20,14 +20,14 @@ BioSAK DnaFeaturesViewer -target shc -gbk gbk_dir -x gbk -o demo.pdf -c gene_col
 def sep_path_basename_ext(file_in):
 
     # separate path and file name
-    file_path, file_name = os.path.split(file_in)
-    if file_path == '':
-        file_path = '.'
+    f_path, file_name = os.path.split(file_in)
+    if f_path == '':
+        f_path = '.'
 
     # separate file basename and extension
-    file_basename, file_extension = os.path.splitext(file_name)
+    f_base, f_ext = os.path.splitext(file_name)
 
-    return file_path, file_basename, file_extension
+    return f_path, f_base, f_ext
 
 
 def gbk_to_feature_list(input_gbk, target_locus_tag_list, flk_len_to_plot, forward_strand_target, gene_color_dict):
@@ -192,49 +192,124 @@ def plot_ctg_feature_txt(ctg_feature_txt, hide_title, hide_ruler, plot_height, p
 
 def DnaFeaturesViewer(args):
 
-    targeted_gene_name      = args['target']
-    gbk_dir                 = args['gbk']
+    input_gbk                 = args['gbk']
     gbk_file_ext            = args['x']
-    gene_color_txt          = args['c']
+    target_to_plot          = args['tgt']
+    plot_by_gene            = args['by_gene']
+    plot_by_fun             = args['by_fun']
+    gene_fun_txt            = args['gf']
+    gene_or_fun_color_txt   = args['c']
+    output_plot             = args['o']
     flk_len_to_plot         = args['l']
     plot_width              = args['width']
     plot_height             = args['height']
     no_title                = args['no_title']
     no_ruler                = args['no_ruler']
     forward_strand_target   = args['ft']
-    output_plot             = args['o']
 
-    gbk_file_re     = '%s/*.%s'   % (gbk_dir, gbk_file_ext)
     seq_feature_csv = '%s.%s.csv' % (output_plot, flk_len_to_plot)
 
-    # read in gene color
-    gene_color_dict = dict()
-    for each_gene in open(gene_color_txt):
-        each_gene_split = each_gene.strip().split('\t')
-        gene_color_dict[each_gene_split[0]] = each_gene_split[1]
+    # check input gbk file
+    gbk_file_list = []
+    if os.path.isdir(input_gbk) is True:
+        gbk_file_re = '%s/*.%s' % (input_gbk, gbk_file_ext)
+        gbk_file_list = glob.glob(gbk_file_re)
+        if len(gbk_file_list) == 0:
+            print('gbk file not found in %s. program exited!' % input_gbk)
+            exit()
+    elif os.path.isfile(input_gbk) is True:
+        gbk_file_list = [input_gbk]
+    else:
+        print('gbk file not found. program exited!')
+        exit()
 
-    gnm_to_gene_dict = dict()
-    for each_gbk in glob.glob(gbk_file_re):
-        gbk_path, gbk_basename, gbk_ext = sep_path_basename_ext(each_gbk)
-        print('Processing %s' % gbk_basename)
-        for seq_record in SeqIO.parse(each_gbk, 'genbank'):
-            for seq_feature in seq_record.features:
-                if seq_feature.type == "CDS":
-                    locus_tag = seq_feature.qualifiers['locus_tag'][0]
-                    gene_name = seq_feature.qualifiers.get('gene', ['na'])[0]
-                    if gene_name == targeted_gene_name:
-                        if gbk_basename not in gnm_to_gene_dict:
-                            gnm_to_gene_dict[gbk_basename] = {locus_tag}
-                        else:
-                            gnm_to_gene_dict[gbk_basename].add(locus_tag)
+    # read in target_to_plot
+    target_gene_dict = dict()
+    target_fun_dict = dict()
+    if plot_by_gene is True:
+        if os.path.isdir(input_gbk) is True:
+            if os.path.isfile(target_to_plot) is True:
+                for each_g in open(target_to_plot):
+                    each_g_split = each_g.strip().split('\t')
+                    gnm_id = each_g_split[0]
+                    gnm_target_list = each_g_split[1].split(',')
+                    pwd_gbk = '%s/%s.%s' % (input_gbk, gnm_id, gbk_file_ext)
+                    target_gene_dict[pwd_gbk] = gnm_target_list
+            else:
+                print('Please provide to-plot target genes for all genomes in a single txt file, please separates genome (without extension) and target(s) with tab, separates targets from the same genome with comma.')
+                exit()
+        elif os.path.isfile(input_gbk) is True:
+            gbk_path, gbk_base, gbk_ext = sep_path_basename_ext(input_gbk)
+            if os.path.isfile(target_to_plot) is True:
+                for each_g in open(target_to_plot):
+                    each_g_split = each_g.strip().split('\t')
+                    gnm_id = each_g_split[0]
+                    gnm_target_list = each_g_split[1].split(',')
+                    if gnm_id == gbk_base:
+                        target_gene_dict[input_gbk] = gnm_target_list
+            else:
+                target_list = target_to_plot.split(',')
+                target_gene_dict[input_gbk] = target_list
+    elif plot_by_fun is True:
+        target_list = target_to_plot.split(',')
+        for each_gbk in gbk_file_list:
+            target_fun_dict[each_gbk] = target_list
+    else:
+        print('Please specify either "-by_gene" or "-by_fun"')
+
+
+    # read in gene function
+    gene_fun_dict = dict()
+    if gene_fun_txt is not None:
+        if os.path.isfile(gene_fun_txt) is True:
+            for each_gene in open(gene_fun_txt):
+                each_gene_split = each_gene.strip().split('\t')
+                gene_fun_dict[each_gene_split[0]] = each_gene_split[1]
+        else:
+            print('%s not found, program exited!' % gene_fun_txt)
+            exit()
+
+    # read in gene/function color
+    fun_color_dict = dict()
+    if gene_or_fun_color_txt is not None:
+        if os.path.isfile(gene_or_fun_color_txt) is True:
+            for each_fun in open(gene_or_fun_color_txt):
+                each_fun_split = each_fun.strip().split('\t')
+                fun_color_dict[each_fun_split[0]] = each_fun_split[1]
+        else:
+            print('%s not found, program exited!' % gene_or_fun_color_txt)
+            exit()
+
+    gnm_to_gene_dict = target_gene_dict
+    if plot_by_fun is True:
+        gnm_to_gene_dict = dict()
+        for each_gbk in gbk_file_list:
+            gnm_fun_to_plot = target_fun_dict.get(each_gbk)
+            for seq_record in SeqIO.parse(each_gbk, 'genbank'):
+                for seq_feature in seq_record.features:
+                    if seq_feature.type == "CDS":
+                        locus_tag = seq_feature.qualifiers['locus_tag'][0]
+                        gene_fun = gene_fun_dict.get(locus_tag, 'na')
+                        if plot_by_fun is True:
+                            if gene_fun in gnm_fun_to_plot:
+                                if each_gbk not in gnm_to_gene_dict:
+                                    gnm_to_gene_dict[each_gbk] = {locus_tag}
+                                else:
+                                    gnm_to_gene_dict[each_gbk].add(locus_tag)
+
+    print('target_gene_dict\t%s'    % target_gene_dict)
+    print('target_fun_dict\t\t%s'   % target_fun_dict)
+    print('gene_fun_dict\t\t%s'     % gene_fun_dict)
+    print('fun_color_dict\t\t%s'    % fun_color_dict)
+    print('gnm_to_gene_dict\t%s'  % gnm_to_gene_dict)
 
     # write out features
+    print('Extracting features to plot')
     with open(seq_feature_csv, 'w') as seq_feature_csv_handle:
         for each_gnm in gnm_to_gene_dict:
-            print('Extracting features to plot: %s' % each_gnm)
-            pwd_gbk = '%s/%s.%s' % (gbk_dir, each_gnm, gbk_file_ext)
+            pwd_gbk = each_gnm
             locus_tag_to_plot = gnm_to_gene_dict[each_gnm]
-            features_to_write_list = gbk_to_feature_list(pwd_gbk, locus_tag_to_plot, flk_len_to_plot, forward_strand_target, gene_color_dict)
+            features_to_write_list = gbk_to_feature_list(pwd_gbk, locus_tag_to_plot, flk_len_to_plot, forward_strand_target, fun_color_dict)
             seq_feature_csv_handle.write('\n'.join(features_to_write_list) + '\n')
 
     # plot
@@ -248,11 +323,14 @@ def DnaFeaturesViewer(args):
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-target',      required=True,                          help='gene id')
     parser.add_argument('-gbk',         required=True,                          help='gbk file')
-    parser.add_argument('-x',           required=False, default='gbk',          help='file extension, default: gbk')
+    parser.add_argument('-x',           required=False,                         default='gbk', help='file extension, default: gbk')
+    parser.add_argument('-tgt',         required=True,                          help='targets to plot')
+    parser.add_argument('-by_gene',     required=False, action='store_true',    help='target plot region by gene id (locus_tag)')
+    parser.add_argument('-by_fun',      required=False, action='store_true',    help='target plot region by gene function')
+    parser.add_argument('-gf',          required=False, default=None,           help='gene to function file, tab separated')
+    parser.add_argument('-c',           required=False, default=None,           help='gene/function to color file, tab separated')
     parser.add_argument('-o',           required=True,                          help='output plot')
-    parser.add_argument('-c',           required=False, default=None,           help='gene to color file, tab separated')
     parser.add_argument('-l',           required=False, type=int, default=7500, help='length (in bp) of flanking sequences to plot')
     parser.add_argument('-width',       required=False, type=int, default=22,   help='plot_width, default: 22')
     parser.add_argument('-height',      required=False, type=int, default=2,    help='subplot_height, default: 2')
@@ -264,5 +342,32 @@ if __name__ == '__main__':
 
 '''
 cd /Users/songweizhi/Desktop/Brady/draw_shc_wd
-python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/DnaFeaturesViewer.py -target shc -gbk gbk_dir -x gbk -o demo.pdf -c gene_color.txt -ft
+python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/DnaFeaturesViewer.py -gbk gbk_dir -x gbk -tgt  -by_gene -o demo.pdf
+
+gene_to_fun.txt
+fun_to_color.txt
+
+# single gbk
+python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/DnaFeaturesViewer.py -gbk gbk_dir/Bradyrhizobium_oligotrophicum_SZCCHNR1093.gbk -by_gene -o demo_by_g.pdf -tgt SZCCHNR1093_01706,SZCCHNR1093_01729
+python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/DnaFeaturesViewer.py -gbk gbk_dir/Bradyrhizobium_oligotrophicum_SZCCHNR1093.gbk -by_gene -o demo_by_g.pdf -tgt targeted_gene.txt
+
+# multiple gbk
+python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/DnaFeaturesViewer.py -gbk gbk_dir -x gbk -by_gene -o demo_by_g.pdf -tgt targeted_gene.txt
+
+
+
+
+
+python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/DnaFeaturesViewer.py -gbk gbk_dir -x gbk -by_fun -o demo_by_f.pdf -tgt shc,mntB -c fun_color.txt
+python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/DnaFeaturesViewer.py -gbk gbk_dir/Bradyrhizobium_oligotrophicum_SZCCHNR1091.gbk -by_fun -o demo_by_f.pdf -tgt shc,mntB -c fun_color.txt
+
+single file/multi file
+
+gene by str (for single file)
+gene by file (for multi file)
+
+fun by str
+fun by file
+
+
 '''

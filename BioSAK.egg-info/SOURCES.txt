@@ -68,6 +68,9 @@ BioSAK/fa2tree.py
 BioSAK/format_converter.py
 BioSAK/format_leaf_name.py
 BioSAK/fq2fa.py
+BioSAK/gbk2faa.py
+BioSAK/gbk2ffn.py
+BioSAK/gbk2fna.py
 BioSAK/gbk_to_ffn_faa.py
 BioSAK/get_EC_from_ko_stats_D.py
 BioSAK/get_GTDB_taxon_gnm.py

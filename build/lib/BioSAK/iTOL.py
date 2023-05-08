@@ -115,6 +115,7 @@ def iTOL(args):
     Heatmap         = args['Heatmap']
     ExternalShape   = args['ExternalShape']
     Binary          = args['Binary']
+    Connection      = args['Connection']
     LeafGroup       = args['lg']
     GroupColor      = args['gc']
     ColumnColor     = args['cc']
@@ -371,6 +372,11 @@ def iTOL(args):
 
     ####################################################################################################################
 
+    if Connection is True:
+        pass
+
+    ####################################################################################################################
+
     # Prepare ExternalShape file
     if ExternalShape is True:
 
@@ -473,6 +479,7 @@ if __name__ == '__main__':
     parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
     parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
     parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
+    parser.add_argument('-Connection',      required=False, action='store_true',   help='Connection')
     parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
     # parser.add_argument('-taxon',           required=False, default=None,          help='Leaf taxonomy, gtdb format')
     # parser.add_argument('-rank',            required=False, default=None,          help='Taxonomy rank, select from p, c, o, f, g or s')

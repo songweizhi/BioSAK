@@ -197,6 +197,7 @@ if __name__ == '__main__':
         iTOL_parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
         iTOL_parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
         iTOL_parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
+        iTOL_parser.add_argument('-Connection',      required=False, action='store_true',   help='Connection')
         iTOL_parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
         iTOL_parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
         iTOL_parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
@@ -275,12 +276,16 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         get_GTDB_taxon_gnm.get_GTDB_taxon_gnm(args)
 
-    elif sys.argv[1] == 'gbk2fa':
-        from BioSAK import format_converter
-        gbk2fa_parser = subparsers.add_parser('gbk2fa', description='gbk to fasta', usage=format_converter.sequence_manipulator_usage)
-        gbk2fa_parser.add_argument('-gbk', required=True, help='input gbk file')
+    elif sys.argv[1] == 'gbk2fna':
+        from BioSAK import gbk2fna
+        gbk2fna_parser = subparsers.add_parser('gbk2fna', description='gbk to fna (contig sequence)', usage=gbk2fna.gbk2fna_usage)
+        gbk2fna_parser.add_argument('-i',  required=True,                       help='input gbk')
+        gbk2fna_parser.add_argument('-ix', required=False, default='gbk',       help='input file extension, default: gbk')
+        gbk2fna_parser.add_argument('-o',  required=True,                       help='output fna (contig sequences)')
+        gbk2fna_parser.add_argument('-ox', required=False, default='fna',       help='output file extension, default: fna')
+        gbk2fna_parser.add_argument('-t',  required=False, type=int, default=1, help='number of threads')
         args = vars(parser.parse_args())
-        format_converter.gbk2fa(args)
+        gbk2fna.gbk2fna(args)
 
     elif sys.argv[1] == 'gbk2ffn':
         from BioSAK import format_converter
@@ -290,11 +295,15 @@ if __name__ == '__main__':
         format_converter.gbk2ffn(args)
 
     elif sys.argv[1] == 'gbk2faa':
-        from BioSAK import format_converter
-        gbk2faa_parser = subparsers.add_parser('gbk2faa', description='gbk to faa', usage=format_converter.sequence_manipulator_usage)
-        gbk2faa_parser.add_argument('-gbk', required=True, help='input gbk file')
+        from BioSAK import gbk2faa
+        gbk2faa_parser = subparsers.add_parser('gbk2faa', description='gbk to faa', usage=gbk2faa.gbk2faa_usage)
+        gbk2faa_parser.add_argument('-i',   required=True,                          help='input gbk')
+        gbk2faa_parser.add_argument('-ix',  required=False, default='gbk',          help='input file extension, default: gbk')
+        gbk2faa_parser.add_argument('-o',   required=True,                          help='output faa')
+        gbk2faa_parser.add_argument('-ox',  required=False, default='faa',          help='output file extension, default: faa')
+        gbk2faa_parser.add_argument('-t',   required=False, type=int, default=1,    help='number of threads')
         args = vars(parser.parse_args())
-        format_converter.gbk2faa(args)
+        gbk2faa.gbk2faa(args)
 
     elif sys.argv[1] == 'ffn2faa':
         from BioSAK import format_converter

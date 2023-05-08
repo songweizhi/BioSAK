@@ -1,5 +1,4 @@
 import os
-import argparse
 from Bio import SeqIO
 from Bio import AlignIO
 from Bio.Seq import Seq
@@ -117,10 +116,11 @@ def gbk2faa(args):
     faa_out_handle = open(faa_out, 'w')
     for seq_record in SeqIO.parse(gbk_in, 'genbank'):
         for feature in seq_record.features:
-            feature_locus_tag = feature.qualifiers['locus_tag'][0]
-            feature_translation = feature.qualifiers['translation'][0]
-            export_seq_record(feature_translation, feature_locus_tag, '', 'P', faa_out_handle)
-
+            if feature.type == 'CDS':
+                feature_locus_tag = feature.qualifiers['locus_tag'][0]
+                feature_translation = feature.qualifiers['translation'][0]
+                faa_out_handle.write('>%s\n' % feature_locus_tag)
+                faa_out_handle.write('%s\n' % feature_translation)
     faa_out_handle.close()
 
 
