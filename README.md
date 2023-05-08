@@ -120,7 +120,6 @@ BioSAK modules
 
 Get help
 ---
-
 1. Example usage for most of BioSAK modules can be found from their own help information, e.g.
         
        BioSAK COG2020 -h
