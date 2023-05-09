@@ -116,15 +116,3 @@ Get help
 2. Short tutorials for a few modules:
 
     https://github.com/songweizhi/BioSAK/tree/master/BioSAK_tutorial
-
-
-# Here are some changes
-
-# Here are some more changes made online
-
-# more local changes have been made
-
-# a few more online changes
-
-# a few more online changes
-
