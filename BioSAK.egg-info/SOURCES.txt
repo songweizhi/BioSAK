@@ -497,6 +497,7 @@ My_R_scripts/deepSNV/deepSNV_flow_cell_biofilm.R
 My_R_scripts/deepSNV/get_SNVs.R
 bin/BioSAK
 bin/__init__.py
+doc/README_installation_UNSW.md
 images/.DS_Store
 images/Bioinformatics.jpg
 images/windows_cmds.docx

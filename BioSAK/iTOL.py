@@ -308,7 +308,7 @@ def iTOL(args):
             each_line_split = each_line.strip().split('\t')
             if line_index == 0:
                 col_name_list = each_line_split[1:]
-                Binary_FileOut_handle.write('DATASET_BINARY\n\nSEPARATOR TAB\nDATASET_LABEL\tlabel1\nCOLOR\t#85C1E9\n')
+                Binary_FileOut_handle.write('DATASET_BINARY\n\nSEPARATOR TAB\nDATASET_LABEL\t%s\nCOLOR\t#85C1E9\n' % LegendTitle)
                 Binary_FileOut_handle.write('SHOW_LABELS\t1\nLABEL_ROTATION\t45\nLABEL_SHIFT\t5\n')
                 Binary_FileOut_handle.write('FIELD_LABELS\t%s\n' % '\t'.join(col_name_list))
                 Binary_FileOut_handle.write('FIELD_SHAPES\t%s\n' % '\t'.join(['1'] * len(col_name_list)))
