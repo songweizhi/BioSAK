@@ -499,7 +499,16 @@ My_R_scripts/deepSNV/deepSNV_flow_cell_biofilm.R
 My_R_scripts/deepSNV/get_SNVs.R
 bin/BioSAK
 bin/__init__.py
-doc/README_installation_UNSW.md
+doc/COG2020.md
+doc/CheckM.md
+doc/Index.md
+doc/KEGG.md
+doc/RunGraphMB.md
+doc/arCOG.md
+doc/dbCAN.md
+doc/get_MAG_reads_long.md
+doc/magabund.md
+doc/mean_MAG_cov.md
 images/.DS_Store
 images/Bioinformatics.jpg
 images/windows_cmds.docx
