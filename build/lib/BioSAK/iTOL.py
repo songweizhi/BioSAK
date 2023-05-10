@@ -307,7 +307,13 @@ def iTOL(args):
         for each_line in open(LeafMatrix):
             each_line_split = each_line.strip().split('\t')
             if line_index == 0:
-                col_name_list = each_line_split[1:]
+
+                # get header list
+                if each_line.startswith('\t'):
+                    col_name_list = each_line_split
+                else:
+                    col_name_list = each_line_split[1:]
+
                 Binary_FileOut_handle.write('DATASET_BINARY\n\nSEPARATOR TAB\nDATASET_LABEL\t%s\nCOLOR\t#85C1E9\n' % LegendTitle)
                 Binary_FileOut_handle.write('SHOW_LABELS\t1\nLABEL_ROTATION\t45\nLABEL_SHIFT\t5\n')
                 Binary_FileOut_handle.write('FIELD_LABELS\t%s\n' % '\t'.join(col_name_list))

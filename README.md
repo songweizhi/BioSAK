@@ -71,7 +71,7 @@ BioSAK modules
        Tax4Fun2IndOTU         ->  Get functional profile of individual OTUs (to be added)
     
     Sequence manipulator
-       gbk2fa/gbk2faa/gbk2ffn ->  Format convertors
+       gbk2fna/gbk2faa/gbk2ffn->  Format convertors
        ffn2faa/gfa2fa/get_rc  ->  Format convertors
        fq2fa                  ->  Convert fastq to fasta
        fa2id                  ->  Export sequence id

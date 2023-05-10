@@ -1,4 +1,5 @@
 .gitignore
+Japonicum_carbo_PA_iTOL.txt
 LICENSE
 MANIFEST.in
 README.md
@@ -132,6 +133,7 @@ BioSAK/test.py
 BioSAK/tmp_1.py
 BioSAK/tmp_2_cog.py
 BioSAK/tmp_3.py
+BioSAK/tmp_4.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/usearch_uc.py
