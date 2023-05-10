@@ -37,7 +37,7 @@ Installation
 Modules and help
 ---
 
-+ Please refer to the [help page](doc/index.md) for a full list of modules available in BioSAK (in preparation and messy).
++ Please refer to the [help page](doc/Index.md) for a full list of modules available in BioSAK (in preparation and messy).
 
 + Example usage for most of BioSAK modules can be found from their own help information, e.g. `BioSAK iTOL -h`.
 
