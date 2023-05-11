@@ -45,3 +45,7 @@ Modules and help information
 
 + A changelog is [here](BioSAK/VERSION).
 
+
++ A license statement is [here](LICENSE).
+
+
