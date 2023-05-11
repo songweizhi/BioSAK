@@ -34,14 +34,21 @@ Installation
 + If you are an UNSW [Katana](https://research.unsw.edu.au/katana) user, [this](doc/katana.md) might be helpful.
 
 
-Modules and help information
+BioSAK modules
 ---
 
 + Type `BioSAK -h` to see a [full list of modules](doc/full_list_modules.md) available in BioSAK.
 
 
+ Getting help
+---
+
 + Please refer to the [documentation](doc/Index.md) page for help (in preparation and messy).
 
+
++ Example commands for most of the modules can also be found by typing, for example, `BioSAK iTOL -h`.
+
+---
 
 + A changelog is [here](BioSAK/VERSION).
 
