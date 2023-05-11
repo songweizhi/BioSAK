@@ -1,0 +1,53 @@
+DATASET_COLORSTRIP
+SEPARATOR TAB
+DATASET_LABEL	MAG_LifeStyle_ColorStrip
+
+# customize strip attributes here
+STRIP_WIDTH	100
+MARGIN	20
+
+# customize legend here
+LEGEND_TITLE	MAG_LifeStyle
+LEGEND_SHAPES	1	1
+LEGEND_COLORS	#e69d50	#8eecf5
+LEGEND_LABELS	Surface-associated	Planktonic
+
+# provide data here
+DATA
+NorthSea_bin070	#e69d50	Surface-associated
+NorthSea_bin054	#e69d50	Surface-associated
+NorthSea_bin083	#e69d50	Surface-associated
+NorthSea_bin043	#e69d50	Surface-associated
+NorthSea_bin069	#8eecf5	Planktonic
+NorthSea_bin103	#8eecf5	Planktonic
+NorthSea_bin077	#e69d50	Surface-associated
+NorthSea_bin057	#e69d50	Surface-associated
+NorthSea_bin034	#8eecf5	Planktonic
+NorthSea_bin029	#8eecf5	Planktonic
+NorthSea_bin106	#8eecf5	Planktonic
+NorthSea_bin040	#e69d50	Surface-associated
+NorthSea_bin072	#8eecf5	Planktonic
+NorthSea_bin125	#8eecf5	Planktonic
+NorthSea_bin046	#e69d50	Surface-associated
+NorthSea_bin099	#8eecf5	Planktonic
+NorthSea_bin082	#8eecf5	Planktonic
+NorthSea_bin052	#8eecf5	Planktonic
+NorthSea_bin022	#e69d50	Surface-associated
+NorthSea_bin074	#e69d50	Surface-associated
+NorthSea_bin014	#8eecf5	Planktonic
+NorthSea_bin111	#8eecf5	Planktonic
+NorthSea_bin086	#8eecf5	Planktonic
+NorthSea_bin090	#8eecf5	Planktonic
+NorthSea_bin067	#8eecf5	Planktonic
+NorthSea_bin050	#e69d50	Surface-associated
+NorthSea_bin080	#e69d50	Surface-associated
+NorthSea_bin092	#e69d50	Surface-associated
+NorthSea_bin123	#8eecf5	Planktonic
+NorthSea_bin039	#8eecf5	Planktonic
+NorthSea_bin053	#8eecf5	Planktonic
+NorthSea_bin028	#8eecf5	Planktonic
+NorthSea_bin097	#e69d50	Surface-associated
+NorthSea_bin104	#e69d50	Surface-associated
+NorthSea_bin068	#8eecf5	Planktonic
+NorthSea_bin107	#8eecf5	Planktonic
+NorthSea_bin096	#e69d50	Surface-associated

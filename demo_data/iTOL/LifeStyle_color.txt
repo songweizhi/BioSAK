@@ -1,0 +1,2 @@
+Surface-associated	#e69d50
+Planktonic	#8eecf5

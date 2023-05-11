@@ -1,0 +1,64 @@
+DATASET_HEATMAP
+# Reference https://itol.embl.de/help/dataset_heatmap_template.txt
+
+SEPARATOR TAB
+
+# customize heatmap attributes here
+MARGIN	20
+STRIP_WIDTH	60
+
+# customize legend here
+AUTO_LEGEND	1
+DATASET_LABEL	Abundance
+USE_MID_COLOR	1
+COLOR_MIN	#2980B9
+COLOR_MID	#ECF0F1
+COLOR_MAX	#E74C3C
+
+# customize value range here. By default, color gradients will be calculated based on dataset values
+# USER_MIN_VALUE	0
+# USER_MID_VALUE	5
+# USER_MAX_VALUE	10
+
+# provide column name here
+FIELD_LABELS	Sediment_A	Sediment_B	Sediment_C	Seawater_A	Seawater_B	Seawater_C
+
+# provide data here
+DATA
+NorthSea_bin070	13	11	15	26	20	26
+NorthSea_bin054	64	71	66	33	33	44
+NorthSea_bin083	52	51	43	19	18	45
+NorthSea_bin043	23	27	15	2	3	4
+NorthSea_bin069	18	21	20	52	51	54
+NorthSea_bin103	42	41	46	5	5	5
+NorthSea_bin077	68	56	52	37	60	78
+NorthSea_bin057	24	28	22	0	19	0
+NorthSea_bin034	33	33	44	57	34	62
+NorthSea_bin029	0	0	0	23	30	14
+NorthSea_bin106	11	16	9	29	25	37
+NorthSea_bin040	59	69	58	0	29	0
+NorthSea_bin072	34	40	44	32	35	27
+NorthSea_bin125	32	36	29	0	0	0
+NorthSea_bin046	30	10	40	2	9	2
+NorthSea_bin099	0	0	0	22	25	0
+NorthSea_bin082	0	0	0	51	43	66
+NorthSea_bin052	13	0	0	24	31	33
+NorthSea_bin022	57	74	62	38	30	54
+NorthSea_bin074	23	30	44	38	42	0
+NorthSea_bin014	29	25	37	0	0	0
+NorthSea_bin111	0	5	0	33	23	58
+NorthSea_bin086	32	35	26	42	41	66
+NorthSea_bin090	0	0	0	52	51	63
+NorthSea_bin067	24	31	33	23	57	15
+NorthSea_bin050	0	0	0	80	71	70
+NorthSea_bin080	74	61	85	42	41	66
+NorthSea_bin092	0	0	0	68	78	59
+NorthSea_bin123	25	44	36	24	28	32
+NorthSea_bin039	0	0	0	33	33	44
+NorthSea_bin053	76	61	53	0	0	0
+NorthSea_bin028	0	16	0	0	0	0
+NorthSea_bin097	22	25	0	23	9	9
+NorthSea_bin104	51	43	66	0	0	0
+NorthSea_bin068	24	31	0	0	0	0
+NorthSea_bin107	22	33	55	24	45	20
+NorthSea_bin096	10	21	20	23	57	15

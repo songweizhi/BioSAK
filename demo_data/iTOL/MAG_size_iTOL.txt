@@ -1,0 +1,56 @@
+DATASET_SIMPLEBAR
+# Reference: https://itol.embl.de/help/dataset_simplebar_template.txt
+
+SEPARATOR TAB
+
+# customize barchart attributes here
+DATASET_LABEL	MAG_Size
+COLOR	grey
+WIDTH	300
+MARGIN	20
+HEIGHT_FACTOR	0.8
+BORDER_WIDTH	0
+
+# customize scale attributes here
+# format: VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR, LABEL_SCALE_FACTOR controls font size
+DATASET_SCALE	0-0-#696969-1-1-2	3-3-#696969-1-1-2	6-6-#696969-1-1-2	9-9-#696969-1-1-2
+
+# provide data here
+DATA
+NorthSea_bin070	6.15
+NorthSea_bin054	6.63
+NorthSea_bin083	3.4
+NorthSea_bin043	7.11
+NorthSea_bin069	6.09
+NorthSea_bin103	4.94
+NorthSea_bin077	5.11
+NorthSea_bin057	6.28
+NorthSea_bin034	6.85
+NorthSea_bin029	6.77
+NorthSea_bin106	5.75
+NorthSea_bin040	4.55
+NorthSea_bin072	4.56
+NorthSea_bin125	4.11
+NorthSea_bin046	3.49
+NorthSea_bin099	3.94
+NorthSea_bin082	4.12
+NorthSea_bin052	3.31
+NorthSea_bin022	4.65
+NorthSea_bin074	2.93
+NorthSea_bin014	4.54
+NorthSea_bin111	2.69
+NorthSea_bin086	2.43
+NorthSea_bin090	2.92
+NorthSea_bin067	2.79
+NorthSea_bin050	2.65
+NorthSea_bin080	2.29
+NorthSea_bin092	7.93
+NorthSea_bin123	7.06
+NorthSea_bin039	5.18
+NorthSea_bin053	4.77
+NorthSea_bin028	6.72
+NorthSea_bin097	4.42
+NorthSea_bin104	3.28
+NorthSea_bin068	4.48
+NorthSea_bin107	3.6
+NorthSea_bin096	2.77

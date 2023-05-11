@@ -32,12 +32,12 @@ def print_main_help():
     help_message = ''' 
                  ...::: BioSAK v%s :::...
 
-    Functional annotation
-       KEGG                    ->  KEGG annotation
-       COG2020                 ->  COG annotation (v2020, by blastp/diamond)
-       arCOG                   ->  COG annotation for archaea (version ar18)
-       dbCAN                   ->  CAZy annotation with dbCAN
-       CheckM                  ->  Parse CheckM outputs
+    Genome databases
+       get_GTDB_taxon_gnm      ->  Get id of genomes from specified GTDB taxons
+       get_genome_GTDB         ->  Batch download GTDB genomes
+       get_genome_NCBI         ->  Batch download GenBank genomes
+       sampling_GTDB_gnms      ->  Select GTDB genomes from a specified taxon at specified sampling rank
+       subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
 
     Metagenomics
        magabund                ->  Calculate MAG abundance
@@ -49,12 +49,12 @@ def print_main_help():
        MeanMappingDepth        ->  Get mean mapping depth 
        Plot_MAG                ->  plot MAGs, (GC vs depth)
 
-    Genome databases
-       get_GTDB_taxon_gnm      ->  Get id of genomes from specified GTDB taxons
-       get_genome_GTDB         ->  Batch download GTDB genomes
-       get_genome_NCBI         ->  Batch download GenBank genomes
-       sampling_GTDB_gnms      ->  Select GTDB genomes from a specified taxon at specified sampling rank
-       subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
+    Functional annotation
+       KEGG                    ->  KEGG annotation
+       COG2020                 ->  COG annotation (v2020, by blastp/diamond)
+       arCOG                   ->  COG annotation for archaea (version ar18)
+       dbCAN                   ->  CAZy annotation with dbCAN
+       CheckM                  ->  Parse CheckM outputs
 
     16S rRNA related
        top_16S_hits            ->  Classify 16S by top-blast-hits approach
@@ -75,7 +75,7 @@ def print_main_help():
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine sequence files, prefix sequence id with file name
     
-    Sam/Bam
+    Sam and Bam
        plot_sam_depth          ->  Plot SAM depth
        reads2bam               ->  Mapping and sorting
        sam2bam                 ->  Sam to BAM with samtools

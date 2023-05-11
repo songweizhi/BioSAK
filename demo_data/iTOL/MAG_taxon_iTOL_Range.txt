@@ -1,0 +1,49 @@
+TREE_COLORS
+SEPARATOR TAB
+DATASET_LABEL	MAG_class_ColorRange
+
+# customize legend here
+LEGEND_TITLE	MAG_class
+LEGEND_SHAPES	1	1	1	1	1
+LEGEND_COLORS	#CC0000	#CC6600	#CCCC00	#66CC00	#9999FF
+LEGEND_LABELS	c__Actinobacteria	c__Alphaproteobacteria	c__Bacteroidia	c__Gammaproteobacteria	c__Verrucomicrobiae
+
+# provide data here
+DATA
+NorthSea_bin070	range	#CCCC00	c__Bacteroidia
+NorthSea_bin054	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin083	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin043	range	#CCCC00	c__Bacteroidia
+NorthSea_bin069	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin103	range	#9999FF	c__Verrucomicrobiae
+NorthSea_bin077	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin057	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin034	range	#CCCC00	c__Bacteroidia
+NorthSea_bin029	range	#CCCC00	c__Bacteroidia
+NorthSea_bin106	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin040	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin072	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin125	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin046	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin099	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin082	range	#CC0000	c__Actinobacteria
+NorthSea_bin052	range	#CCCC00	c__Bacteroidia
+NorthSea_bin022	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin074	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin014	range	#9999FF	c__Verrucomicrobiae
+NorthSea_bin111	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin086	range	#CC0000	c__Actinobacteria
+NorthSea_bin090	range	#CCCC00	c__Bacteroidia
+NorthSea_bin067	range	#CCCC00	c__Bacteroidia
+NorthSea_bin050	range	#CCCC00	c__Bacteroidia
+NorthSea_bin080	range	#CCCC00	c__Bacteroidia
+NorthSea_bin092	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin123	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin039	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin053	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin028	range	#CC6600	c__Alphaproteobacteria
+NorthSea_bin097	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin104	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin068	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin107	range	#66CC00	c__Gammaproteobacteria
+NorthSea_bin096	range	#66CC00	c__Gammaproteobacteria

@@ -1,4 +1,31 @@
 
+############# get_time_since_last_modification #############
+
+import os
+import time
+
+def get_time_since_last_modification(target_folder_or_file):
+
+    last_modified_time = os.path.getmtime(target_folder_or_file)
+    current_time = time.time()
+
+    tslm_sec  = current_time - last_modified_time
+    tslm_min  = tslm_sec / 60
+    tslm_hour = tslm_sec / (60 * 60)
+    tslm_day  = tslm_sec / (60 * 60 * 24)
+
+    tslm_sec  = float("{0:.2f}".format(tslm_sec))
+    tslm_min  = float("{0:.2f}".format(tslm_min))
+    tslm_hour = float("{0:.2f}".format(tslm_hour))
+    tslm_day  = float("{0:.2f}".format(tslm_day))
+
+    return tslm_sec, tslm_min, tslm_hour, tslm_day
+
+
+target_file = '/Users/songweizhi/Desktop/foo.txt'
+tslm_sec, tslm_min, tslm_hour, tslm_day = get_time_since_last_modification(target_file)
+
+
 ######################## get file list ########################
 
 import glob
