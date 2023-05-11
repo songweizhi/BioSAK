@@ -21,29 +21,23 @@ E-mail: zzfanyi@gmail.com and songwz03@gmail.com
 Installation
 ---
 
-1. BioSAK has been tested on Linux/Mac, but **NOT** on Windows.
-
-1. BioSAK is implemented in python3, you can install it with pip3:
-
-       # for the first time installation
-       pip3 install BioSAK
-      
-       # for updating
-       pip3 install --upgrade BioSAK
-
-1. If you are an UNSW Katana user, please install as described [here](doc/README_installation_UNSW.md):
++ BioSAK has been tested on Linux/Mac, but **NOT** yet compatible with Windows.
 
 
-Modules and help
++ BioSAK is implemented in python3, it can be installed with `pip3 install BioSAK` and upgraded  with  `pip3 install --upgrade BioSAK`.
+
+
++ If you are an UNSW [Katana](https://research.unsw.edu.au/katana) user, [this](doc/katana.md) might be helpful.
+
+
+Modules and help information
 ---
 
-+ Please refer to the [help page](doc/Index.md) for a full list of modules available in BioSAK (in preparation and messy).
-
-+ Example usage for most of BioSAK modules can be found from their own help information, e.g. `BioSAK iTOL -h`.
-
-+ Short tutorials for a few modules are [here](https://github.com/songweizhi/BioSAK/tree/master/BioSAK_tutorial).
-
-+ Change log is [here](BioSAK/VERSION) 
++ Type `BioSAK -h` to see a [full list of modules](doc/full_list_modules.md) available in BioSAK.
 
 
++ Please refer to the [documentation](doc/Index.md) page for help (in preparation and messy).
+
+
++ A changelog is [here](BioSAK/VERSION) 
 
