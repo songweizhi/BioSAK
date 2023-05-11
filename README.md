@@ -40,19 +40,16 @@ BioSAK modules
 + Type `BioSAK -h` to see a [full list of modules](doc/full_list_modules.md) available in BioSAK.
 
 
++ A changelog is [here](BioSAK/VERSION).
+
+
  Getting help
 ---
 
-+ Please refer to the [documentation](doc/Index.md) page for help (in preparation and messy).
++ Please refer to the [documentation](doc/Index.md) page for help (in preparation, very messy).
 
 
 + Example commands for most of the modules can also be found by typing, for example, `BioSAK iTOL -h`.
 
----
-
-+ A changelog is [here](BioSAK/VERSION).
-
 
 + A license statement is [here](LICENSE).
-
-
