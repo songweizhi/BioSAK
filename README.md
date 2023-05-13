@@ -26,9 +26,9 @@ Installation
 
 + BioSAK is implemented in python3, you can
 
-  + install with `pip3 install BioSAK`
+  + install it with `pip3 install BioSAK`
   
-  + upgrade with `pip3 install --upgrade BioSAK`
+  + upgrade it with `pip3 install --upgrade BioSAK`
 
 
 + If you are an UNSW [Katana](https://research.unsw.edu.au/katana) user, [this](doc/katana.md) might be helpful.

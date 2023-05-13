@@ -40,8 +40,12 @@ Help information for BioSAK modules
 
 ### Sequence/Alignment manipulator
 
-+ __[gbk2fa/gbk2faa/gbk2ffn](.md)__ 				- Format convertors
-+ __[ffn2faa/gfa2fa/get_rc](.md)__  				- Format convertors
++ __[gbk2fa](gbk2fa.md)__ 				 			- Format convertors: gbk2fa
++ __[gbk2faa](gbk2faa.md)__ 						- Format convertors: gbk2faa
++ __[gbk2ffn](gbk2ffn.md)__ 						- Format convertors: gbk2ffn
++ __[ffn2faa](ffn2faa.md)__  						- Format convertors: ffn2faa
++ __[gfa2fa](gfa2fa.md)__  				 			- Format convertors: gfa2fa
++ __[get_rc](get_rc.md)__  				 			- Format convertors: get_rc
 + __[fq2fa](fq2fa.md)__                  			- Convert fastq to fasta
 + __[fa2id](fa2id.md)__                  			- Export sequence id
 + __[slice_seq](slice_seq.md)__              		- Get specified region of a sequence

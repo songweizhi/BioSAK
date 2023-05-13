@@ -2,7 +2,6 @@
 帮助
 ---
 
-
 ### Functional annotation
 
 + __[KEGG](KEGG_cn.md)__                   			    - 使用 KEGG 数据库进行功能注释
@@ -12,7 +11,7 @@
 
 ### Metagenomics
 
-+ __[CheckM](CheckM_cn_cn.md)__                     	- 解析 CheckM 输出结果
++ __[CheckM](CheckM_cn.md)__                     	    - 解析 CheckM 输出结果
 + __[magabund](magabund_cn.md)__               		    - Calculate MAG abundance
 + __[mean_MAG_cov](mean_MAG_cov_cn.md)__           	    - Get mean MAG depth (based on MetaBAT produced depth)
 + __[RunGraphMB](RunGraphMB_cn.md)__             		- Prepare input files for GraphMB
