@@ -1,25 +1,7 @@
 
-
     % BioSAK -h
 
                         ...::: BioSAK :::...
-
-    Functional annotation
-       KEGG                    ->  KEGG annotation
-       COG2020                 ->  COG annotation (v2020, by blastp/diamond)
-       arCOG                   ->  COG annotation for archaea (version ar18)
-       dbCAN                   ->  CAZy annotation with dbCAN
-       CheckM                  ->  Parse CheckM outputs
-
-    Metagenomics
-       magabund                ->  Calculate MAG abundance
-       mean_MAG_cov            ->  Get mean MAG depth (based on MetaBAT produced depth)
-       RunGraphMB              ->  Prepare input files for GraphMB
-       get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
-       get_gnm_size            ->  Get the total length of genome(s)
-       get_gene_depth          ->  Get gene depth by contig depth
-       MeanMappingDepth        ->  Get mean mapping depth 
-       Plot_MAG                ->  plot MAGs, (GC vs depth)
 
     Genome databases
        get_GTDB_taxon_gnm      ->  Get id of genomes from specified GTDB taxons
@@ -28,6 +10,23 @@
        sampling_GTDB_gnms      ->  Select GTDB genomes from a specified taxon at specified sampling rank
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
 
+    Metagenomics
+       Plot_MAG                ->  plot MAGs, (GC vs depth)
+       magabund                ->  Calculate MAG abundance
+       mean_MAG_cov            ->  Get mean MAG depth (based on MetaBAT produced depth)
+       RunGraphMB              ->  Prepare input files for GraphMB
+       get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
+       get_gnm_size            ->  Get the total length of genome(s)
+       get_gene_depth          ->  Get gene depth by contig depth
+       MeanMappingDepth        ->  Get mean mapping depth 
+       CheckM                  ->  Parse CheckM outputs
+
+    Functional annotation
+       KEGG                    ->  KEGG annotation
+       COG2020                 ->  COG annotation (v2020, by blastp/diamond)
+       arCOG                   ->  COG annotation for archaea (version ar18)
+       dbCAN                   ->  CAZy annotation with dbCAN
+
     16S rRNA related
        top_16S_hits            ->  Classify 16S by top-blast-hits approach
        SILVA_for_BLCA          ->  Prepare BLCA-compatible SILVA SSU database
@@ -35,7 +34,7 @@
        BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
        Tax4Fun2IndOTU          ->  Get functional profile of individual OTUs (to be added)
     
-    Sequence/Alignment manipulator
+    Sequence manipulator
        gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
        ffn2faa/gfa2fa/get_rc   ->  Format convertors
        fq2fa                   ->  Convert fastq to fasta
@@ -47,7 +46,13 @@
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine sequence files, prefix sequence id with file name
     
-    Sam/Bam
+    Multiple Sequence Alignment
+       ConvertMSA             ->  Convert MSA format
+       fa2phy                 ->  Convert MSA format (fasta to phylip)
+       OneLineAln             ->  One-line fasta format alignments
+       SliceMSA               ->  Slice MSA by column 
+       
+    Sam and Bam
        plot_sam_depth          ->  Plot SAM depth
        reads2bam               ->  Mapping and sorting
        sam2bam                 ->  Sam to BAM with samtools

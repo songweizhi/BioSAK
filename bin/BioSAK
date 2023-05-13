@@ -40,6 +40,7 @@ def print_main_help():
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
 
     Metagenomics
+       Plot_MAG                ->  plot MAGs, (GC vs depth)
        magabund                ->  Calculate MAG abundance
        mean_MAG_cov            ->  Get mean MAG depth (based on MetaBAT produced depth)
        RunGraphMB              ->  Prepare input files for GraphMB
@@ -47,14 +48,13 @@ def print_main_help():
        get_gnm_size            ->  Get the total length of genome(s)
        get_gene_depth          ->  Get gene depth by contig depth
        MeanMappingDepth        ->  Get mean mapping depth 
-       Plot_MAG                ->  plot MAGs, (GC vs depth)
+       CheckM                  ->  Parse CheckM outputs
 
     Functional annotation
        KEGG                    ->  KEGG annotation
        COG2020                 ->  COG annotation (v2020, by blastp/diamond)
        arCOG                   ->  COG annotation for archaea (version ar18)
        dbCAN                   ->  CAZy annotation with dbCAN
-       CheckM                  ->  Parse CheckM outputs
 
     16S rRNA related
        top_16S_hits            ->  Classify 16S by top-blast-hits approach
@@ -716,6 +716,50 @@ if __name__ == '__main__':
         SubsampleLongReads_parser.add_argument('-oneline',  required=False, action="store_true",    help='put sequence in single line')
         args = vars(parser.parse_args())
         SubsampleLongReads.SubsampleLongReads(args)
+
+    elif sys.argv[1] == 'OneLineAln':
+        from BioSAK import OneLineAln
+        OneLineAln_parser = subparsers.add_parser('OneLineAln', description='One-line fasta format alignments', usage=OneLineAln.OneLineAln_usage)
+        OneLineAln_parser.add_argument('-in',               required=True,                       help='input MSA in fasta format')
+        OneLineAln_parser.add_argument('-out',              required=False, default=None,        help='output file')
+        OneLineAln_parser.add_argument('-upper',            required=False, action='store_true', help='turn to uppercase')
+        args = vars(parser.parse_args())
+        OneLineAln.OneLineAln(args)
+
+    elif sys.argv[1] == 'SliceMSA':
+        from BioSAK import SliceMSA
+        SliceMSA_parser = subparsers.add_parser('SliceMSA', description='Slice MSA by column', usage=SliceMSA.SliceMSA_usage)
+        SliceMSA_parser.add_argument('-i',                  required=True,                         help='input MSA in fasta format')
+        SliceMSA_parser.add_argument('-fi',                 required=False, default='fasta',       help='format (NOT file extension) of input MSA, default: fasta')
+        SliceMSA_parser.add_argument('-s',                  required=True,                         help='columns to export, e.g. 200-300, -100, 50-')
+        SliceMSA_parser.add_argument('-o',                  required=True,                         help='output file or folder')
+        SliceMSA_parser.add_argument('-fo',                 required=False, default='fasta',       help='format of output MSA, select from fasta and phylip-relaxed, default: fasta')
+        SliceMSA_parser.add_argument('-force',              required=False, action="store_true",   help='force overwrite existing output folder')
+        args = vars(parser.parse_args())
+        SliceMSA.SliceMSA(args)
+
+    elif sys.argv[1] == 'ConvertMSA':
+        from BioSAK import ConvertMSA
+        ConvertMSA_parser = subparsers.add_parser('ConvertMSA', usage=ConvertMSA.ConvertMSA_usage)
+        ConvertMSA_parser.add_argument('-i',       required=True,                       help='input alignment')
+        ConvertMSA_parser.add_argument('-xi',      required=False, default='aln',       help='input alignment extension')
+        ConvertMSA_parser.add_argument('-fi',      required=True,                       help='input alignment format, e.g., fasta, phylip')
+        ConvertMSA_parser.add_argument('-o',       required=True,                       help='output alignment')
+        ConvertMSA_parser.add_argument('-xo',      required=False, default='aln',       help='output alignment extension')
+        ConvertMSA_parser.add_argument('-fo',      required=True,                       help='output alignment format, e.g., fasta, phylip')
+        ConvertMSA_parser.add_argument('-oneline', required=False, action="store_true", help='put sequence in single line, available if -fo is fasta')
+        ConvertMSA_parser.add_argument('-nogap',   required=False, action="store_true", help='remove gaps from alignment, available if -fo is fasta')
+        ConvertMSA_parser.add_argument('-f',       required=False, action="store_true", help='force overwrite existing output folder')
+        args = vars(parser.parse_args())
+        ConvertMSA.ConvertMSA(args)
+
+    elif sys.argv[1] == 'fa2phy':
+        from BioSAK import fa2phy
+        fa2phy_parser = subparsers.add_parser('fa2phy', usage=fa2phy.fa2phy_usage)
+        fa2phy_parser.add_argument('-i', required=True, help='input MSA in fasta format')
+        fa2phy_parser.add_argument('-o', required=True, help='output MSA in phylip format')
+        args = vars(parser.parse_args())
+        fa2phy.fa2phy(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
