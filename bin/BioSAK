@@ -63,7 +63,7 @@ def print_main_help():
        BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
        Tax4Fun2IndOTU          ->  Get functional profile of individual OTUs (to be added)
     
-    Sequence/Alignment manipulator
+    Sequence manipulator
        gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
        ffn2faa/gfa2fa/get_rc   ->  Format convertors
        fq2fa                   ->  Convert fastq to fasta
@@ -75,6 +75,12 @@ def print_main_help():
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine sequence files, prefix sequence id with file name
     
+    Multiple Sequence Alignment
+       ConvertMSA             ->  Convert MSA format
+       fa2phy                 ->  Convert MSA format (fasta to phylip)
+       OneLineAln             ->  One-line fasta format alignments
+       SliceMSA               ->  Slice MSA by column 
+       
     Sam and Bam
        plot_sam_depth          ->  Plot SAM depth
        reads2bam               ->  Mapping and sorting
