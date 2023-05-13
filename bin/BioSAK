@@ -263,10 +263,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'get_genome_GTDB':
         from BioSAK import get_genome_GTDB
         get_genome_GTDB_parser = subparsers.add_parser('get_genome_GTDB', description='Batch download GTDB genomes', usage=get_genome_GTDB.get_genome_GTDB_parser_usage)
-        get_genome_GTDB_parser.add_argument('-id',              required=True, help='genome id')
-        get_genome_GTDB_parser.add_argument('-path',            required=True, help='genome_paths.tsv')
-        get_genome_GTDB_parser.add_argument('-dir',             required=True, help='the folder which hold genome_paths.tsv')
-        get_genome_GTDB_parser.add_argument('-out',             required=True, help='output folder')
+        get_genome_GTDB_parser.add_argument('-i',           required=True,                          help='genome id')
+        get_genome_GTDB_parser.add_argument('-o',           required=True,                          help='output folder')
+        get_genome_GTDB_parser.add_argument('-fastani_dir', required=True,                          help='the "fastani" dir')
+        get_genome_GTDB_parser.add_argument('-force',       required=False, action="store_true",    help='Force overwrite existing results')
         args = vars(parser.parse_args())
         get_genome_GTDB.get_genome_GTDB(args)
 
@@ -613,7 +613,7 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'sampling_GTDB_gnms':
         from BioSAK import sampling_GTDB_gnms
         sampling_GTDB_gnms_parser = subparsers.add_parser('sampling_GTDB_gnms', usage=sampling_GTDB_gnms.sampling_GTDB_gnms_usage)
-        sampling_GTDB_gnms_parser.add_argument('-p',           required=False, default='Genomes',          help='output prefix')
+        sampling_GTDB_gnms_parser.add_argument('-o',           required=True,                              help='output table')
         sampling_GTDB_gnms_parser.add_argument('-meta',        required=True,                              help='GTDB reference genome metadata')
         sampling_GTDB_gnms_parser.add_argument('-taxon',       required=True,                              help='interested taxon')
         sampling_GTDB_gnms_parser.add_argument('-r',           required=True,                              help='sampling at rank, select from p, c, o, f, g and s')

@@ -1,8 +1,8 @@
+1.64.6
+- fixed bugs
+
 1.64.0
 - new module added: ConvertMSA, SliceMSA, OneLineAln, fa2phy
-
-1.63.15
-- fixed bugs
 
 1.63.0
 - new module added: fq2fa
