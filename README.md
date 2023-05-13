@@ -46,10 +46,13 @@ BioSAK modules
  Getting help
 ---
 
++ You can get example commands for most of the modules by typing, for example, `BioSAK iTOL -h`.
+
+
 + Please refer to the [documentation](doc/Index.md) page for help (in preparation, very messy).
 
 
-+ Example commands for most of the modules can also be found by typing, for example, `BioSAK iTOL -h`.
++ [中文版](doc/Index_cn.md)帮助文件在此.
 
 
 + A license statement is [here](LICENSE).

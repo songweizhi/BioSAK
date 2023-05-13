@@ -5,7 +5,7 @@ Help information for BioSAK modules
 
 ### Functional annotation
 
-+ __[KEGG](KEGG.md)__                   			- KEGG annotation [中文](KEGG_cn.md)
++ __[KEGG](KEGG.md)__                   			- KEGG annotation
 + __[COG2020](COG2020.md)__                			- COG annotation (v2020, by blastp/diamond)
 + __[arCOG](arCOG.md)__                  			- COG annotation for archaea (version ar18)
 + __[dbCAN](dbCAN.md)__                  			- CAZy annotation with dbCAN 

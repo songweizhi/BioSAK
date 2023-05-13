@@ -1,0 +1,6 @@
+
+BioSAK GTDB_for_BLCA -GTDB_ssu bac120_ar122_ssu_r89.fna
+
+# output_file:
+GTDB_bac120_ar122_ssu_r89_BLCAparsed.fasta
+GTDB_bac120_ar122_ssu_r89_BLCAparsed.taxonomy
