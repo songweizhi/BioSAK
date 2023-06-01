@@ -17,6 +17,32 @@ def numericable_str(my_string):
     return is_numericable_str
 
 
+############################################## subset_df ##############################################
+
+def subset_df(file_in, rows_to_keep, cols_to_keep, sep_symbol, row_name_pos, column_name_pos, file_out):
+
+    df = pd.read_csv(file_in, sep=sep_symbol, header=column_name_pos, index_col=row_name_pos)
+
+    if len(rows_to_keep) == 0:
+        if len(cols_to_keep) == 0:
+            subset_df = df.loc[:, :]
+        else:
+            subset_df = df.loc[:, cols_to_keep]
+    else:
+        if len(cols_to_keep) == 0:
+            subset_df = df.loc[rows_to_keep, :]
+        else:
+            subset_df = df.loc[rows_to_keep, cols_to_keep]
+
+    subset_df.to_csv(file_out, sep=sep_symbol)
+
+rows_to_keep    = set()
+cols_to_keep    = set()
+sep_symbol      = '\t'
+row_name_pos    = 0
+column_name_pos = 0
+
+
 ##########################################################################################
 
 num_1 = float("{0:.2f}".format(123.456789))  # 123.45
@@ -128,6 +154,61 @@ cluster_num, score = get_num_of_clusters(dm_file)
 print('Best\t%s\t%s' % (cluster_num, score))
 # Best	2	0.8067079676284064
 
+
+##################################### filter dataframe columns #####################################
+
+
+def filter_col(df_in, min_value, min_value_min_num):
+
+    df_in_copy = df_in.copy(deep=True)
+
+    for col in df_in_copy.columns:
+        count = (df_in_copy[col] >= min_value).sum()
+        if count < min_value_min_num:
+            print(count)
+            df_in_copy.drop(col, axis=1, inplace=True)
+
+    return df_in_copy
+
+
+df = pd.DataFrame({
+    'col1': [1, 1, 1, 1, 1, 1, 0],
+    'col2': [1, 1, 1, 1, 1, 0, 0],
+    'col3': [1, 1, 1, 1, 0, 0, 0],
+    'col4': [1, 1, 1, 0, 0, 0, 0],
+    'col5': [1, 1, 0, 0, 0, 0, 0],
+    'col6': [1, 0, 0, 0, 0, 0, 0],
+    'col7': [0, 0, 0, 0, 0, 0, 0]
+})
+
+min_value           = 1
+min_value_min_num   = 5
+df_filtered         = filter_col(df, min_value, min_value_min_num)
+
+
+'''
+print(df)
+
+   col1  col2  col3  col4  col5  col6  col7
+0     1     1     1     1     1     1     0
+1     1     1     1     1     1     0     0
+2     1     1     1     1     0     0     0
+3     1     1     1     0     0     0     0
+4     1     1     0     0     0     0     0
+5     1     0     0     0     0     0     0
+6     0     0     0     0     0     0     0
+
+print(df_filtered)
+
+   col1  col2
+0     1     1
+1     1     1
+2     1     1
+3     1     1
+4     1     1
+5     1     0
+6     0     0
+'''
 
 ######################### get_malthusian_selection_coefficients ##########################
 

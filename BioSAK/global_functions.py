@@ -135,7 +135,10 @@ def AnnotateNorm(file_in, skip_header, value_column, Divisor_value, file_out, fi
         value_str = each_line_split[value_column - 1]
 
         if (skip_header is True and line_num > 0) or (skip_header is False):
-            value_pct = float(value_str) * 100 / Divisor_value
+
+            value_pct = 0
+            if Divisor_value != 0:
+                value_pct = float(value_str) * 100 / Divisor_value
             each_line_split[value_column - 1] = str(float("{0:.2f}".format(value_pct)))
             file_out_handle.write('%s\n' % '\t'.join(each_line_split))
 

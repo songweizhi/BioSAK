@@ -29,6 +29,7 @@ BioSAK/KEGG.py
 BioSAK/KEGG_boxplot_last1row.R
 BioSAK/KEGG_get_eukaryotic_kos.py
 BioSAK/MeanMappingDepth.py
+BioSAK/MetaBiosample.py
 BioSAK/MetaCHIP_phylo.hmm
 BioSAK/MetaCyc_reactions_with_ec.txt
 BioSAK/NS_SCG_tree_p_only_group.tree
@@ -36,6 +37,8 @@ BioSAK/NS_SCG_tree_p_with_group.tree
 BioSAK/NetEnzymes.py
 BioSAK/Newick_tree_plotter.py
 BioSAK/OneLineAln.py
+BioSAK/PhyloBiAssoc.R
+BioSAK/PhyloBiAssoc.py
 BioSAK/Prodigal.py
 BioSAK/Prokka.py
 BioSAK/Prokka_b.py
@@ -89,6 +92,7 @@ BioSAK/get_gc.py
 BioSAK/get_gene_depth.py
 BioSAK/get_genome_GTDB.py
 BioSAK/get_genome_NCBI.py
+BioSAK/get_genome_NCBI_v1.py
 BioSAK/get_genome_NCBI_v2.py
 BioSAK/get_gnm_size.py
 BioSAK/get_ko_gene_seqs.py
@@ -636,6 +640,7 @@ doc/top_16S_hits.md
 doc/top_16S_hits_cn.md
 doc/usearch_uc.md
 doc/usearch_uc_cn.md
+doc/pdf/Workflow_10_steps_to_design_a_bacterial_culture_medium.pdf
 images/.DS_Store
 images/Bioinformatics.jpg
 images/windows_cmds.docx

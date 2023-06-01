@@ -8,4 +8,3 @@ seaborn
 lxml
 beautifulsoup4
 ete3
-reportlab

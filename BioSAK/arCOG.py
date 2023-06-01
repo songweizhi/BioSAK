@@ -1,16 +1,11 @@
-#!/usr/bin/env python3
 import os
 import glob
+import shutil
 import argparse
 from Bio import SeqIO
 import multiprocessing as mp
 from datetime import datetime
 from Bio.SeqRecord import SeqRecord
-from BioSAK.global_functions import time_format
-from BioSAK.global_functions import force_create_folder
-from BioSAK.global_functions import sep_path_basename_ext
-from BioSAK.global_functions import AnnotateNorm
-from BioSAK.global_functions import get_gene_list_TotalDepth
 
 
 arCOG_parser_usage = '''
@@ -40,6 +35,67 @@ diamond makedb --in ar18.fa --db ar18.fa.dmnd --quiet
 
 ====================================================================================================
 '''
+
+time_format = '[%Y-%m-%d %H:%M:%S] '
+
+
+def force_create_folder(folder_to_create):
+    if os.path.isdir(folder_to_create):
+        shutil.rmtree(folder_to_create, ignore_errors=True)
+        if os.path.isdir(folder_to_create):
+            shutil.rmtree(folder_to_create, ignore_errors=True)
+            if os.path.isdir(folder_to_create):
+                shutil.rmtree(folder_to_create, ignore_errors=True)
+                if os.path.isdir(folder_to_create):
+                    shutil.rmtree(folder_to_create, ignore_errors=True)
+
+    os.mkdir(folder_to_create)
+
+
+def sep_path_basename_ext(file_in):
+
+    # separate path and file name
+    file_path, file_name = os.path.split(file_in)
+    if file_path == '':
+        file_path = '.'
+
+    # separate file basename and extension
+    file_basename, file_ext = os.path.splitext(file_name)
+
+    return file_path, file_basename, file_ext
+
+
+def AnnotateNorm(file_in, skip_header, value_column, Divisor_value, file_out, file_out_header):
+
+    file_out_handle = open(file_out, 'w')
+    file_out_handle.write(file_out_header)
+    line_num = 0
+    for each_line in open(file_in):
+
+        each_line_split = each_line.strip().split('\t')
+        value_str = each_line_split[value_column - 1]
+
+        if (skip_header is True and line_num > 0) or (skip_header is False):
+
+            value_pct = 0
+            if Divisor_value != 0:
+                value_pct = float(value_str) * 100 / Divisor_value
+            each_line_split[value_column - 1] = str(float("{0:.2f}".format(value_pct)))
+            file_out_handle.write('%s\n' % '\t'.join(each_line_split))
+
+        line_num += 1
+
+    file_out_handle.close()
+
+
+def get_gene_list_depth(gene_list, gene_to_depth_dict):
+
+    total_depth = 0
+    for gene in gene_list:
+        gene_depth = gene_to_depth_dict[gene]
+        total_depth += gene_depth
+
+    return total_depth
 
 
 def dna2aa(dna_file, aa_file):
@@ -106,24 +162,24 @@ def arCOG_worker(argument_list):
     input_seq_no_path, input_seq_no_ext, input_seq_ext = sep_path_basename_ext(pwd_input_file)
     current_output_folder = '%s/%s_arCOG_wd' % (output_folder, input_seq_no_ext)
 
-    pwd_blastp_output =                        '%s/%s_blastp.tab'                             % (current_output_folder, input_seq_no_ext)
-    pwd_blastp_output_besthits =               '%s/%s_blastp_besthits.tab'                    % (current_output_folder, input_seq_no_ext)
-    pwd_query_to_cog_txt =                     '%s/%s_query_to_cog.txt'                       % (current_output_folder, input_seq_no_ext)
+    pwd_blastp_output =                 '%s/%s_blastp.tab'                          % (current_output_folder, input_seq_no_ext)
+    pwd_blastp_output_besthits =        '%s/%s_blastp_besthits.tab'                 % (current_output_folder, input_seq_no_ext)
+    pwd_query_to_cog_txt =              '%s/%s_query_to_cog.txt'                    % (current_output_folder, input_seq_no_ext)
 
-    pwd_cog_stats_GeneNumber =                 '%s/%s_arcog_stats_GeneNumber.txt'             % (current_output_folder, input_seq_no_ext)
-    pwd_cog_stats_TotalDepth =                 '%s/%s_arcog_stats_TotalDepth.txt'             % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_GeneNumber =                '%s/%s_func_stats_GeneNumber.txt'              % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_TotalDepth =                '%s/%s_func_stats_TotalDepth.txt'              % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_copy =                '%s/%s_arcog_stats_copy.txt'                % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_depth =               '%s/%s_arcog_stats_depth.txt'               % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_copy =               '%s/%s_func_stats_copy.txt'                 % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_depth =              '%s/%s_func_stats_depth.txt'                % (current_output_folder, input_seq_no_ext)
 
-    pwd_cog_stats_GeneNumber_pct =             '%s/%s_arcog_stats_GeneNumber_pct.txt'         % (current_output_folder, input_seq_no_ext)
-    pwd_cog_stats_TotalDepth_pct =             '%s/%s_arcog_stats_TotalDepth_pct.txt'         % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_GeneNumber_pct =            '%s/%s_func_stats_GeneNumber_pct.txt'          % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_TotalDepth_pct =            '%s/%s_func_stats_TotalDepth_pct.txt'          % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_copy_pct =            '%s/%s_arcog_stats_copy_pct.txt'            % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_depth_pct =           '%s/%s_arcog_stats_depth_pct.txt'           % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_copy_pct =           '%s/%s_func_stats_copy_pct.txt'             % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_depth_pct =          '%s/%s_func_stats_depth_pct.txt'            % (current_output_folder, input_seq_no_ext)
 
-    pwd_cog_stats_GeneNumber_pct_by_all =      '%s/%s_arcog_stats_GeneNumber_pct_by_all.txt'  % (current_output_folder, input_seq_no_ext)
-    pwd_cog_stats_TotalDepth_pct_by_all =      '%s/%s_arcog_stats_TotalDepth_pct_by_all.txt'  % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_GeneNumber_pct_by_all =     '%s/%s_func_stats_GeneNumber_pct_by_all.txt'   % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_TotalDepth_pct_by_all =     '%s/%s_func_stats_TotalDepth_pct_by_all.txt'   % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_copy_pct_by_all =     '%s/%s_arcog_stats_copy_pct_by_all.txt'     % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_depth_pct_by_all =    '%s/%s_arcog_stats_depth_pct_by_all.txt'    % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_copy_pct_by_all =    '%s/%s_func_stats_copy_pct_by_all.txt'      % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_depth_pct_by_all =   '%s/%s_func_stats_depth_pct_by_all.txt'     % (current_output_folder, input_seq_no_ext)
 
     force_create_folder(current_output_folder)
 
@@ -154,6 +210,9 @@ def arCOG_worker(argument_list):
         each_hit_subject = each_hit_split[1]
         each_hit_subject_no_dot = '_'.join(each_hit_subject.split('.'))
         query_to_ref_protein_dict[each_hit_query] = each_hit_subject_no_dot
+
+    # print('query_to_ref_protein_dict')
+    # print(query_to_ref_protein_dict)
 
     # get query sequences list
     query_seq_list = []
@@ -211,75 +270,75 @@ def arCOG_worker(argument_list):
             each_depth_split = each_depth.strip().split('\t')
             gene_depth_dict[each_depth_split[0]] = float(each_depth_split[1])
 
-    # get TotalDepth of all query genes or genes with cog assignment
+    # get depth of all query genes or genes with cog assignment
     if depth_file is not None:
-        genes_with_cog_TotalDepth = get_gene_list_TotalDepth(genes_with_cog, gene_depth_dict)
-        total_depth_for_all_query_genes = get_gene_list_TotalDepth(query_seq_list, gene_depth_dict)
+        genes_with_cog_depth = get_gene_list_depth(genes_with_cog, gene_depth_dict)
+        total_depth_for_all_query_genes = get_gene_list_depth(query_seq_list, gene_depth_dict)
 
-    #################### export cog_stats_GeneNumber ####################
+    #################### export cog_stats_copy ####################
 
-    pwd_cog_stats_GeneNumber_handle = open(pwd_cog_stats_GeneNumber, 'w')
-    pwd_cog_stats_GeneNumber_handle.write('arCOG\tGeneNumber\tDescription\n')
+    pwd_cog_stats_copy_handle = open(pwd_cog_stats_copy, 'w')
+    pwd_cog_stats_copy_handle.write('arCOG\tcopy\tDescription\n')
     for each_cog_id in cog_id_num_dict:
-        each_cog_id_GeneNumber = cog_id_num_dict[each_cog_id]
-        pwd_cog_stats_GeneNumber_handle.write('%s\t%s\t%s\n' % (each_cog_id, each_cog_id_GeneNumber, cog_id_to_description_dict[each_cog_id]))
-    pwd_cog_stats_GeneNumber_handle.close()
+        each_cog_id_copy = cog_id_num_dict[each_cog_id]
+        pwd_cog_stats_copy_handle.write('%s\t%s\t%s\n' % (each_cog_id, each_cog_id_copy, cog_id_to_description_dict[each_cog_id]))
+    pwd_cog_stats_copy_handle.close()
 
-    #################### export cog_stats_TotalDepth ####################
+    #################### export cog_stats_depth ####################
 
     if depth_file is not None:
-        pwd_cog_stats_TotalDepth_handle = open(pwd_cog_stats_TotalDepth, 'w')
-        pwd_cog_stats_TotalDepth_handle.write('COG\tTotalDepth\tDescription\n')
+        pwd_cog_stats_depth_handle = open(pwd_cog_stats_depth, 'w')
+        pwd_cog_stats_depth_handle.write('COG\tdepth\tDescription\n')
         for each_cog_id in cog_id_to_gene_member_dict:
             each_cog_id_gene_member = cog_id_to_gene_member_dict[each_cog_id]
-            each_cog_id_TotalDepth = 0
+            each_cog_id_depth = 0
             for each_gene in each_cog_id_gene_member:
                 each_gene_depth = gene_depth_dict[each_gene]
-                each_cog_id_TotalDepth += each_gene_depth
-            each_cog_id_TotalDepth = float("{0:.2f}".format(each_cog_id_TotalDepth))
-            pwd_cog_stats_TotalDepth_handle.write('%s\t%s\t%s\n' % (each_cog_id, each_cog_id_TotalDepth, cog_id_to_description_dict[each_cog_id]))
-        pwd_cog_stats_TotalDepth_handle.close()
+                each_cog_id_depth += each_gene_depth
+            each_cog_id_depth = float("{0:.2f}".format(each_cog_id_depth))
+            pwd_cog_stats_depth_handle.write('%s\t%s\t%s\n' % (each_cog_id, each_cog_id_depth, cog_id_to_description_dict[each_cog_id]))
+        pwd_cog_stats_depth_handle.close()
 
-    #################### export func_stats_GeneNumber ####################
+    #################### export func_stats_copy ####################
 
-    pwd_func_stats_GeneNumber_handle = open(pwd_func_stats_GeneNumber, 'w')
-    pwd_func_stats_GeneNumber_handle.write('Category\tGeneNumber\tDescription\n')
+    pwd_func_stats_copy_handle = open(pwd_func_stats_copy, 'w')
+    pwd_func_stats_copy_handle.write('Category\tcopy\tDescription\n')
     for each_cog_cate in cog_category_list:
-        each_cog_cate_GeneNumber = 0
+        each_cog_cate_copy = 0
         if each_cog_cate in cog_cate_num_dict:
-            each_cog_cate_GeneNumber = cog_cate_num_dict[each_cog_cate]
-        pwd_func_stats_GeneNumber_handle.write('%s\t%s\t%s\n' % (each_cog_cate, each_cog_cate_GeneNumber, cog_category_to_description_dict.get(each_cog_cate, 'na')))
-    pwd_func_stats_GeneNumber_handle.close()
+            each_cog_cate_copy = cog_cate_num_dict[each_cog_cate]
+        pwd_func_stats_copy_handle.write('%s\t%s\t%s\n' % (each_cog_cate, each_cog_cate_copy, cog_category_to_description_dict.get(each_cog_cate, 'na')))
+    pwd_func_stats_copy_handle.close()
 
-    #################### export func_stats_TotalDepth ####################
+    #################### export func_stats_depth ####################
 
     if depth_file is not None:
-        pwd_func_stats_TotalDepth_handle = open(pwd_func_stats_TotalDepth, 'w')
-        pwd_func_stats_TotalDepth_handle.write('Category\tTotalDepth\tDescription\n')
+        pwd_func_stats_depth_handle = open(pwd_func_stats_depth, 'w')
+        pwd_func_stats_depth_handle.write('Category\tdepth\tDescription\n')
         for each_cog_cate in cog_category_list:
-            each_cog_cate_TotalDepth = 0
+            each_cog_cate_depth = 0
             if each_cog_cate in cog_cate_to_gene_member_dict:
                 each_cog_cate_gene_member = cog_cate_to_gene_member_dict[each_cog_cate]
                 for each_gene in each_cog_cate_gene_member:
                     each_gene_depth = gene_depth_dict[each_gene]
-                    each_cog_cate_TotalDepth += each_gene_depth
-            each_cog_cate_TotalDepth = float("{0:.2f}".format(each_cog_cate_TotalDepth))
-            pwd_func_stats_TotalDepth_handle.write('%s\t%s\t%s\n' % (each_cog_cate, each_cog_cate_TotalDepth, cog_category_to_description_dict[each_cog_cate]))
-        pwd_func_stats_TotalDepth_handle.close()
+                    each_cog_cate_depth += each_gene_depth
+            each_cog_cate_depth = float("{0:.2f}".format(each_cog_cate_depth))
+            pwd_func_stats_depth_handle.write('%s\t%s\t%s\n' % (each_cog_cate, each_cog_cate_depth, cog_category_to_description_dict[each_cog_cate]))
+        pwd_func_stats_depth_handle.close()
 
     #################### get pct files ####################
 
-    AnnotateNorm(file_in=pwd_cog_stats_GeneNumber,  skip_header=True, value_column=2, Divisor_value=len(genes_with_cog), file_out=pwd_cog_stats_GeneNumber_pct,  file_out_header='arCOG\tPercent\tDescription\n')
-    AnnotateNorm(file_in=pwd_func_stats_GeneNumber, skip_header=True, value_column=2, Divisor_value=len(genes_with_cog), file_out=pwd_func_stats_GeneNumber_pct, file_out_header='Category\tPercent\tDescription\n')
+    AnnotateNorm(file_in=pwd_cog_stats_copy,  skip_header=True, value_column=2, Divisor_value=len(genes_with_cog), file_out=pwd_cog_stats_copy_pct,  file_out_header='arCOG\tPercent\tDescription\n')
+    AnnotateNorm(file_in=pwd_func_stats_copy, skip_header=True, value_column=2, Divisor_value=len(genes_with_cog), file_out=pwd_func_stats_copy_pct, file_out_header='Category\tPercent\tDescription\n')
     if depth_file is not None:
-        AnnotateNorm(file_in=pwd_cog_stats_TotalDepth,  skip_header=True, value_column=2, Divisor_value=genes_with_cog_TotalDepth, file_out=pwd_cog_stats_TotalDepth_pct,  file_out_header='arCOG\tPercent\tDescription\n')
-        AnnotateNorm(file_in=pwd_func_stats_TotalDepth, skip_header=True, value_column=2, Divisor_value=genes_with_cog_TotalDepth, file_out=pwd_func_stats_TotalDepth_pct, file_out_header='Category\tPercent\tDescription\n')
+        AnnotateNorm(file_in=pwd_cog_stats_depth,  skip_header=True, value_column=2, Divisor_value=genes_with_cog_depth, file_out=pwd_cog_stats_depth_pct,  file_out_header='arCOG\tPercent\tDescription\n')
+        AnnotateNorm(file_in=pwd_func_stats_depth, skip_header=True, value_column=2, Divisor_value=genes_with_cog_depth, file_out=pwd_func_stats_depth_pct, file_out_header='Category\tPercent\tDescription\n')
     if pct_by_all is True:
-        AnnotateNorm(file_in=pwd_cog_stats_GeneNumber,  skip_header=True, value_column=2, Divisor_value=len(query_seq_list), file_out=pwd_cog_stats_GeneNumber_pct_by_all,  file_out_header='arCOG\tPercent_by_all\tDescription\n')
-        AnnotateNorm(file_in=pwd_func_stats_GeneNumber, skip_header=True, value_column=2, Divisor_value=len(query_seq_list), file_out=pwd_func_stats_GeneNumber_pct_by_all, file_out_header='Category\tPercent_by_all\tDescription\n')
+        AnnotateNorm(file_in=pwd_cog_stats_copy,  skip_header=True, value_column=2, Divisor_value=len(query_seq_list), file_out=pwd_cog_stats_copy_pct_by_all,  file_out_header='arCOG\tPercent_by_all\tDescription\n')
+        AnnotateNorm(file_in=pwd_func_stats_copy, skip_header=True, value_column=2, Divisor_value=len(query_seq_list), file_out=pwd_func_stats_copy_pct_by_all, file_out_header='Category\tPercent_by_all\tDescription\n')
         if depth_file is not None:
-            AnnotateNorm(file_in=pwd_cog_stats_TotalDepth,  skip_header=True, value_column=2, Divisor_value=total_depth_for_all_query_genes, file_out=pwd_cog_stats_TotalDepth_pct_by_all,  file_out_header='arCOG\tPercent_by_all\tDescription\n')
-            AnnotateNorm(file_in=pwd_func_stats_TotalDepth, skip_header=True, value_column=2, Divisor_value=total_depth_for_all_query_genes, file_out=pwd_func_stats_TotalDepth_pct_by_all, file_out_header='Category\tPercent_by_all\tDescription\n')
+            AnnotateNorm(file_in=pwd_cog_stats_depth,  skip_header=True, value_column=2, Divisor_value=total_depth_for_all_query_genes, file_out=pwd_cog_stats_depth_pct_by_all,  file_out_header='arCOG\tPercent_by_all\tDescription\n')
+            AnnotateNorm(file_in=pwd_func_stats_depth, skip_header=True, value_column=2, Divisor_value=total_depth_for_all_query_genes, file_out=pwd_func_stats_depth_pct_by_all, file_out_header='Category\tPercent_by_all\tDescription\n')
 
 
 def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, annotation_df_percentage, annotation_df_percentage_by_all, with_depth, pct_by_all):
@@ -298,27 +357,27 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
         pwd_annotation_stats_file_pct = ''
         if stats_level == 'cog_id':
             if with_depth is False:
-                pwd_annotation_stats_file =             '%s/%s/%s_cog_stats_GeneNumber.txt'                 % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct =         '%s/%s/%s_cog_stats_GeneNumber_pct.txt'             % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_cog_stats_GeneNumber_pct_by_all.txt'      % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file =             '%s/%s/%s_arcog_stats_copy.txt'             % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct =         '%s/%s/%s_arcog_stats_copy_pct.txt'         % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_arcog_stats_copy_pct_by_all.txt'  % (annotation_dir, annotation_folder, annotation_folder_basename)
             else:
-                pwd_annotation_stats_file =             '%s/%s/%s_cog_stats_TotalDepth.txt'                 % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct =         '%s/%s/%s_cog_stats_TotalDepth_pct.txt'             % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_cog_stats_TotalDepth_pct_by_all.txt'      % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file =             '%s/%s/%s_arcog_stats_depth.txt'            % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct =         '%s/%s/%s_arcog_stats_depth_pct.txt'        % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_arcog_stats_depth_pct_by_all.txt' % (annotation_dir, annotation_folder, annotation_folder_basename)
 
         if stats_level == 'cog_cate':
             if with_depth is False:
-                pwd_annotation_stats_file =             '%s/%s/%s_func_stats_GeneNumber.txt'                % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct =         '%s/%s/%s_func_stats_GeneNumber_pct.txt'            % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_func_stats_GeneNumber_pct_by_all.txt'     % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file =             '%s/%s/%s_func_stats_copy.txt'              % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct =         '%s/%s/%s_func_stats_copy_pct.txt'          % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_func_stats_copy_pct_by_all.txt'   % (annotation_dir, annotation_folder, annotation_folder_basename)
             else:
-                pwd_annotation_stats_file =             '%s/%s/%s_func_stats_TotalDepth.txt'                % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct =         '%s/%s/%s_func_stats_TotalDepth_pct.txt'            % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_func_stats_TotalDepth_pct_by_all.txt'     % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file =             '%s/%s/%s_func_stats_depth.txt'             % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct =         '%s/%s/%s_func_stats_depth_pct.txt'         % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_func_stats_depth_pct_by_all.txt'  % (annotation_dir, annotation_folder, annotation_folder_basename)
 
         current_cog_to_num_dict = {}
         for cog in open(pwd_annotation_stats_file):
-            if (not cog.startswith('Category	')) and (not cog.startswith('COG	')):
+            if (not cog.startswith('Category	')) and (not cog.startswith('COG	')) and (not cog.startswith('arCOG	')):
                 cog_split = cog.strip().split('\t')
                 if with_depth is False:
                     current_cog_to_num_dict[cog_split[0]] = int(cog_split[1])
@@ -329,7 +388,7 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
 
         current_cog_to_num_pct_dict = {}
         for cog in open(pwd_annotation_stats_file_pct):
-            if (not cog.startswith('Category	')) and (not cog.startswith('COG	')):
+            if (not cog.startswith('Category	')) and (not cog.startswith('COG	')) and (not cog.startswith('arCOG	')):
                 cog_split = cog.strip().split('\t')
                 current_cog_to_num_pct_dict[cog_split[0]] = float(cog_split[1])
                 all_identified_cog.add(cog_split[0])
@@ -338,7 +397,7 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
         if pct_by_all is True:
             current_cog_to_num_pct_by_all_dict = {}
             for cog in open(pwd_annotation_stats_file_pct_by_all):
-                if (not cog.startswith('Category	')) and (not cog.startswith('COG	')):
+                if (not cog.startswith('Category	')) and (not cog.startswith('COG	')) and (not cog.startswith('arCOG	')):
                     cog_split = cog.strip().split('\t')
                     current_cog_to_num_pct_by_all_dict[cog_split[0]] = float(cog_split[1])
                     all_identified_cog.add(cog_split[0])
@@ -575,53 +634,53 @@ def arCOG(args):
 
             ######################################################### get dataframe #########################################################
 
-            annotation_df_cog_cate_GeneNumber =             '%s/%s_arCOG_cate_GeneNumber.txt'             % (output_folder, file_in_folder_name)
-            annotation_df_cog_cate_GeneNumber_pct =         '%s/%s_arCOG_cate_GeneNumber_pct.txt'         % (output_folder, file_in_folder_name)
-            annotation_df_cog_cate_GeneNumber_pct_by_all =  '%s/%s_arCOG_cate_GeneNumber_pct_by_all.txt'  % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_copy =             '%s/%s_arCOG_cate_copy.txt'             % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_copy_pct =         '%s/%s_arCOG_cate_copy_pct.txt'         % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_copy_pct_by_all =  '%s/%s_arCOG_cate_copy_pct_by_all.txt'  % (output_folder, file_in_folder_name)
 
-            annotation_df_cog_cate_TotalDepth =             '%s/%s_arCOG_cate_TotalDepth.txt'             % (output_folder, file_in_folder_name)
-            annotation_df_cog_cate_TotalDepth_pct =         '%s/%s_arCOG_cate_TotalDepth_pct.txt'         % (output_folder, file_in_folder_name)
-            annotation_df_cog_cate_TotalDepth_pct_by_all =  '%s/%s_arCOG_cate_TotalDepth_pct_by_all.txt'  % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_depth =            '%s/%s_arCOG_cate_depth.txt'             % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_depth_pct =        '%s/%s_arCOG_cate_depth_pct.txt'         % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_depth_pct_by_all = '%s/%s_arCOG_cate_depth_pct_by_all.txt'  % (output_folder, file_in_folder_name)
 
-            annotation_df_cog_id_GeneNumber =               '%s/%s_arCOG_id_GeneNumber.txt'               % (output_folder, file_in_folder_name)
-            annotation_df_cog_id_GeneNumber_pct =           '%s/%s_arCOG_id_GeneNumber_pct.txt'           % (output_folder, file_in_folder_name)
-            annotation_df_cog_id_GeneNumber_pct_by_all =    '%s/%s_arCOG_id_GeneNumber_pct_by_all.txt'    % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_copy =               '%s/%s_arCOG_id_copy.txt'               % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_copy_pct =           '%s/%s_arCOG_id_copy_pct.txt'           % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_copy_pct_by_all =    '%s/%s_arCOG_id_copy_pct_by_all.txt'    % (output_folder, file_in_folder_name)
 
-            annotation_df_cog_id_TotalDepth =               '%s/%s_arCOG_id_TotalDepth.txt'               % (output_folder, file_in_folder_name)
-            annotation_df_cog_id_TotalDepth_pct =           '%s/%s_arCOG_id_TotalDepth_pct.txt'           % (output_folder, file_in_folder_name)
-            annotation_df_cog_id_TotalDepth_pct_by_all =    '%s/%s_arCOG_id_TotalDepth_pct_by_all.txt'    % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_depth =              '%s/%s_arCOG_id_depth.txt'               % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_depth_pct =          '%s/%s_arCOG_id_depth_pct.txt'           % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_depth_pct_by_all =   '%s/%s_arCOG_id_depth_pct_by_all.txt'    % (output_folder, file_in_folder_name)
 
             print(datetime.now().strftime(time_format) + 'Data matrix exported to:')
 
             # get df
-            get_COG_annot_df(output_folder, 'cog_cate', annotation_df_cog_cate_GeneNumber, annotation_df_cog_cate_GeneNumber_pct, annotation_df_cog_cate_GeneNumber_pct_by_all, with_depth=False, pct_by_all=False)
-            get_COG_annot_df(output_folder, 'cog_id', annotation_df_cog_id_GeneNumber, annotation_df_cog_id_GeneNumber_pct, annotation_df_cog_id_GeneNumber_pct_by_all, with_depth=False, pct_by_all=False)
+            get_COG_annot_df(output_folder, 'cog_cate', annotation_df_cog_cate_copy, annotation_df_cog_cate_copy_pct, annotation_df_cog_cate_copy_pct_by_all, with_depth=False, pct_by_all=False)
+            get_COG_annot_df(output_folder, 'cog_id', annotation_df_cog_id_copy, annotation_df_cog_id_copy_pct, annotation_df_cog_id_copy_pct_by_all, with_depth=False, pct_by_all=False)
             if pct_by_all is True:
-                get_COG_annot_df(output_folder, 'cog_cate', annotation_df_cog_cate_GeneNumber, annotation_df_cog_cate_GeneNumber_pct, annotation_df_cog_cate_GeneNumber_pct_by_all, with_depth=False, pct_by_all=True)
-                get_COG_annot_df(output_folder, 'cog_id', annotation_df_cog_id_GeneNumber, annotation_df_cog_id_GeneNumber_pct, annotation_df_cog_id_GeneNumber_pct_by_all, with_depth=False, pct_by_all=True)
+                get_COG_annot_df(output_folder, 'cog_cate', annotation_df_cog_cate_copy, annotation_df_cog_cate_copy_pct, annotation_df_cog_cate_copy_pct_by_all, with_depth=False, pct_by_all=True)
+                get_COG_annot_df(output_folder, 'cog_id', annotation_df_cog_id_copy, annotation_df_cog_id_copy_pct, annotation_df_cog_id_copy_pct_by_all, with_depth=False, pct_by_all=True)
 
             # report
             if pct_by_all is False:
-                print(datetime.now().strftime(time_format) + '%s and %s' % (annotation_df_cog_id_GeneNumber.split('/')[-1], annotation_df_cog_id_GeneNumber_pct.split('/')[-1]))
-                print(datetime.now().strftime(time_format) + '%s and %s' % (annotation_df_cog_cate_GeneNumber.split('/')[-1], annotation_df_cog_cate_GeneNumber_pct.split('/')[-1]))
+                print(datetime.now().strftime(time_format) + '%s and %s'        % (annotation_df_cog_id_copy.split('/')[-1], annotation_df_cog_id_copy_pct.split('/')[-1]))
+                print(datetime.now().strftime(time_format) + '%s and %s'        % (annotation_df_cog_cate_copy.split('/')[-1], annotation_df_cog_cate_copy_pct.split('/')[-1]))
             else:
-                print(datetime.now().strftime(time_format) + '%s, %s and %s' % (annotation_df_cog_id_GeneNumber.split('/')[-1], annotation_df_cog_id_GeneNumber_pct.split('/')[-1], annotation_df_cog_id_GeneNumber_pct_by_all.split('/')[-1]))
-                print(datetime.now().strftime(time_format) + '%s, %s and %s' % (annotation_df_cog_cate_GeneNumber.split('/')[-1], annotation_df_cog_cate_GeneNumber_pct.split('/')[-1], annotation_df_cog_cate_GeneNumber_pct_by_all.split('/')[-1]))
+                print(datetime.now().strftime(time_format) + '%s, %s and %s'    % (annotation_df_cog_id_copy.split('/')[-1], annotation_df_cog_id_copy_pct.split('/')[-1], annotation_df_cog_id_copy_pct_by_all.split('/')[-1]))
+                print(datetime.now().strftime(time_format) + '%s, %s and %s'    % (annotation_df_cog_cate_copy.split('/')[-1], annotation_df_cog_cate_copy_pct.split('/')[-1], annotation_df_cog_cate_copy_pct_by_all.split('/')[-1]))
 
             if depth_file is not None:
-                get_COG_annot_df(output_folder, 'cog_cate', annotation_df_cog_cate_TotalDepth, annotation_df_cog_cate_TotalDepth_pct, annotation_df_cog_cate_TotalDepth_pct_by_all, with_depth=True, pct_by_all=False)
-                get_COG_annot_df(output_folder, 'cog_id', annotation_df_cog_id_TotalDepth, annotation_df_cog_id_TotalDepth_pct, annotation_df_cog_id_TotalDepth_pct_by_all, with_depth=True, pct_by_all=False)
+                get_COG_annot_df(output_folder, 'cog_cate', annotation_df_cog_cate_depth, annotation_df_cog_cate_depth_pct, annotation_df_cog_cate_depth_pct_by_all, with_depth=True, pct_by_all=False)
+                get_COG_annot_df(output_folder, 'cog_id', annotation_df_cog_id_depth, annotation_df_cog_id_depth_pct, annotation_df_cog_id_depth_pct_by_all, with_depth=True, pct_by_all=False)
                 if pct_by_all is True:
-                    get_COG_annot_df(output_folder, 'cog_cate', annotation_df_cog_cate_TotalDepth, annotation_df_cog_cate_TotalDepth_pct, annotation_df_cog_cate_TotalDepth_pct_by_all, with_depth=True, pct_by_all=True)
-                    get_COG_annot_df(output_folder, 'cog_id', annotation_df_cog_id_TotalDepth, annotation_df_cog_id_TotalDepth_pct, annotation_df_cog_id_TotalDepth_pct_by_all, with_depth=True, pct_by_all=True)
+                    get_COG_annot_df(output_folder, 'cog_cate', annotation_df_cog_cate_depth, annotation_df_cog_cate_depth_pct, annotation_df_cog_cate_depth_pct_by_all, with_depth=True, pct_by_all=True)
+                    get_COG_annot_df(output_folder, 'cog_id', annotation_df_cog_id_depth, annotation_df_cog_id_depth_pct, annotation_df_cog_id_depth_pct_by_all, with_depth=True, pct_by_all=True)
 
                 # report
                 if pct_by_all is False:
-                    print(datetime.now().strftime(time_format) + '%s and %s' % (annotation_df_cog_id_TotalDepth.split('/')[-1], annotation_df_cog_id_TotalDepth_pct.split('/')[-1]))
-                    print(datetime.now().strftime(time_format) + '%s and %s' % (annotation_df_cog_cate_TotalDepth.split('/')[-1], annotation_df_cog_cate_TotalDepth_pct.split('/')[-1]))
+                    print(datetime.now().strftime(time_format) + '%s and %s' % (annotation_df_cog_id_depth.split('/')[-1], annotation_df_cog_id_depth_pct.split('/')[-1]))
+                    print(datetime.now().strftime(time_format) + '%s and %s' % (annotation_df_cog_cate_depth.split('/')[-1], annotation_df_cog_cate_depth_pct.split('/')[-1]))
                 else:
-                    print(datetime.now().strftime(time_format) + '%s, %s and %s' % (annotation_df_cog_id_TotalDepth.split('/')[-1], annotation_df_cog_id_TotalDepth_pct.split('/')[-1], annotation_df_cog_id_TotalDepth_pct_by_all.split('/')[-1]))
-                    print(datetime.now().strftime(time_format) + '%s, %s and %s' % (annotation_df_cog_cate_TotalDepth.split('/')[-1], annotation_df_cog_cate_TotalDepth_pct.split('/')[-1], annotation_df_cog_cate_TotalDepth_pct_by_all.split('/')[-1]))
+                    print(datetime.now().strftime(time_format) + '%s, %s and %s' % (annotation_df_cog_id_depth.split('/')[-1], annotation_df_cog_id_depth_pct.split('/')[-1], annotation_df_cog_id_depth_pct_by_all.split('/')[-1]))
+                    print(datetime.now().strftime(time_format) + '%s, %s and %s' % (annotation_df_cog_cate_depth.split('/')[-1], annotation_df_cog_cate_depth_pct.split('/')[-1], annotation_df_cog_cate_depth_pct_by_all.split('/')[-1]))
 
     ################################################## Final report ####################################################
 
@@ -636,9 +695,9 @@ if __name__ == '__main__':
     COG_parser.add_argument('-x',               required=False,                             help='file extension')
     COG_parser.add_argument('-m',               required=True,                              help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
     COG_parser.add_argument('-depth',           required=False, default=None,               help='gene depth file/folder')
-    COG_parser.add_argument('-pct_by_all',      required=False, action='store_true',        help='normalize by all query genes, including those without COG assignment')
+    COG_parser.add_argument('-pct_by_all',      required=False, action='store_true',        help='normalize by all query genes, including those without annotation')
     COG_parser.add_argument('-db_dir',          required=True,                              help='COG_db_dir')
-    COG_parser.add_argument('-diamond',         required=False, action='store_true',        help='run diamond (for big dataset), default is NCBI blastp')
+    COG_parser.add_argument('-diamond',         required=False, action='store_true',        help='run diamond (for big dataset), default: blastp from NCBI')
     COG_parser.add_argument('-t',               required=False, type=int, default=1,        help='number of threads')
     COG_parser.add_argument('-evalue',          required=False, default=0.001, type=float,  help='evalue cutoff, default: 0.001')
     args = vars(COG_parser.parse_args())

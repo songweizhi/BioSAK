@@ -1,1 +1,4 @@
-BioSAK exe_cmds -c cmds.txt -t 12
+
+### Example
+
+    BioSAK exe_cmds -c cmds.txt -t 12

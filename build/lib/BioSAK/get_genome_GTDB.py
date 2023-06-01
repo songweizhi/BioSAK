@@ -51,24 +51,26 @@ def get_genome_GTDB(args):
     missing_gnm_set = set()
     for each_gnm in open(gnm_id_txt):
 
-        # get gnm_id
-        if '\t' in each_gnm:
-            gnm_id = each_gnm.strip().split('\t')[0]
-        elif ' ' in each_gnm:
-            gnm_id = each_gnm.strip().split(' ')[0]
-        else:
-            gnm_id = each_gnm.strip()
+        if not each_gnm.startswith('Genome\tCompleteness\tContamination'):
 
-        if gnm_id in ref_gnm_to_path_dict:
-            pwd_gnm = ref_gnm_to_path_dict[gnm_id]
-            cmd_cp = 'cp %s %s/' % (pwd_gnm, op_gnm_folder)
-            cmd_gunzip = 'gunzip %s/%s_genomic.fna.gz' % (op_gnm_folder, gnm_id)
-            cmd_rename = 'mv %s/%s_genomic.fna %s/%s.fna' % (op_gnm_folder, gnm_id, op_gnm_folder, gnm_id)
-            os.system(cmd_cp)
-            os.system(cmd_gunzip)
-            os.system(cmd_rename)
-        else:
-            missing_gnm_set.add(gnm_id)
+            # get gnm_id
+            if '\t' in each_gnm:
+                gnm_id = each_gnm.strip().split('\t')[0]
+            elif ' ' in each_gnm:
+                gnm_id = each_gnm.strip().split(' ')[0]
+            else:
+                gnm_id = each_gnm.strip()
+
+            if gnm_id in ref_gnm_to_path_dict:
+                pwd_gnm = ref_gnm_to_path_dict[gnm_id]
+                cmd_cp = 'cp %s %s/' % (pwd_gnm, op_gnm_folder)
+                cmd_gunzip = 'gunzip %s/%s_genomic.fna.gz' % (op_gnm_folder, gnm_id)
+                cmd_rename = 'mv %s/%s_genomic.fna %s/%s.fna' % (op_gnm_folder, gnm_id, op_gnm_folder, gnm_id)
+                os.system(cmd_cp)
+                os.system(cmd_gunzip)
+                os.system(cmd_rename)
+            else:
+                missing_gnm_set.add(gnm_id)
 
     if len(missing_gnm_set) > 0:
         print('Genomes not found in GTDB: %s, see details in %s' % (len(missing_gnm_set), gnms_not_found_txt))

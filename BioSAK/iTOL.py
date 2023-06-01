@@ -1,4 +1,5 @@
 import math
+import os.path
 import random
 import argparse
 import seaborn as sns
@@ -8,13 +9,14 @@ iTOL_usage = '''
 ==================================== iTOL example commands ====================================
 
 # Example commands
-BioSAK iTOL -ColorStrip -lg MagTaxon.txt -lt Phylum -out ColorStrip_taxon.txt
-BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -out ColorRange_taxon.txt
-BioSAK iTOL -ColorRange -taxon Taxonomy.txt -rank f -lt Family -out ColorRange_taxon.txt
-BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -out SimpleBar_size.txt
-BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -out Heatmap_abundance.txt
-BioSAK iTOL -Binary -lm Binary_matrix.txt -lt Presence_Absence -out Presence_Absence_iTOL.txt
-BioSAK iTOL -ExternalShape -lm identity_matrix.txt -lt Identity -out ExternalShape_identity.txt -scale 25-50-75-100
+BioSAK iTOL -Labels -ll new_Mag_name.txt -o Mag_name_iTOL_Labels.txt
+BioSAK iTOL -Binary -lm Binary_matrix.txt -lt Enzyme -cc col_color_txt -o Presence_Absence_iTOL.txt
+BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -o Heatmap_abundance.txt
+BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -o SimpleBar_size.txt
+BioSAK iTOL -ColorStrip -lg MagTaxon.txt -lt Phylum -o ColorStrip_taxon.txt
+BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -o ColorRange_taxon.txt
+BioSAK iTOL -ColorRange -taxon Taxonomy.txt -rank f -lt Family -o ColorRange_taxon.txt
+BioSAK iTOL -ExternalShape -lm identity_matrix.txt -lt Identity -scale 25-50-75-100 -o ExternalShape_identity.txt
 
 # Leaf-to-Group file format (-lg, tab separated, no header)
 genome_1	Bacteria
@@ -27,6 +29,7 @@ genome_2	d__Bacteria;p__Proteobacteria;c__Gammaproteobacteria;o__Arenicellales;f
 # Group-to-Color and Column-to-Color file format (-gc and -cc, tab separated, no header)
 Bacteria	#CCCC00
 Archaea	#9999FF
+# Please note you can only specify one color for Binary data, provide with -gc lightblue or -gc "#85C1E9"
 
 # Leaf-to-Value file format (-lv, tab separated, no header)
 genome_1	6.15
@@ -109,6 +112,7 @@ def scale_str_to_size_list(scale_str):
 def iTOL(args):
 
     # read in arguments
+    Labels          = args['Labels']
     ColorStrip      = args['ColorStrip']
     ColorRange      = args['ColorRange']
     SimpleBar       = args['SimpleBar']
@@ -120,10 +124,12 @@ def iTOL(args):
     GroupColor      = args['gc']
     ColumnColor     = args['cc']
     LeafValue       = args['lv']
+    LeafLabel       = args['ll']
     LeafMatrix      = args['lm']
+    d2r             = args['dr']
     scale_str       = args['scale']
     LegendTitle     = args['lt']
-    FileOut         = args['out']
+    FileOut         = args['o']
 
     # General
     STRIP_WIDTH                 = 100
@@ -146,7 +152,7 @@ def iTOL(args):
 
     # check the number of specified file type
     True_num = 0
-    for file_type in [ColorStrip, ColorRange, SimpleBar, Heatmap, ExternalShape, Binary]:
+    for file_type in [Labels, ColorStrip, ColorRange, SimpleBar, Heatmap, ExternalShape, Binary]:
         if file_type is True:
             True_num += 1
 
@@ -302,6 +308,25 @@ def iTOL(args):
 
     # Prepare Binary file
     if Binary is True:
+
+        Column_to_Color_dict = {}
+        if ColumnColor is not None:
+            if os.path.isfile(ColumnColor) is True:
+                for each_col in open(ColumnColor):
+                    each_col_split = each_col.strip().split('\t')
+                    Column_to_Color_dict[each_col_split[0]] = each_col_split[1]
+
+        # get color
+        if GroupColor is not None:
+            if os.path.isfile(GroupColor) is True:
+                print('Only one color can be specified for Binary data, here are two examples:\n-gc lightblue\n-gc "#85C1E9"')
+                print('Program exited!')
+                exit()
+            else:
+                Binary_color = GroupColor
+        else:
+            Binary_color = 'lightblue'
+
         Binary_FileOut_handle = open(FileOut, 'w')
         line_index = 0
         for each_line in open(LeafMatrix):
@@ -314,10 +339,13 @@ def iTOL(args):
                 else:
                     col_name_list = each_line_split[1:]
 
-                Binary_FileOut_handle.write('DATASET_BINARY\n\nSEPARATOR TAB\nDATASET_LABEL\t%s\nCOLOR\t#85C1E9\n' % LegendTitle)
+                col_color_list = [Column_to_Color_dict.get(i, 'lightblue') for i in col_name_list]
+
+                Binary_FileOut_handle.write('DATASET_BINARY\n\nSEPARATOR TAB\nDATASET_LABEL\t%s\nCOLOR\t%s\n' % (LegendTitle, Binary_color))
                 Binary_FileOut_handle.write('SHOW_LABELS\t1\nLABEL_ROTATION\t45\nLABEL_SHIFT\t5\n')
                 Binary_FileOut_handle.write('FIELD_LABELS\t%s\n' % '\t'.join(col_name_list))
                 Binary_FileOut_handle.write('FIELD_SHAPES\t%s\n' % '\t'.join(['1'] * len(col_name_list)))
+                Binary_FileOut_handle.write('FIELD_COLORS\t%s\n' % '\t'.join(col_color_list))
                 Binary_FileOut_handle.write('\nDATA\n')
             else:
                 Binary_FileOut_handle.write(each_line)
@@ -378,8 +406,34 @@ def iTOL(args):
 
     ####################################################################################################################
 
+    if Labels is True:
+
+        if os.path.isfile(LeafLabel) is False:
+            print('leaf to label file not found, please provide with -ll, program exited!')
+            exit()
+
+        # write out header
+        Labels_FileOut_handle = open(FileOut, 'w')
+        Labels_FileOut_handle.write('LABELS\nSEPARATOR TAB\nDATA\n')
+        for each_ll in open(LeafLabel):
+            Labels_FileOut_handle.write(each_ll)
+        Labels_FileOut_handle.close()
+
+    ####################################################################################################################
+
     if Connection is True:
-        pass
+
+        if os.path.isfile(d2r) is False:
+            print('donor to recipient file not found, please provide with -dr, program exited!')
+            exit()
+
+        Connection_FileOut_handle = open(FileOut, 'w')
+        Connection_FileOut_handle.write('DATASET_CONNECTION\nSEPARATOR TAB\nDATASET_LABEL\tdemo_connections\n')
+        Connection_FileOut_handle.write('COLOR\t#ff0ff0\nDRAW_ARROWS\t1\nARROW_SIZE\t60\nLOOP_SIZE\t100\n')
+        Connection_FileOut_handle.write('MAXIMUM_LINE_WIDTH\t10\nCURVE_ANGLE\t45\nCENTER_CURVES\t1\nALIGN_TO_LABELS\t0\nDATA\n')
+        for each_connection in open(d2r):
+            Connection_FileOut_handle.write(each_connection)
+        Connection_FileOut_handle.close()
 
     ####################################################################################################################
 
@@ -479,6 +533,7 @@ if __name__ == '__main__':
 
     # initialize the options parser
     parser = argparse.ArgumentParser()
+    parser.add_argument('-Labels',          required=False, action='store_true',   help='Labels')
     parser.add_argument('-ColorStrip',      required=False, action='store_true',   help='ColorStrip')
     parser.add_argument('-ColorRange',      required=False, action='store_true',   help='ColorRange')
     parser.add_argument('-SimpleBar',       required=False, action='store_true',   help='SimpleBar')
@@ -486,15 +541,20 @@ if __name__ == '__main__':
     parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
     parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
     parser.add_argument('-Connection',      required=False, action='store_true',   help='Connection')
+    parser.add_argument('-ll',              required=False, default=None,          help='Leaf Label')
     parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
-    # parser.add_argument('-taxon',           required=False, default=None,          help='Leaf taxonomy, gtdb format')
-    # parser.add_argument('-rank',            required=False, default=None,          help='Taxonomy rank, select from p, c, o, f, g or s')
     parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
     parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
     parser.add_argument('-lv',              required=False, default=None,          help='Leaf Value')
     parser.add_argument('-lm',              required=False, default=None,          help='Leaf Matrix')
+    parser.add_argument('-dr',              required=False, default=None,          help='Donor to Recipient')
     parser.add_argument('-scale',           required=False, default=None,          help='Scale Values, in format 0-3-6-9')
     parser.add_argument('-lt',              required=False, default=None,          help='Legend Title')
-    parser.add_argument('-out',             required=True,                         help='Output filename')
+    parser.add_argument('-o',               required=True,                         help='Output filename')
     args = vars(parser.parse_args())
     iTOL(args)
+
+
+# parser.add_argument('-taxon',           required=False, default=None,          help='Leaf taxonomy, gtdb format')
+# parser.add_argument('-rank',            required=False, default=None,          help='Taxonomy rank, select from p, c, o, f, g or s')
+# LABELS Labels

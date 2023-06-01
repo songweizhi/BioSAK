@@ -38,6 +38,7 @@ def print_main_help():
        get_genome_NCBI         ->  Batch download GenBank genomes
        sampling_GTDB_gnms      ->  Select GTDB genomes from a specified taxon at specified sampling rank
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
+       MetaBiosample           ->  Extract metadata of NCBI biosamples
 
     Metagenomics
        Plot_MAG                ->  plot MAGs, (GC vs depth)
@@ -101,6 +102,7 @@ def print_main_help():
        SubsampleLongReads      ->  Subsample Long Reads
        rename_reads_Reago      ->  Rename paired reads for Reago
        cross_link_seqs         ->  Cross link matched regions between two sequences (not working well!)
+       PhyloBiAssoc            ->  PhyloBiAssoc
        
     Phylogenetic tree-related modules have been moved to TreeSAK, please go to its github page for details.
     ''' % version(config_dict)
@@ -197,6 +199,7 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'iTOL':
         from BioSAK import iTOL
         iTOL_parser = subparsers.add_parser('iTOL', description='Plot tree with iTOL', usage=iTOL.iTOL_usage)
+        iTOL_parser.add_argument('-Labels',          required=False, action='store_true',   help='Labels')
         iTOL_parser.add_argument('-ColorStrip',      required=False, action='store_true',   help='ColorStrip')
         iTOL_parser.add_argument('-ColorRange',      required=False, action='store_true',   help='ColorRange')
         iTOL_parser.add_argument('-SimpleBar',       required=False, action='store_true',   help='SimpleBar')
@@ -204,14 +207,16 @@ if __name__ == '__main__':
         iTOL_parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
         iTOL_parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
         iTOL_parser.add_argument('-Connection',      required=False, action='store_true',   help='Connection')
-        iTOL_parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
+        iTOL_parser.add_argument('-ll',              required=False, default=None,          help='Leaf Label')
         iTOL_parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
         iTOL_parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
-        iTOL_parser.add_argument('-lv',              required=False, default=None,          help='Leaf Value')
-        iTOL_parser.add_argument('-lm',              required=False, default=None,          help='Leaf Matrix')
+        iTOL_parser.add_argument('-lg',              required=False, default=None,          help='Leaf to Group')
+        iTOL_parser.add_argument('-lv',              required=False, default=None,          help='Leaf to Value')
+        iTOL_parser.add_argument('-lm',              required=False, default=None,          help='Leaf to data Matrix')
+        iTOL_parser.add_argument('-dr',              required=False, default=None,          help='Donor to Recipient')
         iTOL_parser.add_argument('-scale',           required=False, default=None,          help='Scale Values, in format 0-3-6-9')
         iTOL_parser.add_argument('-lt',              required=False, default=None,          help='Legend Title')
-        iTOL_parser.add_argument('-out',             required=True,                         help='Output filename')
+        iTOL_parser.add_argument('-o',               required=True,                         help='Output filename')
         args = vars(parser.parse_args())
         iTOL.iTOL(args)
 
@@ -248,15 +253,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'get_genome_NCBI':
         from BioSAK import get_genome_NCBI
         get_genome_NCBI_parser = subparsers.add_parser('get_genome_NCBI', description='Batch download NCBI genomes', usage=get_genome_NCBI.get_genome_NCBI_parser_usage)
-        get_genome_NCBI_parser.add_argument('-db',          required=True,                       help='local path to prokaryotes.txt')
-        get_genome_NCBI_parser.add_argument('-out',         required=True,                       help='output folder')
-        get_genome_NCBI_parser.add_argument('-id',          required=False, default=None,        help='IDs of genomes to download')
-        get_genome_NCBI_parser.add_argument('-fna',         required=False, action="store_true", help='download fna file')
-        get_genome_NCBI_parser.add_argument('-faa',         required=False, action="store_true", help='download faa file')
-        get_genome_NCBI_parser.add_argument('-gbff',        required=False, action="store_true", help='download gbff file')
-        get_genome_NCBI_parser.add_argument('-name',        required=False, action="store_true", help='include genome name in the downloaded files')
-        get_genome_NCBI_parser.add_argument('-force',       required=False, action="store_true", help='force overwrite existing genome directory')
+        get_genome_NCBI_parser.add_argument('-i',           required=True,                       help='IDs of genomes to download')
+        get_genome_NCBI_parser.add_argument('-o',           required=False, default=None,        help='output folder')
         get_genome_NCBI_parser.add_argument('-t',           required=False, default=1, type=int, help='number of threads')
+        get_genome_NCBI_parser.add_argument('-force',       required=False, action="store_true", help='force overwrite existing genome directory')
         args = vars(parser.parse_args())
         get_genome_NCBI.download_GenBank_genome(args)
 
@@ -760,6 +760,26 @@ if __name__ == '__main__':
         fa2phy_parser.add_argument('-o', required=True, help='output MSA in phylip format')
         args = vars(parser.parse_args())
         fa2phy.fa2phy(args)
+
+    elif sys.argv[1] == 'MetaBiosample':
+        from BioSAK import MetaBiosample
+        MetaBiosample_parser = subparsers.add_parser('MetaBiosample', usage=MetaBiosample.MetaBiosample_usage)
+        MetaBiosample_parser.add_argument('-i',     required=True,                          help='biosample id file, one id per line')
+        MetaBiosample_parser.add_argument('-a',     required=True,                          help='attributes to extract')
+        MetaBiosample_parser.add_argument('-o',     required=True,                          help='output folder')
+        MetaBiosample_parser.add_argument('-t',     required=False, type=int, default=1,    help='number of threads, default: 1')
+        MetaBiosample_parser.add_argument('-f',     required=False, action="store_true",    help='Force overwrite existing results')
+        MetaBiosample_parser.add_argument('-exe',   required=False, action="store_true",    help='execute cmds')
+        args = vars(parser.parse_args())
+        MetaBiosample.MetaBiosample(args)
+
+    elif sys.argv[1] == 'PhyloBiAssoc':
+        from BioSAK import PhyloBiAssoc
+        PhyloBiAssoc_parser = subparsers.add_parser('PhyloBiAssoc', usage=PhyloBiAssoc.PhyloBiAssoc_usage)
+        PhyloBiAssoc_parser.add_argument('-tree', required=True, help='tree file')
+        PhyloBiAssoc_parser.add_argument('-data', required=True, help='data file')
+        args = vars(parser.parse_args())
+        PhyloBiAssoc.PhyloBiAssoc(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

@@ -6,8 +6,8 @@ from Bio import AlignIO
 SliceMSA_usage = '''
 ========================= SliceMSA example commands =========================
 
-TreeSAK SliceMSA -i 16S_aln.fasta -s 200-300 -o 16S_aln_200-300.fasta
-TreeSAK SliceMSA -i 16S_aln.phylip -fi phylip-relaxed -s sections.txt -o SliceMSA_op -fo phylip-relaxed
+BioSAK SliceMSA -i 16S_aln.fasta -s 200-300 -o 16S_aln_200-300.fasta
+BioSAK SliceMSA -i 16S_aln.phylip -fi phylip-relaxed -s sections.txt -o SliceMSA_op -fo phylip-relaxed
 
 # example
 200-300     select columns 200-300

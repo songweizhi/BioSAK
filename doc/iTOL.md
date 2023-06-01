@@ -1,8 +1,71 @@
 
-## Tree visualization with [iTOL](https://itol.embl.de)
+### Dataset types
 
-1. Here, I have a phylogenetic tree for 37 MAGs derived from six microbial communities (either surface-associated or planktonic) sampled in the North Sea.
-I have the taxonomy info of these MAGs at the class level, their sizes and their abundances across the six samples.
++ ColorStrip https://itol.embl.de/help.cgi#strip
+
+      BioSAK iTOL -ColorStrip -lg MagTaxon.txt -lt Phylum -o ColorStrip_taxon.txt
+
++ ColorRange https://itol.embl.de/help.cgi#dsRanges
+
+      BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -o ColorRange_taxon.txt
+      BioSAK iTOL -ColorRange -taxon Taxonomy.txt -rank f -lt Family -o ColorRange_taxon.txt
+
++ SimpleBar https://itol.embl.de/help.cgi#bar
+
+      BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -o SimpleBar_size.txt
+
++ Heatmap https://itol.embl.de/help.cgi#heatmap
+
+      BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -o Heatmap_abundance.txt
+
++ Binary https://itol.embl.de/help.cgi#binary
+
+      BioSAK iTOL -Binary -lm Binary_matrix.txt -lt Presence_Absence -gc lightblue -o PA_iTOL.txt
+      BioSAK iTOL -Binary -lm Binary_matrix.txt -lt Presence_Absence -gc "#85C1E9" -o PA_iTOL.txt
+
++ ExternalShape https://itol.embl.de/help.cgi#shapes
+
+      BioSAK iTOL -ExternalShape -lm identity_matrix.txt -lt Identity -scale 25-50-75-100 -o ExternalShape_identity.txt
+
+
+### Input file format
+
++ Leaf-to-Group (`-lg`, tab separated, no header)
+
+      genome_1  Bacteria
+      genome_2  Archaea
+
++ Taxonomy (`-taxon`, tab separated, GTDB-format taxononomy string)
+
+      genome_1	d__Bacteria;p__Proteobacteria;c__Alphaproteobacteria;o__Dongiales;f__Dongiaceae;g__Dongia;s__Dongia mobilis
+      genome_2	d__Bacteria;p__Proteobacteria;c__Gammaproteobacteria;o__Arenicellales;f__LS-SOB;g__VYGS01;s__
+
++ Group-to-Color (`-gc`) and Column-to-Color (`-cc`) (tab separated, no header)
+
+      Bacteria    #CCCC00
+      Archaea #9999FF
+      Virus   orange
+      Eukaryote   lightblue
+
+  -Please note that only one color can be specified for Binary data, provide with `-gc lightblue` or `-gc "#85C1E9"`
+
+
++ Leaf-to-Value file format (`-lv`, tab separated, no header)
+
+      genome_1	6.15
+      genome_2	6.63
+
++ Leaf-to-Matrix file format (`-lm`, tab separated, header required!!!)
+
+      Genome_id Sample_A   Sample_B   Sample_C
+      genome_1	6.15    2.23    1.56
+      genome_2	6.63    1.72    2.55
+
+
+## Here is a tutorial
+
+1. Here, I have a phylogenetic tree for 37 MAGs derived from six microbial communities (either surface-associated or planktonic).
+I have the taxonomy info of these MAGs at the class level, their sizes and their relative abundance across the six samples.
 This short note shows how to visualize all these info in one plot.
 
 1. Download files from [demo_data/iTOL](../demo_data/iTOL)
@@ -38,7 +101,7 @@ Remember to turn on **Colored ranges legend**, if you are using **NorthSea_1_Tax
 ![Step_2](figures/Step_2.jpg)
 
 
-# How to prepare iTOL-recognizable files
+## How to prepare iTOL-recognizable files
 
 1. Some tools suggested by iTOL: https://itol.embl.de/help.cgi#external
 
@@ -60,7 +123,7 @@ Remember to turn on **Colored ranges legend**, if you are using **NorthSea_1_Tax
       BioSAK iTOL -h
 
 
-# Help information
+## Help information
 
 1. More examples: [https://itol.embl.de/help.cgi](https://itol.embl.de/help.cgi)
 1. The Newick tree format: [http://evolution.genetics.washington.edu/phylip/newicktree.html](http://evolution.genetics.washington.edu/phylip/newicktree.html)

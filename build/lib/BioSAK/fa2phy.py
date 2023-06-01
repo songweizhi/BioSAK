@@ -5,7 +5,7 @@ from Bio import AlignIO
 fa2phy_usage = '''
 ======= fa2phy example commands =======
 
-TreeSAK fa2phy -i msa.fa -o msa.phy
+BioSAK fa2phy -i msa.fa -o msa.phy
 
 =======================================
 '''

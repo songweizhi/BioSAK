@@ -9,8 +9,8 @@ ConvertMSA_usage = '''
 ================================= ConvertMSA example commands =================================
 
 # phylip to fasta
-TreeSAK ConvertMSA -i concatenated.phy -fi phylip-relaxed -o concatenated.fasta -fo fasta
-TreeSAK ConvertMSA -i phy_files -fi phylip-relaxed -xi phy -o MSA_in_fasta -fo fasta -xo fa 
+BioSAK ConvertMSA -i concatenated.phy -fi phylip-relaxed -o concatenated.fasta -fo fasta
+BioSAK ConvertMSA -i phy_files -fi phylip-relaxed -xi phy -o MSA_in_fasta -fo fasta -xo fa 
 
 # examples of alignment format (https://biopython.org/wiki/AlignIO): 
 fasta, phylip, phylip-relaxed, phylip-sequential, clustal

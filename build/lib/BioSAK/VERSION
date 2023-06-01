@@ -1,4 +1,10 @@
-1.64.6
+1.66.0
+- new module added: PhyloBiAssoc
+
+1.65.0
+- new module added: MetaBiosample
+
+1.64.17
 - fixed bugs
 
 1.64.0
