@@ -117,6 +117,8 @@ BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
 BioSAK/mean_MAG_cov.py
 BioSAK/merge_seq.py
+BioSAK/metabat2concoct.py
+BioSAK/metabat2maxbin.py
 BioSAK/msa_to_distance_matrix.py
 BioSAK/ncbi_dataset.py
 BioSAK/parse_MetaCyc_RxnDB.py
@@ -264,6 +266,7 @@ My_Python_scripts/22_blast_xml_parser.py
 My_Python_scripts/README.md
 My_Python_scripts/pandas_drop_small_value_cols_and_rows.py
 My_Python_scripts/rm_short_reads.py
+My_Python_scripts/tmp_1.py
 My_Python_scripts/NetEnzymes/.DS_Store
 My_Python_scripts/NetEnzymes/KO2EC.py
 My_Python_scripts/NetEnzymes/Prepare_MetaCyc_DB.py
@@ -507,6 +510,8 @@ My_R_scripts/deepSNV/deepSNV_flow_cell_biofilm.R
 My_R_scripts/deepSNV/get_SNVs.R
 bin/BioSAK
 bin/__init__.py
+demo_data/PhyloBiAssoc/demo.tre
+demo_data/PhyloBiAssoc/demo.txt
 demo_data/iTOL/LifeStyle_color.txt
 demo_data/iTOL/MAG_abundance.txt
 demo_data/iTOL/MAG_abundance_iTOL.txt

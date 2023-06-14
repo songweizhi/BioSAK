@@ -50,7 +50,9 @@ def print_main_help():
        get_gene_depth          ->  Get gene depth by contig depth
        MeanMappingDepth        ->  Get mean mapping depth 
        CheckM                  ->  Parse CheckM outputs
-
+       metabat2concoct         ->  convert metabat depth to concoct depth
+       metabat2maxbin          ->  convert metabat depth to maxbin depth
+       
     Functional annotation
        KEGG                    ->  KEGG annotation
        COG2020                 ->  COG annotation (v2020, by blastp/diamond)
@@ -458,6 +460,7 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'reads2bam':
         from BioSAK import reads2bam
         reads2bam_parser = subparsers.add_parser('reads2bam', usage=reads2bam.reads2bam_usage)
+        reads2bam_parser.add_argument('-p',         required=True,                          help='output prefix')
         reads2bam_parser.add_argument('-ref',       required=True,                          help='reference sequences')
         reads2bam_parser.add_argument('-index',     required=False, action="store_true",    help='index reference sequences')
         reads2bam_parser.add_argument('-r1',        required=False, default=None,           help='paired reads r1')
@@ -780,6 +783,22 @@ if __name__ == '__main__':
         PhyloBiAssoc_parser.add_argument('-data', required=True, help='data file')
         args = vars(parser.parse_args())
         PhyloBiAssoc.PhyloBiAssoc(args)
+
+    elif sys.argv[1] == 'metabat2concoct':
+        from BioSAK import metabat2concoct
+        metabat2concoct_parser = subparsers.add_parser('metabat2concoct', usage=metabat2concoct.metabat2concoct_usage)
+        metabat2concoct_parser.add_argument('-i', required=True, help='metabat depth')
+        metabat2concoct_parser.add_argument('-o', required=True, help='concoct depth')
+        args = vars(parser.parse_args())
+        metabat2concoct.metabat2concoct(args)
+
+    elif sys.argv[1] == 'metabat2maxbin':
+        from BioSAK import metabat2maxbin
+        metabat2maxbin_parser = subparsers.add_parser('metabat2maxbin', usage=metabat2maxbin.metabat2maxbin_usage)
+        metabat2maxbin_parser.add_argument('-p', required=True, help='output prefix for maxbin depth file')
+        metabat2maxbin_parser.add_argument('-i', required=True, help='metabat depth')
+        args = vars(parser.parse_args())
+        metabat2maxbin.metabat2maxbin(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

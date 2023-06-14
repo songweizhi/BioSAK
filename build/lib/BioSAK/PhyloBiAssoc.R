@@ -47,6 +47,6 @@ for (i in colnames(geodata[, 3:ncol(geodata)])){
   }
   
   # print to screen
-  cat(i, "phylosig", phylosig_test_pvalue, association_test, association_p_value,fill=TRUE, sep = "\t")
+  cat(i, "phylosig", phylosig_test_pvalue, association_test, association_p_value, '\n', fill=FALSE, sep = "\t")
   
 }

@@ -1,4 +1,13 @@
-1.66.0
+1.69.0
+- new module added: gbk2ffn
+
+1.68.0
+- new module added: metabat2maxbin
+
+1.67.0
+- new module added: metabat2concoct
+
+1.66.1
 - new module added: PhyloBiAssoc
 
 1.65.0
