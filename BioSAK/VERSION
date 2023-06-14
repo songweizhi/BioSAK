@@ -1,3 +1,6 @@
+1.69.1
+- fixed bugs
+
 1.69.0
 - new module added: gbk2ffn
 
@@ -12,9 +15,6 @@
 
 1.65.0
 - new module added: MetaBiosample
-
-1.64.17
-- fixed bugs
 
 1.64.0
 - new module added: ConvertMSA, SliceMSA, OneLineAln, fa2phy

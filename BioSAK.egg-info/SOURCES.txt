@@ -264,6 +264,7 @@ My_Python_scripts/20_check_executables.py
 My_Python_scripts/21_os_environ.py
 My_Python_scripts/22_blast_xml_parser.py
 My_Python_scripts/README.md
+My_Python_scripts/demo_mp.py
 My_Python_scripts/pandas_drop_small_value_cols_and_rows.py
 My_Python_scripts/rm_short_reads.py
 My_Python_scripts/tmp_1.py

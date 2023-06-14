@@ -295,13 +295,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         gbk2fna.gbk2fna(args)
 
-    elif sys.argv[1] == 'gbk2ffn':
-        from BioSAK import format_converter
-        gbk2ffn_parser = subparsers.add_parser('gbk2ffn', description='gbk to ffn', usage=format_converter.sequence_manipulator_usage)
-        gbk2ffn_parser.add_argument('-gbk', required=True, help='input gbk file')
-        args = vars(parser.parse_args())
-        format_converter.gbk2ffn(args)
-
     elif sys.argv[1] == 'gbk2faa':
         from BioSAK import gbk2faa
         gbk2faa_parser = subparsers.add_parser('gbk2faa', description='gbk to faa', usage=gbk2faa.gbk2faa_usage)

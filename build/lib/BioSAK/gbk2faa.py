@@ -73,7 +73,6 @@ def gbk2faa(args):
         for each_gbk in gbk_file_list:
             gbk_path, gbk_base, gbk_ext = sep_path_basename_ext(each_gbk)
             pwd_faa_out = '%s/%s.%s' % (faa_out, gbk_base, out_ext)
-            #gbk2faa_single([each_gbk, pwd_faa_out])
             mp_arg_lol.append([each_gbk, pwd_faa_out])
 
         pool = mp.Pool(processes=num_threads)

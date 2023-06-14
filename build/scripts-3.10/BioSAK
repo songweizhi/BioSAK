@@ -41,6 +41,8 @@ def print_main_help():
        MetaBiosample           ->  Extract metadata of NCBI biosamples
 
     Metagenomics
+       metabat2concoct         ->  convert metabat depth to concoct depth
+       metabat2maxbin          ->  convert metabat depth to maxbin depth
        Plot_MAG                ->  plot MAGs, (GC vs depth)
        magabund                ->  Calculate MAG abundance
        mean_MAG_cov            ->  Get mean MAG depth (based on MetaBAT produced depth)
@@ -50,9 +52,7 @@ def print_main_help():
        get_gene_depth          ->  Get gene depth by contig depth
        MeanMappingDepth        ->  Get mean mapping depth 
        CheckM                  ->  Parse CheckM outputs
-       metabat2concoct         ->  convert metabat depth to concoct depth
-       metabat2maxbin          ->  convert metabat depth to maxbin depth
-       
+
     Functional annotation
        KEGG                    ->  KEGG annotation
        COG2020                 ->  COG annotation (v2020, by blastp/diamond)
@@ -295,13 +295,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         gbk2fna.gbk2fna(args)
 
-    elif sys.argv[1] == 'gbk2ffn':
-        from BioSAK import format_converter
-        gbk2ffn_parser = subparsers.add_parser('gbk2ffn', description='gbk to ffn', usage=format_converter.sequence_manipulator_usage)
-        gbk2ffn_parser.add_argument('-gbk', required=True, help='input gbk file')
-        args = vars(parser.parse_args())
-        format_converter.gbk2ffn(args)
-
     elif sys.argv[1] == 'gbk2faa':
         from BioSAK import gbk2faa
         gbk2faa_parser = subparsers.add_parser('gbk2faa', description='gbk to faa', usage=gbk2faa.gbk2faa_usage)
@@ -312,6 +305,17 @@ if __name__ == '__main__':
         gbk2faa_parser.add_argument('-t',   required=False, type=int, default=1,    help='number of threads')
         args = vars(parser.parse_args())
         gbk2faa.gbk2faa(args)
+
+    elif sys.argv[1] == 'gbk2ffn':
+        from BioSAK import gbk2ffn
+        gbk2faa_parser = subparsers.add_parser('gbk2ffn', description='gbk to ffn', usage=gbk2ffn.gbk2ffn_usage)
+        gbk2faa_parser.add_argument('-i',  required=True,                       help='input gbk')
+        gbk2faa_parser.add_argument('-ix', required=False, default='gbk',       help='input file extension, default: gbk')
+        gbk2faa_parser.add_argument('-o',  required=True,                       help='output ffn')
+        gbk2faa_parser.add_argument('-ox', required=False, default='ffn',       help='output file extension, default: ffn')
+        gbk2faa_parser.add_argument('-t',  required=False, type=int, default=1, help='number of threads')
+        args = vars(parser.parse_args())
+        gbk2ffn.gbk2ffn(args)
 
     elif sys.argv[1] == 'ffn2faa':
         from BioSAK import format_converter
