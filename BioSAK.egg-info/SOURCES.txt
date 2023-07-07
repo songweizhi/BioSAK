@@ -40,8 +40,6 @@ BioSAK/OneLineAln.py
 BioSAK/PhyloBiAssoc.R
 BioSAK/PhyloBiAssoc.py
 BioSAK/Prodigal.py
-BioSAK/Prokka.py
-BioSAK/Prokka_b.py
 BioSAK/Reads_simulator.py
 BioSAK/RunGraphMB.py
 BioSAK/SILVA_for_BLCA.py
@@ -125,6 +123,7 @@ BioSAK/parse_MetaCyc_RxnDB.py
 BioSAK/plot_mag.py
 BioSAK/plot_sam_depth.py
 BioSAK/plot_tree.R
+BioSAK/prokka.py
 BioSAK/reads2bam.py
 BioSAK/rename_leaves.py
 BioSAK/rename_reads_for_Reago.py

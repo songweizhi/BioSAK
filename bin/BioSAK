@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2017, Shan Zhang and Weizhi Song.
-# zzfanyi@gmail.com and songwz03@gmail.com
+# Copyright (C) 2017, Shan Zhang, Weizhi Song and Torsten Thomas
+# Shan Zhang <zzfanyi@gmail.com>
+# Weizhi Song <songwz03@gmail.com>
+# Torsten Thomas <t.thomas@unsw.edu.au>
 
 # BioSAK is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -41,8 +43,8 @@ def print_main_help():
        MetaBiosample           ->  Extract metadata of NCBI biosamples
 
     Metagenomics
-       metabat2concoct         ->  convert metabat depth to concoct depth
-       metabat2maxbin          ->  convert metabat depth to maxbin depth
+       metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
+       metabat2maxbin          ->  convert MetaBAT depth to MaxBin depth
        Plot_MAG                ->  plot MAGs, (GC vs depth)
        magabund                ->  Calculate MAG abundance
        mean_MAG_cov            ->  Get mean MAG depth (based on MetaBAT produced depth)
@@ -64,7 +66,7 @@ def print_main_help():
        SILVA_for_BLCA          ->  Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->  Prepare BLCA-compatible GTDB SSU database
        BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
-       Tax4Fun2IndOTU          ->  Get functional profile of individual OTUs (to be added)
+       Tax4Fun2IndOTU          ->  Get functional profile for individual OTUs (to be added)
     
     Sequence manipulator
        gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
@@ -85,28 +87,29 @@ def print_main_help():
        SliceMSA               ->  Slice MSA by column 
        
     Sam and Bam
-       plot_sam_depth          ->  Plot SAM depth
        reads2bam               ->  Mapping and sorting
        sam2bam                 ->  Sam to BAM with samtools
        split_sam               ->  Split SAM/BAM file by reference
        bam2reads               ->  Extract reads (id) from sam file
-    
+       plot_sam_depth          ->  Plot SAM depth
+
     Others
        iTOL                    ->  Prepare iTOL-compatible files for tree visualization
        js_cmds                 ->  Commands to job scripts
        exe_cmds                ->  Execute commands with multiprocessing (one cmd per line)
+       split_folder            ->  Split folder
        BestHit                 ->  Keep best blast hits (outfmt 6)
        VisGeneFlk              ->  Visualize gene flanking regions
-       split_folder            ->  Split folder
        usearch_uc              ->  Parse Usearch uc file
        get_Pfam_hmms           ->  Get Pfam profiles by id
        Reads_simulator         ->  Simulate NGS reads
        SubsampleLongReads      ->  Subsample Long Reads
        rename_reads_Reago      ->  Rename paired reads for Reago
-       cross_link_seqs         ->  Cross link matched regions between two sequences (not working well!)
-       PhyloBiAssoc            ->  PhyloBiAssoc
+       cross_link_seqs         ->  Cross link matched regions between two sequences
+       PhyloBiAssoc            ->  PhyloBiAssoc (binaryPGLMM test)
        
-    Phylogenetic tree-related modules have been moved to TreeSAK, please go to its github page for details.
+    1. Phylogenetic tree-related modules have been moved to TreeSAK
+    2. Use "pip3 install --upgrade BioSAK" to get the latest version of BioSAK.
     ''' % version(config_dict)
 
     print(help_message)
@@ -783,8 +786,8 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'PhyloBiAssoc':
         from BioSAK import PhyloBiAssoc
         PhyloBiAssoc_parser = subparsers.add_parser('PhyloBiAssoc', usage=PhyloBiAssoc.PhyloBiAssoc_usage)
-        PhyloBiAssoc_parser.add_argument('-tree', required=True, help='tree file')
-        PhyloBiAssoc_parser.add_argument('-data', required=True, help='data file')
+        PhyloBiAssoc_parser.add_argument('-t', required=True, help='tree file')
+        PhyloBiAssoc_parser.add_argument('-d', required=True, help='data file')
         args = vars(parser.parse_args())
         PhyloBiAssoc.PhyloBiAssoc(args)
 
@@ -804,6 +807,18 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         metabat2maxbin.metabat2maxbin(args)
 
+    elif sys.argv[1] == 'prokka':
+        from BioSAK import prokka
+        prokka_parser = subparsers.add_parser('prokka', usage=prokka.prokka_usage)
+        prokka_parser.add_argument('-i',          required=True,                          help='genome folder')
+        prokka_parser.add_argument('-x',          required=True, default='fna',           help='file extension, deafult: fna')
+        prokka_parser.add_argument('-d',          required=True,                          help='genome domain, Bacteria or Archaea')
+        prokka_parser.add_argument('-m',          required=False, action="store_true",    help='annotate MAG')
+        prokka_parser.add_argument('-e',          required=False, action="store_true",    help='execute commands')
+        prokka_parser.add_argument('-t',          required=False, type=int, default=1,    help='number of threads')
+        args = vars(parser.parse_args())
+        prokka.prokka(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
@@ -818,6 +833,6 @@ twine upload dist/*
 
 songweizhi    shan88
 
-pip3 install --upgrade BioSAK
+pip3 install --upgrade BioSAK        
 
 '''
