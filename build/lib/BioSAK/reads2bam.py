@@ -1,5 +1,6 @@
 import os
 import argparse
+from distutils.spawn import find_executable
 
 
 reads2bam_usage = '''
@@ -16,6 +17,26 @@ BioSAK reads2bam -p sample4 -ref ref.fa -up unpaired_R1.fa,unpaired_R2.fa -index
 '''
 
 
+def check_dependencies(program_list):
+    not_detected_programs = []
+    for needed_program in program_list:
+        if find_executable(needed_program) is None:
+            not_detected_programs.append(needed_program)
+    if not_detected_programs != []:
+        print('%s not found, program exited!' % ','.join(not_detected_programs))
+        exit()
+
+
+def check_input_files (file_list):
+    not_detected_files = []
+    for each_input_file in file_list:
+        if os.path.isfile(each_input_file) is False:
+            not_detected_files.append(each_input_file)
+    if not_detected_files != []:
+        print('%s not found, program exited!' % ','.join(not_detected_files))
+        exit()
+
+
 def reads2bam(args):
 
     op_prefix       = args['p']
@@ -30,8 +51,10 @@ def reads2bam(args):
     thread_num      = args['t']
     keep_tmp        = args['tmp']
 
-    cmd_bowtie2_build = 'bowtie2-build -f %s %s --threads %s' % (ref_seq, op_prefix, thread_num)
+    check_dependencies(['bowtie2-build', 'bowtie2', 'samtools'])
+    check_input_files([ref_seq, r1_seq, r2_seq])
 
+    cmd_bowtie2_build = 'bowtie2-build -f %s %s --threads %s' % (ref_seq, op_prefix, thread_num)
     bowtie2_parameter = ''
     if fq_format is True:
         bowtie2_parameter += ' -q'

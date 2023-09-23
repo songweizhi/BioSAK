@@ -9,18 +9,13 @@ BioSAK PhyloBiAssoc -t demo.tre -d demo.txt
 
 # Note: the header for the first two columns has to be "ID" and "cate".
 
-# Output example
-# gene_1  phylosig  7.973475e-26  binaryPGLMM  0.03255813
-# gene_2  phylosig  1             chisq.test   0.7183411
-# gene_3  phylosig  2.66378e-08   binaryPGLMM  0.5969282
-# gene_4  phylosig  7.169588e-08  binaryPGLMM  0.999338
+# It will perform:
+# 1) binaryPGLMM test if phylosig p-value <= 0.05 (significant phylogenetic signal)
+# 2) chi-squared test if phylosig p-value > 0.05  (no phylogenetic signal)
+# 3) do nothing if phylosig returns NaN (might due to the same value across all genomes)
 
 # https://www.rdocumentation.org/packages/ape/versions/5.7-1/topics/binaryPGLMM
 
-# perform binaryPGLMM test if phylosig P-value <= 0.05 (indicating significant phylogenetic signal)
-# perform chi-squared test if phylosig P-value > 0.05  (indicating no phylogenetic signal)
-# do nothing if phylosig returns NaN
-  
 =====================================================
 '''
 

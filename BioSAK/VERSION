@@ -1,5 +1,17 @@
-1.69.7
+1.73.1
 - fixed bugs
+
+1.73.0
+- new module added: parse_mmseqs_tsv
+
+1.72.0
+- new module added: KeepRemovingTmp
+
+1.71.0
+- new module added: submitHPC
+
+1.70.1
+- new module added: prefix_file
 
 1.69.0
 - new module added: gbk2ffn

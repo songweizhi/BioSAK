@@ -27,6 +27,7 @@ row.names(geodata) <- geodata[,1]
 row.names(geodata) <- geodata$ID
 geodata <- geodata[geotree$tip.label,]
 
+cat('ID', "phylosig", "binaryPGLMM", "chisq.test", "coefficient", "significant", '\n', fill=FALSE, sep = "\t")
 for (i in colnames(geodata[, 3:ncol(geodata)])){
 
   # perform phylosig test
@@ -40,21 +41,41 @@ for (i in colnames(geodata[, 3:ncol(geodata)])){
   association_test = ''
   association_p_value = NA
   do_nothing = FALSE
-
+  association_coefficient = 'na'
+  significant = 'n'
   if (phylosig_test_pvalue == 'NaN') {
     do_nothing = TRUE
+    significant = 'na'
   } else if (phylosig_test_pvalue <= 0.05) {
     binaryPGLMM_result <- binaryPGLMM(setNames(geodata[, i], geodata$ID) ~ geodata$cate, phy = geotree)
     association_test = 'binaryPGLMM'
+    association_coefficient = binaryPGLMM_result$B[1]
     association_p_value = binaryPGLMM_result$B.pvalue[2]
+    if (association_p_value <= 0.05) {
+      significant = 'y'
+    }
+
   } else {
     chisq_test <- chisq.test(table(geodata$cate, setNames(geodata[, i], geodata$ID)))
     association_test = 'chisq.test'
     association_p_value = chisq_test$p.value
+
+    #cor_test <- cor.test(geodata$cate, geodata[, i])
+    #association_coefficient = cor_test$estimate
+
+    if (association_p_value <= 0.05) {
+      significant = 'y'
+    }
   }
 
   # print to screen
   if (do_nothing == FALSE) {
-  cat(i, "phylosig", phylosig_test_pvalue, association_test, association_p_value, '\n', fill=FALSE, sep = "\t")
+
+  if (association_test == 'binaryPGLMM'){
+    cat(i, phylosig_test_pvalue, association_p_value, 'na', association_coefficient, significant, '\n', fill=FALSE, sep = "\t")
+  }
+  if (association_test == 'chisq.test'){
+    cat(i, phylosig_test_pvalue, 'na', association_p_value, association_coefficient, significant, '\n', fill=FALSE, sep = "\t")
+  }
   }
 }

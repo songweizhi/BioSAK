@@ -38,23 +38,24 @@ def print_main_help():
        get_GTDB_taxon_gnm      ->  Get id of genomes from specified GTDB taxons
        get_genome_GTDB         ->  Batch download GTDB genomes
        get_genome_NCBI         ->  Batch download GenBank genomes
-       sampling_GTDB_gnms      ->  Select GTDB genomes from a specified taxon at specified sampling rank
+       sampling_GTDB_gnms      ->  Select GTDB genomes
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
        MetaBiosample           ->  Extract metadata of NCBI biosamples
 
     Metagenomics
        metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
        metabat2maxbin          ->  convert MetaBAT depth to MaxBin depth
+       CheckM                  ->  Parse CheckM outputs
        Plot_MAG                ->  plot MAGs, (GC vs depth)
        magabund                ->  Calculate MAG abundance
-       mean_MAG_cov            ->  Get mean MAG depth (based on MetaBAT produced depth)
+       mean_MAG_cov            ->  Get mean MAG depth (by MetaBAT depth)
        RunGraphMB              ->  Prepare input files for GraphMB
-       get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
        get_gnm_size            ->  Get the total length of genome(s)
        get_gene_depth          ->  Get gene depth by contig depth
        MeanMappingDepth        ->  Get mean mapping depth 
-       CheckM                  ->  Parse CheckM outputs
-
+       get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
+       parse_mmseqs_tsv        ->  Parse mmseqs tsv
+       
     Functional annotation
        KEGG                    ->  KEGG annotation
        COG2020                 ->  COG annotation (v2020, by blastp/diamond)
@@ -78,7 +79,7 @@ def print_main_help():
        select_seq              ->  Select sequences by their ids
        split_fasta             ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
-       cat_fa                  ->  Combine sequence files, prefix sequence id with file name
+       cat_fa                  ->  Combine fasta files, prefix sequence id with file name
     
     Multiple Sequence Alignment
        ConvertMSA             ->  Convert MSA format
@@ -94,10 +95,11 @@ def print_main_help():
        plot_sam_depth          ->  Plot SAM depth
 
     Others
-       iTOL                    ->  Prepare iTOL-compatible files for tree visualization
-       js_cmds                 ->  Commands to job scripts
-       exe_cmds                ->  Execute commands with multiprocessing (one cmd per line)
+       iTOL                    ->  Prepare iTOL files
+       js_cmds                 ->  Put commands in job scripts
+       exe_cmds                ->  Execute commands with multiprocessing
        split_folder            ->  Split folder
+       prefix_file             ->  Prefix file
        BestHit                 ->  Keep best blast hits (outfmt 6)
        VisGeneFlk              ->  Visualize gene flanking regions
        usearch_uc              ->  Parse Usearch uc file
@@ -106,7 +108,9 @@ def print_main_help():
        SubsampleLongReads      ->  Subsample Long Reads
        rename_reads_Reago      ->  Rename paired reads for Reago
        cross_link_seqs         ->  Cross link matched regions between two sequences
-       PhyloBiAssoc            ->  PhyloBiAssoc (binaryPGLMM test)
+       PhyloBiAssoc            ->  A wrapper for binaryPGLMM test
+       submitHPC               ->  A wrapper for submitHPC.sh
+       KeepRemovingTmp         ->  Keep removing tmp dir
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Use "pip3 install --upgrade BioSAK" to get the latest version of BioSAK.
@@ -573,15 +577,15 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         mean_MAG_cov.mean_MAG_cov(args)
 
-    elif sys.argv[1] == 'GTDB_tree_r207':
-        from BioSAK import GTDB_tree_r207
-        GTDB_tree_r207_parser = subparsers.add_parser('GTDB_tree_r207', usage=GTDB_tree_r207.GTDB_tree_r207_usage)
-        GTDB_tree_r207_parser.add_argument('-p', required=True,                         help='output prefix')
-        GTDB_tree_r207_parser.add_argument('-i', required=True,                         help='genome folder')
-        GTDB_tree_r207_parser.add_argument('-x', required=True,                         help='genome file extension')
-        GTDB_tree_r207_parser.add_argument('-t', required=False, type=int, default=1,   help='number of threads')
+    elif sys.argv[1] == 'GTDB_tree':
+        from BioSAK import GTDB_tree
+        GTDB_tree_parser = subparsers.add_parser('GTDB_tree', usage=GTDB_tree.GTDB_tree_usage)
+        GTDB_tree_parser.add_argument('-p', required=True,                         help='output prefix')
+        GTDB_tree_parser.add_argument('-i', required=True,                         help='genome folder')
+        GTDB_tree_parser.add_argument('-x', required=True,                         help='genome file extension')
+        GTDB_tree_parser.add_argument('-t', required=False, type=int, default=1,   help='number of threads')
         args = vars(parser.parse_args())
-        GTDB_tree_r207.GTDB_tree_r207(args)
+        GTDB_tree.GTDB_tree(args)
 
     elif sys.argv[1] == 'exe_cmds':
         from BioSAK import exe_cmds
@@ -614,9 +618,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'fa2id':
         from BioSAK import fa2id
         fa2id_parser = subparsers.add_parser('fa2id', usage=fa2id.fa2id_usage)
-        fa2id_parser.add_argument('-i', required=True,                          help='input fasta file')
-        fa2id_parser.add_argument('-o', required=True,                          help='output txt')
-        fa2id_parser.add_argument('-fq', required=False, action="store_true",   help='in fastq format, default: fasta')
+        fa2id_parser.add_argument('-i',  required=True, help='input fasta/fastq file')
+        fa2id_parser.add_argument('-o',  required=True, help='output txt')
+        fa2id_parser.add_argument('-d',  required=False, action="store_true",  help='additionally export description, default: false')
+        fa2id_parser.add_argument('-fq', required=False, action="store_true",  help='in fastq format, default: fasta')
         args = vars(parser.parse_args())
         fa2id.fa2id(args)
 
@@ -818,6 +823,42 @@ if __name__ == '__main__':
         prokka_parser.add_argument('-t',          required=False, type=int, default=1,    help='number of threads')
         args = vars(parser.parse_args())
         prokka.prokka(args)
+
+    elif sys.argv[1] == 'prefix_file':
+        from BioSAK import prefix_file
+        prefix_file_parser = subparsers.add_parser('prefix_file', usage=prefix_file.prefix_file_usage)
+        prefix_file_parser.add_argument('-p',   required=True,                          help='add prefix to sequence')
+        prefix_file_parser.add_argument('-i',   required=True,                          help='input sequence file')
+        prefix_file_parser.add_argument('-x',   required=True,                          help='file extension, default: fasta')
+        prefix_file_parser.add_argument('-o',   required=True,                          help='the number of columns to keep')
+        prefix_file_parser.add_argument('-f',   required=False, action="store_true",    help='force overwrite previous results')
+        args = vars(parser.parse_args())
+        prefix_file.prefix_file(args)
+
+    elif sys.argv[1] == 'submitHPC':
+        from BioSAK import submitHPC
+        submitHPC_parser = subparsers.add_parser('submitHPC', usage=submitHPC.submitHPC_usage)
+        submitHPC_parser.add_argument('-p', required=True,                          help='js prefix')
+        submitHPC_parser.add_argument('-c', required=True,                          help='commands txt')
+        submitHPC_parser.add_argument('-t', required=False, type=int, default=1,    help='number of threads')
+        args = vars(parser.parse_args())
+        submitHPC.submitHPC(args)
+
+    elif sys.argv[1] == 'KeepRemovingTmp':
+        from BioSAK import KeepRemovingTmp
+        KeepRemovingTmp_parser = subparsers.add_parser('KeepRemovingTmp', usage=KeepRemovingTmp.KeepRemovingTmp_usage)
+        KeepRemovingTmp_parser.add_argument('-d', required=True, help='tmp dir')
+        KeepRemovingTmp_parser.add_argument('-l', required=True, help='time length, e.g., 10s, 30m, 6h or 5d')
+        args = vars(parser.parse_args())
+        KeepRemovingTmp.KeepRemovingTmp(args)
+
+    elif sys.argv[1] == 'parse_mmseqs_tsv':
+        from BioSAK import parse_mmseqs_tsv
+        parse_mmseqs_tsv_parser = subparsers.add_parser('parse_mmseqs_tsv', usage=parse_mmseqs_tsv.parse_mmseqs_tsv_usage)
+        parse_mmseqs_tsv_parser.add_argument('-i', required=True, help='tsv file produced by "mmseqs createtsv"')
+        parse_mmseqs_tsv_parser.add_argument('-o', required=True, help='output table')
+        args = vars(parser.parse_args())
+        parse_mmseqs_tsv.parse_mmseqs_tsv(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

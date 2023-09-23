@@ -23,11 +23,11 @@ BioSAK/Enrichment.py
 BioSAK/FastaSplitler_by_num.py
 BioSAK/FastaSplitler_by_size.py
 BioSAK/GTDB_for_BLCA.py
-BioSAK/GTDB_tree_r207.py
 BioSAK/Gene2Ctg.py
 BioSAK/KEGG.py
 BioSAK/KEGG_boxplot_last1row.R
 BioSAK/KEGG_get_eukaryotic_kos.py
+BioSAK/KeepRemovingTmp.py
 BioSAK/MeanMappingDepth.py
 BioSAK/MetaBiosample.py
 BioSAK/MetaCHIP_phylo.hmm
@@ -120,9 +120,11 @@ BioSAK/metabat2maxbin.py
 BioSAK/msa_to_distance_matrix.py
 BioSAK/ncbi_dataset.py
 BioSAK/parse_MetaCyc_RxnDB.py
+BioSAK/parse_mmseqs_tsv.py
 BioSAK/plot_mag.py
 BioSAK/plot_sam_depth.py
 BioSAK/plot_tree.R
+BioSAK/prefix_file.py
 BioSAK/prokka.py
 BioSAK/reads2bam.py
 BioSAK/rename_leaves.py
@@ -136,6 +138,7 @@ BioSAK/slice_seq.py
 BioSAK/split_fasta.py
 BioSAK/split_folder.py
 BioSAK/split_sam.py
+BioSAK/submitHPC.py
 BioSAK/subset_GTDB_meta.py
 BioSAK/subset_tree.py
 BioSAK/test.py

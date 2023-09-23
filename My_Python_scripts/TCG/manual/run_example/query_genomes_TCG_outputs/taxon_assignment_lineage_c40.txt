@@ -1,0 +1,2 @@
+AAM	d__Bacteria(100.0);p__Proteobacteria(100.0);c__Alphaproteobacteria(100.0);o__Acetobacterales(100.0);f__Acetobacteraceae(100.0);g__Acidiphilium(100.0);s__Acidiphilium multivorum(40.87)
+bin497	d__Bacteria(100.0);p__Bacteroidetes(76.67);c__Bacteroidia(76.67);o__Bacteroidales(76.67);f__Muribaculaceae(75.56);g__Muribaculum(75.56)

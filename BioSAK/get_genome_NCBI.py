@@ -87,6 +87,7 @@ def download_GenBank_genome(args):
 
     if find_executable('datasets') is None:
         print('datasets not detected, please install it first')
+        print('get help with: BioSAK get_genome_NCBI -h')
         exit()
 
     if os.path.isfile(assembly_id) is False:

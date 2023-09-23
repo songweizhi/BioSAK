@@ -1,0 +1,3 @@
+Genome	Taxon	Percentage
+AAM	g__Acidiphilium	100.0
+bin497	d__Bacteria	100.0
