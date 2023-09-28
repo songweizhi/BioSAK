@@ -1,5 +1,6 @@
 
-Here are a list of my frequently used functions:
+Here are some of my frequently used functions
+---
 
 + [sep_path_name_ext](sep_path_name_ext.py)
 + [number](number.py)
@@ -8,4 +9,4 @@ Here are a list of my frequently used functions:
 + [check_executables](check_executables.py)
 + [multiprocessing](multiprocessing.py)
 + [argparse](argparse.py)
-
++ [index columns](index_columns.py)
