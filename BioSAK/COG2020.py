@@ -500,7 +500,7 @@ def COG2020(args):
         if not cog_category.startswith('#'):
             cog_category_split = cog_category.strip().split('\t')
             cog_category_list.append(cog_category_split[0])
-            cog_category_to_description_dict[cog_category_split[0]] = cog_category_split[1]
+            cog_category_to_description_dict[cog_category_split[0]] = cog_category_split[2]
 
 
     ################################################## if input is file ################################################

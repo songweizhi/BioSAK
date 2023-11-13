@@ -1,7 +1,25 @@
+import pythoncyc
+
+'''
+
+# db page
+https://metacyc.org/download.shtml
+
+# PythonCyc
+https://github.com/ecocyc/PythonCyc/blob/master/doc/tutorial.md
+
+'''
 
 
-demo_line = '\t1\t2\t3\t4'
-demo_line_split = demo_line.strip().split('\t')
-print(demo_line_split)
-col_name_list = demo_line_split[1:]
-print(col_name_list)
+meta = pythoncyc.select_organism('meta')
+print(meta)
+
+
+
+
+
+
+
+
+
+

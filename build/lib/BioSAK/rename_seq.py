@@ -25,11 +25,11 @@ BioSAK rename_seq -in Contigs.fa -sep_in "_" -n 2 -prefix Seawater
 BioSAK rename_seq -in seq_folder -x fa -sep_in "_" -n 2 -t 12
 BioSAK rename_seq -in seq_folder -x fa -prefix prefix_file.txt
 
-# prefix file format: sequence file name (with extension) followed by 
-# prefixed to be added, tab separated, one file per line
-genome_1.fa prefix_1
-genome_1.fa prefix_2
-genome_1.fa prefix_3
+# prefix file format: file name (with extension) followed by prefix to be added 
+# to the sequences in the file, tab separated.
+MAG_1.fa mag1
+MAG_2.fa mag2
+MAG_3.fa mag3
 
 ===============================================================================
 '''

@@ -80,13 +80,7 @@ def print_main_help():
        split_fasta             ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine fasta files, prefix sequence id with file name
-    
-    Multiple Sequence Alignment
-       ConvertMSA             ->  Convert MSA format
-       fa2phy                 ->  Convert MSA format (fasta to phylip)
-       OneLineAln             ->  One-line fasta format alignments
-       SliceMSA               ->  Slice MSA by column 
-       
+           
     Sam and Bam
        reads2bam               ->  Mapping and sorting
        sam2bam                 ->  Sam to BAM with samtools

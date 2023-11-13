@@ -417,7 +417,7 @@ def parse_blast_op_worker(argument_list):
             AnnotateNorm(stats_file_D_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_D_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
 
 
-def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, annotation_df_pct, annotation_df_pct_by_all, with_depth, pct_by_all):
+def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, annotation_df_pct, annotation_df_pct_by_all, ABCD_description_dict, with_depth, pct_by_all):
 
     annotation_dir_re = '%s/*_KEGG_wd' % annotation_dir
     annotation_folder_list = [os.path.basename(file_name) for file_name in glob.glob(annotation_dir_re)]
@@ -472,13 +472,19 @@ def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, a
 
     all_identified_ko_list = sorted([i for i in all_identified_ko])
 
+    all_identified_ko_list_with_description = []
+    for each_ko in all_identified_ko_list:
+        ko_with_desc = '%s_%s' % (each_ko, ABCD_description_dict[each_ko])
+        ko_with_desc = ko_with_desc.replace(' ', '_')
+        all_identified_ko_list_with_description.append(ko_with_desc)
+
     annotation_df_absolute_num_handle = open(annotation_df_absolute_num, 'w')
-    annotation_df_absolute_num_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list))
+    annotation_df_absolute_num_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list_with_description))
     annotation_df_percentage_handle = open(annotation_df_pct, 'w')
-    annotation_df_percentage_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list))
+    annotation_df_percentage_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list_with_description))
     if pct_by_all is True:
         annotation_df_percentage_by_all_handle = open(annotation_df_pct_by_all, 'w')
-        annotation_df_percentage_by_all_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list))
+        annotation_df_percentage_by_all_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list_with_description))
     for annotation_folder in sorted(annotation_folder_list):
 
         annotation_folder_basename = annotation_folder.split('_KEGG_wd')[0]
@@ -677,6 +683,16 @@ def Annotation_KEGG(args):
                 elif (current_D_id in D2ABCD_dict) and (ABCD_value not in D2ABCD_dict[current_D_id]):
                     D2ABCD_dict[current_D_id].append(ABCD_value)
 
+    ABCD_description_dict = {}
+    for each_a in As_description_dict:
+        ABCD_description_dict[each_a] = As_description_dict[each_a]
+    for each_b in Bs_description_dict:
+        ABCD_description_dict[each_b] = Bs_description_dict[each_b]
+    for each_c in Cs_description_dict:
+        ABCD_description_dict[each_c] = Cs_description_dict[each_c]
+    for each_d in Ds_description_dict:
+        ABCD_description_dict[each_d] = Ds_description_dict[each_d]
+
     # get db_seq_to_KO_dict
     db_seq_to_KO_dict = {}
     if run_blast is True:
@@ -782,7 +798,7 @@ def Annotation_KEGG(args):
 
             #################### get GeneNumber df and report ####################
 
-            get_KEGG_annot_df(output_folder, ko_level, annotation_df_GeneNumber, annotation_df_GeneNumber_pct, annotation_df_GeneNumber_pct_by_all, with_depth=False, pct_by_all=pct_by_all)
+            get_KEGG_annot_df(output_folder, ko_level, annotation_df_GeneNumber, annotation_df_GeneNumber_pct, annotation_df_GeneNumber_pct_by_all, ABCD_description_dict, with_depth=False, pct_by_all=pct_by_all)
 
             print(annotation_df_GeneNumber.split('/')[-1])
             print(annotation_df_GeneNumber_pct.split('/')[-1])
@@ -793,7 +809,7 @@ def Annotation_KEGG(args):
             #################### get TotalDepth df and report ####################
 
             if depth_file is not None:
-                get_KEGG_annot_df(output_folder, ko_level, annotation_df_TotalDepth, annotation_df_TotalDepth_pct, annotation_df_TotalDepth_pct_by_all, with_depth=True, pct_by_all=pct_by_all)
+                get_KEGG_annot_df(output_folder, ko_level, annotation_df_TotalDepth, annotation_df_TotalDepth_pct, annotation_df_TotalDepth_pct_by_all, ABCD_description_dict, with_depth=True, pct_by_all=pct_by_all)
 
                 print(annotation_df_TotalDepth.split('/')[-1])
                 print(annotation_df_TotalDepth_pct.split('/')[-1])
