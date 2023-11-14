@@ -10,3 +10,4 @@ Here are some of my frequently used functions
 + [multiprocessing](multiprocessing.py)
 + [argparse](argparse.py)
 + [index columns](index_columns.py)
++ [zip](zip.py)
