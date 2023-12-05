@@ -248,8 +248,6 @@ if __name__ == '__main__':
         magabund_parser.add_argument('-x',       required=False, default='fasta',      help='MAG file extension, default: fasta')
         magabund_parser.add_argument('-o',       required=True,                        help='output table')
         magabund_parser.add_argument('-a',       required=False, action='store_true',  help='based on aligned length, rather than read length')
-        #get_bin_abundance_parser.add_argument('-g',       required=False, default=None,         help='bin grouping info')
-        #get_bin_abundance_parser.add_argument('-Cdb',     required=False, default=None,         help='cluster info from dRep (Cdb.csv)')
         args = vars(parser.parse_args())
         magabund.magabund(args)
 
@@ -392,14 +390,14 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'SILVA_for_BLCA':
         from BioSAK import SILVA_for_BLCA
         SILVA_for_BLCA_parser = subparsers.add_parser('SILVA_for_BLCA', description='Prepare BLCA-compatible SILVA SSU database', usage=SILVA_for_BLCA.SILVA_for_BLCA_usage)
-        SILVA_for_BLCA_parser.add_argument('-SILVA_ssu',    required=True,                                  help='SILVA SSU sequence file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
+        SILVA_for_BLCA_parser.add_argument('-SILVA_ssu', required=True, help='SILVA SSU sequence file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
         args = vars(parser.parse_args())
         SILVA_for_BLCA.SILVA_for_BLCA(args)
 
     elif sys.argv[1] == 'GTDB_for_BLCA':
         from BioSAK import GTDB_for_BLCA
         GTDB_for_BLCA_parser = subparsers.add_parser('GTDB_for_BLCA', description='Prepare BLCA-compatible GTDB SSU database', usage=GTDB_for_BLCA.GTDB_for_BLCA_usage)
-        GTDB_for_BLCA_parser.add_argument('-GTDB_ssu',      required=True,                                  help='GTDB SSU sequence file, e.g. bac120_ar122_ssu_r89.fna')
+        GTDB_for_BLCA_parser.add_argument('-GTDB_ssu', required=True, help='GTDB SSU sequence file, e.g. bac120_ar122_ssu_r89.fna')
         args = vars(parser.parse_args())
         GTDB_for_BLCA.GTDB_for_BLCA(args)
 
