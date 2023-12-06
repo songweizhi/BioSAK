@@ -7,15 +7,15 @@ This short note shows how to visualize all these info in one Figure.
 
 1. Description of example files (columns in all files are tab separated):
 
-    + [tree.newick](files_needed/tree.newick): phylogenetic tree in [Newick](http://evolution.genetics.washington.edu/phylip/newicktree.html) format
+    + [tree.newick](files_needed/tree.newick): phylogenetic tree in Newick format
     + [abundance.txt](files_needed/abundance.txt): relative abundance across samples
     + [lifestyle.txt](files_needed/lifestyle.txt): lifestyle, either surface-associated or planktonic
     + [size.txt](files_needed/size.txt): genome size in Mbp
     + [taxon.txt](files_needed/taxon.txt): taxonomy
-    + [color_lifestyle.txt](files_needed/color_lifestyle.txt): (optional) lifestyle color, provide as Hex Color Codes
-    + [color_taxon.txt](files_needed/color_taxon.txt): (optional) taxon color, provide as Hex Color Codes
+    + [color_lifestyle.txt](files_needed/color_lifestyle.txt): (optional) color designation for lifestyle, provide as Hex Color Codes
+    + [color_taxon.txt](files_needed/color_taxon.txt): (optional) color designation for taxon, provide as Hex Color Codes
 
-1. Here, we are going to use BioSAK's iTOL module to prepare iTOL recognizable files for our data.
+1. Here, we are going to use BioSAK's iTOL module to prepare iTOL recognizable files.
 Please refer to its [manual page](https://github.com/songweizhi/BioSAK) for installation.
 Here are some other [tools](https://itol.embl.de/help.cgi#external) suggested by iTOL.
       
@@ -28,7 +28,7 @@ Here are some other [tools](https://itol.embl.de/help.cgi#external) suggested by
        # for help
        BioSAK iTOL -h
 
-1. Upload [tree.newick](files_needed/tree.newick) to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
+1. Paste/Upload [tree.newick](files_needed/tree.newick) to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 
 1. Once you have the tree uploaded, you'll see the skeleton of the tree without any decoration. 
 You can now play around with the control panel on the right side (e.g. change tree layout to circular).
@@ -51,8 +51,7 @@ Remember to turn on **Colored ranges legend**, if you are using **iTOL_taxon_Ran
 ![Step_2](figures/Step_2.jpg)
 
 
-# Help information
+# Help
 
-1. More examples: [https://itol.embl.de/help.cgi](https://itol.embl.de/help.cgi)
-1. The Newick tree format: [http://evolution.genetics.washington.edu/phylip/newicktree.html](http://evolution.genetics.washington.edu/phylip/newicktree.html)
-1. Hex Color Codes: [https://htmlcolorcodes.com](https://htmlcolorcodes.com) and [https://www.color-hex.com](https://www.color-hex.com)
+1. More examples from iTOL: [https://itol.embl.de/help.cgi](https://itol.embl.de/help.cgi)
+1. Hex Color Codes: [https://htmlcolorcodes.com](https://htmlcolorcodes.com), [https://www.color-hex.com](https://www.color-hex.com)
