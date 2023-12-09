@@ -325,7 +325,7 @@ def iTOL(args):
             else:
                 Binary_color = GroupColor
         else:
-            Binary_color = 'lightblue'
+            Binary_color = 'blue'
 
         Binary_FileOut_handle = open(FileOut, 'w')
         line_index = 0
@@ -339,7 +339,7 @@ def iTOL(args):
                 else:
                     col_name_list = each_line_split[1:]
 
-                col_color_list = [Column_to_Color_dict.get(i, 'lightblue') for i in col_name_list]
+                col_color_list = [Column_to_Color_dict.get(i, 'blue') for i in col_name_list]
 
                 Binary_FileOut_handle.write('DATASET_BINARY\n\nSEPARATOR TAB\nDATASET_LABEL\t%s\nCOLOR\t%s\n' % (LegendTitle, Binary_color))
                 Binary_FileOut_handle.write('SHOW_LABELS\t1\nLABEL_ROTATION\t45\nLABEL_SHIFT\t5\n')
