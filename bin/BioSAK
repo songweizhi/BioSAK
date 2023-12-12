@@ -488,8 +488,8 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'fa2tree':
         from BioSAK import fa2tree
         fa2tree_parser = subparsers.add_parser('fa2tree', usage=fa2tree.fa2tree_usage)
-        fa2tree_parser.add_argument('-seq', required=True,                      help='sequence file')
-        fa2tree_parser.add_argument('-t', required=False, type=int, default=1,  help='number of threads, default: 1')
+        fa2tree_parser.add_argument('-seq', required=True,                          help='sequence file')
+        fa2tree_parser.add_argument('-t',   required=False, type=int, default=1,    help='number of threads, default: 1')
         args = vars(parser.parse_args())
         fa2tree.fa2tree(args)
 
@@ -610,10 +610,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'fa2id':
         from BioSAK import fa2id
         fa2id_parser = subparsers.add_parser('fa2id', usage=fa2id.fa2id_usage)
-        fa2id_parser.add_argument('-i',  required=True, help='input fasta/fastq file')
-        fa2id_parser.add_argument('-o',  required=True, help='output txt')
-        fa2id_parser.add_argument('-d',  required=False, action="store_true",  help='additionally export description, default: false')
-        fa2id_parser.add_argument('-fq', required=False, action="store_true",  help='in fastq format, default: fasta')
+        fa2id_parser.add_argument('-i',  required=True,                         help='input fasta/fastq file')
+        fa2id_parser.add_argument('-o',  required=True,                         help='output txt')
+        fa2id_parser.add_argument('-d',  required=False, action="store_true",   help='additionally export description, default: false')
+        fa2id_parser.add_argument('-fq', required=False, action="store_true",   help='in fastq format, default: fasta')
         args = vars(parser.parse_args())
         fa2id.fa2id(args)
 
@@ -861,7 +861,7 @@ upload_to_pypi_cmd = '''
 
 cd /Users/songweizhi/PycharmProjects/BioSAK
 rm -r build dist BioSAK.egg-info
-python setup.py sdist bdist_wheel
+python3 setup.py sdist bdist_wheel
 twine upload dist/*
 
 songweizhi    shan88

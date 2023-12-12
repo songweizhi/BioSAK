@@ -80,6 +80,8 @@ def get_color_list(color_num):
         if color_to_return in color_list_to_return:
             color_list_to_return_sorted.append(color_to_return)
 
+    random.shuffle(color_list_to_return_sorted)
+
     return color_list_to_return_sorted
 
 
@@ -325,7 +327,7 @@ def iTOL(args):
             else:
                 Binary_color = GroupColor
         else:
-            Binary_color = 'blue'
+            Binary_color = 'red'
 
         Binary_FileOut_handle = open(FileOut, 'w')
         line_index = 0
@@ -339,13 +341,19 @@ def iTOL(args):
                 else:
                     col_name_list = each_line_split[1:]
 
-                col_color_list = [Column_to_Color_dict.get(i, 'blue') for i in col_name_list]
+                col_color_list = [Column_to_Color_dict.get(i, 'red') for i in col_name_list]
 
                 Binary_FileOut_handle.write('DATASET_BINARY\n\nSEPARATOR TAB\nDATASET_LABEL\t%s\nCOLOR\t%s\n' % (LegendTitle, Binary_color))
                 Binary_FileOut_handle.write('SHOW_LABELS\t1\nLABEL_ROTATION\t45\nLABEL_SHIFT\t5\n')
                 Binary_FileOut_handle.write('FIELD_LABELS\t%s\n' % '\t'.join(col_name_list))
-                Binary_FileOut_handle.write('FIELD_SHAPES\t%s\n' % '\t'.join(['1'] * len(col_name_list)))
                 Binary_FileOut_handle.write('FIELD_COLORS\t%s\n' % '\t'.join(col_color_list))
+                Binary_FileOut_handle.write('FIELD_SHAPES\t%s\n' % '\t'.join(['2'] * len(col_name_list)))
+                Binary_FileOut_handle.write('#1: rectangle\n')
+                Binary_FileOut_handle.write('#2: circle\n')
+                Binary_FileOut_handle.write('#3: star\n')
+                Binary_FileOut_handle.write('#4: right pointing triangle\n')
+                Binary_FileOut_handle.write('#5: left pointing triangle\n')
+                Binary_FileOut_handle.write('#6: check mark\n')
                 Binary_FileOut_handle.write('\nDATA\n')
             else:
                 Binary_FileOut_handle.write(each_line)

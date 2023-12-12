@@ -1,14 +1,22 @@
 Metadata-Version: 2.1
 Name: BioSAK
-Version: 1.73.5
+Version: 1.73.9
 Summary: BioSAK
 Home-page: https://github.com/songweizhi/BioSAK
 Author: Weizhi Song
 Author-email: songwz03@gmail.com
 License: GPL3+
 Keywords: Bioinformatics
-Platform: UNKNOWN
 License-File: LICENSE
+Requires-Dist: biopython
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: scipy
+Requires-Dist: itolapi
+Requires-Dist: networkx
+Requires-Dist: seaborn
+Requires-Dist: lxml
+Requires-Dist: beautifulsoup4
+Requires-Dist: ete3
 
- BioSAK v1.73.5 
-
+ BioSAK v1.73.9 
