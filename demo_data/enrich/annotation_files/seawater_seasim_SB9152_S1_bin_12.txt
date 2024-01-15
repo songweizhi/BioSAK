@@ -1,0 +1,6 @@
+KO	GeneNumber	Description
+K00560	1	 thyA, TYMS; thymidylate synthase [EC:2.1.1.45]
+K00287	1	 DHFR, folA; dihydrofolate reductase [EC:1.5.1.3]
+K00013	1	 hisD; histidinol dehydrogenase [EC:1.1.1.23]
+K00014	1	 aroE; shikimate dehydrogenase [EC:1.1.1.25]
+K00033	1	 PGD, gnd, gntZ; 6-phosphogluconate dehydrogenase [EC:1.1.1.44 1.1.1.343]

@@ -1,0 +1,10 @@
+KO	GeneNumber	Description
+K00031	2	 IDH1, IDH2, icd; isocitrate dehydrogenase [EC:1.1.1.42]
+K00091	1	 E1.1.1.219; dihydroflavonol-4-reductase [EC:1.1.1.219]
+K00560	1	 thyA, TYMS; thymidylate synthase [EC:2.1.1.45]
+K00287	1	 DHFR, folA; dihydrofolate reductase [EC:1.5.1.3]
+K00057	1	 gpsA; glycerol-3-phosphate dehydrogenase (NAD(P)+) [EC:1.1.1.94]
+K00014	2	 aroE; shikimate dehydrogenase [EC:1.1.1.25]
+K00024	1	 mdh; malate dehydrogenase [EC:1.1.1.37]
+K00208	1	 fabI; enoyl-[acyl-carrier protein] reductase I [EC:1.3.1.9 1.3.1.10]
+K00013	1	 hisD; histidinol dehydrogenase [EC:1.1.1.23]

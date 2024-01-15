@@ -89,6 +89,7 @@ def print_main_help():
        plot_sam_depth          ->  Plot SAM depth
 
     Others
+       hpc3                    ->  Submit jobs on HKUST hpc3
        iTOL                    ->  Prepare iTOL files
        js_cmds                 ->  Put commands in job scripts
        exe_cmds                ->  Execute commands with multiprocessing
@@ -852,6 +853,32 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         parse_mmseqs_tsv.parse_mmseqs_tsv(args)
 
+    elif sys.argv[1] == 'hpc3':
+        from BioSAK import hpc3
+        hpc3_parser = subparsers.add_parser('hpc3', usage=hpc3.hpc3_usage)
+        hpc3_parser.add_argument('-c',        required=True,                          help='command to submit')
+        hpc3_parser.add_argument('-n',        required=True,                          help='job name')
+        hpc3_parser.add_argument('-m',        required=False, default=None,           help='email address')
+        hpc3_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
+        hpc3_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
+        hpc3_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
+        hpc3_parser.add_argument('-a',        required=False, default='boqianpy',     help='-A, boqianpy or oces, default: boqianpy')
+        hpc3_parser.add_argument('-q',        required=True,                          help='queue, select from: cpu, cpu-share')
+        hpc3_parser.add_argument('-conda',    required=False, default=None,           help='conda environment')
+        args = vars(parser.parse_args())
+        hpc3.hpc3(args)
+
+    elif sys.argv[1] == 'enrich':
+        from BioSAK import enrich
+        enrich_parser = subparsers.add_parser('enrich', usage=enrich.enrich_usage)
+        enrich_parser.add_argument('-i',    required=True,                          help='directory of annotation files')
+        enrich_parser.add_argument('-x',    required=True,                          help='extension of annotation file')
+        enrich_parser.add_argument('-g',    required=True,                          help='grouping file')
+        enrich_parser.add_argument('-o',    required=True,                          help='output dir')
+        enrich_parser.add_argument('-f',    required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        enrich.enrich(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
@@ -864,8 +891,9 @@ rm -r build dist BioSAK.egg-info
 python3 setup.py sdist bdist_wheel
 twine upload dist/*
 
-songweizhi    shan88
+__token__
 
 pip3 install --upgrade BioSAK        
 
+songweizhi    shan88
 '''

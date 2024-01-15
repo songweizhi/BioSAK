@@ -1,0 +1,8 @@
+KO	GeneNumber	Description
+K00571	1	 E2.1.1.72; site-specific DNA-methyltransferase (adenine-specific) [EC:2.1.1.72]
+K00008	1	 SORD, gutB; L-iditol 2-dehydrogenase [EC:1.1.1.14]
+K00013	1	 hisD; histidinol dehydrogenase [EC:1.1.1.23]
+K00341	1	 nuoL; NADH-quinone oxidoreductase subunit L [EC:1.6.5.3]
+K00024	1	 mdh; malate dehydrogenase [EC:1.1.1.37]
+K00392	1	 sir; sulfite reductase (ferredoxin) [EC:1.8.7.1]
+K00031	1	 IDH1, IDH2, icd; isocitrate dehydrogenase [EC:1.1.1.42]

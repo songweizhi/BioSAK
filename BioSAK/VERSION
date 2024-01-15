@@ -1,5 +1,11 @@
-1.73.9
+1.75.0
+- new module added: enrich
+
+1.74.1
 - fixed bugs
+
+1.74.0
+- new module added: hpc3
 
 1.73.0
 - new module added: parse_mmseqs_tsv

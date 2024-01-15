@@ -1,0 +1,12 @@
+KO	GeneNumber	Description
+K00014	2	 aroE; shikimate dehydrogenase [EC:1.1.1.25]
+K00008	2	 SORD, gutB; L-iditol 2-dehydrogenase [EC:1.1.1.14]
+K00024	1	 mdh; malate dehydrogenase [EC:1.1.1.37]
+K00031	1	 IDH1, IDH2, icd; isocitrate dehydrogenase [EC:1.1.1.42]
+K00208	1	 fabI; enoyl-[acyl-carrier protein] reductase I [EC:1.3.1.9 1.3.1.10]
+K00537	1	 ARSC1, arsC; arsenate reductase [EC:1.20.4.1]
+K00029	1	 E1.1.1.40, maeB; malate dehydrogenase (oxaloacetate-decarboxylating)(NADP+) [EC:1.1.1.40]
+K00341	1	 nuoL; NADH-quinone oxidoreductase subunit L [EC:1.6.5.3]
+K00003	1	 E1.1.1.3; homoserine dehydrogenase [EC:1.1.1.3]
+K00057	1	 gpsA; glycerol-3-phosphate dehydrogenase (NAD(P)+) [EC:1.1.1.94]
+K00013	1	 hisD; histidinol dehydrogenase [EC:1.1.1.23]
