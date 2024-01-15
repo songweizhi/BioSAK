@@ -6,10 +6,10 @@ from scipy import stats
 from statsmodels.stats.multitest import multipletests
 
 
-enrich_parser_usage = '''
+enrich_usage = '''
 ================================= enrich example commands =================================
 
-BioSAK enrich -i KEGG_annotation -x txt -g grouping.txt -o output_dir
+BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -f
 
 # How it works (https://doi.org/10.1038/s41396-020-00815-8):
 Functions that were enriched in the MAGs in either community type were identified using 
@@ -17,7 +17,7 @@ Mann–Whitney U tests followed by a Bonferroni correction with a p value cut-of
 being considered significant. Only significantly different functions with greater than 
 2-fold mean differences were considered to be enriched. Functions detected only in the 
 MAGs from one community type were considered to be enriched if they existed in at least 
-50% of the MAGs.
+50 percent of the MAGs.
 
 # Example input files:
 https://github.com/songweizhi/BioSAK/tree/master/demo_data/enrich
@@ -244,10 +244,10 @@ def enrich(args):
 if __name__ == '__main__':
 
     enrich_parser = argparse.ArgumentParser()
-    enrich_parser.add_argument('-i',    required=True,                          help='directory of annotation files')
-    enrich_parser.add_argument('-x',    required=True,                          help='extension of annotation file')
-    enrich_parser.add_argument('-g',    required=True,                          help='grouping file')
-    enrich_parser.add_argument('-o',    required=True,                          help='output dir')
-    enrich_parser.add_argument('-f',    required=False, action="store_true",    help='force overwrite')
+    enrich_parser.add_argument('-i', required=True, help='annotation files')
+    enrich_parser.add_argument('-x', required=True, help='file extension')
+    enrich_parser.add_argument('-g', required=True, help='grouping file')
+    enrich_parser.add_argument('-o', required=True, help='output directory')
+    enrich_parser.add_argument('-f', required=False, action="store_true", help='force overwrite')
     args = vars(enrich_parser.parse_args())
     enrich(args)

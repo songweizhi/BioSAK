@@ -61,6 +61,7 @@ def print_main_help():
        COG2020                 ->  COG annotation (v2020, by blastp/diamond)
        arCOG                   ->  COG annotation for archaea (version ar18)
        dbCAN                   ->  CAZy annotation with dbCAN
+       enrich                  ->  Functional enrichment analysis
 
     16S rRNA related
        top_16S_hits            ->  Classify 16S by top-blast-hits approach
@@ -871,11 +872,11 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'enrich':
         from BioSAK import enrich
         enrich_parser = subparsers.add_parser('enrich', usage=enrich.enrich_usage)
-        enrich_parser.add_argument('-i',    required=True,                          help='directory of annotation files')
-        enrich_parser.add_argument('-x',    required=True,                          help='extension of annotation file')
-        enrich_parser.add_argument('-g',    required=True,                          help='grouping file')
-        enrich_parser.add_argument('-o',    required=True,                          help='output dir')
-        enrich_parser.add_argument('-f',    required=False, action="store_true",    help='force overwrite')
+        enrich_parser.add_argument('-i',   required=True,                          help='annotation files')
+        enrich_parser.add_argument('-x',   required=True,                          help='file extension')
+        enrich_parser.add_argument('-g',   required=True,                          help='grouping file')
+        enrich_parser.add_argument('-o',   required=True,                          help='output directory')
+        enrich_parser.add_argument('-f',   required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
         enrich.enrich(args)
 
