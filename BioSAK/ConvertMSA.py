@@ -121,7 +121,7 @@ def ConvertMSA(args):
 if __name__ == '__main__':
 
     # initialize the options parser
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=ConvertMSA_usage)
     parser.add_argument('-i',       required=True,                       help='input alignment')
     parser.add_argument('-xi',      required=False, default='aln',       help='input alignment extension')
     parser.add_argument('-fi',      required=True,                       help='input alignment format, e.g., fasta, phylip')

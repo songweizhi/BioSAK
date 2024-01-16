@@ -91,7 +91,7 @@ def RunGraphMB(arg_dict):
 
 if __name__ == '__main__':
 
-    RunGraphMB_parser = argparse.ArgumentParser()
+    RunGraphMB_parser = argparse.ArgumentParser(usage=RunGraphMB_usage)
     RunGraphMB_parser.add_argument('-gfa', required=True, help='gfa file')
     RunGraphMB_parser.add_argument('-o',   required=True, help='output folder (i.e., input folder to GraphMB)')
     args = vars(RunGraphMB_parser.parse_args())

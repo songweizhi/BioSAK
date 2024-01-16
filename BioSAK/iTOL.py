@@ -540,7 +540,7 @@ def iTOL(args):
 if __name__ == '__main__':
 
     # initialize the options parser
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=iTOL_usage)
     parser.add_argument('-Labels',          required=False, action='store_true',   help='Labels')
     parser.add_argument('-ColorStrip',      required=False, action='store_true',   help='ColorStrip')
     parser.add_argument('-ColorRange',      required=False, action='store_true',   help='ColorRange')

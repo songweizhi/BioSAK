@@ -198,7 +198,7 @@ def Plot_MAG(argument_list):
 
 if __name__ == '__main__':
 
-    Plot_MAG_parser = argparse.ArgumentParser()
+    Plot_MAG_parser = argparse.ArgumentParser(usage=Plot_MAG_parser_usage)
     Plot_MAG_parser.add_argument('-i',   required=True,                         help='MAG folder')
     Plot_MAG_parser.add_argument('-x',   required=True,                         help='file extension')
     Plot_MAG_parser.add_argument('-d',   required=True,                         help='contig depth')

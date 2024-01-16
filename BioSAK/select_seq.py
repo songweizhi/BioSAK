@@ -81,10 +81,7 @@ def select_seq(args):
 
 if __name__ == '__main__':
 
-    # initialize the options parser
-    parser = argparse.ArgumentParser()
-
-    # arguments for select_seq
+    parser = argparse.ArgumentParser(usage=select_seq_usage)
     parser.add_argument('-seq',       required=True,                        help='sequence file')
     parser.add_argument('-id',        required=True,                        help='sequence ids,one id per line')
     parser.add_argument('-option',    required=True, type=int,              help='choose from 0 and 1')

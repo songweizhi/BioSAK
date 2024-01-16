@@ -110,7 +110,7 @@ def label_tree(args, config_dict):
 if __name__ == '__main__':
 
     # initialize the options parser
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=label_tree_usage)
 
     parser.add_argument('-tree',      required=True,                 help='tree file in newick format')
     parser.add_argument('-label',     required=False,  default=None, help='label file (label,leaf)')

@@ -130,7 +130,7 @@ def SliceMSA(args):
 if __name__ == '__main__':
 
     # arguments for rename_seq_parser
-    SliceMSA_parser = argparse.ArgumentParser()
+    SliceMSA_parser = argparse.ArgumentParser(usage=SliceMSA_usage)
     SliceMSA_parser.add_argument('-i',      required=True,                         help='input MSA in fasta format')
     SliceMSA_parser.add_argument('-fi',     required=False, default='fasta',       help='format (NOT file extension) of input MSA, default: fasta')
     SliceMSA_parser.add_argument('-s',      required=True,                         help='columns to export, e.g. 200-300, -100, 50-')

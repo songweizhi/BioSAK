@@ -54,7 +54,7 @@ def hpc3(args):
 
 if __name__ == '__main__':
 
-    hpc3_parser = argparse.ArgumentParser()
+    hpc3_parser = argparse.ArgumentParser(usage=hpc3_usage)
     hpc3_parser.add_argument('-c',        required=True,                          help='command to submit')
     hpc3_parser.add_argument('-n',        required=True,                          help='job name')
     hpc3_parser.add_argument('-m',        required=False, default=None,           help='email address')

@@ -229,7 +229,6 @@ def compare_trees(args):
 if __name__ == '__main__':
 
     compare_trees_parser = argparse.ArgumentParser(usage=compare_trees_usage)
-    #compare_trees_parser.add_argument('-p',   required=True,                       help='output prefix')
     compare_trees_parser.add_argument('-t1',  required=True,                       help='tree (folder) 1')
     compare_trees_parser.add_argument('-t2',  required=True,                       help='tree (folder) 2')
     compare_trees_parser.add_argument('-tx',  required=False, default='newick',    help='extention of tree files, default: newick')

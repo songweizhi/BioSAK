@@ -446,7 +446,7 @@ def dbCAN(args):
 
 if __name__ == '__main__':
 
-    dbCAN_parser = argparse.ArgumentParser()
+    dbCAN_parser = argparse.ArgumentParser(usage=dbCAN_parser_usage)
 
     # arguments for COG_parser
     dbCAN_parser.add_argument('-i',         required=True,                          help='path to input sequences (in multi-fasta format)')

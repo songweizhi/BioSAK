@@ -688,7 +688,7 @@ def COG2020(args):
 
 if __name__ == '__main__':
 
-    COG_parser = argparse.ArgumentParser()
+    COG_parser = argparse.ArgumentParser(usage=COG2020_parser_usage)
 
     # arguments for COG_parser
     COG_parser.add_argument('-i',               required=True,                              help='path to input sequences (in multi-fasta format)')

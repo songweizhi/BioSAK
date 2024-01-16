@@ -55,7 +55,7 @@ def split_folder(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=split_folder_parser_usage)
 
     parser.add_argument('-in', required=True, help='file folder')
     parser.add_argument('-x', required=True, help='file extension')

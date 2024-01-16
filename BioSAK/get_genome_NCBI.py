@@ -1,8 +1,6 @@
 import os
 import glob
 import argparse
-from subprocess import Popen
-from datetime import datetime
 import multiprocessing as mp
 from distutils.spawn import find_executable
 
@@ -15,7 +13,7 @@ get_genome_NCBI_parser_usage = '''
 # example command
 BioSAK get_genome_NCBI -i GCA_000006945
 BioSAK get_genome_NCBI -i GCA_009840555.1
-BioSAK get_genome_NCBI -i genome_id.txt -o downloaded_gnm_dir -t 8 
+BioSAK get_genome_NCBI -i genome_id.txt -o downloaded_gnm_dir -t 8 -f
 
 # Format of genome_id.txt
 GCA_009837245
@@ -51,6 +49,9 @@ def datasets_worker(arg_list):
     datasets_cmd                = 'datasets download genome accession %s --include genome --no-progressbar --filename %s'   % (gnm_id, downloaded_file)
     os.system(datasets_cmd)
 
+    # datasets download genome accession %s --include genome --no-progressbar --filename %s
+    # datasets download genome accession GCA_014843695.1 --include gff3,rna,cds,protein,genome,seq-report
+
     if os.path.isfile(downloaded_file) is True:
 
         if os.path.isdir(downloaded_file_unzip_dir) is True:
@@ -83,7 +84,7 @@ def download_GenBank_genome(args):
     assembly_id     = args['i']
     output_folder   = args['o']
     num_threads     = args['t']
-    force_overwrite = args['force']
+    force_overwrite = args['f']
 
     if find_executable('datasets') is None:
         print('datasets not detected, please install it first')
@@ -130,7 +131,6 @@ def download_GenBank_genome(args):
         report_file_handle = open(report_file, 'w')
         for each_gnm in open(assembly_id):
             gnm_id = each_gnm.strip()
-
             current_gnm_re = '%s/%s*.fna' % (output_folder, gnm_id)
             current_gnm_list = glob.glob(current_gnm_re)
 
@@ -151,10 +151,10 @@ def download_GenBank_genome(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-i',       required=True,                       help='IDs of genomes to download')
-    parser.add_argument('-o',       required=False, default=None,        help='output folder')
-    parser.add_argument('-t',       required=False, default=1, type=int, help='number of threads')
-    parser.add_argument('-force',   required=False, action="store_true", help='force overwrite existing genome directory')
+    parser = argparse.ArgumentParser(usage=get_genome_NCBI_parser_usage)
+    parser.add_argument('-i',   required=True,                       help='IDs of genomes to download')
+    parser.add_argument('-o',   required=False, default=None,        help='output folder')
+    parser.add_argument('-t',   required=False, default=1, type=int, help='number of threads')
+    parser.add_argument('-f',   required=False, action="store_true", help='force overwrite existing genome directory')
     args = vars(parser.parse_args())
     download_GenBank_genome(args)

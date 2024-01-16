@@ -66,7 +66,7 @@ def MetaBiosample(args):
 
 if __name__ == '__main__':
 
-    arg_parser = argparse.ArgumentParser()
+    arg_parser = argparse.ArgumentParser(usage=MetaBiosample_usage)
     arg_parser.add_argument('-i',   required=True,                        help='biosample id file, one id per line')
     arg_parser.add_argument('-a',   required=True,                        help='attributes to extract')
     arg_parser.add_argument('-o',   required=True,                        help='output folder')
@@ -75,10 +75,3 @@ if __name__ == '__main__':
     arg_parser.add_argument('-exe', required=False, action="store_true",  help='execute cmds')
     args = vars(arg_parser.parse_args())
     MetaBiosample(args)
-
-'''
-
-cd /Users/songweizhi/Desktop
-BioSAK MetaBiosample -i a.txt -a 'isolation_source,host,geo_loc_name,lat_lon' -o op_dir -f
-
-'''

@@ -68,7 +68,7 @@ def rename_seqs(args):
 
 if __name__ == '__main__':
 
-    rename_seq_parser = argparse.ArgumentParser()
+    rename_seq_parser = argparse.ArgumentParser(usage=rename_seq_usage)
     rename_seq_parser.add_argument('-i',         required=True,                         help='input sequence folder')
     rename_seq_parser.add_argument('-x',         required=False, default='fasta',       help='file extension, default: fasta')
     rename_seq_parser.add_argument('-o',         required=True,                         help='output folder')

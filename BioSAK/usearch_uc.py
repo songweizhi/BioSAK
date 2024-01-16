@@ -50,7 +50,7 @@ def usearch_uc(args):
 
 if __name__ == '__main__':
 
-    usearch_uc_parser = argparse.ArgumentParser()
+    usearch_uc_parser = argparse.ArgumentParser(usage=usearch_uc_usage)
     usearch_uc_parser.add_argument('-uc', required=True,                        help='uc file from Usearch')
     usearch_uc_parser.add_argument('-n',  required=False, type=int, default=1,  help='minimum number of sequence in a cluster, default: 1')
     usearch_uc_parser.add_argument('-o',  required=True,                        help='output file')

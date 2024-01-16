@@ -83,7 +83,7 @@ def BLCA_op_parser(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=BLCA_op_parser_usage)
     parser.add_argument('-in', required=True, help='BLCA output')
     args = vars(parser.parse_args())
     BLCA_op_parser(args)

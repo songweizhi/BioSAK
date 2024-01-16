@@ -106,7 +106,7 @@ def print_main_help():
        cross_link_seqs         ->  Cross link matched regions between two sequences
        PhyloBiAssoc            ->  A wrapper for binaryPGLMM test
        submitHPC               ->  A wrapper for submitHPC.sh
-       KeepRemovingTmp         ->  Keep removing tmp dir
+       KeepRemovingTmp         ->  Keep removing old files in a folder
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Use "pip3 install --upgrade BioSAK" to get the latest version of BioSAK.
@@ -256,10 +256,10 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'get_genome_NCBI':
         from BioSAK import get_genome_NCBI
         get_genome_NCBI_parser = subparsers.add_parser('get_genome_NCBI', description='Batch download NCBI genomes', usage=get_genome_NCBI.get_genome_NCBI_parser_usage)
-        get_genome_NCBI_parser.add_argument('-i',           required=True,                       help='IDs of genomes to download')
-        get_genome_NCBI_parser.add_argument('-o',           required=False, default=None,        help='output folder')
-        get_genome_NCBI_parser.add_argument('-t',           required=False, default=1, type=int, help='number of threads')
-        get_genome_NCBI_parser.add_argument('-force',       required=False, action="store_true", help='force overwrite existing genome directory')
+        get_genome_NCBI_parser.add_argument('-i',   required=True,                       help='IDs of genomes to download')
+        get_genome_NCBI_parser.add_argument('-o',   required=False, default=None,        help='output folder')
+        get_genome_NCBI_parser.add_argument('-t',   required=False, default=1, type=int, help='number of threads')
+        get_genome_NCBI_parser.add_argument('-f',   required=False, action="store_true", help='force overwrite existing genome directory')
         args = vars(parser.parse_args())
         get_genome_NCBI.download_GenBank_genome(args)
 

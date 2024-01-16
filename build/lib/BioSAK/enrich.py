@@ -7,24 +7,23 @@ from statsmodels.stats.multitest import multipletests
 
 
 enrich_usage = '''
-================================= enrich example commands =================================
+=================================== enrich example commands ===================================
 
 BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -f
 
-# How it works (https://doi.org/10.1038/s41396-020-00815-8):
-Functions that were enriched in the MAGs in either community type were identified using 
-Mann–Whitney U tests followed by a Bonferroni correction with a p value cut-off of 0.05 
-being considered significant. Only significantly different functions with greater than 
-2-fold mean differences were considered to be enriched. Functions detected only in the 
-MAGs from one community type were considered to be enriched if they existed in at least 
-50 percent of the MAGs.
+# The number of groups needs to be Two!!!
 
 # Example input files:
 https://github.com/songweizhi/BioSAK/tree/master/demo_data/enrich
 
-# The number of groups needs to be Two!!!
+# How it works (https://doi.org/10.1038/s41396-020-00815-8):
+Functions that are enriched in the genomes in either group are identified using Mann–Whitney 
+U tests followed by a Bonferroni correction with a p value cut-off of 0.05 being considered 
+significant. Only significantly different functions with greater than 2-fold mean differences 
+are considered to be enriched. Functions detected only in the genomes from one group type are 
+considered to be enriched if they existed in at least 50 percent of the MAGs.
 
-===========================================================================================
+===============================================================================================
 '''
 
 
@@ -49,16 +48,20 @@ def remove_0_from_Pandas_Series(Pandas_Series):
 
 def summarize_stats(output_test, summary_txt):
 
-    summary_txt_handle = open(summary_txt, 'w')
-    summary_txt_handle.write('KO\tP_value\tsponge\tseawater\tMean_diff\tEnriched\n')
+    sample_1_id = ''
+    sample_2_id = ''
     line_num_index = 0
-    sample_1_name = ''
-    sample_2_name = ''
     for ko in open(output_test):
         if line_num_index == 0:
-            sample_1_name = ko.strip().split('\t')[1]
-            sample_2_name = ko.strip().split('\t')[3]
-        else:
+            sample_1_id = ko.strip().split('\t')[1]
+            sample_2_id = ko.strip().split('\t')[3]
+        line_num_index += 1
+
+    summary_txt_handle = open(summary_txt, 'w')
+    summary_txt_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tEnriched_in\n' % (sample_1_id, sample_2_id))
+    line_num_index = 0
+    for ko in open(output_test):
+        if line_num_index > 0:
             ko_split = ko.strip().split('\t')
             ko_id = ko_split[0]
             sample_1_mean = float(ko_split[1])
@@ -72,22 +75,21 @@ def summarize_stats(output_test, summary_txt):
                 enriched_in = ''
                 if (sample_1_mean > 0) and (sample_2_mean == 0):
                     if sample_1_dectected_pct >= 50:
-                        enriched_in = sample_1_name
+                        enriched_in = sample_1_id
                         mean_diff = 'NA'
                 elif (sample_1_mean == 0) and (sample_2_mean > 0):
                     if sample_2_dectected_pct >= 50:
-                        enriched_in = sample_2_name
+                        enriched_in = sample_2_id
                         mean_diff = 'NA'
                 elif (sample_1_mean > 0) and (sample_2_mean > 0):
                     mean_diff = float("{0:.3f}".format(sample_1_mean / sample_2_mean))
                     if mean_diff >= 2:
-                        enriched_in = sample_1_name
+                        enriched_in = sample_1_id
                     elif mean_diff <= 0.5:
-                        enriched_in = sample_2_name
+                        enriched_in = sample_2_id
 
-                if (enriched_in == sample_1_name) or (enriched_in == sample_2_name):
-                    summary_txt_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (
-                    ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, enriched_in))
+                if (enriched_in == sample_1_id) or (enriched_in == sample_2_id):
+                    summary_txt_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, enriched_in))
         line_num_index += 1
     summary_txt_handle.close()
 
@@ -223,13 +225,19 @@ def enrich(args):
 
     x = 0
     output_test_handle = open(stats_op_txt, 'w')
-    output_test_handle.write('KO\tsponge\tDectected_pct\tseawater\tDectected_pct\tP_value\tP_value_adjusted\n')
+    output_test_handle.write('KO\t%s\tDectected_pct\t%s\tDectected_pct\tP_value\tP_value_adjusted\n' % (group_1_id, group_2_id))
     while x < len(ko_id_list):
         current_p = float("{0:.3f}".format(p_value_list[x]))
         current_p_adjusted = float("{0:.3f}".format(p_value_list_adjusted[x]))
         current_p_group_mean = [str(i) for i in ko_to_group_mean_dict[ko_id_list[x]]]
         current_p_detected_pct = [str(i) for i in ko_to_group_detected_pct_dict[ko_id_list[x]]]
-        output_test_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id_list[x], current_p_group_mean[0], current_p_detected_pct[0], current_p_group_mean[1], current_p_detected_pct[1], current_p, current_p_adjusted))
+
+        group_1_mean = current_p_group_mean[0]
+        group_2_mean = current_p_group_mean[1]
+        group_1_no_zero_pct = current_p_detected_pct[0]
+        group_2_no_zero_pct = current_p_detected_pct[1]
+
+        output_test_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id_list[x], group_1_mean, group_1_no_zero_pct, group_2_mean, group_2_no_zero_pct, current_p, current_p_adjusted))
         x += 1
     output_test_handle.close()
 
@@ -244,10 +252,10 @@ def enrich(args):
 if __name__ == '__main__':
 
     enrich_parser = argparse.ArgumentParser()
-    enrich_parser.add_argument('-i', required=True, help='annotation files')
-    enrich_parser.add_argument('-x', required=True, help='file extension')
-    enrich_parser.add_argument('-g', required=True, help='grouping file')
-    enrich_parser.add_argument('-o', required=True, help='output directory')
-    enrich_parser.add_argument('-f', required=False, action="store_true", help='force overwrite')
+    enrich_parser.add_argument('-i', required=True,                         help='annotation files')
+    enrich_parser.add_argument('-x', required=True,                         help='file extension')
+    enrich_parser.add_argument('-g', required=True,                         help='grouping file')
+    enrich_parser.add_argument('-o', required=True,                         help='output directory')
+    enrich_parser.add_argument('-f', required=False, action="store_true",   help='force overwrite')
     args = vars(enrich_parser.parse_args())
     enrich(args)
