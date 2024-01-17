@@ -31,7 +31,7 @@ def submitHPC(args):
 if __name__ == '__main__':
 
     # arguments for COG_parser
-    submitHPC_parser = argparse.ArgumentParser()
+    submitHPC_parser = argparse.ArgumentParser(usage=submitHPC_usage)
     submitHPC_parser.add_argument('-p',               required=True,                              help='js prefix')
     submitHPC_parser.add_argument('-c',               required=True,                              help='commands txt')
     submitHPC_parser.add_argument('-t',               required=False, type=int, default=1,        help='number of threads')

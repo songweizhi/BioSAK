@@ -37,14 +37,9 @@ def OneLineAln(args):
 
 if __name__ == '__main__':
 
-    OneLineAln_parser = argparse.ArgumentParser()
-
-    # arguments for rename_seq_parser
+    OneLineAln_parser = argparse.ArgumentParser(usage=OneLineAln_usage)
     OneLineAln_parser.add_argument('-in',     required=True,                        help='input MSA in fasta format')
     OneLineAln_parser.add_argument('-out',    required=False, default=None,         help='output file')
     OneLineAln_parser.add_argument('-upper',  required=False, action='store_true',  help='turn to uppercase')
-
     args = vars(OneLineAln_parser.parse_args())
-
     OneLineAln(args)
-

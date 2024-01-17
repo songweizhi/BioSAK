@@ -40,7 +40,8 @@ def print_main_help():
        get_genome_NCBI         ->  Batch download GenBank genomes
        sampling_GTDB_gnms      ->  Select GTDB genomes
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
-       MetaBiosample           ->  Extract metadata of NCBI biosamples
+       metaAssembly            ->  Get metadata of NCBI assembly records
+       metaBiosample           ->  Get metadata of NCBI biosample records
 
     Metagenomics
        metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
@@ -770,7 +771,7 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         fa2phy.fa2phy(args)
 
-    elif sys.argv[1] == 'MetaBiosample':
+    elif sys.argv[1] == 'metaBiosample':
         from BioSAK import MetaBiosample
         MetaBiosample_parser = subparsers.add_parser('MetaBiosample', usage=MetaBiosample.MetaBiosample_usage)
         MetaBiosample_parser.add_argument('-i',     required=True,                          help='biosample id file, one id per line')
@@ -879,6 +880,16 @@ if __name__ == '__main__':
         enrich_parser.add_argument('-f',   required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
         enrich.enrich(args)
+
+    elif sys.argv[1] == 'metaAssembly':
+        from BioSAK import metaAssembly
+        metaAssembly_parser = subparsers.add_parser('metaAssembly', usage=metaAssembly.metaAssembly_usage)
+        metaAssembly_parser.add_argument('-i', required=True,                         help='file contains assembly ids')
+        metaAssembly_parser.add_argument('-o', required=True,                         help='output directory')
+        metaAssembly_parser.add_argument('-f', required=False, action="store_true",   help='force overwrite')
+        metaAssembly_parser.add_argument('-t', required=False, type=int, default=1,   help='number of cores, default: 1')
+        args = vars(parser.parse_args())
+        metaAssembly.metaAssembly(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

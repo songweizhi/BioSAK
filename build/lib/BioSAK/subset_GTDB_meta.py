@@ -50,7 +50,7 @@ def subset_GTDB_meta(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=subset_GTDB_meta_usage)
     parser.add_argument('-meta', required=True, help='GTDB reference genome metadata')
     parser.add_argument('-id',   required=True, help='id of genomes')
     parser.add_argument('-out',  required=True, help='output file')

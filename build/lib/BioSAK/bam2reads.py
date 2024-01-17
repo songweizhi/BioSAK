@@ -175,7 +175,7 @@ def bam2reads(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=bam2reads_usage)
     parser.add_argument('-b',     required=True,                       help='Sorted Bam file')
     parser.add_argument('-r',     required=True,                       help='Interested region')
     parser.add_argument('-s',     required=False, default=None,        help='Read sequence file')

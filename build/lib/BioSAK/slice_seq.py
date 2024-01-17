@@ -59,15 +59,11 @@ def slice_seq(args):
 
 if __name__ == '__main__':
 
-    # initialize the options parser
-    parser = argparse.ArgumentParser()
-
-    # arguments for select_seq
+    parser = argparse.ArgumentParser(usage=slice_seq_usage)
     parser.add_argument('-in',    required=True,                        help='sequence file')
     parser.add_argument('-id',    required=True,                        help='sequence id')
     parser.add_argument('-range', required=True,                        help='sequence range, start-end (in bp). e.g. 200-4000')
     parser.add_argument('-rc',    required=False, action='store_true',  help='write out reverse complement sequence')
     parser.add_argument('-out',   required=True,                        help='output file')
-
     args = vars(parser.parse_args())
     slice_seq(args)

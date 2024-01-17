@@ -63,7 +63,7 @@ def MeanMappingDepth(args):
 
 if __name__ == '__main__':
 
-    MeanMappingDepth_parser = argparse.ArgumentParser()
+    MeanMappingDepth_parser = argparse.ArgumentParser(usage=MeanMappingDepth_usage)
 
     MeanMappingDepth_parser.add_argument('-depth', required=True,                       help='input depth file from "samtools depth" ')
     MeanMappingDepth_parser.add_argument('-T',     required=False, action="store_true", help='get overall stats')

@@ -52,7 +52,7 @@ BioSAK modules
 + Please refer to the [documentation](doc/Index.md) page for help (in preparation, very messy).
 
 
-+ **中文版**帮助文件[在此](doc/Index_cn.md).
+[//]: # (+ **中文版**帮助文件[在此]&#40;doc/Index_cn.md&#41;.)
 
 
 + A license statement is [here](LICENSE).

@@ -824,7 +824,7 @@ def Annotation_KEGG(args):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=KEGG_parser_usage)
     parser.add_argument('-seq_in',      required=False,                            help='faa file')
     parser.add_argument('-ko_in',       required=False,                            help='annotation results from BlastKOALA/GhostKOALA, normally with name user_ko.txt')
     parser.add_argument('-x',           required=False,                            help='file extension')

@@ -56,7 +56,7 @@ def merge_seq(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=merge_seq_usage)
     parser.add_argument('-1',       required=True,                          help='input file 1')
     parser.add_argument('-2',       required=True,                          help='input file 2')
     parser.add_argument('-o',       required=True,                          help='output sequence file')

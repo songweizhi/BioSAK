@@ -183,7 +183,7 @@ def subset_tree(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='', add_help=False)
+    parser = argparse.ArgumentParser(usage=subset_tree_usage)
     parser.add_argument('-h',     action='help',                        help='Show this help message and exit')
     parser.add_argument('-tree',  required=True,  type=str,             help='input tree file')
     parser.add_argument('-taxon', required=True,  type=str,             help='A file containing list of leaves to keep, one leaf per line')

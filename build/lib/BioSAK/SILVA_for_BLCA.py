@@ -83,7 +83,7 @@ def SILVA_for_BLCA(args):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=SILVA_for_BLCA_usage)
 
     parser.add_argument('-SILVA_ssu', required=True, help='SILVA SSU file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
 

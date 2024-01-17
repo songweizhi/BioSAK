@@ -32,7 +32,7 @@ def PhyloBiAssoc(args):
 
 
 if __name__ == "__main__":
-    PhyloBiAssoc_parser = argparse.ArgumentParser()
+    PhyloBiAssoc_parser = argparse.ArgumentParser(usage=PhyloBiAssoc_usage)
     PhyloBiAssoc_parser.add_argument('-t', required=True, help='tree file')
     PhyloBiAssoc_parser.add_argument('-d', required=True, help='data file')
     args = vars(PhyloBiAssoc_parser.parse_args())

@@ -100,7 +100,7 @@ def prokka(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=prokka_usage)
     parser.add_argument('-i',          required=True,                          help='genome folder')
     parser.add_argument('-x',          required=True, default='fna',           help='file extension, deafult: fna')
     parser.add_argument('-d',          required=True,                          help='genome domain, Bacteria or Archaea')

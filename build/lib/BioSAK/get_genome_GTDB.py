@@ -82,7 +82,7 @@ def get_genome_GTDB(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=get_genome_GTDB_parser_usage)
     parser.add_argument('-i',           required=True,                          help='genome id')
     parser.add_argument('-o',           required=True,                          help='output folder')
     parser.add_argument('-fastani_dir', required=True,                          help='the "fastani" dir')

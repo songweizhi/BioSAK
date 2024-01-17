@@ -124,7 +124,7 @@ def CheckM(args):
 
 if __name__ == "__main__":
 
-    CheckM_parser = argparse.ArgumentParser()
+    CheckM_parser = argparse.ArgumentParser(usage=CheckM_usage)
     CheckM_parser.add_argument('-i',    required=True,                       help='CheckM produced quality file')
     CheckM_parser.add_argument('-o',    required=True,                       help='output quality file (reformatted)')
     CheckM_parser.add_argument('-g',    required=False,                      help='MAG folder')

@@ -3,11 +3,7 @@ MANIFEST.in
 README.md
 setup.py
 BioSAK/BLCA_op_parser.py
-BioSAK/BacDive.py
-BioSAK/Barrnap.py
 BioSAK/BioSAK_config.py
-BioSAK/COG2003.py
-BioSAK/COG2014.py
 BioSAK/COG2020.py
 BioSAK/COG_boxplot_last1row.R
 BioSAK/COG_boxplot_last2row.R
@@ -111,6 +107,7 @@ BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
 BioSAK/mean_MAG_cov.py
 BioSAK/merge_seq.py
+BioSAK/metaAssembly.py
 BioSAK/metabat2concoct.py
 BioSAK/metabat2maxbin.py
 BioSAK/msa_to_distance_matrix.py
@@ -138,11 +135,6 @@ BioSAK/split_sam.py
 BioSAK/submitHPC.py
 BioSAK/subset_GTDB_meta.py
 BioSAK/subset_tree.py
-BioSAK/test.py
-BioSAK/tmp_1.py
-BioSAK/tmp_2_cog.py
-BioSAK/tmp_3.py
-BioSAK/tmp_4.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/usearch_uc.py

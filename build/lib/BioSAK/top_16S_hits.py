@@ -176,7 +176,7 @@ def top_16S_hits(args):
 
 if __name__ == '__main__':
 
-    top_16S_hits_parser = argparse.ArgumentParser()
+    top_16S_hits_parser = argparse.ArgumentParser(usage=top_16S_hits_usage)
     top_16S_hits_parser.add_argument('-p',           required=True,                           help='output prefix')
     top_16S_hits_parser.add_argument('-q',           required=True,                           help='query sequence file')
     top_16S_hits_parser.add_argument('-r',           required=True,                           help='SILVA or GTDB SSU sequence file')

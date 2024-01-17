@@ -689,8 +689,7 @@ def arCOG(args):
 
 if __name__ == '__main__':
 
-    # arguments for COG_parser
-    COG_parser = argparse.ArgumentParser()
+    COG_parser = argparse.ArgumentParser(usage=arCOG_parser_usage)
     COG_parser.add_argument('-i',               required=True,                              help='path to input sequences (in multi-fasta format)')
     COG_parser.add_argument('-x',               required=False,                             help='file extension')
     COG_parser.add_argument('-m',               required=True,                              help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')

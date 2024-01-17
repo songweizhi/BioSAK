@@ -151,7 +151,7 @@ def download_GenBank_genome(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=get_genome_NCBI_parser_usage)
     parser.add_argument('-i',   required=True,                       help='IDs of genomes to download')
     parser.add_argument('-o',   required=False, default=None,        help='output folder')
     parser.add_argument('-t',   required=False, default=1, type=int, help='number of threads')

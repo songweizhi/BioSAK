@@ -70,7 +70,7 @@ def SubsampleLongReads(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(usage=SubsampleLongReads_usage)
     parser.add_argument('-i',       required=True,                       help='input sequence file')
     parser.add_argument('-s',       required=True,                       help='separate subsample rates (1-100) with comma, e.g. 1,5,10')
     parser.add_argument('-o',       required=True,                       help='output directory')

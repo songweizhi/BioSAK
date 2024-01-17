@@ -1,15 +1,31 @@
 import os
 import argparse
+import subprocess
 import multiprocessing as mp
 
 MetaBiosample_usage = '''
 ==================== MetaBiosample example commands ====================
 
-BioSAK MetaBiosample -i SAMEA5126984 -a 'isolation_source,host,geo_loc_name,lat_lon' -o op_dir
-BioSAK MetaBiosample -i biosamples.txt -a 'isolation_source,host,geo_loc_name' -o op_dir -t 6
+BioSAK metaBiosample -i SAMEA5126984 -a 'isolation_source,host,geo_loc_name,lat_lon' -o op_dir
+BioSAK metaBiosample -i biosamples.txt -a 'isolation_source,host,geo_loc_name' -o op_dir -t 6
+
+Dependencies: xtract, esearch and esummary
+# https://www.ncbi.nlm.nih.gov/books/NBK179288/
 
 =======================================================================
 '''
+
+def check_executables(program_list):
+
+    not_detected_programs = []
+    for needed_program in program_list:
+        if subprocess.call(['which', needed_program], stdout=open(os.devnull, 'wb')) != 0:
+            not_detected_programs.append(needed_program)
+
+    if not_detected_programs != []:
+        print('%s not detected, program exited!' % ','.join(not_detected_programs))
+        exit()
+
 
 def MetaBiosample(args):
 
@@ -19,6 +35,8 @@ def MetaBiosample(args):
     thread_num      = args['t']
     force_overwrite = args['f']
     execute_cmd     = args['exe']
+
+    check_executables(['xtract', 'esearch', 'esummary'])
 
     if os.path.isdir(op_dir) is True:
         if force_overwrite is True:
@@ -66,7 +84,7 @@ def MetaBiosample(args):
 
 if __name__ == '__main__':
 
-    arg_parser = argparse.ArgumentParser()
+    arg_parser = argparse.ArgumentParser(usage=MetaBiosample_usage)
     arg_parser.add_argument('-i',   required=True,                        help='biosample id file, one id per line')
     arg_parser.add_argument('-a',   required=True,                        help='attributes to extract')
     arg_parser.add_argument('-o',   required=True,                        help='output folder')
@@ -75,10 +93,3 @@ if __name__ == '__main__':
     arg_parser.add_argument('-exe', required=False, action="store_true",  help='execute cmds')
     args = vars(arg_parser.parse_args())
     MetaBiosample(args)
-
-'''
-
-cd /Users/songweizhi/Desktop
-BioSAK MetaBiosample -i a.txt -a 'isolation_source,host,geo_loc_name,lat_lon' -o op_dir -f
-
-'''
