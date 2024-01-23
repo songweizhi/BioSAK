@@ -15,7 +15,7 @@ Shan Zhang<sup>1,2</sup> and Weizhi Song<sup>1,2</sup>
 
 <sup>2</sup> Department of Ocean Science, Hong Kong University of Science and Technology, Hong Kong
 
-E-mail: zzfanyi@gmail.com and songwz03@gmail.com
+E-mail: shanzhang@ust.hk and songwz03@gmail.com
 
 
 Installation
