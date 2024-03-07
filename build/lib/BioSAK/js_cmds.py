@@ -20,6 +20,7 @@ def js_cmds(args):
     auto_submit     = args['auto']
     js_folder_hpc   = args['js_hpc']
     force_overwrite = args['force']
+    use_sbatch      = args['sbatch']
 
     pwd_js_folder       = '%s/%s_js' % (os.getcwd(), js_prefix)
 
@@ -56,7 +57,10 @@ def js_cmds(args):
 
                 if auto_submit is True:
                     pwd_js_previous_handle = open(pwd_js_previous, 'a')
-                    pwd_js_previous_handle.write('qsub %s\n' % pwd_js_hpc)
+                    if use_sbatch is True:
+                        pwd_js_previous_handle.write('sbatch %s\n' % pwd_js_hpc)
+                    else:
+                        pwd_js_previous_handle.write('qsub %s\n' % pwd_js_hpc)
                     pwd_js_previous_handle.close()
 
             pwd_js_handle = open(pwd_js, 'w')
@@ -80,8 +84,9 @@ if __name__ == '__main__':
     parser.add_argument('-p',      required=True,                       help='js prefix')
     parser.add_argument('-cmd',    required=True,                       help='cmds file')
     parser.add_argument('-hd',     required=True,                       help='js header')
-    parser.add_argument('-n',      required=True, type=int,             help='number of cmds per js')
-    parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next js')
+    parser.add_argument('-n',      required=True, type=int,             help='number of cmds per job script')
+    parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next job script')
+    parser.add_argument('-sbatch', required=False, action="store_true", help='use sbatch, instead of qsub')
     parser.add_argument('-js_hpc', required=False, default=None,        help='Full path to js folder on HPC')
     parser.add_argument('-force',  required=False, action="store_true", help='force overwrite existing results')
     args = vars(parser.parse_args())

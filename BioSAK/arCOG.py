@@ -25,7 +25,7 @@ BioSAK arCOG -m N -t 6 -db_dir /Users/songweizhi/DB/arCOG18 -i ffn_files -x ffn
 cd path/to/your/arCOG_db_dir
 wget https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/ar18.fa.gz
 wget https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/ar18.ar14.02.csv
-wget https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/arCOG_names_220807.txt
+wget https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/arCOGdef.tab
 wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/fun-20.tab
 gunzip ar18.fa.gz
 makeblastdb -in ar18.fa -dbtype prot -parse_seqids -logfile ar18.fa.log
@@ -476,7 +476,7 @@ def arCOG(args):
     ar18_fa           = '%s/ar18.fa'                 % DB_dir
     ar18_fa_diamond   = '%s/ar18.fa.dmnd'            % DB_dir
     ar18_ar14_02_csv  = '%s/ar18.ar14.02.csv'        % DB_dir
-    cog_des_txt       = '%s/arCOG_names_220807.txt'  % DB_dir
+    cog_des_txt       = '%s/arCOGdef.tab'            % DB_dir
     pwd_fun_20_tab    = '%s/fun-20.tab'              % DB_dir
 
     ############################################ check whether db file exist ###########################################
@@ -634,21 +634,21 @@ def arCOG(args):
 
             ######################################################### get dataframe #########################################################
 
-            annotation_df_cog_cate_copy =             '%s/%s_arCOG_cate_copy.txt'             % (output_folder, file_in_folder_name)
-            annotation_df_cog_cate_copy_pct =         '%s/%s_arCOG_cate_copy_pct.txt'         % (output_folder, file_in_folder_name)
-            annotation_df_cog_cate_copy_pct_by_all =  '%s/%s_arCOG_cate_copy_pct_by_all.txt'  % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_copy =             '%s/%s_arCOG_cate.txt'                    % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_copy_pct =         '%s/%s_arCOG_cate_pct.txt'                % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_copy_pct_by_all =  '%s/%s_arCOG_cate_pct_by_all.txt'         % (output_folder, file_in_folder_name)
 
-            annotation_df_cog_cate_depth =            '%s/%s_arCOG_cate_depth.txt'             % (output_folder, file_in_folder_name)
-            annotation_df_cog_cate_depth_pct =        '%s/%s_arCOG_cate_depth_pct.txt'         % (output_folder, file_in_folder_name)
-            annotation_df_cog_cate_depth_pct_by_all = '%s/%s_arCOG_cate_depth_pct_by_all.txt'  % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_depth =            '%s/%s_arCOG_cate_depth.txt'              % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_depth_pct =        '%s/%s_arCOG_cate_depth_pct.txt'          % (output_folder, file_in_folder_name)
+            annotation_df_cog_cate_depth_pct_by_all = '%s/%s_arCOG_cate_depth_pct_by_all.txt'   % (output_folder, file_in_folder_name)
 
-            annotation_df_cog_id_copy =               '%s/%s_arCOG_id_copy.txt'               % (output_folder, file_in_folder_name)
-            annotation_df_cog_id_copy_pct =           '%s/%s_arCOG_id_copy_pct.txt'           % (output_folder, file_in_folder_name)
-            annotation_df_cog_id_copy_pct_by_all =    '%s/%s_arCOG_id_copy_pct_by_all.txt'    % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_copy =               '%s/%s_arCOG_id.txt'                      % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_copy_pct =           '%s/%s_arCOG_id_pct.txt'                  % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_copy_pct_by_all =    '%s/%s_arCOG_id_pct_by_all.txt'           % (output_folder, file_in_folder_name)
 
-            annotation_df_cog_id_depth =              '%s/%s_arCOG_id_depth.txt'               % (output_folder, file_in_folder_name)
-            annotation_df_cog_id_depth_pct =          '%s/%s_arCOG_id_depth_pct.txt'           % (output_folder, file_in_folder_name)
-            annotation_df_cog_id_depth_pct_by_all =   '%s/%s_arCOG_id_depth_pct_by_all.txt'    % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_depth =              '%s/%s_arCOG_id_depth.txt'                % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_depth_pct =          '%s/%s_arCOG_id_depth_pct.txt'            % (output_folder, file_in_folder_name)
+            annotation_df_cog_id_depth_pct_by_all =   '%s/%s_arCOG_id_depth_pct_by_all.txt'     % (output_folder, file_in_folder_name)
 
             print(datetime.now().strftime(time_format) + 'Data matrix exported to:')
 
@@ -698,6 +698,6 @@ if __name__ == '__main__':
     COG_parser.add_argument('-db_dir',          required=True,                              help='COG_db_dir')
     COG_parser.add_argument('-diamond',         required=False, action='store_true',        help='run diamond (for big dataset), default: blastp from NCBI')
     COG_parser.add_argument('-t',               required=False, type=int, default=1,        help='number of threads')
-    COG_parser.add_argument('-evalue',          required=False, default=0.001, type=float,  help='evalue cutoff, default: 0.001')
+    COG_parser.add_argument('-evalue',          required=False, default=0.0001, type=float,  help='evalue cutoff, default: 0.0001')
     args = vars(COG_parser.parse_args())
     arCOG(args)

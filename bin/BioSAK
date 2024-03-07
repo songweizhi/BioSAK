@@ -91,9 +91,10 @@ def print_main_help():
        plot_sam_depth          ->  Plot SAM depth
 
     Others
-       hpc3                    ->  Submit jobs on HKUST hpc3
        iTOL                    ->  Prepare iTOL files
        js_cmds                 ->  Put commands in job scripts
+       js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
+       hpc3                    ->  Submit jobs on HKUST hpc3
        exe_cmds                ->  Execute commands with multiprocessing
        split_folder            ->  Split folder
        prefix_file             ->  Prefix file
@@ -105,12 +106,11 @@ def print_main_help():
        SubsampleLongReads      ->  Subsample Long Reads
        rename_reads_Reago      ->  Rename paired reads for Reago
        cross_link_seqs         ->  Cross link matched regions between two sequences
-       PhyloBiAssoc            ->  A wrapper for binaryPGLMM test
        submitHPC               ->  A wrapper for submitHPC.sh
        KeepRemovingTmp         ->  Keep removing old files in a folder
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
-    2. Use "pip3 install --upgrade BioSAK" to get the latest version of BioSAK.
+    2. Use "pip3 install --upgrade BioSAK" to get the latest version
     ''' % version(config_dict)
 
     print(help_message)
@@ -158,7 +158,7 @@ if __name__ == '__main__':
         arCOG_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
         arCOG_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
         arCOG_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
-        arCOG_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+        arCOG_parser.add_argument('-evalue',              required=False, default=0.0001, type=float,      help='evalue cutoff, default: 0.0001')
         args = vars(parser.parse_args())
         arCOG.arCOG(args)
 
@@ -173,7 +173,7 @@ if __name__ == '__main__':
         KEGG_parser.add_argument('-db_dir',                 required=True,                                  help='folder holds sequence, seq2ko and ko00001.keg files')
         KEGG_parser.add_argument('-diamond',                required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
         KEGG_parser.add_argument('-t',                      required=False, default=1,     type=int,        help='number of threads, default: 1')
-        KEGG_parser.add_argument('-evalue',                 required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+        KEGG_parser.add_argument('-evalue',                 required=False, default=0.0001, type=float,     help='evalue cutoff, default: 0.0001')
         args = vars(parser.parse_args())
         KEGG.Annotation_KEGG(args)
 
@@ -458,6 +458,7 @@ if __name__ == '__main__':
         js_cmds_parser.add_argument('-hd',     required=True,                       help='js header')
         js_cmds_parser.add_argument('-n',      required=True, type=int,             help='number of cmds per js')
         js_cmds_parser.add_argument('-auto',   required=False, action="store_true", help='automatically submit next js')
+        js_cmds_parser.add_argument('-sbatch', required=False, action="store_true", help='use sbatch, instead of qsub')
         js_cmds_parser.add_argument('-js_hpc', required=False, default=None,        help='Full path to js folder on HPC')
         js_cmds_parser.add_argument('-force',  required=False, action="store_true", help='force overwrite existing results')
         args = vars(parser.parse_args())
@@ -891,6 +892,18 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         metaAssembly.metaAssembly(args)
 
+    elif sys.argv[1] == 'js_hpc3':
+        from BioSAK import js_hpc3
+        js_hpc3_parser = subparsers.add_parser('js_hpc3', usage=js_hpc3.js_hpc3_usage)
+        js_hpc3_parser.add_argument('-p',       required=True,                          help='js prefix')
+        js_hpc3_parser.add_argument('-c',       required=True,                          help='cmds file')
+        js_hpc3_parser.add_argument('-hd',      required=True,                          help='js header')
+        js_hpc3_parser.add_argument('-n',       required=True,  type=int,               help='number of cmds per job script')
+        js_hpc3_parser.add_argument('-t',       required=False, type=int, default=1,    help='number of threads specified in the commands')
+        js_hpc3_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite existing results')
+        args = vars(parser.parse_args())
+        js_hpc3.js_hpc3(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
@@ -907,5 +920,4 @@ __token__
 
 pip3 install --upgrade BioSAK        
 
-songweizhi    shan88
 '''

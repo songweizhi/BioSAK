@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import os
 import glob
 import argparse
@@ -106,7 +104,6 @@ def run_blast_worker(argument_list):
     evalue_cutoff =         argument_list[6]
     threads_num =           argument_list[7]
 
-
     ################################################### define file name ###################################################
 
     input_file_path, in_file_basename, input_file_ext = sep_path_basename_ext(pwd_input_file)
@@ -176,40 +173,33 @@ def parse_blast_op_worker(argument_list):
 
     input_file_path, in_file_basename, input_file_ext = sep_path_basename_ext(pwd_input_file)
 
-    blast_results_best_hit =             '%s/%s_KEGG_wd/%s_blast_best_hits.tab'                     % (op_dir, in_file_basename, in_file_basename)
-    KO_assignment_file_D =               '%s/%s_KEGG_wd/%s_KO_assignment_D.txt'                     % (op_dir, in_file_basename, in_file_basename)
-    KO_assignment_file_DCBA =            '%s/%s_KEGG_wd/%s_ko_assignment_ABCD.txt'                  % (op_dir, in_file_basename, in_file_basename)
-
-    stats_file_A_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_A_GeneNumber.txt'               % (op_dir, in_file_basename, in_file_basename)
-    stats_file_B_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_B_GeneNumber.txt'               % (op_dir, in_file_basename, in_file_basename)
-    stats_file_C_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_C_GeneNumber.txt'               % (op_dir, in_file_basename, in_file_basename)
-    stats_file_D_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_D_GeneNumber.txt'               % (op_dir, in_file_basename, in_file_basename)
-
-    stats_file_A_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_A_TotalDepth.txt'               % (op_dir, in_file_basename, in_file_basename)
-    stats_file_B_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_B_TotalDepth.txt'               % (op_dir, in_file_basename, in_file_basename)
-    stats_file_C_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_C_TotalDepth.txt'               % (op_dir, in_file_basename, in_file_basename)
-    stats_file_D_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_D_TotalDepth.txt'               % (op_dir, in_file_basename, in_file_basename)
-
-    stats_file_A_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_A_GeneNumber_pct.txt'           % (op_dir, in_file_basename, in_file_basename)
-    stats_file_B_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_B_GeneNumber_pct.txt'           % (op_dir, in_file_basename, in_file_basename)
-    stats_file_C_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_C_GeneNumber_pct.txt'           % (op_dir, in_file_basename, in_file_basename)
-    stats_file_D_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_D_GeneNumber_pct.txt'           % (op_dir, in_file_basename, in_file_basename)
-
-    stats_file_A_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_A_TotalDepth_pct.txt'           % (op_dir, in_file_basename, in_file_basename)
-    stats_file_B_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_B_TotalDepth_pct.txt'           % (op_dir, in_file_basename, in_file_basename)
-    stats_file_C_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_C_TotalDepth_pct.txt'           % (op_dir, in_file_basename, in_file_basename)
-    stats_file_D_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_D_TotalDepth_pct.txt'           % (op_dir, in_file_basename, in_file_basename)
-
-    stats_file_A_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_A_GeneNumber_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
-    stats_file_B_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_B_GeneNumber_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
-    stats_file_C_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_C_GeneNumber_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
-    stats_file_D_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_D_GeneNumber_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
-
-    stats_file_A_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_A_TotalDepth_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
-    stats_file_B_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_B_TotalDepth_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
-    stats_file_C_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_C_TotalDepth_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
-    stats_file_D_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_D_TotalDepth_pct_by_all.txt'    % (op_dir, in_file_basename, in_file_basename)
-
+    blast_results_best_hit =             '%s/%s_KEGG_wd/%s_blast_best_hits.tab'             % (op_dir, in_file_basename, in_file_basename)
+    KO_assignment_file_D =               '%s/%s_KEGG_wd/%s_ko_assignment_D.txt'             % (op_dir, in_file_basename, in_file_basename)
+    KO_assignment_file_DCBA =            '%s/%s_KEGG_wd/%s_ko_assignment_ABCD.txt'          % (op_dir, in_file_basename, in_file_basename)
+    stats_file_A_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_A.txt'                  % (op_dir, in_file_basename, in_file_basename)
+    stats_file_B_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_B.txt'                  % (op_dir, in_file_basename, in_file_basename)
+    stats_file_C_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_C.txt'                  % (op_dir, in_file_basename, in_file_basename)
+    stats_file_D_GeneNumber =            '%s/%s_KEGG_wd/%s_ko_stats_D.txt'                  % (op_dir, in_file_basename, in_file_basename)
+    stats_file_A_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_A_depth.txt'            % (op_dir, in_file_basename, in_file_basename)
+    stats_file_B_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_B_depth.txt'            % (op_dir, in_file_basename, in_file_basename)
+    stats_file_C_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_C_depth.txt'            % (op_dir, in_file_basename, in_file_basename)
+    stats_file_D_TotalDepth =            '%s/%s_KEGG_wd/%s_ko_stats_D_depth.txt'            % (op_dir, in_file_basename, in_file_basename)
+    stats_file_A_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_A_pct.txt'              % (op_dir, in_file_basename, in_file_basename)
+    stats_file_B_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_B_pct.txt'              % (op_dir, in_file_basename, in_file_basename)
+    stats_file_C_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_C_pct.txt'              % (op_dir, in_file_basename, in_file_basename)
+    stats_file_D_GeneNumber_pct =        '%s/%s_KEGG_wd/%s_ko_stats_D_pct.txt'              % (op_dir, in_file_basename, in_file_basename)
+    stats_file_A_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_A_depth_pct.txt'        % (op_dir, in_file_basename, in_file_basename)
+    stats_file_B_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_B_depth_pct.txt'        % (op_dir, in_file_basename, in_file_basename)
+    stats_file_C_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_C_depth_pct.txt'        % (op_dir, in_file_basename, in_file_basename)
+    stats_file_D_TotalDepth_pct =        '%s/%s_KEGG_wd/%s_ko_stats_D_depth_pct.txt'        % (op_dir, in_file_basename, in_file_basename)
+    stats_file_A_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_A_pct_by_all.txt'       % (op_dir, in_file_basename, in_file_basename)
+    stats_file_B_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_B_pct_by_all.txt'       % (op_dir, in_file_basename, in_file_basename)
+    stats_file_C_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_C_pct_by_all.txt'       % (op_dir, in_file_basename, in_file_basename)
+    stats_file_D_GeneNumber_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_D_pct_by_all.txt'       % (op_dir, in_file_basename, in_file_basename)
+    stats_file_A_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_A_depth_pct_by_all.txt' % (op_dir, in_file_basename, in_file_basename)
+    stats_file_B_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_B_depth_pct_by_all.txt' % (op_dir, in_file_basename, in_file_basename)
+    stats_file_C_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_C_depth_pct_by_all.txt' % (op_dir, in_file_basename, in_file_basename)
+    stats_file_D_TotalDepth_pct_by_all = '%s/%s_KEGG_wd/%s_ko_stats_D_depth_pct_by_all.txt' % (op_dir, in_file_basename, in_file_basename)
 
     ################################################# parse blast results ##################################################
 
@@ -279,9 +269,7 @@ def parse_blast_op_worker(argument_list):
                     desc_B = Bs_description_dict[KO_DCBA_list_only_id[2]]
                     desc_C = Cs_description_dict[KO_DCBA_list_only_id[1]]
                     desc_D = Ds_description_dict[KO_DCBA_list_only_id[0]]
-                    ko_assign_ABCD_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (gene_ID,
-                                                                             '\t'.join(KO_DCBA_list[::-1]),
-                                                                             desc_A, desc_B, desc_C, desc_D))
+                    ko_assign_ABCD_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (gene_ID, '\t'.join(KO_DCBA_list[::-1]), desc_A, desc_B, desc_C, desc_D))
 
                 if len(KO_ID_ABCD) > 1:
                     for each_ABCD in KO_ID_ABCD:
@@ -291,15 +279,9 @@ def parse_blast_op_worker(argument_list):
                         each_desc_B = Bs_description_dict[each_KO_DCBA_list_only_id[2]]
                         each_desc_C = Cs_description_dict[each_KO_DCBA_list_only_id[1]]
                         each_desc_D = Ds_description_dict[each_KO_DCBA_list_only_id[0]]
-                        ko_assign_ABCD_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (gene_ID,
-                                                                                 '\t'.join(each_KO_DCBA_list[::-1]),
-                                                                                 each_desc_A,
-                                                                                 each_desc_B,
-                                                                                 each_desc_C,
-                                                                                 each_desc_D))
+                        ko_assign_ABCD_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (gene_ID, '\t'.join(each_KO_DCBA_list[::-1]), each_desc_A, each_desc_B, each_desc_C, each_desc_D))
 
     ko_assign_ABCD_handle.close()
-
 
     ##################################################### Get summary ######################################################
 
@@ -376,7 +358,6 @@ def parse_blast_op_worker(argument_list):
                     if query_id not in ko_D_to_gene_member_dict[query_ko_D]:
                         ko_D_to_gene_member_dict[query_ko_D].append(query_id)
 
-
     #################### write out GeneNumber and TotalDepth stats ####################
 
     write_out_stats_GeneNumber(identified_ko_A_list, ko_A_to_gene_member_dict, As_description_dict, stats_file_A_GeneNumber)
@@ -389,7 +370,6 @@ def parse_blast_op_worker(argument_list):
         write_out_stats_TotalDepth(identified_ko_C_list, ko_C_to_gene_member_dict, gene_depth_dict, Cs_description_dict, stats_file_C_TotalDepth)
         write_out_stats_TotalDepth(identified_ko_D_list, ko_D_to_gene_member_dict, gene_depth_dict, Ds_description_dict, stats_file_D_TotalDepth)
 
-
     #################### write out GeneNumber and TotalDepth stats (pct) ####################
 
     AnnotateNorm(stats_file_A_GeneNumber, True, 2, len(genes_with_ko), stats_file_A_GeneNumber_pct, 'KO\tGeneNumber_pct\tDescription\n')
@@ -401,7 +381,6 @@ def parse_blast_op_worker(argument_list):
         AnnotateNorm(stats_file_B_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_B_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
         AnnotateNorm(stats_file_C_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_C_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
         AnnotateNorm(stats_file_D_TotalDepth, True, 2, genes_with_ko_TotalDepth, stats_file_D_TotalDepth_pct, 'KO\tTotalDepth_pct\tDescription\n')
-
 
     #################### write out GeneNumber and TotalDepth stats (pct_by_all) ####################
 
@@ -431,14 +410,13 @@ def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, a
         annotation_folder_basename = annotation_folder.split('_KEGG_wd')[0]
 
         if with_depth is False:
-            pwd_annotation_stats_file =             '%s/%s/%s_ko_stats_%s_GeneNumber.txt'               % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
-            pwd_annotation_stats_file_pct =         '%s/%s/%s_ko_stats_%s_GeneNumber_pct.txt'           % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
-            pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_ko_stats_%s_GeneNumber_pct_by_all.txt'    % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
-
+            pwd_annotation_stats_file =             '%s/%s/%s_ko_stats_%s.txt'                  % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
+            pwd_annotation_stats_file_pct =         '%s/%s/%s_ko_stats_%s_pct.txt'              % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
+            pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_ko_stats_%s_pct_by_all.txt'       % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
         else:
-            pwd_annotation_stats_file =             '%s/%s/%s_ko_stats_%s_TotalDepth.txt'               % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
-            pwd_annotation_stats_file_pct =         '%s/%s/%s_ko_stats_%s_TotalDepth_pct.txt'           % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
-            pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_ko_stats_%s_TotalDepth_pct_by_all.txt'    % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
+            pwd_annotation_stats_file =             '%s/%s/%s_ko_stats_%s_depth.txt'            % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
+            pwd_annotation_stats_file_pct =         '%s/%s/%s_ko_stats_%s_depth_pct.txt'        % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
+            pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_ko_stats_%s_depth_pct_by_all.txt' % (annotation_dir, annotation_folder, annotation_folder_basename, stats_level)
 
         current_ko_to_num_dict = {}
         for ko in open(pwd_annotation_stats_file):
@@ -537,7 +515,6 @@ def Annotation_KEGG(args):
     num_threads =         args['t']
     evalue_cutoff =       args['evalue']
 
-
     run_blast = None
     if (input_file_faa is not None) and (input_file_user_ko is None):
         run_blast = True
@@ -564,14 +541,12 @@ def Annotation_KEGG(args):
         print(datetime.now().strftime(time_format) + 'Annotation results provided, blastp/diamond skipped')
         sleep(0.5)
 
-
     ################################################# define file name #################################################
 
-    KEGG_DB_seq =         '%s/kegg_db_seq.fasta'            % KEGG_DB_folder
-    KEGG_DB_seq_diamond = '%s/kegg_db_seq.fasta.dmnd'       % KEGG_DB_folder
-    KEGG_DB_seq2ko =      '%s/kegg_db_seq2ko.txt'           % KEGG_DB_folder
-    KEGG_DB_ko =          '%s/ko00001.keg'                  % KEGG_DB_folder
-
+    KEGG_DB_seq         = '%s/kegg_db_seq.fasta'        % KEGG_DB_folder
+    KEGG_DB_seq_diamond = '%s/kegg_db_seq.fasta.dmnd'   % KEGG_DB_folder
+    KEGG_DB_seq2ko      = '%s/kegg_db_seq2ko.txt'       % KEGG_DB_folder
+    KEGG_DB_ko          = '%s/ko00001.keg'              % KEGG_DB_folder
 
     ########################################## check whether diamond db exist ##########################################
 
@@ -600,7 +575,6 @@ def Annotation_KEGG(args):
             makeblastdb_cmd = 'makeblastdb -in %s -dbtype prot -parse_seqids -logfile %s.log' % (KEGG_DB_seq, KEGG_DB_seq)
             os.system(makeblastdb_cmd)
             print(datetime.now().strftime(time_format) + 'makeblastdb finished')
-
 
     ######################################### Run blastp with multiprocessing ##########################################
 
@@ -703,7 +677,6 @@ def Annotation_KEGG(args):
             if hit_id_KO != '':
                 db_seq_to_KO_dict[db_seq] = hit_id_KO
 
-
     ########################################################################################################################
 
     # check whether the input file is a file or folder
@@ -782,19 +755,17 @@ def Annotation_KEGG(args):
         pool.close()
         pool.join()
 
-
         ######################################################### get dataframe #########################################################
 
         print(datetime.now().strftime(time_format) + 'Data matrix exported to:')
 
         for ko_level in ['A', 'B', 'C', 'D']:
-            annotation_df_GeneNumber =            '%s/%s_%s_GeneNumber.txt'            % (output_folder, input_folder_name, ko_level)
-            annotation_df_GeneNumber_pct =        '%s/%s_%s_GeneNumber_pct.txt'        % (output_folder, input_folder_name, ko_level)
-            annotation_df_GeneNumber_pct_by_all = '%s/%s_%s_GeneNumber_pct_by_all.txt' % (output_folder, input_folder_name, ko_level)
-            annotation_df_TotalDepth =            '%s/%s_%s_TotalDepth.txt'            % (output_folder, input_folder_name, ko_level)
-            annotation_df_TotalDepth_pct =        '%s/%s_%s_TotalDepth_pct.txt'        % (output_folder, input_folder_name, ko_level)
-            annotation_df_TotalDepth_pct_by_all = '%s/%s_%s_TotalDepth_pct_by_all.txt' % (output_folder, input_folder_name, ko_level)
-
+            annotation_df_GeneNumber =            '%s/%s_%s.txt'                    % (output_folder, input_folder_name, ko_level)
+            annotation_df_GeneNumber_pct =        '%s/%s_%s_pct.txt'                % (output_folder, input_folder_name, ko_level)
+            annotation_df_GeneNumber_pct_by_all = '%s/%s_%s_pct_by_all.txt'         % (output_folder, input_folder_name, ko_level)
+            annotation_df_TotalDepth =            '%s/%s_%s_depth.txt'              % (output_folder, input_folder_name, ko_level)
+            annotation_df_TotalDepth_pct =        '%s/%s_%s_depth_pct.txt'          % (output_folder, input_folder_name, ko_level)
+            annotation_df_TotalDepth_pct_by_all = '%s/%s_%s_depth_pct_by_all.txt'   % (output_folder, input_folder_name, ko_level)
 
             #################### get GeneNumber df and report ####################
 
@@ -804,7 +775,6 @@ def Annotation_KEGG(args):
             print(annotation_df_GeneNumber_pct.split('/')[-1])
             if pct_by_all is True:
                 print(annotation_df_GeneNumber_pct_by_all.split('/')[-1])
-
 
             #################### get TotalDepth df and report ####################
 
@@ -816,7 +786,6 @@ def Annotation_KEGG(args):
                 if pct_by_all is True:
                     print(annotation_df_TotalDepth_pct_by_all.split('/')[-1])
 
-
     ################################################## Final report ####################################################
 
     print(datetime.now().strftime(time_format) + 'Done!')
@@ -825,15 +794,14 @@ def Annotation_KEGG(args):
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(usage=KEGG_parser_usage)
-    parser.add_argument('-seq_in',      required=False,                            help='faa file')
-    parser.add_argument('-ko_in',       required=False,                            help='annotation results from BlastKOALA/GhostKOALA, normally with name user_ko.txt')
-    parser.add_argument('-x',           required=False,                            help='file extension')
-    parser.add_argument('-depth',       required=False, default=None,              help='gene depth file/folder')
-    parser.add_argument('-pct_by_all',  required=False, action='store_true',       help='normalize by all query genes, rather than those with ko assignment')
-    parser.add_argument('-db_dir',      required=True,                             help='folder holds sequence, seq2ko and ko00001.keg files')
-    parser.add_argument('-diamond',     required=False, action='store_true',       help='run diamond (for big dataset), default is NCBI blastp')
-    parser.add_argument('-t',           required=False, default=1,     type=int,   help='number of threads, default: 1')
-    parser.add_argument('-evalue',      required=False, default=0.001, type=float, help='evalue cutoff, default: 0.001')
-
+    parser.add_argument('-seq_in',      required=False,                             help='faa file')
+    parser.add_argument('-ko_in',       required=False,                             help='annotation results from BlastKOALA/GhostKOALA, normally with name user_ko.txt')
+    parser.add_argument('-x',           required=False,                             help='file extension')
+    parser.add_argument('-depth',       required=False, default=None,               help='gene depth file/folder')
+    parser.add_argument('-pct_by_all',  required=False, action='store_true',        help='normalize by all query genes, rather than those with ko assignment')
+    parser.add_argument('-db_dir',      required=True,                              help='folder holds sequence, seq2ko and ko00001.keg files')
+    parser.add_argument('-diamond',     required=False, action='store_true',        help='run diamond (for big dataset), default is NCBI blastp')
+    parser.add_argument('-t',           required=False, default=1,     type=int,    help='number of threads, default: 1')
+    parser.add_argument('-evalue',      required=False, default=0.0001, type=float, help='evalue cutoff, default: 0.0001')
     args = vars(parser.parse_args())
     Annotation_KEGG(args)
