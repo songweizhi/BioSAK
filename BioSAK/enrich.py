@@ -11,17 +11,20 @@ enrich_usage = '''
 
 BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -f
 
-# The number of groups needs to be Two!!!
+# The number of genome groups has to be TWO!!!
 
 # Example input files:
 https://github.com/songweizhi/BioSAK/tree/master/demo_data/enrich
 
-# How it works (https://doi.org/10.1038/s41396-020-00815-8):
+# please refers to https://doi.org/10.1038/s41396-020-00815-8 for how it works:
 Functions that are enriched in the genomes in either group are identified using Mann–Whitney 
 U tests followed by a Bonferroni correction with a p value cut-off of 0.05 being considered 
 significant. Only significantly different functions with greater than 2-fold mean differences 
 are considered to be enriched. Functions detected only in the genomes from one group type are 
 considered to be enriched if they existed in at least 50 percent of the genomes in the group.
+
+cd /Users/songweizhi/Desktop
+/Library/Frameworks/Python.framework/Versions/3.10/bin/python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/enrich.py -i ko_stats_B_dir -x txt -g Nitrosopumilaceae_50_5_dRep97_195_lifestyle_ignored_NAs.txt -o ko_B_enrichment_wd -f
 
 ===============================================================================================
 '''
@@ -102,6 +105,27 @@ def enrich(args):
     op_dir              = args['o']
     force_create_op_dir = args['f']
 
+    ####################################################################################################################
+
+    # read in grouping file
+    group_id_set = set()
+    grouping_dict = dict()
+    gnm_with_grouping_set = set()
+    for each_gnm in open(grouping_file):
+        each_gnm_split = each_gnm.strip().split('\t')
+        grouping_dict[each_gnm_split[0]] = each_gnm_split[1]
+        group_id_set.add(each_gnm_split[1])
+        gnm_with_grouping_set.add(each_gnm_split[0])
+
+    # get annotation file list
+    annotation_file_re = '%s/*.%s' % (annotation_file_dir, file_ext)
+    annotation_file_list = [os.path.splitext(os.path.basename(i))[0] for i in glob.glob(annotation_file_re)]
+
+
+
+
+    ####################################################################################################################
+
     annotation_matrix_file  = '%s/data_matrix.txt'  % op_dir
     stats_op_txt            = '%s/stats_result.txt' % op_dir
     summary_txt             = '%s/summary.txt'      % op_dir
@@ -115,13 +139,15 @@ def enrich(args):
 
     os.system('mkdir %s' % op_dir)
 
-    # read in grouping file
-    grouping_dict = dict()
-    group_id_set = set()
-    for each_gnm in open(grouping_file):
-        each_gnm_split = each_gnm.strip().split('\t')
-        grouping_dict[each_gnm_split[0]] = each_gnm_split[1]
-        group_id_set.add(each_gnm_split[1])
+
+
+    # get annotation file list
+    annotation_file_re = '%s/*.%s' % (annotation_file_dir, file_ext)
+    annotation_file_list = glob.glob(annotation_file_re)
+    if len(annotation_file_list) == 0:
+        print('Annotation file not found, program exited!')
+        exit()
+
 
     group_id_list = sorted([i for i in group_id_set])
 
@@ -131,12 +157,6 @@ def enrich(args):
 
     group_1_id = group_id_list[0]
     group_2_id = group_id_list[1]
-
-    annotation_file_re = '%s/*.%s' % (annotation_file_dir, file_ext)
-    annotation_file_list = glob.glob(annotation_file_re)
-    if len(annotation_file_list) == 0:
-        print('Annotation file not found, program exited!')
-        exit()
 
     identified_ko_set = set()
     ko_dict_of_dict = {}
@@ -259,3 +279,4 @@ if __name__ == '__main__':
     enrich_parser.add_argument('-f', required=False, action="store_true",   help='force overwrite')
     args = vars(enrich_parser.parse_args())
     enrich(args)
+

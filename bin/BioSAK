@@ -108,6 +108,7 @@ def print_main_help():
        cross_link_seqs         ->  Cross link matched regions between two sequences
        submitHPC               ->  A wrapper for submitHPC.sh
        KeepRemovingTmp         ->  Keep removing old files in a folder
+       koala                   ->  separate combined BlastKOALA or GhostKOALA output
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Use "pip3 install --upgrade BioSAK" to get the latest version
@@ -903,6 +904,15 @@ if __name__ == '__main__':
         js_hpc3_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite existing results')
         args = vars(parser.parse_args())
         js_hpc3.js_hpc3(args)
+
+    elif sys.argv[1] == 'koala':
+        from BioSAK import koala
+        koala_parser = subparsers.add_parser('koala', usage=koala.koala_usage)
+        koala_parser.add_argument('-i', required=True,                          help='user_ko.txt from BlastKOALA or GhostKOALA')
+        koala_parser.add_argument('-o', required=True,                          help='output directory')
+        koala_parser.add_argument('-f', required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        koala.koala(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

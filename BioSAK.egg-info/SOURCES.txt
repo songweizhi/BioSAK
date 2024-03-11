@@ -96,6 +96,7 @@ BioSAK/js_cmds.py
 BioSAK/js_hpc3.py
 BioSAK/keep_best_hit.py
 BioSAK/ko00001.keg
+BioSAK/koala.py
 BioSAK/label_tree.R
 BioSAK/label_tree.py
 BioSAK/link_16S_MAG.py

@@ -7,7 +7,11 @@ file_dir = '/Users/songweizhi/Desktop/DateArTree'
 file_ext = 'txt'
 
 file_re = '%s/*.%s' % (file_dir, file_ext)
+
 file_list = glob.glob(file_re)
+file_list = [os.path.basename(i) for i in glob.glob(file_re)]
+
+
 print(file_list)
 
 

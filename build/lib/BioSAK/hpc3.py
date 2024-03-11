@@ -43,7 +43,7 @@ def hpc3(args):
     js_file_handle.write('cd $SLURM_SUBMIT_DIR\n\n')
 
     if conda_env is not None:
-        js_file_handle.write('conda activate %s\n'  % conda_env)
+        js_file_handle.write('source ~/.bashrc\nconda activate %s\n'  % conda_env)
 
     js_file_handle.write('%s\n' % cmd)
     js_file_handle.close()
