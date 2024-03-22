@@ -4,13 +4,21 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 
+
 boxplot_usage = '''
-=================================== enrich example commands ===================================
+===================== boxplot example commands =====================
 
-python3 /Users/songweizhi/PycharmProjects/BioSAK/My_Python_scripts/boxplot_with_dots.py -i demo_boxplot.txt -o boxplot.pdf
-python3 /Users/songweizhi/PycharmProjects/BioSAK/My_Python_scripts/boxplot_with_dots.py -i demo_boxplot.txt -o boxplot.pdf -d
+python3 boxplot_with_dots.py -i demo_boxplot.txt -o boxplot.pdf
+python3 boxplot_with_dots.py -i demo_boxplot.txt -o boxplot.pdf -d
 
-===============================================================================================
+# format of input file (tab separated, no row name)
+Apple	Banana	Orange
+1	4	6
+2	5	7
+3	6	8
+4	7	9
+
+====================================================================
 '''
 
 

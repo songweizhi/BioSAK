@@ -5,7 +5,18 @@ Example plots in python.
 1. Basic barplot [[basic_plot.py](basic_plot.py)]
    ![basic_barplot](basic_barplot.png)
 
-1. Boxplot with dots [[boxplot_with_dots.py](boxplot_with_dots.py)]
+1. Boxplot [[boxplot_with_dots.py](boxplot_with_dots.py)]
+
+       python3 boxplot_with_dots.py -i demo_boxplot.txt -o boxplot.pdf
+
+   ![boxplot.png](boxplot.png)
+
+       python3 boxplot_with_dots.py -i demo_boxplot.txt -o boxplot.pdf -d
+
+   ![boxplot_with_dots.png](boxplot_with_dots.png)
+
+
+5. with dots [[boxplot_with_dots.py](boxplot_with_dots.py)]
    ![boxplot_with_dots.png](boxplot_with_dots.png)
 
 1. Boxplot with extra values [[Boxplot_with_extra_values.py](Boxplot_with_extra_values.py)]
