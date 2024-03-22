@@ -34,7 +34,6 @@ def boxplot_with_dots(args):
             element_pos = 0
             for each_element in line_split:
                 grp = col_index[element_pos]
-                print('%s\t%s\t%s' % (grp, element_pos, each_element))
                 data_dict[grp].append(float(each_element))
                 element_pos += 1
 
