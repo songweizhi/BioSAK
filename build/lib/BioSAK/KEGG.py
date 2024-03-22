@@ -18,10 +18,10 @@ KEGG_parser_usage = '''
 # Dependencies: blast+ or diamond
 
 # annotation with NCBI blastp (default, for small dataset)
-BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 6 -seq_in input.faa -depth input.depth
+BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 6 -seq_in input.faa -d input.depth
 
 # annotation with Diamond blastp (for big dataset)
-BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 12 -seq_in faa_folder -x faa -depth depth_files -diamond
+BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 12 -seq_in faa_folder -x faa -d depth_files -diamond
 
 # get summary for BlastKOALA/GhostKOALA produced results
 BioSAK KEGG -db_dir path/to/your/KEGG_db_dir -t 9 -ko_in user_ko.txt
@@ -508,7 +508,7 @@ def Annotation_KEGG(args):
     input_file_faa =      args['seq_in']
     input_file_user_ko =  args['ko_in']
     file_extension =      args['x']
-    depth_file =          args['depth']
+    depth_file =          args['d']
     pct_by_all =          args['pct_by_all']
     KEGG_DB_folder =      args['db_dir']
     run_diamond =         args['diamond']
@@ -797,7 +797,7 @@ if __name__ == "__main__":
     parser.add_argument('-seq_in',      required=False,                             help='faa file')
     parser.add_argument('-ko_in',       required=False,                             help='annotation results from BlastKOALA/GhostKOALA, normally with name user_ko.txt')
     parser.add_argument('-x',           required=False,                             help='file extension')
-    parser.add_argument('-depth',       required=False, default=None,               help='gene depth file/folder')
+    parser.add_argument('-d',           required=False, default=None,               help='gene depth file/folder')
     parser.add_argument('-pct_by_all',  required=False, action='store_true',        help='normalize by all query genes, rather than those with ko assignment')
     parser.add_argument('-db_dir',      required=True,                              help='folder holds sequence, seq2ko and ko00001.keg files')
     parser.add_argument('-diamond',     required=False, action='store_true',        help='run diamond (for big dataset), default is NCBI blastp')

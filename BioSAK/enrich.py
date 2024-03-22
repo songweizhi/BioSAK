@@ -9,9 +9,11 @@ from statsmodels.stats.multitest import multipletests
 enrich_usage = '''
 =================================== enrich example commands ===================================
 
-BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -f
+BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -bc
 
-# The number of genome groups has to be TWO!!!
+# Note:
+1. The number of genome groups has to be TWO!!!
+2. Group name should NOT be 1 and 0. use some alphabet or words instead.
 
 # Example input files:
 https://github.com/songweizhi/BioSAK/tree/master/demo_data/enrich
@@ -22,9 +24,6 @@ U tests followed by a Bonferroni correction with a p value cut-off of 0.05 being
 significant. Only significantly different functions with greater than 2-fold mean differences 
 are considered to be enriched. Functions detected only in the genomes from one group type are 
 considered to be enriched if they existed in at least 50 percent of the genomes in the group.
-
-cd /Users/songweizhi/Desktop
-/Library/Frameworks/Python.framework/Versions/3.10/bin/python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/enrich.py -i ko_stats_B_dir -x txt -g Nitrosopumilaceae_50_5_dRep97_195_lifestyle_ignored_NAs.txt -o ko_B_enrichment_wd -f
 
 ===============================================================================================
 '''
@@ -49,7 +48,7 @@ def remove_0_from_Pandas_Series(Pandas_Series):
     return no_0_num_list
 
 
-def summarize_stats(output_test, summary_txt):
+def summarize_stats(output_test, ko_desc_dict, summary_txt):
 
     sample_1_id = ''
     sample_2_id = ''
@@ -61,7 +60,7 @@ def summarize_stats(output_test, summary_txt):
         line_num_index += 1
 
     summary_txt_handle = open(summary_txt, 'w')
-    summary_txt_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tEnriched_in\n' % (sample_1_id, sample_2_id))
+    summary_txt_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tEnriched_in\tDescription\n' % (sample_1_id, sample_2_id))
     line_num_index = 0
     for ko in open(output_test):
         if line_num_index > 0:
@@ -92,7 +91,7 @@ def summarize_stats(output_test, summary_txt):
                         enriched_in = sample_2_id
 
                 if (enriched_in == sample_1_id) or (enriched_in == sample_2_id):
-                    summary_txt_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, enriched_in))
+                    summary_txt_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, enriched_in, ko_desc_dict[ko_id]))
         line_num_index += 1
     summary_txt_handle.close()
 
@@ -103,6 +102,7 @@ def enrich(args):
     file_ext            = args['x']
     grouping_file       = args['g']
     op_dir              = args['o']
+    perform_bc          = args['bc']
     force_create_op_dir = args['f']
 
     ####################################################################################################################
@@ -117,12 +117,42 @@ def enrich(args):
         group_id_set.add(each_gnm_split[1])
         gnm_with_grouping_set.add(each_gnm_split[0])
 
+    if len(group_id_set) != 2:
+        print('The number of groups needs to be TWO, program exited!')
+        exit()
+
     # get annotation file list
     annotation_file_re = '%s/*.%s' % (annotation_file_dir, file_ext)
-    annotation_file_list = [os.path.splitext(os.path.basename(i))[0] for i in glob.glob(annotation_file_re)]
+    annotation_file_list = glob.glob(annotation_file_re)
+    annotation_file_list_id = [os.path.splitext(os.path.basename(i))[0] for i in annotation_file_list]
+    if len(annotation_file_list_id) == 0:
+        print('Annotation file not found, program exited!')
+        exit()
 
+    # get shared genomes
+    shared_gnm_set = set(gnm_with_grouping_set).intersection(annotation_file_list_id)
+    if len(shared_gnm_set) == 0:
+        print('No genome shared by %s and %s, program exited!' % (grouping_file, annotation_file_dir))
+        exit()
 
+    gnms_uniq_to_grouping_file = set()
+    for g1 in gnm_with_grouping_set:
+        if g1 not in shared_gnm_set:
+            gnms_uniq_to_grouping_file.add(g1)
 
+    gnms_uniq_to_annotation_dir = set()
+    for g2 in annotation_file_list_id:
+        if g2 not in shared_gnm_set:
+            gnms_uniq_to_annotation_dir.add(g2)
+
+    # report
+    if len(gnms_uniq_to_grouping_file) > 0:
+        print('Genomes uniq to %s (%s): %s' % (grouping_file, len(gnms_uniq_to_grouping_file), ','.join(sorted(list(gnms_uniq_to_grouping_file)))))
+    if len(gnms_uniq_to_annotation_dir) > 0:
+        print('Genomes uniq to %s (%s): %s' % (annotation_file_dir, len(gnms_uniq_to_annotation_dir), ','.join(sorted(list(gnms_uniq_to_annotation_dir)))))
+
+    print('%s genomes found in both %s and %s.' % (len(shared_gnm_set), grouping_file, annotation_file_dir))
+    print('Will perform enrichment analysis on the %s genomes.' % len(shared_gnm_set))
 
     ####################################################################################################################
 
@@ -134,33 +164,26 @@ def enrich(args):
         if force_create_op_dir is True:
             os.system('rm -r %s' % op_dir)
         else:
-            print('Output folder detected, program exited!')
+            print('Output directory detected, program exited!')
             exit()
-
     os.system('mkdir %s' % op_dir)
 
+    ####################################################################################################################
 
-
-    # get annotation file list
-    annotation_file_re = '%s/*.%s' % (annotation_file_dir, file_ext)
-    annotation_file_list = glob.glob(annotation_file_re)
-    if len(annotation_file_list) == 0:
-        print('Annotation file not found, program exited!')
-        exit()
-
+    annotation_file_list_only_shared = set()
+    for each_file in annotation_file_list:
+        _, f_base, _ = sep_path_basename_ext(each_file)
+        if f_base in shared_gnm_set:
+            annotation_file_list_only_shared.add(each_file)
 
     group_id_list = sorted([i for i in group_id_set])
-
-    if len(group_id_list) != 2:
-        print('The number of groups needs to be TWO, program exited!')
-        exit()
-
     group_1_id = group_id_list[0]
     group_2_id = group_id_list[1]
 
     identified_ko_set = set()
     ko_dict_of_dict = {}
-    for annotation_file in annotation_file_list:
+    ko_desc_dict = dict()
+    for annotation_file in annotation_file_list_only_shared:
         f_path, MAG_id, f_ext = sep_path_basename_ext(annotation_file)
         current_MAG_ko_stats_dict = {}
         current_MAG_ko_total = 0
@@ -171,6 +194,7 @@ def enrich(args):
                 identified_ko_set.add(each_line_split[0])
                 current_MAG_ko_stats_dict[each_line_split[0]] = int(each_line_split[1])
                 current_MAG_ko_total += int(each_line_split[1])
+                ko_desc_dict[each_line_split[0]] = each_line_split[2]
             line_num_index += 1
 
         current_MAG_ko_stats_dict_norm = {}
@@ -193,11 +217,6 @@ def enrich(args):
 
         current_MAG_ko_stats_list_str = [str(i) for i in current_MAG_ko_stats_list]
 
-        if MAG not in grouping_dict:
-            print('ID %s not found in %s, program exited!' % (MAG, grouping_file))
-            print('Program exited!')
-            exit()
-
         mag_group = grouping_dict[MAG]
         file_out_handle.write('%s,%s,%s\n' % (mag_group, MAG, ','.join(current_MAG_ko_stats_list_str)))
     file_out_handle.close()
@@ -217,16 +236,19 @@ def enrich(args):
     ko_id_list = []
     col_index = 0
     for column in column_list:
-        if col_index >= 2:
+        if col_index >= 1:
+            print('Processing %s/%s: %s' % ((col_index - 1), len(column_list)-1, column))
             group1 = df.where(df.Group == group_1_id).dropna()[column]
             group2 = df.where(df.Group == group_2_id).dropna()[column]
+
+            # to calculate the presence coverage, nothing about the enrichment stats
             group1_no_zero_pct = len(remove_0_from_Pandas_Series(group1))*100/len(group1)
             group2_no_zero_pct = len(remove_0_from_Pandas_Series(group2))*100/len(group2)
             group1_no_zero_pct = float("{0:.2f}".format(group1_no_zero_pct))
             group2_no_zero_pct = float("{0:.2f}".format(group2_no_zero_pct))
             ko_to_group_detected_pct_dict[column] = [group1_no_zero_pct, group2_no_zero_pct]
-
-            print('Processing %s/%s: %s' % ((col_index - 1), len(column_list)-1, column))
+            # print('%s\t%s\t%s' % (column, group_1_id, list(group1)))
+            # print('%s\t%s\t%s' % (column, group_2_id, list(group2)))
 
             # store group mean into dict
             group1_mean = float("{0:.2f}".format(sum(group1) / len(group1)))
@@ -241,28 +263,29 @@ def enrich(args):
 
         col_index += 1
 
-    p_value_list_adjusted = multipletests(p_value_list, alpha=0.1, method='bonferroni')[1]
+    if perform_bc is True:
+        p_value_list_adjusted = multipletests(p_value_list, alpha=0.1, method='bonferroni')[1]
+    else:
+        p_value_list_adjusted = p_value_list
 
     x = 0
     output_test_handle = open(stats_op_txt, 'w')
-    output_test_handle.write('KO\t%s\tDectected_pct\t%s\tDectected_pct\tP_value\tP_value_adjusted\n' % (group_1_id, group_2_id))
+    output_test_handle.write('KO\t%s\tDectected_pct\t%s\tDectected_pct\tP_value\tP_value_adjusted\tDescription\n' % (group_1_id, group_2_id))
     while x < len(ko_id_list):
         current_p = float("{0:.3f}".format(p_value_list[x]))
         current_p_adjusted = float("{0:.3f}".format(p_value_list_adjusted[x]))
         current_p_group_mean = [str(i) for i in ko_to_group_mean_dict[ko_id_list[x]]]
         current_p_detected_pct = [str(i) for i in ko_to_group_detected_pct_dict[ko_id_list[x]]]
-
         group_1_mean = current_p_group_mean[0]
         group_2_mean = current_p_group_mean[1]
         group_1_no_zero_pct = current_p_detected_pct[0]
         group_2_no_zero_pct = current_p_detected_pct[1]
-
-        output_test_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id_list[x], group_1_mean, group_1_no_zero_pct, group_2_mean, group_2_no_zero_pct, current_p, current_p_adjusted))
+        output_test_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id_list[x], group_1_mean, group_1_no_zero_pct, group_2_mean, group_2_no_zero_pct, current_p, current_p_adjusted, ko_desc_dict[ko_id_list[x]]))
         x += 1
     output_test_handle.close()
 
     # summarize stats
-    summarize_stats(stats_op_txt, summary_txt)
+    summarize_stats(stats_op_txt, ko_desc_dict, summary_txt)
 
     # file report
     print('Results of enrichment analysis exported to: %s' % summary_txt)
@@ -272,11 +295,11 @@ def enrich(args):
 if __name__ == '__main__':
 
     enrich_parser = argparse.ArgumentParser(usage=enrich_usage)
-    enrich_parser.add_argument('-i', required=True,                         help='annotation files')
-    enrich_parser.add_argument('-x', required=True,                         help='file extension')
-    enrich_parser.add_argument('-g', required=True,                         help='grouping file')
-    enrich_parser.add_argument('-o', required=True,                         help='output directory')
-    enrich_parser.add_argument('-f', required=False, action="store_true",   help='force overwrite')
+    enrich_parser.add_argument('-i',    required=True,                         help='annotation files')
+    enrich_parser.add_argument('-x',    required=True,                         help='file extension')
+    enrich_parser.add_argument('-g',    required=True,                         help='grouping file')
+    enrich_parser.add_argument('-o',    required=True,                         help='output directory')
+    enrich_parser.add_argument('-bc',   required=False, action="store_true",   help='perform Bonferroni correction')
+    enrich_parser.add_argument('-f',    required=False, action="store_true",   help='force overwrite')
     args = vars(enrich_parser.parse_args())
     enrich(args)
-

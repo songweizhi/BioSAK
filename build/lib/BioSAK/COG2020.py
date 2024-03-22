@@ -22,10 +22,10 @@ module load diamond
 
 # annotate protein sequences
 BioSAK COG2020 -m P -t 6 -db_dir path/to/your/COG_db_dir -i genes.faa 
-BioSAK COG2020 -m P -t 6 -db_dir path/to/your/COG_db_dir -i faa_files -x faa -depth depth_files
+BioSAK COG2020 -m P -t 6 -db_dir path/to/your/COG_db_dir -i faa_files -x faa -d depth_files
 
 # annotate DNA sequences (ORFs)
-BioSAK COG2020 -m N -t 6 -db_dir path/to/your/COG_db_dir -i genes.ffn -depth gene.depth
+BioSAK COG2020 -m N -t 6 -db_dir path/to/your/COG_db_dir -i genes.ffn -d gene.depth
 BioSAK COG2020 -m N -t 6 -db_dir path/to/your/COG_db_dir -i ffn_files -x ffn
 
 # Prepare DB files (version 2020):
@@ -434,7 +434,7 @@ def COG2020(args):
     file_in =           args['i']
     file_extension =    args['x']
     sequence_type =     args['m']
-    depth_file =        args['depth']
+    depth_file =        args['d']
     pct_by_all =        args['pct_by_all']
     DB_dir =            args['db_dir']
     num_threads =       args['t']
@@ -446,7 +446,6 @@ def COG2020(args):
     pwd_cog_20_cog_csv      = '%s/cog-20.cog.csv'    % DB_dir
     pwd_cog_20_def_tab      = '%s/cog-20.def.tab'    % DB_dir
     pwd_fun_20_tab          = '%s/fun-20.tab'        % DB_dir
-
 
     ############################################ check whether db file exist ###########################################
 
@@ -465,7 +464,6 @@ def COG2020(args):
             print(datetime.now().strftime(time_format) + 'DB file for diamond not found, please refers to the help info for diamond db preparation')
             print(datetime.now().strftime(time_format) + 'Program exited!')
             exit()
-
 
     ################################################# read db into dict ################################################
 
@@ -502,7 +500,6 @@ def COG2020(args):
             cog_category_list.append(cog_category_split[0])
             cog_category_to_description_dict[cog_category_split[0]] = cog_category_split[2]
 
-
     ################################################## if input is file ################################################
 
     # if input is file
@@ -518,32 +515,18 @@ def COG2020(args):
 
         file_in_path, file_in_basename, file_in_ext = sep_path_basename_ext(file_in)
 
-        COG2020_worker([file_in,
-                        pwd_cog_20_fa,
-                        protein_to_cog_dict,
-                        cog_id_to_category_dict,
-                        cog_id_to_description_dict,
-                        cog_category_list,
-                        cog_category_to_description_dict,
-                        sequence_type,
-                        file_in_path,
-                        num_threads,
-                        run_diamond,
-                        evalue_cutoff,
-                        depth_file,
-                        pct_by_all])
-
+        COG2020_worker([file_in, pwd_cog_20_fa, protein_to_cog_dict, cog_id_to_category_dict, cog_id_to_description_dict,
+                        cog_category_list, cog_category_to_description_dict, sequence_type, file_in_path, num_threads,
+                        run_diamond, evalue_cutoff, depth_file, pct_by_all])
 
     ################################################ if input is folder ################################################
 
     # if input is folder
     else:
-
         # check whether input folder exist
         if os.path.isdir(file_in) is False:
             print(datetime.now().strftime(time_format) + 'input folder not found, program exited')
             exit()
-
         else:
             # check whether input genome exist
             input_file_re = '%s/*.%s' % (file_in, file_extension)
@@ -566,7 +549,6 @@ def COG2020(args):
                     exit()
 
                 if os.path.isdir(depth_file) is True:
-
                     undetected_depth_file = []
                     for input_seq_file in input_file_name_list:
                         input_seq_file_basename = '.'.join(input_seq_file.split('.')[:-1])
@@ -579,7 +561,6 @@ def COG2020(args):
                         print(','.join(undetected_depth_file))
                         exit()
 
-
             ################################################### define file name ###################################################
 
             if '/' in file_in:
@@ -587,11 +568,9 @@ def COG2020(args):
             else:
                 file_in_folder_name = file_in
 
-            output_folder =                             '%s_COG2020_wd'                             % file_in_folder_name
+            output_folder = '%s_COG2020_wd' % file_in_folder_name
 
-            # create output folder
             force_create_folder(output_folder)
-
 
             ######################################################### main #########################################################
 
@@ -603,27 +582,17 @@ def COG2020(args):
                 input_file_basename = '.'.join(input_file.split('.')[:-1])
                 pwd_input_file = '%s/%s' % (file_in, input_file)
 
-
                 # get path to current depth file
                 if depth_file is None:
                     input_file_depth = None
                 else:
                     input_file_depth = '%s/%s.depth' % (depth_file, input_file_basename)
 
-                list_for_multiple_arguments_COG.append([pwd_input_file,
-                                                        pwd_cog_20_fa,
-                                                        protein_to_cog_dict,
-                                                        cog_id_to_category_dict,
-                                                        cog_id_to_description_dict,
-                                                        cog_category_list,
-                                                        cog_category_to_description_dict,
-                                                        sequence_type,
-                                                        output_folder,
-                                                        1,
-                                                        run_diamond,
-                                                        evalue_cutoff,
-                                                        input_file_depth,
-                                                        pct_by_all])
+                list_for_multiple_arguments_COG.append([pwd_input_file, pwd_cog_20_fa, protein_to_cog_dict,
+                                                        cog_id_to_category_dict, cog_id_to_description_dict,
+                                                        cog_category_list, cog_category_to_description_dict,
+                                                        sequence_type, output_folder, 1, run_diamond, evalue_cutoff,
+                                                        input_file_depth, pct_by_all])
 
             # run COG annotaion files with multiprocessing
             pool = mp.Pool(processes=num_threads)
@@ -636,15 +605,12 @@ def COG2020(args):
             annotation_df_cog_cate_GeneNumber =             '%s/%s_COG2020_cate_GeneNumber.txt'             % (output_folder, file_in_folder_name)
             annotation_df_cog_cate_GeneNumber_pct =         '%s/%s_COG2020_cate_GeneNumber_pct.txt'         % (output_folder, file_in_folder_name)
             annotation_df_cog_cate_GeneNumber_pct_by_all =  '%s/%s_COG2020_cate_GeneNumber_pct_by_all.txt'  % (output_folder, file_in_folder_name)
-
             annotation_df_cog_cate_TotalDepth =             '%s/%s_COG2020_cate_TotalDepth.txt'             % (output_folder, file_in_folder_name)
             annotation_df_cog_cate_TotalDepth_pct =         '%s/%s_COG2020_cate_TotalDepth_pct.txt'         % (output_folder, file_in_folder_name)
             annotation_df_cog_cate_TotalDepth_pct_by_all =  '%s/%s_COG2020_cate_TotalDepth_pct_by_all.txt'  % (output_folder, file_in_folder_name)
-
             annotation_df_cog_id_GeneNumber =               '%s/%s_COG2020_id_GeneNumber.txt'               % (output_folder, file_in_folder_name)
             annotation_df_cog_id_GeneNumber_pct =           '%s/%s_COG2020_id_GeneNumber_pct.txt'           % (output_folder, file_in_folder_name)
             annotation_df_cog_id_GeneNumber_pct_by_all =    '%s/%s_COG2020_id_GeneNumber_pct_by_all.txt'    % (output_folder, file_in_folder_name)
-
             annotation_df_cog_id_TotalDepth =               '%s/%s_COG2020_id_TotalDepth.txt'               % (output_folder, file_in_folder_name)
             annotation_df_cog_id_TotalDepth_pct =           '%s/%s_COG2020_id_TotalDepth_pct.txt'           % (output_folder, file_in_folder_name)
             annotation_df_cog_id_TotalDepth_pct_by_all =    '%s/%s_COG2020_id_TotalDepth_pct_by_all.txt'    % (output_folder, file_in_folder_name)
@@ -689,18 +655,14 @@ def COG2020(args):
 if __name__ == '__main__':
 
     COG_parser = argparse.ArgumentParser(usage=COG2020_parser_usage)
-
-    # arguments for COG_parser
     COG_parser.add_argument('-i',               required=True,                              help='path to input sequences (in multi-fasta format)')
     COG_parser.add_argument('-x',               required=False,                             help='file extension')
     COG_parser.add_argument('-m',               required=True,                              help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
-    COG_parser.add_argument('-depth',           required=False, default=None,               help='gene depth file/folder')
+    COG_parser.add_argument('-d',               required=False, default=None,               help='gene depth file/folder')
     COG_parser.add_argument('-pct_by_all',      required=False, action='store_true',        help='normalize by all query genes, including those without COG assignment')
     COG_parser.add_argument('-db_dir',          required=True,                              help='COG_db_dir')
     COG_parser.add_argument('-diamond',         required=False, action='store_true',        help='run diamond (for big dataset), default is NCBI blastp')
     COG_parser.add_argument('-t',               required=False, type=int, default=1,        help='number of threads')
     COG_parser.add_argument('-evalue',          required=False, default=0.001, type=float,  help='evalue cutoff, default: 0.001')
-
     args = vars(COG_parser.parse_args())
-
     COG2020(args)

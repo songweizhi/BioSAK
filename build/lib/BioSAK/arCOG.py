@@ -14,12 +14,12 @@ arCOG_parser_usage = '''
 # Dependencies: blast+, diamond
 
 # annotate protein sequences
-BioSAK arCOG -m P -t 6 -db_dir /Users/songweizhi/DB/arCOG18 -i genes.faa 
-BioSAK arCOG -m P -t 6 -db_dir /Users/songweizhi/DB/arCOG18 -i faa_files -x faa -depth depth_files
+BioSAK arCOG -m P -t 6 -db_dir arCOG18_db_dir -i genes.faa 
+BioSAK arCOG -m P -t 6 -db_dir arCOG18_db_dir -i faa_files -x faa -d depth_files
 
 # annotate DNA sequences (ORFs)
-BioSAK arCOG -m N -t 6 -db_dir /Users/songweizhi/DB/arCOG18 -i genes.ffn -depth gene.depth
-BioSAK arCOG -m N -t 6 -db_dir /Users/songweizhi/DB/arCOG18 -i ffn_files -x ffn
+BioSAK arCOG -m N -t 6 -db_dir arCOG18_db_dir -i genes.ffn -d gene.depth
+BioSAK arCOG -m N -t 6 -db_dir arCOG18_db_dir -i ffn_files -x ffn
 
 # Prepare DB files:
 cd path/to/your/arCOG_db_dir
@@ -54,12 +54,9 @@ def force_create_folder(folder_to_create):
 
 def sep_path_basename_ext(file_in):
 
-    # separate path and file name
     file_path, file_name = os.path.split(file_in)
     if file_path == '':
         file_path = '.'
-
-    # separate file basename and extension
     file_basename, file_ext = os.path.splitext(file_name)
 
     return file_path, file_basename, file_ext
@@ -71,20 +68,15 @@ def AnnotateNorm(file_in, skip_header, value_column, Divisor_value, file_out, fi
     file_out_handle.write(file_out_header)
     line_num = 0
     for each_line in open(file_in):
-
         each_line_split = each_line.strip().split('\t')
         value_str = each_line_split[value_column - 1]
-
         if (skip_header is True and line_num > 0) or (skip_header is False):
-
             value_pct = 0
             if Divisor_value != 0:
                 value_pct = float(value_str) * 100 / Divisor_value
             each_line_split[value_column - 1] = str(float("{0:.2f}".format(value_pct)))
             file_out_handle.write('%s\n' % '\t'.join(each_line_split))
-
         line_num += 1
-
     file_out_handle.close()
 
 
@@ -127,11 +119,9 @@ def best_hit(args):
             best_hit_query_id = query_id
             best_hit_line = blast_hit
             best_hit_score = bit_score
-
         elif (query_id == best_hit_query_id) and (bit_score > best_hit_score):
             best_hit_score = bit_score
             best_hit_line = blast_hit
-
         elif query_id != best_hit_query_id:
             file_out_handle.write(best_hit_line)
             best_hit_query_id = query_id
@@ -165,20 +155,17 @@ def arCOG_worker(argument_list):
     pwd_blastp_output =                 '%s/%s_blastp.tab'                          % (current_output_folder, input_seq_no_ext)
     pwd_blastp_output_besthits =        '%s/%s_blastp_besthits.tab'                 % (current_output_folder, input_seq_no_ext)
     pwd_query_to_cog_txt =              '%s/%s_query_to_cog.txt'                    % (current_output_folder, input_seq_no_ext)
-
-    pwd_cog_stats_copy =                '%s/%s_arcog_stats_copy.txt'                % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_copy =                '%s/%s_arcog_stats.txt'                     % (current_output_folder, input_seq_no_ext)
     pwd_cog_stats_depth =               '%s/%s_arcog_stats_depth.txt'               % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_copy =               '%s/%s_func_stats_copy.txt'                 % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_copy =               '%s/%s_func_stats.txt'                      % (current_output_folder, input_seq_no_ext)
     pwd_func_stats_depth =              '%s/%s_func_stats_depth.txt'                % (current_output_folder, input_seq_no_ext)
-
-    pwd_cog_stats_copy_pct =            '%s/%s_arcog_stats_copy_pct.txt'            % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_copy_pct =            '%s/%s_arcog_stats_pct.txt'                 % (current_output_folder, input_seq_no_ext)
     pwd_cog_stats_depth_pct =           '%s/%s_arcog_stats_depth_pct.txt'           % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_copy_pct =           '%s/%s_func_stats_copy_pct.txt'             % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_copy_pct =           '%s/%s_func_stats_pct.txt'                  % (current_output_folder, input_seq_no_ext)
     pwd_func_stats_depth_pct =          '%s/%s_func_stats_depth_pct.txt'            % (current_output_folder, input_seq_no_ext)
-
-    pwd_cog_stats_copy_pct_by_all =     '%s/%s_arcog_stats_copy_pct_by_all.txt'     % (current_output_folder, input_seq_no_ext)
+    pwd_cog_stats_copy_pct_by_all =     '%s/%s_arcog_stats_pct_by_all.txt'          % (current_output_folder, input_seq_no_ext)
     pwd_cog_stats_depth_pct_by_all =    '%s/%s_arcog_stats_depth_pct_by_all.txt'    % (current_output_folder, input_seq_no_ext)
-    pwd_func_stats_copy_pct_by_all =    '%s/%s_func_stats_copy_pct_by_all.txt'      % (current_output_folder, input_seq_no_ext)
+    pwd_func_stats_copy_pct_by_all =    '%s/%s_func_stats_pct_by_all.txt'           % (current_output_folder, input_seq_no_ext)
     pwd_func_stats_depth_pct_by_all =   '%s/%s_func_stats_depth_pct_by_all.txt'     % (current_output_folder, input_seq_no_ext)
 
     force_create_folder(current_output_folder)
@@ -211,9 +198,6 @@ def arCOG_worker(argument_list):
         each_hit_subject_no_dot = '_'.join(each_hit_subject.split('.'))
         query_to_ref_protein_dict[each_hit_query] = each_hit_subject_no_dot
 
-    # print('query_to_ref_protein_dict')
-    # print(query_to_ref_protein_dict)
-
     # get query sequences list
     query_seq_list = []
     for query_seq in SeqIO.parse(pwd_input_file, 'fasta'):
@@ -221,8 +205,8 @@ def arCOG_worker(argument_list):
 
     # export annotation
     cog_id_num_dict = {}
-    cog_id_to_gene_member_dict = {}
     cog_cate_num_dict = {}
+    cog_id_to_gene_member_dict = {}
     cog_cate_to_gene_member_dict = {}
     genes_with_cog = set()
     pwd_query_to_cog_txt_handle = open(pwd_query_to_cog_txt, 'w')
@@ -357,9 +341,9 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
         pwd_annotation_stats_file_pct = ''
         if stats_level == 'cog_id':
             if with_depth is False:
-                pwd_annotation_stats_file =             '%s/%s/%s_arcog_stats_copy.txt'             % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct =         '%s/%s/%s_arcog_stats_copy_pct.txt'         % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_arcog_stats_copy_pct_by_all.txt'  % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file =             '%s/%s/%s_arcog_stats.txt'                  % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct =         '%s/%s/%s_arcog_stats_pct.txt'              % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_arcog_stats_pct_by_all.txt'       % (annotation_dir, annotation_folder, annotation_folder_basename)
             else:
                 pwd_annotation_stats_file =             '%s/%s/%s_arcog_stats_depth.txt'            % (annotation_dir, annotation_folder, annotation_folder_basename)
                 pwd_annotation_stats_file_pct =         '%s/%s/%s_arcog_stats_depth_pct.txt'        % (annotation_dir, annotation_folder, annotation_folder_basename)
@@ -367,9 +351,9 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
 
         if stats_level == 'cog_cate':
             if with_depth is False:
-                pwd_annotation_stats_file =             '%s/%s/%s_func_stats_copy.txt'              % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct =         '%s/%s/%s_func_stats_copy_pct.txt'          % (annotation_dir, annotation_folder, annotation_folder_basename)
-                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_func_stats_copy_pct_by_all.txt'   % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file =             '%s/%s/%s_func_stats.txt'                   % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct =         '%s/%s/%s_func_stats_pct.txt'               % (annotation_dir, annotation_folder, annotation_folder_basename)
+                pwd_annotation_stats_file_pct_by_all =  '%s/%s/%s_func_stats_pct_by_all.txt'        % (annotation_dir, annotation_folder, annotation_folder_basename)
             else:
                 pwd_annotation_stats_file =             '%s/%s/%s_func_stats_depth.txt'             % (annotation_dir, annotation_folder, annotation_folder_basename)
                 pwd_annotation_stats_file_pct =         '%s/%s/%s_func_stats_depth_pct.txt'         % (annotation_dir, annotation_folder, annotation_folder_basename)
@@ -410,7 +394,6 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
     annotation_df_absolute_num_handle.write('\t%s\n' % '\t'.join(all_identified_cog_list))
     annotation_df_percentage_handle.write('\t%s\n' % '\t'.join(all_identified_cog_list))
     for annotation_folder in sorted(annotation_folder_list):
-
         annotation_folder_basename = annotation_folder.split('_arCOG_wd')[0]
         current_cog_num_dict = cog_num_dict[annotation_folder_basename]
         current_cog_num_pct_dict = cog_num_pct_dict[annotation_folder_basename]
@@ -441,23 +424,18 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
         annotation_df_percentage_by_all_handle = open(annotation_df_percentage_by_all, 'w')
         annotation_df_percentage_by_all_handle.write('\t%s\n' % '\t'.join(all_identified_cog_list))
         for annotation_folder in sorted(annotation_folder_list):
-
             annotation_folder_basename = annotation_folder.split('_arCOG_wd')[0]
             current_cog_num_pct_by_all_dict = cog_num_pct_by_all_dict[annotation_folder_basename]
 
             current_cog_num_list_pct_by_all = []
             for identified_cog in all_identified_cog_list:
-
-                # get num list
                 identified_cog_num_pct_by_all = 0
                 if identified_cog in current_cog_num_pct_by_all_dict:
                     identified_cog_num_pct_by_all = current_cog_num_pct_by_all_dict[identified_cog]
-
                 current_cog_num_list_pct_by_all.append(identified_cog_num_pct_by_all)
 
             # write out
             annotation_df_percentage_by_all_handle.write('%s\t%s\n' % (annotation_folder_basename, '\t'.join([str(i) for i in current_cog_num_list_pct_by_all])))
-
         annotation_df_percentage_by_all_handle.close()
 
 
@@ -555,12 +533,10 @@ def arCOG(args):
 
     # if input is folder
     else:
-        # check whether input folder exist
         if os.path.isdir(file_in) is False:
             print(datetime.now().strftime(time_format) + 'input folder not found, program exited')
             exit()
         else:
-            # check whether input genome exist
             input_file_re = '%s/*.%s' % (file_in, file_extension)
             input_file_name_list = [os.path.basename(file_name) for file_name in glob.glob(input_file_re)]
 
@@ -610,7 +586,6 @@ def arCOG(args):
 
             list_for_multiple_arguments_COG = []
             for input_file in input_file_name_list:
-
                 input_file_basename = '.'.join(input_file.split('.')[:-1])
                 pwd_input_file = '%s/%s' % (file_in, input_file)
 
@@ -637,15 +612,12 @@ def arCOG(args):
             annotation_df_cog_cate_copy =             '%s/%s_arCOG_cate.txt'                    % (output_folder, file_in_folder_name)
             annotation_df_cog_cate_copy_pct =         '%s/%s_arCOG_cate_pct.txt'                % (output_folder, file_in_folder_name)
             annotation_df_cog_cate_copy_pct_by_all =  '%s/%s_arCOG_cate_pct_by_all.txt'         % (output_folder, file_in_folder_name)
-
             annotation_df_cog_cate_depth =            '%s/%s_arCOG_cate_depth.txt'              % (output_folder, file_in_folder_name)
             annotation_df_cog_cate_depth_pct =        '%s/%s_arCOG_cate_depth_pct.txt'          % (output_folder, file_in_folder_name)
             annotation_df_cog_cate_depth_pct_by_all = '%s/%s_arCOG_cate_depth_pct_by_all.txt'   % (output_folder, file_in_folder_name)
-
             annotation_df_cog_id_copy =               '%s/%s_arCOG_id.txt'                      % (output_folder, file_in_folder_name)
             annotation_df_cog_id_copy_pct =           '%s/%s_arCOG_id_pct.txt'                  % (output_folder, file_in_folder_name)
             annotation_df_cog_id_copy_pct_by_all =    '%s/%s_arCOG_id_pct_by_all.txt'           % (output_folder, file_in_folder_name)
-
             annotation_df_cog_id_depth =              '%s/%s_arCOG_id_depth.txt'                % (output_folder, file_in_folder_name)
             annotation_df_cog_id_depth_pct =          '%s/%s_arCOG_id_depth_pct.txt'            % (output_folder, file_in_folder_name)
             annotation_df_cog_id_depth_pct_by_all =   '%s/%s_arCOG_id_depth_pct_by_all.txt'     % (output_folder, file_in_folder_name)
@@ -693,7 +665,7 @@ if __name__ == '__main__':
     COG_parser.add_argument('-i',               required=True,                              help='path to input sequences (in multi-fasta format)')
     COG_parser.add_argument('-x',               required=False,                             help='file extension')
     COG_parser.add_argument('-m',               required=True,                              help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
-    COG_parser.add_argument('-depth',           required=False, default=None,               help='gene depth file/folder')
+    COG_parser.add_argument('-d',               required=False, default=None,               help='gene depth file/folder')
     COG_parser.add_argument('-pct_by_all',      required=False, action='store_true',        help='normalize by all query genes, including those without annotation')
     COG_parser.add_argument('-db_dir',          required=True,                              help='COG_db_dir')
     COG_parser.add_argument('-diamond',         required=False, action='store_true',        help='run diamond (for big dataset), default: blastp from NCBI')
