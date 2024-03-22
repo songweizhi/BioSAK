@@ -16,9 +16,6 @@ Example plots in python.
    ![boxplot_with_dots.png](boxplot_with_dots.png)
 
 
-5. with dots [[boxplot_with_dots.py](boxplot_with_dots.py)]
-   ![boxplot_with_dots.png](boxplot_with_dots.png)
-
 1. Boxplot with extra values [[Boxplot_with_extra_values.py](Boxplot_with_extra_values.py)]
    ![Boxplot_with_extra_values.png](Boxplot_with_extra_values.png)
 
