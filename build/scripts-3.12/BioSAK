@@ -109,6 +109,7 @@ def print_main_help():
        submitHPC               ->  A wrapper for submitHPC.sh
        KeepRemovingTmp         ->  Keep removing old files in a folder
        koala                   ->  separate combined BlastKOALA or GhostKOALA output
+       subset_df               ->  Subset dataframe
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Use "pip3 install --upgrade BioSAK" to get the latest version
@@ -914,6 +915,19 @@ if __name__ == '__main__':
         koala_parser.add_argument('-f', required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
         koala.koala(args)
+
+    elif sys.argv[1] == 'subset_df':
+        from BioSAK import subset_df
+        subset_df_parser = subparsers.add_parser('subset_df', usage=subset_df.subset_df_usage)
+        subset_df_parser.add_argument('-i',     required=True,                          help='input file')
+        subset_df_parser.add_argument('-o',     required=True,                          help='output file')
+        subset_df_parser.add_argument('-r',     required=False, default=None,           help='header of rows to keep')
+        subset_df_parser.add_argument('-c',     required=False, default=None,           help='header of columns to keep')
+        subset_df_parser.add_argument('-s',     required=False, default='tab',          help='column separator, choose from tab and comma, default: tab')
+        subset_df_parser.add_argument('-b',     required=False, action='store_true',    help='write out dataframe in 0/1 format')
+        subset_df_parser.add_argument('-m',     required=False, action='store_true',    help='convert 0 to -1')
+        args = vars(parser.parse_args())
+        subset_df.subset_df(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

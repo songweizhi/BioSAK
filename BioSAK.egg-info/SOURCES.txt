@@ -39,6 +39,7 @@ BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
 BioSAK/arCOG.py
 BioSAK/bam2reads.py
+BioSAK/boxplot.py
 BioSAK/boxplot_last1row.R
 BioSAK/boxplot_matrix_COG.py
 BioSAK/boxplot_matrix_COG_backup.py
@@ -137,6 +138,7 @@ BioSAK/split_folder.py
 BioSAK/split_sam.py
 BioSAK/submitHPC.py
 BioSAK/subset_GTDB_meta.py
+BioSAK/subset_df.py
 BioSAK/subset_tree.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
