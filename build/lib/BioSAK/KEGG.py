@@ -396,7 +396,7 @@ def parse_blast_op_worker(argument_list):
             AnnotateNorm(stats_file_D_TotalDepth, True, 2, total_depth_for_all_query_genes, stats_file_D_TotalDepth_pct_by_all, 'KO\tTotalDepth_pct_by_all\tDescription\n')
 
 
-def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, annotation_df_pct, annotation_df_pct_by_all, ABCD_description_dict, with_depth, pct_by_all):
+def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, annotation_df_pct, annotation_df_pct_by_all, ABCD_description_dict, with_depth, pct_by_all, include_ko_fun):
 
     annotation_dir_re = '%s/*_KEGG_wd' % annotation_dir
     annotation_folder_list = [os.path.basename(file_name) for file_name in glob.glob(annotation_dir_re)]
@@ -456,13 +456,17 @@ def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, a
         ko_with_desc = ko_with_desc.replace(' ', '_')
         all_identified_ko_list_with_description.append(ko_with_desc)
 
+    list_to_use = all_identified_ko_list
+    if include_ko_fun is True:
+        list_to_use = all_identified_ko_list_with_description
+
     annotation_df_absolute_num_handle = open(annotation_df_absolute_num, 'w')
-    annotation_df_absolute_num_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list_with_description))
+    annotation_df_absolute_num_handle.write('\t%s\n' % '\t'.join(list_to_use))
     annotation_df_percentage_handle = open(annotation_df_pct, 'w')
-    annotation_df_percentage_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list_with_description))
+    annotation_df_percentage_handle.write('\t%s\n' % '\t'.join(list_to_use))
     if pct_by_all is True:
         annotation_df_percentage_by_all_handle = open(annotation_df_pct_by_all, 'w')
-        annotation_df_percentage_by_all_handle.write('\t%s\n' % '\t'.join(all_identified_ko_list_with_description))
+        annotation_df_percentage_by_all_handle.write('\t%s\n' % '\t'.join(list_to_use))
     for annotation_folder in sorted(annotation_folder_list):
 
         annotation_folder_basename = annotation_folder.split('_KEGG_wd')[0]
@@ -505,15 +509,16 @@ def get_KEGG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, a
 
 def Annotation_KEGG(args):
 
-    input_file_faa =      args['seq_in']
-    input_file_user_ko =  args['ko_in']
-    file_extension =      args['x']
-    depth_file =          args['d']
-    pct_by_all =          args['pct_by_all']
-    KEGG_DB_folder =      args['db_dir']
-    run_diamond =         args['diamond']
-    num_threads =         args['t']
-    evalue_cutoff =       args['evalue']
+    input_file_faa      = args['seq_in']
+    input_file_user_ko  = args['ko_in']
+    file_extension      = args['x']
+    depth_file          = args['d']
+    pct_by_all          = args['pct_by_all']
+    KEGG_DB_folder      = args['db_dir']
+    run_diamond         = args['diamond']
+    num_threads         = args['t']
+    evalue_cutoff       = args['evalue']
+    include_desc        = args['desc']
 
     run_blast = None
     if (input_file_faa is not None) and (input_file_user_ko is None):
@@ -769,7 +774,7 @@ def Annotation_KEGG(args):
 
             #################### get GeneNumber df and report ####################
 
-            get_KEGG_annot_df(output_folder, ko_level, annotation_df_GeneNumber, annotation_df_GeneNumber_pct, annotation_df_GeneNumber_pct_by_all, ABCD_description_dict, with_depth=False, pct_by_all=pct_by_all)
+            get_KEGG_annot_df(output_folder, ko_level, annotation_df_GeneNumber, annotation_df_GeneNumber_pct, annotation_df_GeneNumber_pct_by_all, ABCD_description_dict, with_depth=False, pct_by_all=pct_by_all, include_ko_fun=include_desc)
 
             print(annotation_df_GeneNumber.split('/')[-1])
             print(annotation_df_GeneNumber_pct.split('/')[-1])
@@ -779,7 +784,7 @@ def Annotation_KEGG(args):
             #################### get TotalDepth df and report ####################
 
             if depth_file is not None:
-                get_KEGG_annot_df(output_folder, ko_level, annotation_df_TotalDepth, annotation_df_TotalDepth_pct, annotation_df_TotalDepth_pct_by_all, ABCD_description_dict, with_depth=True, pct_by_all=pct_by_all)
+                get_KEGG_annot_df(output_folder, ko_level, annotation_df_TotalDepth, annotation_df_TotalDepth_pct, annotation_df_TotalDepth_pct_by_all, ABCD_description_dict, with_depth=True, pct_by_all=pct_by_all, include_ko_fun=include_desc)
 
                 print(annotation_df_TotalDepth.split('/')[-1])
                 print(annotation_df_TotalDepth_pct.split('/')[-1])
@@ -803,5 +808,6 @@ if __name__ == "__main__":
     parser.add_argument('-diamond',     required=False, action='store_true',        help='run diamond (for big dataset), default is NCBI blastp')
     parser.add_argument('-t',           required=False, default=1,     type=int,    help='number of threads, default: 1')
     parser.add_argument('-evalue',      required=False, default=0.0001, type=float, help='evalue cutoff, default: 0.0001')
+    parser.add_argument('-desc',        required=False, action='store_true',        help='include KO functions in the final dataframe')
     args = vars(parser.parse_args())
     Annotation_KEGG(args)

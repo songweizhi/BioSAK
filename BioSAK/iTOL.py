@@ -10,7 +10,7 @@ iTOL_usage = '''
 
 # Example commands
 BioSAK iTOL -Labels -ll new_Mag_name.txt -o Mag_name_iTOL_Labels.txt
-BioSAK iTOL -Binary -lm Binary_matrix.txt -lt Enzyme -cc col_color_txt -o Presence_Absence_iTOL.txt
+BioSAK iTOL -Binary -lm Binary_matrix.txt -lt Enzyme -o Presence_Absence_iTOL.txt
 BioSAK iTOL -Heatmap -lm MagAbundance.txt -lt Abundance -o Heatmap_abundance.txt
 BioSAK iTOL -SimpleBar -lv MagSize.txt -scale 0-3-6-9 -lt Size -o SimpleBar_size.txt
 BioSAK iTOL -ColorStrip -lg MagTaxon.txt -lt Phylum -o ColorStrip_taxon.txt
