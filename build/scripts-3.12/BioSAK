@@ -64,6 +64,7 @@ def print_main_help():
        arCOG                   ->  COG annotation for archaea (version ar18)
        dbCAN                   ->  CAZy annotation with dbCAN
        enrich                  ->  Functional enrichment analysis
+       gapseq                  ->  Data matrix GapSeq predicted pathways
 
     16S rRNA related
        top_16S_hits            ->  Classify 16S by top-blast-hits approach
@@ -94,7 +95,8 @@ def print_main_help():
     Dataframe
        subset_df               ->  Subset dataframe
        merge_df                ->  Merge dataframes
-       add_desc                ->  Add function description to input of the iTOL module    
+       add_desc                ->  Add function description to input of the iTOL module
+       transpose               ->  Transpose dataframe
 
     Others
        iTOL                    ->  Prepare iTOL files
@@ -951,10 +953,26 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         merge_df.merge_df(args)
 
+    elif sys.argv[1] == 'gapseq':
+        from BioSAK import gapseq
+        gapseq_parser = subparsers.add_parser('gapseq', usage=gapseq.gapseq_usage)
+        gapseq_parser.add_argument('-i',       required=True,                        help='folder holds the *Pathways.tbl files')
+        gapseq_parser.add_argument('-o',       required=True,                        help='output file')
+        gapseq_parser.add_argument('-name',    required=False, action="store_true",  help='include pathway name in the output dataframe')
+        args = vars(parser.parse_args())
+        gapseq.gapseq(args)
+
+    elif sys.argv[1] == 'transpose':
+        from BioSAK import transpose
+        transpose_parser = subparsers.add_parser('transpose', usage=transpose.transpose_usage)
+        transpose_parser.add_argument('-i', required=True, help='input file')
+        transpose_parser.add_argument('-o', required=True, help='output file')
+        args = vars(parser.parse_args())
+        transpose.transpose(args)
+
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
         exit()
-
 
 
 upload_to_pypi_cmd = '''

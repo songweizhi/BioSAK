@@ -27,22 +27,6 @@ def subset_df(args):
     column_name_pos     = 0
     row_name_pos        = 0
 
-    # read in rows_to_keep_file
-    rows_to_keep_set = set()
-    if os.path.isfile(rows_to_keep_file) is True:
-        for each_r in open(rows_to_keep_file):
-            rows_to_keep_set.add(each_r.strip().split()[0])
-
-    # read in cols_to_keep_file
-    cols_to_keep_set = set()
-    if os.path.isfile(cols_to_keep_file) is True:
-        for each_c in open(cols_to_keep_file):
-            cols_to_keep_set.add(each_c.strip().split()[0])
-
-    # turn sets into lists
-    rows_to_keep_list_sorted = sorted(list(rows_to_keep_set))
-    cols_to_keep_list_sorted = sorted(list(cols_to_keep_set))
-
     # setup separator
     if df_separator in ['tab', 'Tab', 'TAB']:
         sep_symbol = '\t'
@@ -52,8 +36,47 @@ def subset_df(args):
         print('Please specify separator as either tab or comma, program exited!')
         exit()
 
-    # read in df
+    ###################################### get the id of rows and cols to subset #######################################
+
+    # put all row and col headers in list
     df = pd.read_csv(file_in, sep=sep_symbol, header=column_name_pos, index_col=row_name_pos)
+    df_row_header_list = df.index.values.tolist()
+    df_col_header_list = df.columns.values.tolist()
+
+    # read in rows_to_keep_file
+    rows_to_keep_set = set()
+    rows_missing_set = set()
+    if os.path.isfile(rows_to_keep_file) is True:
+        for each_r in open(rows_to_keep_file):
+            row_id = each_r.strip().split()[0]
+            if row_id in df_row_header_list:
+                rows_to_keep_set.add(row_id)
+            else:
+                rows_missing_set.add(row_id)
+
+    # read in cols_to_keep_file
+    cols_to_keep_set = set()
+    cols_missing_set = set()
+    if os.path.isfile(cols_to_keep_file) is True:
+        for each_c in open(cols_to_keep_file):
+            col_id = each_c.strip().split()[0]
+            if col_id in df_col_header_list:
+                cols_to_keep_set.add(col_id)
+            else:
+                cols_missing_set.add(col_id)
+
+    # report
+    if len(rows_missing_set) > 0:
+        print('The following rows are missing from the dataframe:\n%s'    % ','.join(sorted(list(rows_missing_set))))
+
+    if len(cols_missing_set) > 0:
+        print('The following columns are missing from the dataframe:\n%s' % ','.join(sorted(list(cols_missing_set))))
+
+    ####################################################################################################################
+
+    # turn sets into lists
+    rows_to_keep_list_sorted = sorted(list(rows_to_keep_set))
+    cols_to_keep_list_sorted = sorted(list(cols_to_keep_set))
 
     if len(rows_to_keep_list_sorted) == 0:
         if len(cols_to_keep_list_sorted) == 0:
@@ -70,9 +93,9 @@ def subset_df(args):
         subset_df[subset_df <= 0] = 0
         subset_df[subset_df > 0] = 1
 
-        # turn 0 to -1
-        if zero_as_minus_one is True:
-            subset_df[subset_df == 0] = -1
+    # turn 0 to -1
+    if zero_as_minus_one is True:
+        subset_df[subset_df == 0] = -1
 
     subset_df.to_csv(file_out, sep=sep_symbol)
 

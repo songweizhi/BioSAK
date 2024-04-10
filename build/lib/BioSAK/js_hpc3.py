@@ -4,11 +4,11 @@ import argparse
 
 
 js_hpc3_usage = '''
-====================== js_cmds example commands ======================
+==================== js_hpc3 example commands ====================
 
-BioSAK js_hpc3 -p Demo -c cmds.txt -hd js_header.txt -n 3 -force
+BioSAK js_hpc3 -p Demo -c cmds.txt -hd js_header.sh -n 3 -force
 
-======================================================================
+==================================================================
 '''
 
 
@@ -84,10 +84,3 @@ if __name__ == '__main__':
     parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite existing results')
     args = vars(parser.parse_args())
     js_hpc3(args)
-
-'''
-
-cd /Users/songweizhi/Desktop
-/Library/Frameworks/Python.framework/Versions/3.10/bin/python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/js_hpc3.py -p test -c cmds.txt -hd hd.sh -n 5 -f
-
-'''
