@@ -17,6 +17,7 @@ BioSAK iTOL -ColorStrip -lg MagTaxon.txt -lt Phylum -o ColorStrip_taxon.txt
 BioSAK iTOL -ColorRange -lg MagTaxon.txt -lt Phylum -o ColorRange_taxon.txt
 BioSAK iTOL -ColorRange -taxon Taxonomy.txt -rank f -lt Family -o ColorRange_taxon.txt
 BioSAK iTOL -ExternalShape -lm identity_matrix.txt -lt Identity -scale 25-50-75-100 -o ExternalShape_identity.txt
+BioSAK iTOL -PieChart -lv MagCompleteness.txt -lt Completeness -o PieChart_completeness.txt
 
 # Leaf-to-Group file format (-lg, tab separated, no header)
 genome_1	Bacteria
@@ -58,7 +59,6 @@ def get_color_list(color_num):
 
     else:
         color_num_each = math.ceil(color_num/8) + 2
-
         color_list_1 = sns.color_palette('Blues',  n_colors=color_num_each).as_hex()
         color_list_2 = sns.light_palette('navy',   n_colors=color_num_each).as_hex()
         color_list_3 = sns.light_palette('orange', n_colors=color_num_each).as_hex()
@@ -122,6 +122,7 @@ def iTOL(args):
     ExternalShape   = args['ExternalShape']
     Binary          = args['Binary']
     Connection      = args['Connection']
+    PieChart        = args['PieChart']
     LeafGroup       = args['lg']
     GroupColor      = args['gc']
     ColumnColor     = args['cc']
@@ -150,11 +151,9 @@ def iTOL(args):
     # Heatmap
     Heatmap_STRIP_WIDTH         = 60
 
-    # ExternalShape
-
     # check the number of specified file type
     True_num = 0
-    for file_type in [Labels, ColorStrip, ColorRange, SimpleBar, Heatmap, ExternalShape, Binary]:
+    for file_type in [Labels, ColorStrip, ColorRange, SimpleBar, Heatmap, ExternalShape, Binary, PieChart]:
         if file_type is True:
             True_num += 1
 
@@ -234,8 +233,6 @@ def iTOL(args):
         FileOut_handle.write('LEGEND_SHAPES\t%s\n' % '\t'.join(['1' for i in Group_to_Color_dict]))
         FileOut_handle.write('LEGEND_COLORS\t%s\n' % '\t'.join(color_list))
         FileOut_handle.write('LEGEND_LABELS\t%s\n' % '\t'.join(group_list))
-
-        # write out data info
         FileOut_handle.write('\n# provide data here\nDATA\n')
         for leaf in Leaf_to_Group_dict:
             leaf_group = Leaf_to_Group_dict[leaf]
@@ -245,7 +242,6 @@ def iTOL(args):
                 FileOut_handle.write('%s\t%s\t%s\n' % (leaf, leaf_color, leaf_group))
             if ColorRange is True:
                 FileOut_handle.write('%s\trange\t%s\t%s\n' % (leaf, leaf_color, leaf_group))
-
         FileOut_handle.close()
 
     ####################################################################################################################
@@ -272,13 +268,9 @@ def iTOL(args):
                     max_value = float(leaf_value_split[1])
 
         SimpleBar_FileOut_handle = open(FileOut, 'w')
-
-        # write out header
         SimpleBar_FileOut_handle.write('DATASET_SIMPLEBAR\n')
         SimpleBar_FileOut_handle.write('# Reference: https://itol.embl.de/help/dataset_simplebar_template.txt\n')
         SimpleBar_FileOut_handle.write('\nSEPARATOR TAB\n')
-
-        # write out SimpleBar attributes
         SimpleBar_FileOut_handle.write('\n# customize barchart attributes here\n')
         SimpleBar_FileOut_handle.write('DATASET_LABEL\t%s\n'    % LegendTitle)
         SimpleBar_FileOut_handle.write('COLOR\t%s\n'            % SimpleBar_COLOR)
@@ -296,8 +288,6 @@ def iTOL(args):
         SimpleBar_FileOut_handle.write('\n# customize scale attributes here\n')
         SimpleBar_FileOut_handle.write('# format: VALUE-LABEL-COLOR-WIDTH-DASHED-LABEL_SCALE_FACTOR, LABEL_SCALE_FACTOR controls font size\n')
         SimpleBar_FileOut_handle.write('DATASET_SCALE\t%s\n' % '\t'.join(scale_attributes_list))
-
-        # write out data info
         SimpleBar_FileOut_handle.write('\n# provide data here\n')
         SimpleBar_FileOut_handle.write('DATA\n')
 
@@ -378,18 +368,12 @@ def iTOL(args):
             n += 1
 
         Heatmap_FileOut_handle = open(FileOut, 'w')
-
-        # write out header
         Heatmap_FileOut_handle.write('DATASET_HEATMAP\n')
         Heatmap_FileOut_handle.write('# Reference https://itol.embl.de/help/dataset_heatmap_template.txt\n')
         Heatmap_FileOut_handle.write('\nSEPARATOR TAB\n')
-
-        # write out heatmap attributes
         Heatmap_FileOut_handle.write('\n# customize heatmap attributes here\n')
         Heatmap_FileOut_handle.write('MARGIN\t%s\n'          % MARGIN)
         Heatmap_FileOut_handle.write('STRIP_WIDTH\t%s\n'     % Heatmap_STRIP_WIDTH)
-
-        # write out legend info
         Heatmap_FileOut_handle.write('\n# customize legend here\n')
         Heatmap_FileOut_handle.write('AUTO_LEGEND\t1\n')
         Heatmap_FileOut_handle.write('DATASET_LABEL\t%s\n' % LegendTitle)
@@ -403,13 +387,10 @@ def iTOL(args):
         Heatmap_FileOut_handle.write('# USER_MAX_VALUE	10\n')
         Heatmap_FileOut_handle.write('\n# customize column name here\n')
         Heatmap_FileOut_handle.write('FIELD_LABELS\t%s\n' % '\t'.join(col_name_list))
-
-        # write out data info
         Heatmap_FileOut_handle.write('\n# Provide data here\n')
         Heatmap_FileOut_handle.write('DATA\n')
         for leaf in leaf_matrix_dict:
             Heatmap_FileOut_handle.write('%s\t%s\n' % (leaf, '\t'.join(leaf_matrix_dict[leaf])))
-
         Heatmap_FileOut_handle.close()
 
     ####################################################################################################################
@@ -442,6 +423,26 @@ def iTOL(args):
         for each_connection in open(d2r):
             Connection_FileOut_handle.write(each_connection)
         Connection_FileOut_handle.close()
+
+    ####################################################################################################################
+
+    # Prepare PieChart file
+    if PieChart is True:
+        PieChart_FileOut_handle = open(FileOut, 'w')
+        PieChart_FileOut_handle.write('DATASET_PIECHART\n')
+        PieChart_FileOut_handle.write('SEPARATOR TAB\n')
+        PieChart_FileOut_handle.write('DATASET_LABEL\tCompleteness\n')
+        PieChart_FileOut_handle.write('COLOR\t#ff0000\n')
+        PieChart_FileOut_handle.write('FIELD_COLORS\t#5DADE2\t#FFFFFF\n')
+        PieChart_FileOut_handle.write('FIELD_LABELS\tf1\tf2\n')
+        PieChart_FileOut_handle.write('MARGIN\t10\n\n')
+        PieChart_FileOut_handle.write('DATA\n')
+        for each in open(LeafValue):
+            each_split = each.strip().split('\t')
+            node_id = each_split[0]
+            node_value = float(each_split[1])
+            PieChart_FileOut_handle.write('%s\t-1\t1\t%s\t%s\n' % (node_id, node_value, (100 - node_value)))
+        PieChart_FileOut_handle.close()
 
     ####################################################################################################################
 
@@ -478,8 +479,6 @@ def iTOL(args):
                 exit()
 
         ExternalShape_FileOut_handle = open(FileOut, 'w')
-
-        # write out header
         ExternalShape_FileOut_handle.write('DATASET_EXTERNALSHAPE\n')
         ExternalShape_FileOut_handle.write('# Reference https://itol.embl.de/help/dataset_external_shapes_template.txt\n')
         ExternalShape_FileOut_handle.write('\nSEPARATOR TAB\n')
@@ -499,8 +498,6 @@ def iTOL(args):
         ExternalShape_FileOut_handle.write('LEGEND_COLORS\t%s\n' % '\t'.join(LEGEND_COLORS_list))
         ExternalShape_FileOut_handle.write('LEGEND_LABELS\t%s\n' % '\t'.join(scale_list))
         ExternalShape_FileOut_handle.write('LEGEND_SHAPE_SCALES\t%s\n' % '\t'.join(str(i) for i in SHAPE_SCALES_list))
-
-        # write out ExternalShape attributes
         ExternalShape_FileOut_handle.write('\n# customize attributes here\n')
         ExternalShape_FileOut_handle.write('VERTICAL_GRID\t0\n')
         ExternalShape_FileOut_handle.write('HORIZONTAL_GRID\t0\n')
@@ -525,8 +522,6 @@ def iTOL(args):
         if ColumnColor is not None:
             color_list = [Column_to_Color_dict[i] for i in col_name_list]
         ExternalShape_FileOut_handle.write('FIELD_COLORS\t%s\n' % '\t'.join(color_list))
-
-        # write out data info
         ExternalShape_FileOut_handle.write('\n# Provide data here\n')
         ExternalShape_FileOut_handle.write('DATA\n')
         for leaf in leaf_matrix_dict:
@@ -549,6 +544,7 @@ if __name__ == '__main__':
     parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
     parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
     parser.add_argument('-Connection',      required=False, action='store_true',   help='Connection')
+    parser.add_argument('-PieChart',        required=False, action='store_true',   help='PieChart')
     parser.add_argument('-ll',              required=False, default=None,          help='Leaf Label')
     parser.add_argument('-lg',              required=False, default=None,          help='Leaf Group')
     parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
@@ -561,8 +557,3 @@ if __name__ == '__main__':
     parser.add_argument('-o',               required=True,                         help='Output filename')
     args = vars(parser.parse_args())
     iTOL(args)
-
-
-# parser.add_argument('-taxon',           required=False, default=None,          help='Leaf taxonomy, gtdb format')
-# parser.add_argument('-rank',            required=False, default=None,          help='Taxonomy rank, select from p, c, o, f, g or s')
-# LABELS Labels

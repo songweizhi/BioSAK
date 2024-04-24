@@ -1,5 +1,11 @@
-1.83.1
+1.85.1
 - fixed bugs
+
+1.85.0
+- new modules added: wilcox and mannwhitneyu
+
+1.84.0
+- new module added: gc
 
 1.83.0
 - new module added: transpose

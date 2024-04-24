@@ -65,9 +65,9 @@ def gapseq(args):
 
     df_out_handle = open(df_out, 'w')
     if include_desc is False:
-        df_out_handle.write('\t'.join(pwy_id_list_sorted) + '\n')
+        df_out_handle.write('\t' + '\t'.join(pwy_id_list_sorted) + '\n')
     else:
-        df_out_handle.write('\t'.join(pwy_id_list_sorted_desc) + '\n')
+        df_out_handle.write('\t' + '\t'.join(pwy_id_list_sorted_desc) + '\n')
     for each_gnm in sorted(list(gnm_id_set)):
         encoded_pwys = annotation_results_dict[each_gnm]
         value_list = [each_gnm]

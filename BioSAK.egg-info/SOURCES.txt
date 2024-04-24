@@ -69,6 +69,7 @@ BioSAK/gbk2faa.py
 BioSAK/gbk2ffn.py
 BioSAK/gbk2fna.py
 BioSAK/gbk_to_ffn_faa.py
+BioSAK/gc.py
 BioSAK/get_EC_from_ko_stats_D.py
 BioSAK/get_GTDB_taxon_gnm.py
 BioSAK/get_MAG_reads_long.py
@@ -78,7 +79,6 @@ BioSAK/get_TopHits_taxonomy.py
 BioSAK/get_aa_composition.py
 BioSAK/get_bin_abundance copy.py
 BioSAK/get_data_matrix.py
-BioSAK/get_gc.py
 BioSAK/get_gene_depth.py
 BioSAK/get_genome_GTDB.py
 BioSAK/get_genome_NCBI.py
@@ -109,6 +109,7 @@ BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
+BioSAK/mannwhitneyu.py
 BioSAK/mean_MAG_cov.py
 BioSAK/merge_df.py
 BioSAK/merge_seq.py
@@ -147,6 +148,7 @@ BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/transpose.py
 BioSAK/usearch_uc.py
+BioSAK/wilcox.py
 BioSAK.egg-info/PKG-INFO
 BioSAK.egg-info/SOURCES.txt
 BioSAK.egg-info/dependency_links.txt

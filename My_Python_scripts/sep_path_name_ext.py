@@ -1,4 +1,20 @@
 
+#################### sep_path_basename_ext ####################
+
+def sep_path_basename_ext(file_in):
+
+    f_path, f_name = os.path.split(file_in)
+    if f_path == '':
+        f_path = '.'
+    f_base, f_ext = os.path.splitext(f_name)
+
+    return f_name, f_path, f_base, f_ext[1:]
+
+
+file_demo = '/Users/weizhisong/Softwares/artemis/act.txt'
+f_name, f_path, f_base, f_ext = sep_path_basename_ext(file_demo)
+
+
 ############# get_time_since_last_modification #############
 
 import os
@@ -45,27 +61,6 @@ import os
 dir = '/Users/songweizhi/Desktop/DateArTree/0_HGT_ALE/op_qualified_OGs_gene_tree_dir'
 sub_dir_list = next(os.walk(dir))[1]
 print(sub_dir_list)
-
-
-#################### sep_path_basename_ext ####################
-
-import os
-
-def sep_path_basename_ext(file_in):
-
-    # separate path and file name
-    f_path, file_name = os.path.split(file_in)
-    if f_path == '':
-        f_path = '.'
-
-    # separate file basename and extension
-    f_base, f_ext = os.path.splitext(file_name)
-
-    return f_path, f_base, f_ext
-
-
-file_demo = '/Users/weizhisong/Softwares/artemis/act.txt'
-file_path, file_basename, file_ext = sep_path_basename_ext(file_demo)
 
 
 #################### whether folder/file exist #####################

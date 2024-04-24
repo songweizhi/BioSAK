@@ -51,6 +51,7 @@ def print_main_help():
        magabund                ->  Calculate MAG abundance
        mean_MAG_cov            ->  Get mean MAG depth (by MetaBAT depth)
        RunGraphMB              ->  Prepare input files for GraphMB
+       gc                      ->  Get GC content
        get_gnm_size            ->  Get the total length of genome(s)
        get_gene_depth          ->  Get gene depth by contig depth
        MeanMappingDepth        ->  Get mean mapping depth 
@@ -92,12 +93,14 @@ def print_main_help():
        bam2reads               ->  Extract reads (id) from sam file
        plot_sam_depth          ->  Plot SAM depth
     
-    Dataframe
+    Dataframe and Statistics
        subset_df               ->  Subset dataframe
        merge_df                ->  Merge dataframes
        add_desc                ->  Add function description to input of the iTOL module
        transpose               ->  Transpose dataframe
-
+       wilcox                  ->  Wilcoxon signed-rank test (non-parametric paired T-test)
+       mannwhitneyu            ->  Mann-Whitney U rank test on two independent samples
+    
     Others
        iTOL                    ->  Prepare iTOL files
        js_cmds                 ->  Put commands in job scripts
@@ -220,6 +223,7 @@ if __name__ == '__main__':
         iTOL_parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
         iTOL_parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
         iTOL_parser.add_argument('-Connection',      required=False, action='store_true',   help='Connection')
+        iTOL_parser.add_argument('-PieChart',        required=False, action='store_true',   help='PieChart')
         iTOL_parser.add_argument('-ll',              required=False, default=None,          help='Leaf Label')
         iTOL_parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
         iTOL_parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
@@ -965,10 +969,34 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'transpose':
         from BioSAK import transpose
         transpose_parser = subparsers.add_parser('transpose', usage=transpose.transpose_usage)
-        transpose_parser.add_argument('-i', required=True, help='input file')
-        transpose_parser.add_argument('-o', required=True, help='output file')
+        transpose_parser.add_argument('-i', required=True,      help='input file')
+        transpose_parser.add_argument('-o', required=True,      help='output file')
         args = vars(parser.parse_args())
         transpose.transpose(args)
+
+    elif sys.argv[1] == 'gc':
+        from BioSAK import gc
+        gc_parser = subparsers.add_parser('gc', usage=gc.gc_usage)
+        gc_parser.add_argument('-i',        required=True,     help='sequence file/folder')
+        gc_parser.add_argument('-x',        required=False,    help='file extension')
+        args = vars(parser.parse_args())
+        gc.gc(args)
+
+    elif sys.argv[1] == 'wilcox':
+        from BioSAK import wilcox
+        wilcox_parser = subparsers.add_parser('wilcox', usage=wilcox.wilcox_usage)
+        wilcox_parser.add_argument('-1', required=True, help='treatment 1')
+        wilcox_parser.add_argument('-2', required=True, help='treatment 2')
+        args = vars(parser.parse_args())
+        wilcox.wilcox(args)
+
+    elif sys.argv[1] == 'mannwhitneyu':
+        from BioSAK import mannwhitneyu
+        mannwhitneyu_parser = subparsers.add_parser('mannwhitneyu', usage=mannwhitneyu.mannwhitneyu_usage)
+        mannwhitneyu_parser.add_argument('-1', required=True, help='sample 1')
+        mannwhitneyu_parser.add_argument('-2', required=True, help='sample 2')
+        args = vars(parser.parse_args())
+        mannwhitneyu.mannwhitneyu(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
