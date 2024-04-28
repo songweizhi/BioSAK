@@ -119,6 +119,7 @@ def print_main_help():
        cross_link_seqs         ->  Cross link matched regions between two sequences
        submitHPC               ->  A wrapper for submitHPC.sh
        KeepRemovingTmp         ->  Keep removing old files in a folder
+       ribbon                  ->  Make a ribbon diagram
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Use "pip3 install --upgrade BioSAK" to get the latest version
@@ -997,6 +998,31 @@ if __name__ == '__main__':
         mannwhitneyu_parser.add_argument('-2', required=True, help='sample 2')
         args = vars(parser.parse_args())
         mannwhitneyu.mannwhitneyu(args)
+
+    elif sys.argv[1] == 'ribbon':
+        from BioSAK import ribbon
+        ribbon_parser = subparsers.add_parser('ribbon', usage=ribbon.ribbon_usage)
+        ribbon_parser.add_argument('-o',                    required=True,                                  help='output directory')
+        ribbon_parser.add_argument('-fa',                   required=True,                                  help='fa file directory')
+        ribbon_parser.add_argument('-fax',                  required=False, default='fa',                   help='fa file extension, default: fa')
+        ribbon_parser.add_argument('-gff',                  required=False,                                 help='gff file directory')
+        ribbon_parser.add_argument('-gffx',                 required=False, default='gff',                  help='gff file extension, default: gff')
+        ribbon_parser.add_argument('-gbk',                  required=False,                                 help='gbk file directory')
+        ribbon_parser.add_argument('-gbkx',                 required=False, default='gbk',                  help='gbk file extension, default: gbk')
+        ribbon_parser.add_argument('-pep',                  required=False,                                 help='pep file directory')
+        ribbon_parser.add_argument('-pepx',                 required=False, default='pep',                  help='pep file extension, default: pep')
+        ribbon_parser.add_argument('-chrom',                required=False,                                 help='chrom file directory')
+        ribbon_parser.add_argument('-chromx',               required=False, default='chrom',                help='chrom file extension, default: chrom')
+        ribbon_parser.add_argument('-so',                   required=False, default=None,                   help='species order in the ribbon diagram')
+        ribbon_parser.add_argument('-co',                   required=False, default=None,                   help='chromosome order in the ribbon diagram')
+        ribbon_parser.add_argument('-m',                    required=False, type=int, default=10,           help='minscafsize, default: 10')
+        ribbon_parser.add_argument('-t',                    required=False, type=int, default=1,            help='number of core, default: 1')
+        ribbon_parser.add_argument('-f',                    required=False, action="store_true",            help='force overwrite')
+        ribbon_parser.add_argument('-plot_all',             required=False, action="store_true",            help='plot_all')
+        ribbon_parser.add_argument('-odp',                  required=False, default='odp',                  help='executable file odp, default: odp')
+        ribbon_parser.add_argument('-odp_rbh_to_ribbon',    required=False, default='odp_rbh_to_ribbon',    help='executable file odp_rbh_to_ribbon, default: odp_rbh_to_ribbon')
+        args = vars(parser.parse_args())
+        ribbon.ribbon(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
