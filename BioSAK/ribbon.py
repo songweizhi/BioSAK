@@ -1,5 +1,6 @@
 import os
 import glob
+import gzip
 import argparse
 from Bio import SeqIO
 
@@ -17,7 +18,8 @@ BioSAK ribbon -plot_lgs -co chrom_order.txt -o ribbon_op_dir -fa demo_files -pep
 Note:
 1. Species names can't have '_' char
 2. Reference: https://github.com/conchoecia/odp
-3. Demo data: 
+3. Demo data: https://github.com/songweizhi/BioSAK/tree/master/demo_data/ribbon
+
 =================================================================
 '''
 
@@ -30,6 +32,48 @@ def sep_path_basename_ext(file_in):
     f_base, f_ext = os.path.splitext(f_name)
 
     return f_name, f_path, f_base, f_ext[1:]
+
+
+def gff2chrom(gff_in, chrom_out):
+
+    # This function was modified based on the NCBIgff2chrom.py from https://github.com/conchoecia/odp
+    # This program parses a NCBI GFF annotation and generates a .chrom file
+    # see https://github.com/conchoecia/odp for the specification
+
+    gzipped = False
+    for thisend in [".gz", ".gzip", ".GZ", ".GZIP", ".gzipped", ".GZIPPED"]:
+        if gff_in.endswith(thisend):
+            gzipped = True
+
+    if gzipped:
+        handle = gzip.open(gff_in, 'rt')
+    else:
+        handle = open(gff_in, "r")
+
+    prots = dict()
+    for line in handle:
+        line = line.strip()
+        splitd = line.split("\t")
+        if line and len(splitd) > 7 and splitd[2] == "CDS" and "protein_id=" in line:
+            pid = [x for x in splitd[8].split(";") if x.startswith("protein_id=")][0].replace("protein_id=", "")
+            scaf = splitd[0]
+            strand = splitd[6]
+            start = int(splitd[3])
+            stop = int(splitd[3])
+            if pid not in prots:
+                prots[pid] = {"scaf": scaf, "strand": strand, "start": start, "stop": stop}
+            else:
+                if start < prots[pid]["start"]:
+                    prots[pid]["start"] = start
+                if stop > prots[pid]["stop"]:
+                    prots[pid]["stop"] = stop
+    handle.close()
+
+    # write out .chrom file
+    chrom_out_handle = open(chrom_out, 'w')
+    for pid in prots:
+        chrom_out_handle.write("{}\t{}\t{}\t{}\t{}\n".format(pid, prots[pid]["scaf"], prots[pid]["strand"], prots[pid]["start"], prots[pid]["stop"]))
+    chrom_out_handle.close()
 
 
 def ribbon(args):
@@ -59,11 +103,10 @@ def ribbon(args):
 
     wd_path = os.path.abspath(os.getcwd())
 
-    get_macrosynteny_plot_wd    = '%s/get_macrosynteny_plot'    % op_dir
-    get_ribbon_diagram_wd       = '%s/get_ribbon_diagram'       % op_dir
-    config_yaml_macrosynteny    = '%s/config.yaml'              % get_macrosynteny_plot_wd
-    config_yaml_ribbon          = '%s/config.yaml'              % get_ribbon_diagram_wd
-    cmd_txt                     = '%s/commands.txt'             % op_dir
+    get_macrosynteny_plot_wd = '%s/get_macrosynteny_plot' % op_dir
+    get_ribbon_diagram_wd    = '%s/get_ribbon_diagram'    % op_dir
+    config_yaml_macrosynteny = '%s/config.yaml'           % get_macrosynteny_plot_wd
+    cmd_txt                  = '%s/commands.txt'          % op_dir
 
     ####################################################################################################################
 
@@ -110,10 +153,10 @@ def ribbon(args):
                 chrom_order_dict[s_id] = []
             chrom_order_dict[s_id].append(c_id)
 
-    fa_in_abspath                       = os.path.abspath(fa_in)
-    op_dir_abspath                      = os.path.abspath(op_dir)
-    get_macrosynteny_plot_wd_abspath    = os.path.abspath(get_macrosynteny_plot_wd)
-    get_ribbon_diagram_wd_abspath       = os.path.abspath(get_ribbon_diagram_wd)
+    fa_in_abspath                    = os.path.abspath(fa_in)
+    op_dir_abspath                   = os.path.abspath(op_dir)
+    get_macrosynteny_plot_wd_abspath = os.path.abspath(get_macrosynteny_plot_wd)
+    get_ribbon_diagram_wd_abspath    = os.path.abspath(get_ribbon_diagram_wd)
 
     ################################### get config.yaml for getting macrosynteny plot ##################################
 
@@ -237,11 +280,10 @@ def ribbon(args):
     # get ribbon diagram
     for color_setting in synteny_plot_list:
 
-        current_wd              = '%s/%s'         % (get_ribbon_diagram_wd_abspath, color_setting)
-        pwd_plot_file           = '%s/output.pdf' % current_wd
-        pwd_plot_file_relocated = '%s/%s.pdf'     % (op_dir_abspath, color_setting)
+        current_wd              = '%s/%s'           % (get_ribbon_diagram_wd_abspath, color_setting)
+        pwd_plot_file           = '%s/output.pdf'   % current_wd
+        pwd_plot_file_relocated = '%s/%s.pdf'       % (op_dir_abspath, color_setting.replace('synteny_', 'ribbon_'))
 
-        print(snakemake_cmd_ribbon)
         os.chdir(current_wd)
         os.system(snakemake_cmd_ribbon)
 
@@ -281,13 +323,3 @@ if __name__ == '__main__':
     ribbon_parser.add_argument('-odp_rbh_to_ribbon',    required=False, default='odp_rbh_to_ribbon',    help='executable file odp_rbh_to_ribbon, default: odp_rbh_to_ribbon')
     args = vars(ribbon_parser.parse_args())
     ribbon(args)
-
-
-'''
-
-python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/ribbon.py -o demo -fa example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon
-
-cd /scratch/PI/ocessongwz/odp_wd
-BioSAK hpc3 -q cpu -a oces -t 12 -conda odp -n odp -c "BioSAK ribbon -t 12 -plot_lgs -co chrom_order.txt -o ribbon_op_dir2 -fa example_files -pep example_files -chrom example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon"
-
-'''

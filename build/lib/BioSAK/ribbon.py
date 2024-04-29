@@ -1,10 +1,9 @@
 import os
 import glob
+import gzip
 import argparse
 from Bio import SeqIO
 
-# Make ribbon diagrams of conserved linkages between genomes
-# https://github.com/conchoecia/odp
 
 ribbon_usage = '''
 ==================== ribbon example commands ====================
@@ -13,11 +12,13 @@ ribbon_usage = '''
 
 # example commands
 odp="/scratch/PI/ocessongwz/Software/odp/scripts/odp"
-odp_rbh_to_ribbon="/scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon"
-BioSAK ribbon -plot_lgs -co chrom_order.txt -o ribbon_op_dir -fa example_files -pep example_files -chrom example_files -f -odp $odp -odp_rbh_to_ribbon $odp_rbh_to_ribbon
+ribbon="/scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon"
+BioSAK ribbon -plot_lgs -co chrom_order.txt -o ribbon_op_dir -fa demo_files -pep demo_files -chrom demo_files -f -odp $odp -odp_rbh_to_ribbon $ribbon
 
 Note:
 1. Species names can't have '_' char
+2. Reference: https://github.com/conchoecia/odp
+3. Demo data: https://github.com/songweizhi/BioSAK/tree/master/demo_data/ribbon
 
 =================================================================
 '''
@@ -31,6 +32,48 @@ def sep_path_basename_ext(file_in):
     f_base, f_ext = os.path.splitext(f_name)
 
     return f_name, f_path, f_base, f_ext[1:]
+
+
+def gff2chrom(gff_in, chrom_out):
+
+    # This function was modified based on the NCBIgff2chrom.py from https://github.com/conchoecia/odp
+    # This program parses a NCBI GFF annotation and generates a .chrom file
+    # see https://github.com/conchoecia/odp for the specification
+
+    gzipped = False
+    for thisend in [".gz", ".gzip", ".GZ", ".GZIP", ".gzipped", ".GZIPPED"]:
+        if gff_in.endswith(thisend):
+            gzipped = True
+
+    if gzipped:
+        handle = gzip.open(gff_in, 'rt')
+    else:
+        handle = open(gff_in, "r")
+
+    prots = dict()
+    for line in handle:
+        line = line.strip()
+        splitd = line.split("\t")
+        if line and len(splitd) > 7 and splitd[2] == "CDS" and "protein_id=" in line:
+            pid = [x for x in splitd[8].split(";") if x.startswith("protein_id=")][0].replace("protein_id=", "")
+            scaf = splitd[0]
+            strand = splitd[6]
+            start = int(splitd[3])
+            stop = int(splitd[3])
+            if pid not in prots:
+                prots[pid] = {"scaf": scaf, "strand": strand, "start": start, "stop": stop}
+            else:
+                if start < prots[pid]["start"]:
+                    prots[pid]["start"] = start
+                if stop > prots[pid]["stop"]:
+                    prots[pid]["stop"] = stop
+    handle.close()
+
+    # write out .chrom file
+    chrom_out_handle = open(chrom_out, 'w')
+    for pid in prots:
+        chrom_out_handle.write("{}\t{}\t{}\t{}\t{}\n".format(pid, prots[pid]["scaf"], prots[pid]["strand"], prots[pid]["start"], prots[pid]["stop"]))
+    chrom_out_handle.close()
 
 
 def ribbon(args):
@@ -60,11 +103,10 @@ def ribbon(args):
 
     wd_path = os.path.abspath(os.getcwd())
 
-    get_macrosynteny_plot_wd    = '%s/get_macrosynteny_plot'    % op_dir
-    get_ribbon_diagram_wd       = '%s/get_ribbon_diagram'       % op_dir
-    config_yaml_macrosynteny    = '%s/config.yaml'              % get_macrosynteny_plot_wd
-    config_yaml_ribbon          = '%s/config.yaml'              % get_ribbon_diagram_wd
-    cmd_txt                     = '%s/commands.txt'             % op_dir
+    get_macrosynteny_plot_wd = '%s/get_macrosynteny_plot' % op_dir
+    get_ribbon_diagram_wd    = '%s/get_ribbon_diagram'    % op_dir
+    config_yaml_macrosynteny = '%s/config.yaml'           % get_macrosynteny_plot_wd
+    cmd_txt                  = '%s/commands.txt'          % op_dir
 
     ####################################################################################################################
 
@@ -111,10 +153,10 @@ def ribbon(args):
                 chrom_order_dict[s_id] = []
             chrom_order_dict[s_id].append(c_id)
 
-    fa_in_abspath                       = os.path.abspath(fa_in)
-    op_dir_abspath                      = os.path.abspath(op_dir)
-    get_macrosynteny_plot_wd_abspath    = os.path.abspath(get_macrosynteny_plot_wd)
-    get_ribbon_diagram_wd_abspath       = os.path.abspath(get_ribbon_diagram_wd)
+    fa_in_abspath                    = os.path.abspath(fa_in)
+    op_dir_abspath                   = os.path.abspath(op_dir)
+    get_macrosynteny_plot_wd_abspath = os.path.abspath(get_macrosynteny_plot_wd)
+    get_ribbon_diagram_wd_abspath    = os.path.abspath(get_ribbon_diagram_wd)
 
     ################################### get config.yaml for getting macrosynteny plot ##################################
 
@@ -148,7 +190,7 @@ def ribbon(args):
 
     ############################################### get macrosynteny plot ##############################################
 
-    snakemake_cmd_macrosynteny  = 'snakemake --cores %s --snakefile %s' % (thread_num, odp_exe)
+    snakemake_cmd_macrosynteny = 'snakemake --cores %s --snakefile %s' % (thread_num, odp_exe)
 
     # write out commands
     cmd_txt_handle = open(cmd_txt, 'w')
@@ -165,8 +207,8 @@ def ribbon(args):
     #################################### get config.yaml for getting ribbon diagram ####################################
 
     os.chdir(wd_path)
-    step2_figures_abspath = '%s/odp/step2-figures'                  % get_macrosynteny_plot_wd_abspath
-    snakemake_cmd_ribbon  = 'snakemake --cores %s --snakefile %s'   % (thread_num, odp_rbh_to_ribbon_exe)
+    step2_figures_abspath = '%s/odp/step2-figures'                % get_macrosynteny_plot_wd_abspath
+    snakemake_cmd_ribbon  = 'snakemake --cores %s --snakefile %s' % (thread_num, odp_rbh_to_ribbon_exe)
 
     step2_figures_sub_dir_list = next(os.walk(step2_figures_abspath))[1]
     synteny_plot_list = ['synteny_nocolor']
@@ -175,9 +217,9 @@ def ribbon(args):
             synteny_plot_list.append(each_sub_dir)
 
     for color_setting in synteny_plot_list:
-        current_synteny_dir         = '%s/%s'           % (step2_figures_abspath, color_setting)
-        current_wd                  = '%s/%s'           % (get_ribbon_diagram_wd_abspath, color_setting)
-        current_config_yaml_ribbon  = '%s/config.yaml'  % current_wd
+        current_synteny_dir        = '%s/%s'          % (step2_figures_abspath, color_setting)
+        current_wd                 = '%s/%s'          % (get_ribbon_diagram_wd_abspath, color_setting)
+        current_config_yaml_ribbon = '%s/config.yaml' % current_wd
         os.mkdir(current_wd)
 
         with open(cmd_txt, 'a') as cmd_txt_handle:
@@ -240,9 +282,8 @@ def ribbon(args):
 
         current_wd              = '%s/%s'           % (get_ribbon_diagram_wd_abspath, color_setting)
         pwd_plot_file           = '%s/output.pdf'   % current_wd
-        pwd_plot_file_relocated = '%s/%s.pdf'       % (get_ribbon_diagram_wd_abspath, color_setting)
+        pwd_plot_file_relocated = '%s/%s.pdf'       % (op_dir_abspath, color_setting.replace('synteny_', 'ribbon_'))
 
-        print(snakemake_cmd_ribbon)
         os.chdir(current_wd)
         os.system(snakemake_cmd_ribbon)
 
@@ -251,7 +292,7 @@ def ribbon(args):
 
     ################################################### final report ###################################################
 
-    print('Ribbon diagram exported to %s' % get_ribbon_diagram_wd)
+    print('Ribbon diagram exported to %s' % op_dir)
     print('Done!')
 
     ####################################################################################################################
@@ -287,5 +328,8 @@ if __name__ == '__main__':
 '''
 
 python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/ribbon.py -o demo -fa example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon
+
+cd /scratch/PI/ocessongwz/odp_wd
+BioSAK hpc3 -q cpu -a oces -t 12 -conda odp -n odp -c "BioSAK ribbon -t 12 -plot_lgs -co chrom_order.txt -o ribbon_op_dir2 -fa example_files -pep example_files -chrom example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon"
 
 '''

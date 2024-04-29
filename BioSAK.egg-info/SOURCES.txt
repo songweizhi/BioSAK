@@ -68,6 +68,7 @@ BioSAK/gapseq.py
 BioSAK/gbk2faa.py
 BioSAK/gbk2ffn.py
 BioSAK/gbk2fna.py
+BioSAK/gbk2gff.py
 BioSAK/gbk_to_ffn_faa.py
 BioSAK/gc.py
 BioSAK/get_EC_from_ko_stats_D.py
@@ -92,6 +93,7 @@ BioSAK/get_reads_id_in_sam.py
 BioSAK/get_sankey_plot.R
 BioSAK/get_top_hit.py
 BioSAK/get_total_length.py
+BioSAK/gff2chrom.py
 BioSAK/global_functions.py
 BioSAK/hpc3.py
 BioSAK/iTOL.py
