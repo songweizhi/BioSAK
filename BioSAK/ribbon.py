@@ -3,19 +3,21 @@ import glob
 import argparse
 from Bio import SeqIO
 
-# Make ribbon diagrams of conserved linkages between genomes
-# https://github.com/conchoecia/odp
 
 ribbon_usage = '''
 ==================== ribbon example commands ====================
 
 # Dependencies: opd
 
-BioSAK ribbon -co chrom_order2.txt -o demo4 -fa example_files -pep example_files -chrom example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon
+# example commands
+odp="/scratch/PI/ocessongwz/Software/odp/scripts/odp"
+ribbon="/scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon"
+BioSAK ribbon -plot_lgs -co chrom_order.txt -o ribbon_op_dir -fa demo_files -pep demo_files -chrom demo_files -f -odp $odp -odp_rbh_to_ribbon $ribbon
 
 Note:
 1. Species names can't have '_' char
-
+2. Reference: https://github.com/conchoecia/odp
+3. Demo data: 
 =================================================================
 '''
 
@@ -51,13 +53,17 @@ def ribbon(args):
     odp_exe                 = args['odp']
     odp_rbh_to_ribbon_exe   = args['odp_rbh_to_ribbon']
     plot_all                = args['plot_all']
+    plot_lgs                = args['plot_lgs']
 
     ################################################# define file name #################################################
 
-    get_macrosynteny_plot_wd    = '%s/get_macrosynteny_plot'                % op_dir
-    get_ribbon_diagram_wd       = '%s/get_ribbon_diagram'                   % op_dir
-    config_yaml_macrosynteny    = '%s/config.yaml'                          % get_macrosynteny_plot_wd
-    config_yaml_ribbon          = '%s/config.yaml'                          % get_ribbon_diagram_wd
+    wd_path = os.path.abspath(os.getcwd())
+
+    get_macrosynteny_plot_wd    = '%s/get_macrosynteny_plot'    % op_dir
+    get_ribbon_diagram_wd       = '%s/get_ribbon_diagram'       % op_dir
+    config_yaml_macrosynteny    = '%s/config.yaml'              % get_macrosynteny_plot_wd
+    config_yaml_ribbon          = '%s/config.yaml'              % get_ribbon_diagram_wd
+    cmd_txt                     = '%s/commands.txt'             % op_dir
 
     ####################################################################################################################
 
@@ -104,11 +110,10 @@ def ribbon(args):
                 chrom_order_dict[s_id] = []
             chrom_order_dict[s_id].append(c_id)
 
-    fa_in_abspath                    = os.path.abspath(fa_in)
-    op_dir_abspath                   = os.path.abspath(op_dir)
-    get_macrosynteny_plot_wd_abspath = os.path.abspath(get_macrosynteny_plot_wd)
-    get_ribbon_diagram_wd_abspath    = os.path.abspath(get_ribbon_diagram_wd)
-    rbh_file_dir                     = '%s/odp/step2-figures/synteny_nocolor' % get_macrosynteny_plot_wd_abspath
+    fa_in_abspath                       = os.path.abspath(fa_in)
+    op_dir_abspath                      = os.path.abspath(op_dir)
+    get_macrosynteny_plot_wd_abspath    = os.path.abspath(get_macrosynteny_plot_wd)
+    get_ribbon_diagram_wd_abspath       = os.path.abspath(get_ribbon_diagram_wd)
 
     ################################### get config.yaml for getting macrosynteny plot ##################################
 
@@ -117,7 +122,13 @@ def ribbon(args):
     config_yaml_macrosynteny_handle.write('ignore_autobreaks: True\n')
     config_yaml_macrosynteny_handle.write('diamond_or_blastp: "diamond"\n')
     config_yaml_macrosynteny_handle.write('duplicate_proteins: "pass"\n')
-    config_yaml_macrosynteny_handle.write('plot_LGs: False\n')
+
+    # write out plot_LGs
+    if plot_lgs is True:
+        config_yaml_macrosynteny_handle.write('plot_LGs: True\n')
+    else:
+        config_yaml_macrosynteny_handle.write('plot_LGs: False\n')
+
     config_yaml_macrosynteny_handle.write('plot_sp_sp: True\n')
     config_yaml_macrosynteny_handle.write('\n')
 
@@ -134,74 +145,115 @@ def ribbon(args):
         config_yaml_macrosynteny_handle.write('    minscafsize: %s\n' % minscafsize)
     config_yaml_macrosynteny_handle.close()
 
-    #################################### get config.yaml for getting ribbon diagram ####################################
+    ############################################### get macrosynteny plot ##############################################
 
-    config_yaml_ribbon_handle = open(config_yaml_ribbon, 'w')
-    config_yaml_ribbon_handle.write('chr_sort_order: optimal-chr-or\n')
-    if plot_all is True:
-        config_yaml_ribbon_handle.write('plot_all: True\n')
-    else:
-        config_yaml_ribbon_handle.write('plot_all: False\n')
-    config_yaml_ribbon_handle.write('\n')
+    snakemake_cmd_macrosynteny = 'snakemake --cores %s --snakefile %s' % (thread_num, odp_exe)
 
-    # write out species_order section
-    config_yaml_ribbon_handle.write('species_order:\n')
-    for species in species_order_list:
-        config_yaml_ribbon_handle.write('  - %s\n' % species)
-    config_yaml_ribbon_handle.write('\n')
-
-    # write out chromorder section
-    config_yaml_ribbon_handle.write('chromorder:\n')
-
-    if chrom_order_txt is not None:
-        for each_s in chrom_order_dict:
-            config_yaml_ribbon_handle.write('  %s:\n' % each_s)
-            for each_chrom in chrom_order_dict[each_s]:
-                config_yaml_ribbon_handle.write('    - %s\n' % each_chrom)
-        config_yaml_ribbon_handle.write('\n')
-
-    else:
-        for each_species in species_order_list:
-            current_chrom_list = species_to_chrom_dict.get(each_species, [])
-            if len(current_chrom_list) > 0:
-                config_yaml_ribbon_handle.write('  %s:\n' % each_species)
-                for each_chrom in current_chrom_list:
-                    config_yaml_ribbon_handle.write('    - %s\n' % each_chrom)
-            config_yaml_ribbon_handle.write('\n')
-
-    # write out rbh_directory section
-    config_yaml_ribbon_handle.write('rbh_directory: %s\n' % rbh_file_dir)
-    config_yaml_ribbon_handle.write('\n')
-
-    # write out species section
-    config_yaml_ribbon_handle.write('species:\n')
-    for each_species in species_order_list:
-        current_fa    = '%s/%s.fa'    % (fa_in_abspath, each_species)
-        current_pep   = '%s/%s.pep'   % (fa_in_abspath, each_species)
-        current_chrom = '%s/%s.chrom' % (fa_in_abspath, each_species)
-        config_yaml_ribbon_handle.write('  %s:\n' % each_species)
-        config_yaml_ribbon_handle.write('    proteins:    %s\n' % current_pep)
-        config_yaml_ribbon_handle.write('    chrom:       %s\n' % current_chrom)
-        config_yaml_ribbon_handle.write('    genome:      %s\n' % current_fa)
-        config_yaml_ribbon_handle.write('    minscafsize: %s\n' % minscafsize)
-    config_yaml_ribbon_handle.close()
-
-    ################################################## run snakemake ###################################################
-
-    snakemake_cmd_macrosynteny  = 'snakemake --cores %s --snakefile %s' % (thread_num, odp_exe)
-    snakemake_cmd_ribbon        = 'snakemake --cores %s --snakefile %s' % (thread_num, odp_rbh_to_ribbon_exe)
+    # write out commands
+    cmd_txt_handle = open(cmd_txt, 'w')
+    cmd_txt_handle.write('cd %s\n' % get_macrosynteny_plot_wd_abspath)
+    cmd_txt_handle.write(snakemake_cmd_macrosynteny + '\n')
+    cmd_txt_handle.write('\n')
+    cmd_txt_handle.close()
 
     # get macrosynteny plot
     print(snakemake_cmd_macrosynteny)
     os.chdir(get_macrosynteny_plot_wd_abspath)
     os.system(snakemake_cmd_macrosynteny)
 
-    # get ribbon diagram
-    print(snakemake_cmd_ribbon)
-    os.chdir(get_ribbon_diagram_wd_abspath)
-    os.system(snakemake_cmd_ribbon)
+    #################################### get config.yaml for getting ribbon diagram ####################################
 
+    os.chdir(wd_path)
+    step2_figures_abspath = '%s/odp/step2-figures'                % get_macrosynteny_plot_wd_abspath
+    snakemake_cmd_ribbon  = 'snakemake --cores %s --snakefile %s' % (thread_num, odp_rbh_to_ribbon_exe)
+
+    step2_figures_sub_dir_list = next(os.walk(step2_figures_abspath))[1]
+    synteny_plot_list = ['synteny_nocolor']
+    for each_sub_dir in step2_figures_sub_dir_list:
+        if each_sub_dir.startswith('synteny_coloredby'):
+            synteny_plot_list.append(each_sub_dir)
+
+    for color_setting in synteny_plot_list:
+        current_synteny_dir        = '%s/%s'          % (step2_figures_abspath, color_setting)
+        current_wd                 = '%s/%s'          % (get_ribbon_diagram_wd_abspath, color_setting)
+        current_config_yaml_ribbon = '%s/config.yaml' % current_wd
+        os.mkdir(current_wd)
+
+        with open(cmd_txt, 'a') as cmd_txt_handle:
+            cmd_txt_handle.write('cd %s\n' % current_wd)
+            cmd_txt_handle.write(snakemake_cmd_ribbon + '\n')
+            cmd_txt_handle.write('\n')
+
+        config_yaml_ribbon_handle = open(current_config_yaml_ribbon, 'w')
+        config_yaml_ribbon_handle.write('chr_sort_order: optimal-chr-or\n')
+        if plot_all is True:
+            config_yaml_ribbon_handle.write('plot_all: True\n')
+        else:
+            config_yaml_ribbon_handle.write('plot_all: False\n')
+        config_yaml_ribbon_handle.write('\n')
+
+        # write out species_order section
+        config_yaml_ribbon_handle.write('species_order:\n')
+        for species in species_order_list:
+            config_yaml_ribbon_handle.write('  - %s\n' % species)
+        config_yaml_ribbon_handle.write('\n')
+
+        # write out chromorder section
+        config_yaml_ribbon_handle.write('chromorder:\n')
+        if chrom_order_txt is not None:
+            for each_s in chrom_order_dict:
+                config_yaml_ribbon_handle.write('  %s:\n' % each_s)
+                for each_chrom in chrom_order_dict[each_s]:
+                    config_yaml_ribbon_handle.write('    - %s\n' % each_chrom)
+            config_yaml_ribbon_handle.write('\n')
+        else:
+            for each_species in species_order_list:
+                current_chrom_list = species_to_chrom_dict.get(each_species, [])
+                if len(current_chrom_list) > 0:
+                    config_yaml_ribbon_handle.write('  %s:\n' % each_species)
+                    for each_chrom in current_chrom_list:
+                        config_yaml_ribbon_handle.write('    - %s\n' % each_chrom)
+                config_yaml_ribbon_handle.write('\n')
+
+        # write out rbh_directory section
+        config_yaml_ribbon_handle.write('rbh_directory: %s\n' % current_synteny_dir)
+        config_yaml_ribbon_handle.write('\n')
+
+        # write out species section
+        config_yaml_ribbon_handle.write('species:\n')
+        for each_species in species_order_list:
+            current_fa    = '%s/%s.fa'    % (fa_in_abspath, each_species)
+            current_pep   = '%s/%s.pep'   % (fa_in_abspath, each_species)
+            current_chrom = '%s/%s.chrom' % (fa_in_abspath, each_species)
+            config_yaml_ribbon_handle.write('  %s:\n' % each_species)
+            config_yaml_ribbon_handle.write('    proteins:    %s\n' % current_pep)
+            config_yaml_ribbon_handle.write('    chrom:       %s\n' % current_chrom)
+            config_yaml_ribbon_handle.write('    genome:      %s\n' % current_fa)
+            config_yaml_ribbon_handle.write('    minscafsize: %s\n' % minscafsize)
+        config_yaml_ribbon_handle.close()
+
+    ################################################## run snakemake ###################################################
+
+    # get ribbon diagram
+    for color_setting in synteny_plot_list:
+
+        current_wd              = '%s/%s'         % (get_ribbon_diagram_wd_abspath, color_setting)
+        pwd_plot_file           = '%s/output.pdf' % current_wd
+        pwd_plot_file_relocated = '%s/%s.pdf'     % (op_dir_abspath, color_setting)
+
+        print(snakemake_cmd_ribbon)
+        os.chdir(current_wd)
+        os.system(snakemake_cmd_ribbon)
+
+        if os.path.isfile(pwd_plot_file) is True:
+            os.system('mv %s %s' % (pwd_plot_file, pwd_plot_file_relocated))
+
+    ################################################### final report ###################################################
+
+    print('Ribbon diagram exported to %s' % op_dir)
     print('Done!')
+
+    ####################################################################################################################
 
 
 if __name__ == '__main__':
@@ -224,6 +276,7 @@ if __name__ == '__main__':
     ribbon_parser.add_argument('-t',                    required=False, type=int, default=1,            help='number of core, default: 1')
     ribbon_parser.add_argument('-f',                    required=False, action="store_true",            help='force overwrite')
     ribbon_parser.add_argument('-plot_all',             required=False, action="store_true",            help='plot_all')
+    ribbon_parser.add_argument('-plot_lgs',             required=False, action="store_true",            help='plot_LGs')
     ribbon_parser.add_argument('-odp',                  required=False, default='odp',                  help='executable file odp, default: odp')
     ribbon_parser.add_argument('-odp_rbh_to_ribbon',    required=False, default='odp_rbh_to_ribbon',    help='executable file odp_rbh_to_ribbon, default: odp_rbh_to_ribbon')
     args = vars(ribbon_parser.parse_args())
@@ -233,5 +286,8 @@ if __name__ == '__main__':
 '''
 
 python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/ribbon.py -o demo -fa example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon
+
+cd /scratch/PI/ocessongwz/odp_wd
+BioSAK hpc3 -q cpu -a oces -t 12 -conda odp -n odp -c "BioSAK ribbon -t 12 -plot_lgs -co chrom_order.txt -o ribbon_op_dir2 -fa example_files -pep example_files -chrom example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon"
 
 '''

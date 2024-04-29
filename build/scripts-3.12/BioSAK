@@ -1019,6 +1019,7 @@ if __name__ == '__main__':
         ribbon_parser.add_argument('-t',                    required=False, type=int, default=1,            help='number of core, default: 1')
         ribbon_parser.add_argument('-f',                    required=False, action="store_true",            help='force overwrite')
         ribbon_parser.add_argument('-plot_all',             required=False, action="store_true",            help='plot_all')
+        ribbon_parser.add_argument('-plot_lgs',             required=False, action="store_true",            help='plot_LGs')
         ribbon_parser.add_argument('-odp',                  required=False, default='odp',                  help='executable file odp, default: odp')
         ribbon_parser.add_argument('-odp_rbh_to_ribbon',    required=False, default='odp_rbh_to_ribbon',    help='executable file odp_rbh_to_ribbon, default: odp_rbh_to_ribbon')
         args = vars(parser.parse_args())
