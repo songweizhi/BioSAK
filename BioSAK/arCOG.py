@@ -444,7 +444,7 @@ def arCOG(args):
     file_in =           args['i']
     file_extension =    args['x']
     sequence_type =     args['m']
-    depth_file =        args['depth']
+    depth_file =        args['d']
     pct_by_all =        args['pct_by_all']
     DB_dir =            args['db_dir']
     num_threads =       args['t']

@@ -1,5 +1,11 @@
-1.86.4
+1.88.10
 - fixed bugs
+
+1.88.0
+- new modules added: count_num
+
+1.87.0
+- new modules added: compare_sets
 
 1.86.0
 - new modules added: ribbon

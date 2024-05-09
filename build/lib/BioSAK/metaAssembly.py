@@ -35,6 +35,46 @@ def check_executables(program_list):
         exit()
 
 
+def get_nonredundant_table(file_in, file_out, ignore_na):
+    col_dict = dict()
+    col_list = []
+    col_index_dict = dict()
+    line_num_index = 0
+    for each_line in open(file_in):
+        line_num_index += 1
+        line_split = each_line.strip().split('\t')
+        if line_num_index == 1:
+            col_list = line_split
+            col_index_dict = {key: i for i, key in enumerate(line_split)}
+        else:
+            for col in col_list:
+                if col not in col_dict:
+                    col_dict[col] = [line_split[col_index_dict[col]]]
+                else:
+                    col_dict[col].append(line_split[col_index_dict[col]])
+
+    # write out
+    file_out_handle = open(file_out, 'w')
+    for col in col_list:
+
+        value_list_uniq = list(set(col_dict[col]))
+        if value_list_uniq == ['']:
+            value_list_uniq = ['na']
+
+        if col not in ['Assembly BioSample Attribute Name', 'Assembly BioSample Attribute Value']:
+            if ignore_na is True:
+                if value_list_uniq != ['na']:
+                    file_out_handle.write('%s:\t%s\n' % (col, ','.join(value_list_uniq)))
+            else:
+                file_out_handle.write('%s:\t%s\n' % (col, ','.join(value_list_uniq)))
+        else:
+            biosample_attribute_name_list = col_dict.get('Assembly BioSample Attribute Name', [])
+            biosample_attribute_value_list = col_dict.get('Assembly BioSample Attribute Value', [])
+            for (name, value) in zip(biosample_attribute_name_list, biosample_attribute_value_list):
+                file_out_handle.write('Assembly BioSample Attribute %s:\t%s\n' % (name, value))
+    file_out_handle.close()
+
+
 def metaAssembly(args):
 
     assembly_id_txt = args['i']
@@ -51,9 +91,10 @@ def metaAssembly(args):
             print('Output folder detected, program exited!')
             exit()
 
-    tmp_dir = '%s/tmp'        % op_dir
-    op_txt  = '%s/output.txt' % op_dir
-    cmd_txt = '%s/cmds.txt'   % op_dir
+    tmp_dir             = '%s/tmp'          % op_dir
+    tmp_dir_reformatted = '%s/report'       % op_dir
+    op_txt              = '%s/summary.txt'  % op_dir
+    cmd_txt             = '%s/cmds.txt'     % op_dir
 
     os.mkdir(op_dir)
     os.mkdir(tmp_dir)
@@ -72,7 +113,7 @@ def metaAssembly(args):
     cmd_list = []
     cmd_txt_handle = open(cmd_txt, 'w')
     for assembly_id in assembly_id_set:
-        op_metadata_tsv   = '%s/%s_data_report.tsv' % (tmp_dir, assembly_id)
+        op_metadata_tsv   = '%s/%s.txt' % (tmp_dir, assembly_id)
         ncbi_datasets_cmd = 'datasets summary genome accession %s --as-json-lines | dataformat tsv genome > %s' % (assembly_id, op_metadata_tsv)
         cmd_list.append(ncbi_datasets_cmd)
         cmd_txt_handle.write(ncbi_datasets_cmd + '\n')
@@ -89,10 +130,13 @@ def metaAssembly(args):
     with open(op_txt, 'w') as op_txt_handle:
         op_txt_handle.write('Assembly\tBioSample\tDescription\tModel\tIsolation_Source\tMetagenome_Source\tHost\tLocation\tComment\n')
 
+    #os.mkdir(tmp_dir_reformatted)
+
     print('Parsing outputs from datasets and dataformat')
     missing_output_id_set = set()
-    for assembly_id in assembly_id_set:
-        op_metadata_tsv = '%s/%s_data_report.tsv' % (tmp_dir, assembly_id)
+    for assembly_id in sorted(list(assembly_id_set)):
+        op_metadata_tsv             = '%s/%s.txt' % (tmp_dir, assembly_id)
+        op_metadata_tsv_reformatted = '%s/%s.txt' % (tmp_dir_reformatted, assembly_id)
         if os.path.isfile(op_metadata_tsv) is False:
             missing_output_id_set.add(assembly_id)
         else:
@@ -139,6 +183,10 @@ def metaAssembly(args):
 
             with open(op_txt, 'a') as op_txt_handle:
                 op_txt_handle.write(str_to_write + '\n')
+
+        # reformat report file
+        # if os.path.isfile(op_metadata_tsv) is True:
+        #     get_nonredundant_table(op_metadata_tsv, op_metadata_tsv_reformatted, ignore_na=True)
 
     if len(missing_output_id_set) > 0:
         print('datasets and dataformat failed on the following IDs:')

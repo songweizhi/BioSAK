@@ -6,21 +6,21 @@ from Bio import SeqIO
 
 
 ribbon_usage = '''
-==================== ribbon example commands ====================
+============================= ribbon example commands =============================
 
 # Dependencies: opd
 
 # example commands
 odp="/scratch/PI/ocessongwz/Software/odp/scripts/odp"
 ribbon="/scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon"
-BioSAK ribbon -plot_lgs -co chrom_order.txt -o ribbon_op_dir -fa demo_files -pep demo_files -chrom demo_files -f -odp $odp -odp_rbh_to_ribbon $ribbon
+BioSAK ribbon -plot_lgs -co chrom_order.txt -o op_dir -fa demo_files -pep demo_files -chrom demo_files -f -odp $odp -odp_rbh_to_ribbon $ribbon
 
 Note:
 1. Species names can't have '_' char
 2. Reference: https://github.com/conchoecia/odp
 3. Demo data: https://github.com/songweizhi/BioSAK/tree/master/demo_data/ribbon
 
-=================================================================
+===================================================================================
 '''
 
 
@@ -323,13 +323,3 @@ if __name__ == '__main__':
     ribbon_parser.add_argument('-odp_rbh_to_ribbon',    required=False, default='odp_rbh_to_ribbon',    help='executable file odp_rbh_to_ribbon, default: odp_rbh_to_ribbon')
     args = vars(ribbon_parser.parse_args())
     ribbon(args)
-
-
-'''
-
-python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/ribbon.py -o demo -fa example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon
-
-cd /scratch/PI/ocessongwz/odp_wd
-BioSAK hpc3 -q cpu -a oces -t 12 -conda odp -n odp -c "BioSAK ribbon -t 12 -plot_lgs -co chrom_order.txt -o ribbon_op_dir2 -fa example_files -pep example_files -chrom example_files -f -odp /scratch/PI/ocessongwz/Software/odp/scripts/odp -odp_rbh_to_ribbon /scratch/PI/ocessongwz/Software/odp/scripts/odp_rbh_to_ribbon"
-
-'''

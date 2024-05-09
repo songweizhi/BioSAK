@@ -49,8 +49,10 @@ BioSAK/boxplot_matrix_dbCAN.py
 BioSAK/cat_fa.py
 BioSAK/cdd2cog.pl
 BioSAK/checkm_marker.py
+BioSAK/compare_sets.py
 BioSAK/compare_trees.R
 BioSAK/compare_trees.py
+BioSAK/count_num.py
 BioSAK/cross_link_seqs.py
 BioSAK/dbCAN.py
 BioSAK/download_GenBank_genome_subset_prokaryotes_csv.py

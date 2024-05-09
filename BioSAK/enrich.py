@@ -9,6 +9,7 @@ from statsmodels.stats.multitest import multipletests
 enrich_usage = '''
 =================================== enrich example commands ===================================
 
+BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir
 BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -bc
 
 # Note:
@@ -48,7 +49,7 @@ def remove_0_from_Pandas_Series(Pandas_Series):
     return no_0_num_list
 
 
-def summarize_stats(output_test, ko_desc_dict, summary_txt):
+def summarize_stats(output_test, ko_desc_dict, file_prefix, output_dir):
 
     sample_1_id = ''
     sample_2_id = ''
@@ -59,8 +60,16 @@ def summarize_stats(output_test, ko_desc_dict, summary_txt):
             sample_2_id = ko.strip().split('\t')[3]
         line_num_index += 1
 
-    summary_txt_handle = open(summary_txt, 'w')
-    summary_txt_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tEnriched_in\tDescription\n' % (sample_1_id, sample_2_id))
+    summary_txt_sample_1 = '%s/enriched_in_%s.txt' % (output_dir, sample_1_id)
+    summary_txt_sample_2 = '%s/enriched_in_%s.txt' % (output_dir, sample_2_id)
+    if file_prefix != '':
+        summary_txt_sample_1 = '%s/%s_enriched_in_%s.txt' % (output_dir, file_prefix, sample_1_id)
+        summary_txt_sample_2 = '%s/%s_enriched_in_%s.txt' % (output_dir, file_prefix, sample_2_id)
+
+    summary_txt_sample_1_handle = open(summary_txt_sample_1, 'w')
+    summary_txt_sample_2_handle = open(summary_txt_sample_2, 'w')
+    summary_txt_sample_1_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n' % (sample_1_id, sample_2_id))
+    summary_txt_sample_2_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n' % (sample_1_id, sample_2_id))
     line_num_index = 0
     for ko in open(output_test):
         if line_num_index > 0:
@@ -74,15 +83,14 @@ def summarize_stats(output_test, ko_desc_dict, summary_txt):
 
             if P_value_adjusted <= 0.05:
 
+                mean_diff = 'NA'
                 enriched_in = ''
                 if (sample_1_mean > 0) and (sample_2_mean == 0):
                     if sample_1_dectected_pct >= 50:
                         enriched_in = sample_1_id
-                        mean_diff = 'NA'
                 elif (sample_1_mean == 0) and (sample_2_mean > 0):
                     if sample_2_dectected_pct >= 50:
                         enriched_in = sample_2_id
-                        mean_diff = 'NA'
                 elif (sample_1_mean > 0) and (sample_2_mean > 0):
                     mean_diff = float("{0:.3f}".format(sample_1_mean / sample_2_mean))
                     if mean_diff >= 2:
@@ -90,14 +98,20 @@ def summarize_stats(output_test, ko_desc_dict, summary_txt):
                     elif mean_diff <= 0.5:
                         enriched_in = sample_2_id
 
-                if (enriched_in == sample_1_id) or (enriched_in == sample_2_id):
-                    summary_txt_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, enriched_in, ko_desc_dict[ko_id]))
+                if enriched_in == sample_1_id:
+                    summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict[ko_id]))
+                if enriched_in == sample_2_id:
+                    summary_txt_sample_2_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict[ko_id]))
+
         line_num_index += 1
-    summary_txt_handle.close()
+
+    summary_txt_sample_1_handle.close()
+    summary_txt_sample_2_handle.close()
 
 
 def enrich(args):
 
+    op_prefix           = args['p']
     annotation_file_dir = args['i']
     file_ext            = args['x']
     grouping_file       = args['g']
@@ -158,7 +172,9 @@ def enrich(args):
 
     annotation_matrix_file  = '%s/data_matrix.txt'  % op_dir
     stats_op_txt            = '%s/stats_result.txt' % op_dir
-    summary_txt             = '%s/summary.txt'      % op_dir
+    if op_prefix != '':
+        annotation_matrix_file  = '%s/%s_data_matrix.txt'  % (op_dir, op_prefix)
+        stats_op_txt            = '%s/%s_stats_result.txt' % (op_dir, op_prefix)
 
     if os.path.isdir(op_dir) is True:
         if force_create_op_dir is True:
@@ -247,8 +263,6 @@ def enrich(args):
             group1_no_zero_pct = float("{0:.2f}".format(group1_no_zero_pct))
             group2_no_zero_pct = float("{0:.2f}".format(group2_no_zero_pct))
             ko_to_group_detected_pct_dict[column] = [group1_no_zero_pct, group2_no_zero_pct]
-            # print('%s\t%s\t%s' % (column, group_1_id, list(group1)))
-            # print('%s\t%s\t%s' % (column, group_2_id, list(group2)))
 
             # store group mean into dict
             group1_mean = float("{0:.2f}".format(sum(group1) / len(group1)))
@@ -285,16 +299,16 @@ def enrich(args):
     output_test_handle.close()
 
     # summarize stats
-    summarize_stats(stats_op_txt, ko_desc_dict, summary_txt)
+    summarize_stats(stats_op_txt, ko_desc_dict, op_prefix, op_dir)
 
     # file report
-    print('Results of enrichment analysis exported to: %s' % summary_txt)
     print('Done!')
 
 
 if __name__ == '__main__':
 
     enrich_parser = argparse.ArgumentParser(usage=enrich_usage)
+    enrich_parser.add_argument('-p',    required=False, default='',            help='prefix of output files')
     enrich_parser.add_argument('-i',    required=True,                         help='annotation files')
     enrich_parser.add_argument('-x',    required=True,                         help='file extension')
     enrich_parser.add_argument('-g',    required=True,                         help='grouping file')

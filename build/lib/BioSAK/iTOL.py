@@ -431,7 +431,7 @@ def iTOL(args):
         PieChart_FileOut_handle = open(FileOut, 'w')
         PieChart_FileOut_handle.write('DATASET_PIECHART\n')
         PieChart_FileOut_handle.write('SEPARATOR TAB\n')
-        PieChart_FileOut_handle.write('DATASET_LABEL\tCompleteness\n')
+        PieChart_FileOut_handle.write('DATASET_LABEL\t%s\n' % LegendTitle)
         PieChart_FileOut_handle.write('COLOR\t#ff0000\n')
         PieChart_FileOut_handle.write('FIELD_COLORS\t#5DADE2\t#FFFFFF\n')
         PieChart_FileOut_handle.write('FIELD_LABELS\tf1\tf2\n')

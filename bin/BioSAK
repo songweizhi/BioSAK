@@ -120,6 +120,7 @@ def print_main_help():
        submitHPC               ->  A wrapper for submitHPC.sh
        KeepRemovingTmp         ->  Keep removing old files in a folder
        ribbon                  ->  Make a ribbon diagram
+       compare_sets            ->  compare_sets
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Use "pip3 install --upgrade BioSAK" to get the latest version
@@ -886,6 +887,7 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'enrich':
         from BioSAK import enrich
         enrich_parser = subparsers.add_parser('enrich', usage=enrich.enrich_usage)
+        enrich_parser.add_argument('-p',    required=False, default='',             help='prefix of output files')
         enrich_parser.add_argument('-i',    required=True,                          help='annotation files')
         enrich_parser.add_argument('-x',    required=True,                          help='file extension')
         enrich_parser.add_argument('-g',    required=True,                          help='grouping file')
@@ -929,13 +931,14 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'subset_df':
         from BioSAK import subset_df
         subset_df_parser = subparsers.add_parser('subset_df', usage=subset_df.subset_df_usage)
-        subset_df_parser.add_argument('-i',     required=True,                          help='input file')
-        subset_df_parser.add_argument('-o',     required=True,                          help='output file')
-        subset_df_parser.add_argument('-r',     required=False, default='',             help='header of rows to keep')
-        subset_df_parser.add_argument('-c',     required=False, default='',             help='header of columns to keep')
-        subset_df_parser.add_argument('-s',     required=False, default='tab',          help='column separator, choose from tab and comma, default: tab')
-        subset_df_parser.add_argument('-b',     required=False, action='store_true',    help='write out dataframe in 0/1 format')
-        subset_df_parser.add_argument('-m',     required=False, action='store_true',    help='convert 0 to -1')
+        subset_df_parser.add_argument('-i',         required=True,                          help='input file')
+        subset_df_parser.add_argument('-o',         required=True,                          help='output file')
+        subset_df_parser.add_argument('-r',         required=False, default='',             help='header of rows to keep')
+        subset_df_parser.add_argument('-c',         required=False, default='',             help='header of columns to keep')
+        subset_df_parser.add_argument('-s',         required=False, default='tab',          help='column separator, choose from tab and comma, default: tab')
+        subset_df_parser.add_argument('-b',         required=False, action='store_true',    help='write out dataframe in 0/1 format')
+        subset_df_parser.add_argument('-m',         required=False, action='store_true',    help='convert 0 to -1')
+        subset_df_parser.add_argument('-skip1row',  required=False, action='store_true',    help='skip the 1st row of the -c/-r file')
         args = vars(parser.parse_args())
         subset_df.subset_df(args)
 
@@ -999,6 +1002,14 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         mannwhitneyu.mannwhitneyu(args)
 
+    elif sys.argv[1] == 'compare_sets':
+        from BioSAK import compare_sets
+        compare_sets_parser = subparsers.add_parser('compare_sets', usage=compare_sets.compare_sets_usage)
+        compare_sets_parser.add_argument('-1', required=True, help='file 1')
+        compare_sets_parser.add_argument('-2', required=True, help='file 2')
+        args = vars(parser.parse_args())
+        compare_sets.compare_sets(args)
+
     elif sys.argv[1] == 'ribbon':
         from BioSAK import ribbon
         ribbon_parser = subparsers.add_parser('ribbon', usage=ribbon.ribbon_usage)
@@ -1024,6 +1035,14 @@ if __name__ == '__main__':
         ribbon_parser.add_argument('-odp_rbh_to_ribbon',    required=False, default='odp_rbh_to_ribbon',    help='executable file odp_rbh_to_ribbon, default: odp_rbh_to_ribbon')
         args = vars(parser.parse_args())
         ribbon.ribbon(args)
+
+    elif sys.argv[1] == 'count_num':
+        from BioSAK import count_num
+        count_num_parser = subparsers.add_parser('count_num', usage=count_num.count_num_usage)
+        count_num_parser.add_argument('-i', required=True, help='input file')
+        count_num_parser.add_argument('-c', required=False, default=1, help='column, default: 1 (the first column)')
+        args = vars(parser.parse_args())
+        count_num.count_num(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])

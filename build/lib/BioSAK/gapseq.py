@@ -28,8 +28,30 @@ def gapseq(args):
     df_out       = args['o']
     include_desc = args['name']
 
-    file_re   = '%s/*-Pathways.tbl' % dir_in
-    file_list = glob.glob(file_re)
+    stdout_file_re = '%s/*_stdout.txt'    % dir_in
+    pwy_file_re    = '%s/*-Pathways.tbl'  % dir_in
+
+    stdout_file_list = glob.glob(stdout_file_re)
+    pwy_file_list    = glob.glob(pwy_file_re)
+
+    gnm_id_set_stdout = set()
+    for each_stdout in stdout_file_list:
+        _, f_base, _ = sep_path_basename_ext(each_stdout)
+        gnm_id = f_base.split('_stdout')[0]
+        gnm_id_set_stdout.add(gnm_id)
+
+    gnm_id_set_pwy = set()
+    for each_file in sorted(pwy_file_list):
+        _, f_base, _ = sep_path_basename_ext(each_file)
+        gnm_id = '-'.join(f_base.split('-')[:-2])
+        gnm_id_set_pwy.add(gnm_id)
+
+    # check failed jobs
+    failed_gnm_set = set()
+    if len (gnm_id_set_stdout) > 0:
+        for each_gnm in gnm_id_set_stdout:
+            if each_gnm not in gnm_id_set_pwy:
+                failed_gnm_set.add(each_gnm)
 
     # read in annotation results
     gnm_id_set = set()
@@ -37,7 +59,7 @@ def gapseq(args):
     pwy_to_gnm_dict = dict()
     pwy_id_to_name_dict = dict()
     annotation_results_dict = dict()
-    for each_file in sorted(file_list):
+    for each_file in sorted(pwy_file_list):
         _, f_base, _ = sep_path_basename_ext(each_file)
         gnm_id = '-'.join(f_base.split('-')[:-2])
         gnm_id_set.add(gnm_id)
@@ -78,6 +100,15 @@ def gapseq(args):
                 value_list.append('0')
         df_out_handle.write('\t'.join(value_list) + '\n')
     df_out_handle.close()
+
+    # report genomes failed with GapSeq
+    if len(failed_gnm_set) == 1:
+        print('It seems that %s was failed with GapSeq, thus was not included in: %s.' % (list(failed_gnm_set)[0], df_out))
+    elif len(failed_gnm_set) > 1:
+        print('It seems that the following genomes were failed with GapSeq, thus were not included in: %s.' % df_out)
+        print('\n'.join(sorted(list(failed_gnm_set))) + '\n')
+
+    print('Done!')
 
 
 if __name__ == "__main__":
