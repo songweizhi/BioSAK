@@ -7,26 +7,26 @@ from statsmodels.stats.multitest import multipletests
 
 
 enrich_usage = '''
-=================================== enrich example commands ===================================
+==================================== enrich example commands ====================================
 
 BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir
 BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -bc
 
 # Note:
-1. The number of genome groups has to be TWO!!!
-2. Group name should NOT be 1 and 0. use some alphabet or words instead.
+  1. The number of genome groups has to be TWO!!!
+  2. Group name should NOT be 1 and 0. use some alphabet or words instead.
 
 # Example input files:
-https://github.com/songweizhi/BioSAK/tree/master/demo_data/enrich
+  https://github.com/songweizhi/BioSAK/tree/master/demo_data/enrich
 
 # please refers to https://doi.org/10.1038/s41396-020-00815-8 for how it works:
-Functions that are enriched in the genomes in either group are identified using Mann–Whitney 
-U tests followed by a Bonferroni correction with a p value cut-off of 0.05 being considered 
-significant. Only significantly different functions with greater than 2-fold mean differences 
-are considered to be enriched. Functions detected only in the genomes from one group type are 
-considered to be enriched if they existed in at least 50 percent of the genomes in the group.
+  Functions that are enriched in the genomes in either group are identified using Mann–Whitney 
+  U tests followed by a Bonferroni correction with a p value cut-off of 0.05 being considered 
+  significant. Only significantly different functions with greater than 2-fold mean differences 
+  are considered to be enriched. Functions detected only in the genomes from one group type are 
+  considered to be enriched if they existed in at least 50 percent of the genomes in the group.
 
-===============================================================================================
+=================================================================================================
 '''
 
 
