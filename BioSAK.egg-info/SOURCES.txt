@@ -8,7 +8,6 @@ BioSAK/COG2020.py
 BioSAK/COG_boxplot_last1row.R
 BioSAK/COG_boxplot_last2row.R
 BioSAK/CheckM.py
-BioSAK/ConvertMSA.py
 BioSAK/DnaFeaturesViewer.py
 BioSAK/FastaSplitler_by_num.py
 BioSAK/FastaSplitler_by_size.py
@@ -23,14 +22,11 @@ BioSAK/MetaBiosample.py
 BioSAK/MetaCHIP_phylo.hmm
 BioSAK/MetaCyc_reactions_with_ec.txt
 BioSAK/NetEnzymes.py
-BioSAK/Newick_tree_plotter.py
-BioSAK/OneLineAln.py
 BioSAK/Prodigal.py
 BioSAK/Reads_simulator.py
 BioSAK/RunGraphMB.py
 BioSAK/SILVA_for_BLCA.py
 BioSAK/SankeyTaxon.py
-BioSAK/SliceMSA.py
 BioSAK/SubsampleLongReads.py
 BioSAK/Tax4Fun2IndOTU.py
 BioSAK/VERSION
@@ -50,8 +46,6 @@ BioSAK/cat_fa.py
 BioSAK/cdd2cog.pl
 BioSAK/checkm_marker.py
 BioSAK/compare_sets.py
-BioSAK/compare_trees.R
-BioSAK/compare_trees.py
 BioSAK/count_num.py
 BioSAK/cross_link_seqs.py
 BioSAK/dbCAN.py
@@ -61,10 +55,8 @@ BioSAK/enrich.py
 BioSAK/exe_cmds.py
 BioSAK/ezaai2mat.py
 BioSAK/fa2id.py
-BioSAK/fa2phy.py
-BioSAK/fa2tree.py
+BioSAK/fastaai.py
 BioSAK/format_converter.py
-BioSAK/format_leaf_name.py
 BioSAK/fq2fa.py
 BioSAK/gapseq.py
 BioSAK/gbk2faa.py
@@ -77,7 +69,6 @@ BioSAK/get_EC_from_ko_stats_D.py
 BioSAK/get_GTDB_taxon_gnm.py
 BioSAK/get_MAG_reads_long.py
 BioSAK/get_Pfam_hmms.py
-BioSAK/get_SCG_tree.py
 BioSAK/get_TopHits_taxonomy.py
 BioSAK/get_aa_composition.py
 BioSAK/get_bin_abundance copy.py
@@ -98,14 +89,11 @@ BioSAK/get_total_length.py
 BioSAK/gff2chrom.py
 BioSAK/global_functions.py
 BioSAK/hpc3.py
-BioSAK/iTOL.py
 BioSAK/js_cmds.py
 BioSAK/js_hpc3.py
 BioSAK/keep_best_hit.py
 BioSAK/ko00001.keg
 BioSAK/koala.py
-BioSAK/label_tree.R
-BioSAK/label_tree.py
 BioSAK/link_16S_MAG.py
 BioSAK/magabund.py
 BioSAK/magabund2.py
@@ -131,7 +119,6 @@ BioSAK/plot_tree.R
 BioSAK/prefix_file.py
 BioSAK/prokka.py
 BioSAK/reads2bam.py
-BioSAK/rename_leaves.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/rename_seqs.py
@@ -144,6 +131,7 @@ BioSAK/slice_seq.py
 BioSAK/split_fasta.py
 BioSAK/split_folder.py
 BioSAK/split_sam.py
+BioSAK/statsTaxa.py
 BioSAK/submitHPC.py
 BioSAK/subset_GTDB_meta.py
 BioSAK/subset_df.py

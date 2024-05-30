@@ -42,6 +42,7 @@ def print_main_help():
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
        metaAssembly            ->  Get metadata of NCBI assembly records
        metaBiosample           ->  Get metadata of NCBI biosample records
+       statsTaxa               ->  stats GTDB taxa
 
     Metagenomics
        metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
@@ -57,6 +58,7 @@ def print_main_help():
        MeanMappingDepth        ->  Get mean mapping depth 
        get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
        parse_mmseqs_tsv        ->  Parse mmseqs tsv
+       fastaai                 ->  A wrapper for FastAAI
        
     Functional annotation
        KEGG                    ->  KEGG annotation
@@ -102,7 +104,6 @@ def print_main_help():
        mannwhitneyu            ->  Mann-Whitney U rank test on two independent samples
     
     Others
-       iTOL                    ->  Prepare iTOL files
        js_cmds                 ->  Put commands in job scripts
        js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
        hpc3                    ->  Submit jobs on HKUST hpc3
@@ -123,7 +124,8 @@ def print_main_help():
        compare_sets            ->  compare_sets
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
-    2. Use "pip3 install --upgrade BioSAK" to get the latest version
+    2. Upgrade with: pip3 install --upgrade BioSAK
+
     ''' % version(config_dict)
 
     print(help_message)
@@ -131,17 +133,19 @@ def print_main_help():
 
 if __name__ == '__main__':
 
-    # initialize the options parser
+    # initialize the options parser and disable warning message
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help="--", dest='subparser_name')
-
-    # disable warning message
     warnings.filterwarnings('ignore')
 
     # parse options
     if (len(sys.argv) == 1) or (sys.argv[1] in ['-h', '-help', '--help']):
         print_main_help()
-        sys.exit(0)
+        exit()
+
+    elif sys.argv[1] in ['iTOL', 'SliceMSA', 'ConvertMSA', 'fa2phy', 'PhyloBiAssoc', 'OneLineAln']:
+        print('%s has moved to TreeSAK, program exited!' % sys.argv[1])
+        exit()
 
     elif sys.argv[1] == 'COG2020':
         from BioSAK import COG2020
@@ -213,31 +217,6 @@ if __name__ == '__main__':
         CheckM_parser.add_argument('-r',    required=False, action="store_true", help='recalculate contamination')
         args = vars(parser.parse_args())
         CheckM.CheckM(args)
-
-    elif sys.argv[1] == 'iTOL':
-        from BioSAK import iTOL
-        iTOL_parser = subparsers.add_parser('iTOL', description='Plot tree with iTOL', usage=iTOL.iTOL_usage)
-        iTOL_parser.add_argument('-Labels',          required=False, action='store_true',   help='Labels')
-        iTOL_parser.add_argument('-ColorStrip',      required=False, action='store_true',   help='ColorStrip')
-        iTOL_parser.add_argument('-ColorRange',      required=False, action='store_true',   help='ColorRange')
-        iTOL_parser.add_argument('-SimpleBar',       required=False, action='store_true',   help='SimpleBar')
-        iTOL_parser.add_argument('-Heatmap',         required=False, action='store_true',   help='Heatmap')
-        iTOL_parser.add_argument('-ExternalShape',   required=False, action='store_true',   help='ExternalShape')
-        iTOL_parser.add_argument('-Binary',          required=False, action='store_true',   help='Binary')
-        iTOL_parser.add_argument('-Connection',      required=False, action='store_true',   help='Connection')
-        iTOL_parser.add_argument('-PieChart',        required=False, action='store_true',   help='PieChart')
-        iTOL_parser.add_argument('-ll',              required=False, default=None,          help='Leaf Label')
-        iTOL_parser.add_argument('-gc',              required=False, default=None,          help='Specify Group/column Color (optional)')
-        iTOL_parser.add_argument('-cc',              required=False, default=None,          help='Specify Column Color (for ExternalShape format) (optional)')
-        iTOL_parser.add_argument('-lg',              required=False, default=None,          help='Leaf to Group')
-        iTOL_parser.add_argument('-lv',              required=False, default=None,          help='Leaf to Value')
-        iTOL_parser.add_argument('-lm',              required=False, default=None,          help='Leaf to data Matrix')
-        iTOL_parser.add_argument('-dr',              required=False, default=None,          help='Donor to Recipient')
-        iTOL_parser.add_argument('-scale',           required=False, default=None,          help='Scale Values, in format 0-3-6-9')
-        iTOL_parser.add_argument('-lt',              required=False, default=None,          help='Legend Title')
-        iTOL_parser.add_argument('-o',               required=True,                         help='Output filename')
-        args = vars(parser.parse_args())
-        iTOL.iTOL(args)
 
     elif sys.argv[1] == 'split_folder':
         from BioSAK import split_folder
@@ -502,14 +481,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         sam2bam.sam2bam(args)
 
-    elif sys.argv[1] == 'fa2tree':
-        from BioSAK import fa2tree
-        fa2tree_parser = subparsers.add_parser('fa2tree', usage=fa2tree.fa2tree_usage)
-        fa2tree_parser.add_argument('-seq', required=True,                          help='sequence file')
-        fa2tree_parser.add_argument('-t',   required=False, type=int, default=1,    help='number of threads, default: 1')
-        args = vars(parser.parse_args())
-        fa2tree.fa2tree(args)
-
     elif sys.argv[1] == 'BLCA_op_parser':
         from BioSAK import BLCA_op_parser
         BLCA_op_parser_parser = subparsers.add_parser('BLCA_op_parser', usage=BLCA_op_parser.BLCA_op_parser_usage)
@@ -585,16 +556,6 @@ if __name__ == '__main__':
         mean_MAG_cov_parser.add_argument('-x', required=True, help='file extension')
         args = vars(parser.parse_args())
         mean_MAG_cov.mean_MAG_cov(args)
-
-    elif sys.argv[1] == 'GTDB_tree':
-        from BioSAK import GTDB_tree
-        GTDB_tree_parser = subparsers.add_parser('GTDB_tree', usage=GTDB_tree.GTDB_tree_usage)
-        GTDB_tree_parser.add_argument('-p', required=True,                         help='output prefix')
-        GTDB_tree_parser.add_argument('-i', required=True,                         help='genome folder')
-        GTDB_tree_parser.add_argument('-x', required=True,                         help='genome file extension')
-        GTDB_tree_parser.add_argument('-t', required=False, type=int, default=1,   help='number of threads')
-        args = vars(parser.parse_args())
-        GTDB_tree.GTDB_tree(args)
 
     elif sys.argv[1] == 'exe_cmds':
         from BioSAK import exe_cmds
@@ -741,50 +702,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         SubsampleLongReads.SubsampleLongReads(args)
 
-    elif sys.argv[1] == 'OneLineAln':
-        from BioSAK import OneLineAln
-        OneLineAln_parser = subparsers.add_parser('OneLineAln', description='One-line fasta format alignments', usage=OneLineAln.OneLineAln_usage)
-        OneLineAln_parser.add_argument('-in',               required=True,                       help='input MSA in fasta format')
-        OneLineAln_parser.add_argument('-out',              required=False, default=None,        help='output file')
-        OneLineAln_parser.add_argument('-upper',            required=False, action='store_true', help='turn to uppercase')
-        args = vars(parser.parse_args())
-        OneLineAln.OneLineAln(args)
-
-    elif sys.argv[1] == 'SliceMSA':
-        from BioSAK import SliceMSA
-        SliceMSA_parser = subparsers.add_parser('SliceMSA', description='Slice MSA by column', usage=SliceMSA.SliceMSA_usage)
-        SliceMSA_parser.add_argument('-i',                  required=True,                         help='input MSA in fasta format')
-        SliceMSA_parser.add_argument('-fi',                 required=False, default='fasta',       help='format (NOT file extension) of input MSA, default: fasta')
-        SliceMSA_parser.add_argument('-s',                  required=True,                         help='columns to export, e.g. 200-300, -100, 50-')
-        SliceMSA_parser.add_argument('-o',                  required=True,                         help='output file or folder')
-        SliceMSA_parser.add_argument('-fo',                 required=False, default='fasta',       help='format of output MSA, select from fasta and phylip-relaxed, default: fasta')
-        SliceMSA_parser.add_argument('-force',              required=False, action="store_true",   help='force overwrite existing output folder')
-        args = vars(parser.parse_args())
-        SliceMSA.SliceMSA(args)
-
-    elif sys.argv[1] == 'ConvertMSA':
-        from BioSAK import ConvertMSA
-        ConvertMSA_parser = subparsers.add_parser('ConvertMSA', usage=ConvertMSA.ConvertMSA_usage)
-        ConvertMSA_parser.add_argument('-i',       required=True,                       help='input alignment')
-        ConvertMSA_parser.add_argument('-xi',      required=False, default='aln',       help='input alignment extension')
-        ConvertMSA_parser.add_argument('-fi',      required=True,                       help='input alignment format, e.g., fasta, phylip')
-        ConvertMSA_parser.add_argument('-o',       required=True,                       help='output alignment')
-        ConvertMSA_parser.add_argument('-xo',      required=False, default='aln',       help='output alignment extension')
-        ConvertMSA_parser.add_argument('-fo',      required=True,                       help='output alignment format, e.g., fasta, phylip')
-        ConvertMSA_parser.add_argument('-oneline', required=False, action="store_true", help='put sequence in single line, available if -fo is fasta')
-        ConvertMSA_parser.add_argument('-nogap',   required=False, action="store_true", help='remove gaps from alignment, available if -fo is fasta')
-        ConvertMSA_parser.add_argument('-f',       required=False, action="store_true", help='force overwrite existing output folder')
-        args = vars(parser.parse_args())
-        ConvertMSA.ConvertMSA(args)
-
-    elif sys.argv[1] == 'fa2phy':
-        from BioSAK import fa2phy
-        fa2phy_parser = subparsers.add_parser('fa2phy', usage=fa2phy.fa2phy_usage)
-        fa2phy_parser.add_argument('-i', required=True, help='input MSA in fasta format')
-        fa2phy_parser.add_argument('-o', required=True, help='output MSA in phylip format')
-        args = vars(parser.parse_args())
-        fa2phy.fa2phy(args)
-
     elif sys.argv[1] == 'metaBiosample':
         from BioSAK import MetaBiosample
         MetaBiosample_parser = subparsers.add_parser('MetaBiosample', usage=MetaBiosample.MetaBiosample_usage)
@@ -796,14 +713,6 @@ if __name__ == '__main__':
         MetaBiosample_parser.add_argument('-exe',   required=False, action="store_true",    help='execute cmds')
         args = vars(parser.parse_args())
         MetaBiosample.MetaBiosample(args)
-
-    elif sys.argv[1] == 'PhyloBiAssoc':
-        from BioSAK import PhyloBiAssoc
-        PhyloBiAssoc_parser = subparsers.add_parser('PhyloBiAssoc', usage=PhyloBiAssoc.PhyloBiAssoc_usage)
-        PhyloBiAssoc_parser.add_argument('-t', required=True, help='tree file')
-        PhyloBiAssoc_parser.add_argument('-d', required=True, help='data file')
-        args = vars(parser.parse_args())
-        PhyloBiAssoc.PhyloBiAssoc(args)
 
     elif sys.argv[1] == 'metabat2concoct':
         from BioSAK import metabat2concoct
@@ -1043,6 +952,25 @@ if __name__ == '__main__':
         count_num_parser.add_argument('-c', required=False, default=1, help='column, default: 1 (the first column)')
         args = vars(parser.parse_args())
         count_num.count_num(args)
+
+    elif sys.argv[1] == 'fastaai':
+        from BioSAK import fastaai
+        fastaai_parser = subparsers.add_parser('fastaai', usage=fastaai.fastaai_usage)
+        fastaai_parser.add_argument('-i', required=True,                          help='faa files')
+        fastaai_parser.add_argument('-x', required=False, default='faa',          help='file extension, default: faa')
+        fastaai_parser.add_argument('-o', required=True,                          help='output directory')
+        fastaai_parser.add_argument('-t', required=False, default=1, type=int,    help='number of threads, default: 1')
+        fastaai_parser.add_argument('-f', required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        fastaai.fastaai(args)
+
+    elif sys.argv[1] == 'statsTaxa':
+        from BioSAK import statsTaxa
+        statsTaxa_parser = subparsers.add_parser('statsTaxa', usage=statsTaxa.statsTaxa_usage)
+        statsTaxa_parser.add_argument('-i', required=True, help='input txt')
+        statsTaxa_parser.add_argument('-o', required=True, help='output txt')
+        args = vars(parser.parse_args())
+        statsTaxa.statsTaxa(args)
 
     else:
         print('Unrecognized command: %s, program exited' % sys.argv[1])
