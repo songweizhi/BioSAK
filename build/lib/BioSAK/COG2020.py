@@ -36,9 +36,7 @@ wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.def.tab
 wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/fun-20.tab
 wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/Readme.2020-11-25.txt
 gunzip cog-20.fa.gz
-module load blast-plus/2.12.0
 makeblastdb -in cog-20.fa -dbtype prot -parse_seqids -logfile cog-20.fa.log
-module load diamond/2.1.6
 diamond makedb --in cog-20.fa --db cog-20.fa.dmnd --quiet
 
 # How it works:

@@ -101,7 +101,7 @@ BioSAK/manipulator_fasta.py
 BioSAK/manipulator_msa.py
 BioSAK/manipulator_newick.py
 BioSAK/manipulator_sam.py
-BioSAK/mannwhitneyu.py
+BioSAK/mann_whitney_u.py
 BioSAK/mean_MAG_cov.py
 BioSAK/merge_df.py
 BioSAK/merge_seq.py
@@ -125,6 +125,7 @@ BioSAK/rename_seqs.py
 BioSAK/ribbon.py
 BioSAK/sam2bam.py
 BioSAK/sampling_GTDB_gnms.py
+BioSAK/sankey.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/slice_seq.py

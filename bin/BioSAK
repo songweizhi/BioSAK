@@ -122,6 +122,7 @@ def print_main_help():
        KeepRemovingTmp         ->  Keep removing old files in a folder
        ribbon                  ->  Make a ribbon diagram
        compare_sets            ->  compare_sets
+       sankey                  ->  get sankey plot
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -904,12 +905,11 @@ if __name__ == '__main__':
         wilcox.wilcox(args)
 
     elif sys.argv[1] == 'mannwhitneyu':
-        from BioSAK import mannwhitneyu
-        mannwhitneyu_parser = subparsers.add_parser('mannwhitneyu', usage=mannwhitneyu.mannwhitneyu_usage)
-        mannwhitneyu_parser.add_argument('-1', required=True, help='sample 1')
-        mannwhitneyu_parser.add_argument('-2', required=True, help='sample 2')
+        from BioSAK import mann_whitney_u
+        mannwhitneyu_parser = subparsers.add_parser('mannwhitneyu', usage=mann_whitney_u.mannwhitneyu_usage)
+        mannwhitneyu_parser.add_argument('-i', required=True, help='input file')
         args = vars(parser.parse_args())
-        mannwhitneyu.mannwhitneyu(args)
+        mann_whitney_u.mann_whitney_u(args)
 
     elif sys.argv[1] == 'compare_sets':
         from BioSAK import compare_sets
@@ -971,6 +971,17 @@ if __name__ == '__main__':
         statsTaxa_parser.add_argument('-o', required=True, help='output txt')
         args = vars(parser.parse_args())
         statsTaxa.statsTaxa(args)
+
+    elif sys.argv[1] == 'sankey':
+        from BioSAK import sankey
+        sankey_parser = subparsers.add_parser('sankey', usage=sankey.sankey_usage)
+        sankey_parser.add_argument('-i', required=True,                         help='input datamatrix')
+        sankey_parser.add_argument('-p', required=True,                         help='output prefix')
+        sankey_parser.add_argument('-m', required=False, type=int, default=1,   help='Minimal value to plot, default is 1')
+        sankey_parser.add_argument('-x', required=False, type=int,              help='plot width')
+        sankey_parser.add_argument('-y', required=False, type=int,              help='plot height')
+        args = vars(parser.parse_args())
+        sankey.sankey(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

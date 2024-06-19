@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml">
+<head>
+<title>SankeyID23525628ab8a</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<style type="text/css">
+body {
+  color: #444444;
+  font-family: Arial,Helvetica,sans-serif;
+  font-size: 75%;
+  }
+  a {
+  color: #4D87C7;
+  text-decoration: none;
+}
+</style>
+</head>
+<body>
+ <!-- Sankey generated in R 4.2.1 by googleVis 0.7.0 package -->
+<!-- Wed Jun 19 11:13:54 2024 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataSankeyID23525628ab8a () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+"o__Nitrososphaerales",
+"f__Nitrosopumilaceae",
+20
+],
+[
+"f__Nitrosopumilaceae",
+"g__JACEMX01",
+1
+],
+[
+"g__JACEMX01",
+"sponge",
+1
+],
+[
+"f__Nitrosopumilaceae",
+"g__WTHC01",
+6
+],
+[
+"g__WTHC01",
+"sponge",
+4
+],
+[
+"f__Nitrosopumilaceae",
+"g__Nitrosopumilus",
+5
+],
+[
+"g__Nitrosopumilus",
+"sponge",
+3
+],
+[
+"f__Nitrosopumilaceae",
+"g__JAPOPJ01",
+1
+],
+[
+"g__JAPOPJ01",
+"sponge",
+1
+],
+[
+"f__Nitrosopumilaceae",
+"g__Nitrosotenuis",
+1
+],
+[
+"g__Nitrosotenuis",
+"nonsponge",
+1
+],
+[
+"g__Nitrosopumilus",
+"nonsponge",
+2
+],
+[
+"f__Nitrosopumilaceae",
+"g__JAHRAL01",
+1
+],
+[
+"g__JAHRAL01",
+"sponge",
+1
+],
+[
+"g__WTHC01",
+"nonsponge",
+2
+],
+[
+"f__Nitrosopumilaceae",
+"g__Cenarchaeum",
+1
+],
+[
+"g__Cenarchaeum",
+"nonsponge",
+1
+],
+[
+"f__Nitrosopumilaceae",
+"g__Nitrosarchaeum",
+2
+],
+[
+"g__Nitrosarchaeum",
+"sponge",
+1
+],
+[
+"g__Nitrosarchaeum",
+"nonsponge",
+1
+],
+[
+"f__Nitrosopumilaceae",
+"g__Nitrosopelagicus",
+2
+],
+[
+"g__Nitrosopelagicus",
+"sponge",
+1
+],
+[
+"g__Nitrosopelagicus",
+"nonsponge",
+1
+] 
+];
+data.addColumn('string','C1');
+data.addColumn('string','C2');
+data.addColumn('number','Number');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartSankeyID23525628ab8a() {
+var data = gvisDataSankeyID23525628ab8a();
+var options = {};
+options["width"] = 600;
+options["height"] = 600;
+options["sankey"] = {node:{colorMode:'unique', labelPadding: 20, nodePadding: 8},link:{colorMode:'source'}};
+
+
+    var chart = new google.visualization.Sankey(
+    document.getElementById('SankeyID23525628ab8a')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "sankey";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartSankeyID23525628ab8a);
+})();
+function displayChartSankeyID23525628ab8a() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartSankeyID23525628ab8a"></script>
+ 
+<!-- divChart -->
+  
+<div id="SankeyID23525628ab8a" 
+  style="width: 600; height: 600;">
+</div>
+ <div><span>Data: my_data &#8226; Chart ID: <a href="Chart_SankeyID23525628ab8a.html">SankeyID23525628ab8a</a> &#8226; <a href="https://mages.github.io/googleVis/">googleVis-0.7.0</a></span><br /> 
+<!-- htmlFooter -->
+<span> 
+  R version 4.2.1 (2022-06-23) 
+  &#8226; <a href="https://developers.google.com/terms/">Google Terms of Use</a> &#8226; <a href="https://developers.google.com/chart/interactive/docs/gallery/sankey">Documentation and Data Policy</a>
+</span></div>
+</body>
+</html>

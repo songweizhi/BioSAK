@@ -1,11 +1,14 @@
+1.91.3
+- fixed bugs
+
+1.91.0
+- new modules added: sankey
+
 1.90.0
 - new modules added: statsTaxa
 
 1.89.0
 - new modules added: fastaai
-
-1.88.15
-- fixed bugs
 
 1.88.0
 - new modules added: count_num
