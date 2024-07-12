@@ -35,8 +35,8 @@ def sankey(args):
 
     pwd_self              = os.path.realpath(__file__)
     self_path             = '/'.join(pwd_self.split('/')[:-1])
-    pwd_get_sankey_plot_R = '%s/get_sankey_plot.R'  % self_path
-    output_file_txt       = '%s_sankey.txt'         % output_prefix
+    pwd_get_sankey_plot_R = '%s/sankey.R'   % self_path
+    output_file_txt       = '%s_sankey.txt' % output_prefix
 
     paired_taxon_list_all = []
     genome_number = 0
@@ -91,8 +91,8 @@ def sankey(args):
         if plot_height < 600:
             plot_height = 600
 
-    print('Rscript get_sankey_plot.R -f %s -x %s -y %s' % (output_file_txt, plot_width, plot_height))
-    os.system('Rscript %s -f %s -x %s -y %s'            % (pwd_get_sankey_plot_R, output_file_txt, plot_width, plot_height))
+    print('Rscript sankey.R -f %s -x %s -y %s' % (output_file_txt, plot_width, plot_height))
+    os.system('Rscript %s -f %s -x %s -y %s'   % (pwd_get_sankey_plot_R, output_file_txt, plot_width, plot_height))
 
 
 if __name__ == '__main__':

@@ -3,27 +3,32 @@ import argparse
 
 
 hpc3_usage = '''
-==================== hpc3 example commands ====================
+========================= hpc3 example commands =========================
 
 BioSAK hpc3 -q cpu-share -n iqtree_1 -c "iqtree -h"
-BioSAK hpc3 -q cpu -conda mybase -n iqtree_2 -c "iqtree -h"
-BioSAK hpc3 -q cpu-share -t 1 -n wget_cog -c "wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.fa.gz"
+BioSAK hpc3 -q cpu-share -t 1 -n iqtree_3 -c "iqtree -h"
+BioSAK hpc3 -q cpu-share -t 12 -tpc 3 -n mcmctree -c mcmctree_cmds.txt
+BioSAK hpc3 -q cpu -a oces -conda mybase -n iqtree_2 -c "iqtree -h"
 
-===============================================================
+# To use srun, you commands must NOT contain the double quote symbol (").
+
+=========================================================================
 '''
 
 
 def hpc3(args):
 
-    cmd             = args['c']
-    job_name        = args['n']
-    email_address   = args['m']
-    walltime        = args['wt']
-    node_num        = args['node']
-    core_num        = args['t']
-    queue_name      = args['q']
-    conda_env       = args['conda']
-    setting_a       = args['a']
+    cmd                 = args['c']
+    job_name            = args['n']
+    email_address       = args['m']
+    walltime            = args['wt']
+    node_num            = args['node']
+    core_num            = args['t']
+    core_num_per_cmd    = args['tpc']
+    queue_name          = args['q']
+    conda_env           = args['conda']
+    setting_a           = args['a']
+    use_srun            = args['srun']
 
     js_file = '%s.sh' % job_name
     js_file_handle = open(js_file, 'w')
@@ -45,7 +50,28 @@ def hpc3(args):
     if conda_env is not None:
         js_file_handle.write('source ~/.bashrc\nconda activate %s\n'  % conda_env)
 
-    js_file_handle.write('%s\n' % cmd)
+    if os.path.isfile(cmd) is False:
+        js_file_handle.write('%s\n' % cmd)
+    else:
+        # write out to job script using srun
+        cmd_list = []
+        for each_cmd in open(cmd):
+            if len(each_cmd.strip()) > 0:
+                cmd_list.append(each_cmd.strip())
+
+        for each_cmd in cmd_list[:-1]:
+            if use_srun is False:
+                js_file_handle.write('srun -n %s %s &\n' % (core_num_per_cmd, each_cmd))
+            else:
+                js_file_handle.write('srun -n %s BioSAK srun -c "%s" &\n' % (core_num_per_cmd, each_cmd))
+
+        if use_srun is False:
+            js_file_handle.write('srun -n %s %s\n' % (core_num_per_cmd, cmd_list[-1]))
+        else:
+            js_file_handle.write('srun -n %s BioSAK srun -c "%s"\n' % (core_num_per_cmd, cmd_list[-1]))
+
+        js_file_handle.write('wait\n')
+
     js_file_handle.close()
 
     # submit jobscript
@@ -61,8 +87,10 @@ if __name__ == '__main__':
     hpc3_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
     hpc3_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
     hpc3_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
+    hpc3_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
     hpc3_parser.add_argument('-a',        required=False, default='boqianpy',     help='-A, boqianpy or oces, default: boqianpy')
     hpc3_parser.add_argument('-q',        required=True,                          help='queue, select from: cpu, cpu-share')
     hpc3_parser.add_argument('-conda',    required=False, default=None,           help='conda environment')
+    hpc3_parser.add_argument('-srun',     required=False,  action='store_true',   help='use srun')
     args = vars(hpc3_parser.parse_args())
     hpc3(args)

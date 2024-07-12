@@ -83,7 +83,6 @@ BioSAK/get_ko_gene_seqs.py
 BioSAK/get_krona_plot.py
 BioSAK/get_reads_from_sam.py
 BioSAK/get_reads_id_in_sam.py
-BioSAK/get_sankey_plot.R
 BioSAK/get_top_hit.py
 BioSAK/get_total_length.py
 BioSAK/gff2chrom.py
@@ -125,6 +124,7 @@ BioSAK/rename_seqs.py
 BioSAK/ribbon.py
 BioSAK/sam2bam.py
 BioSAK/sampling_GTDB_gnms.py
+BioSAK/sankey.R
 BioSAK/sankey.py
 BioSAK/select_seq.py
 BioSAK/sep_reads_by_barcode.py
@@ -132,6 +132,7 @@ BioSAK/slice_seq.py
 BioSAK/split_fasta.py
 BioSAK/split_folder.py
 BioSAK/split_sam.py
+BioSAK/srun.py
 BioSAK/statsTaxa.py
 BioSAK/submitHPC.py
 BioSAK/subset_GTDB_meta.py

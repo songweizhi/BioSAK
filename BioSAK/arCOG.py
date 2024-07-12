@@ -477,7 +477,7 @@ def arCOG(args):
 
     ################################################# read db into dict ################################################
 
-    # get cog_id_to_category_dict and cog_id_to_description_dict (cognames2003-2014.tab)
+    # get cog_id_to_category_dict and cog_id_to_description_dict (arCOGdef.tab)
     cog_category_set = set()
     cog_id_to_category_dict = dict()
     cog_id_to_description_dict = dict()

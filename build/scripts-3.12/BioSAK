@@ -107,6 +107,7 @@ def print_main_help():
        js_cmds                 ->  Put commands in job scripts
        js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
        hpc3                    ->  Submit jobs on HKUST hpc3
+       srun                    ->  srun one-line commands on HKUST hpc3
        exe_cmds                ->  Execute commands with multiprocessing
        split_folder            ->  Split folder
        prefix_file             ->  Prefix file
@@ -788,9 +789,11 @@ if __name__ == '__main__':
         hpc3_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
         hpc3_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
         hpc3_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
+        hpc3_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
         hpc3_parser.add_argument('-a',        required=False, default='boqianpy',     help='-A, boqianpy or oces, default: boqianpy')
-        hpc3_parser.add_argument('-q',        required=True,                          help='queue, select from: cpu, cpu-share')
+        hpc3_parser.add_argument('-q',        required=True,                          help='queue, select from cpu, cpu-share, himem and himem-share')
         hpc3_parser.add_argument('-conda',    required=False, default=None,           help='conda environment')
+        hpc3_parser.add_argument('-srun',     required=False, action='store_true',    help='use srun')
         args = vars(parser.parse_args())
         hpc3.hpc3(args)
 
@@ -982,6 +985,13 @@ if __name__ == '__main__':
         sankey_parser.add_argument('-y', required=False, type=int,              help='plot height')
         args = vars(parser.parse_args())
         sankey.sankey(args)
+
+    elif sys.argv[1] == 'srun':
+        from BioSAK import srun
+        srun_parser = subparsers.add_parser('srun', usage=srun.srun_usage)
+        srun_parser.add_argument('-c', required=True, help='command to run')
+        args = vars(parser.parse_args())
+        srun.srun(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

@@ -50,7 +50,7 @@ def SankeyTaxon(args):
 
     pwd_self = os.path.realpath(__file__)
     self_path = '/'.join(pwd_self.split('/')[:-1])
-    pwd_get_sankey_plot_R = '%s/get_sankey_plot.R' % self_path
+    pwd_get_sankey_plot_R = '%s/sankey.R' % self_path
 
     output_file_txt = '%s_sankey_taxon.txt' % output_prefix
 
