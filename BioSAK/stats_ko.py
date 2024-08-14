@@ -9,7 +9,6 @@ BioSAK stats_ko -ko ko_d.txt -db ko00001.keg -p Demo
 
 # Required DB files:
 ko00001.keg: https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
-
 =================================================================================================
 '''
 
