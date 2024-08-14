@@ -1,8 +1,14 @@
-1.92.1
-- new modules added: srun
-
-1.91.4
+1.94.3
 - fixed bugs
+
+1.94.0
+- new modules added: stats_arcog
+
+1.93.0
+- new modules added: stats_ko
+
+1.92.0
+- new modules added: srun
 
 1.91.0
 - new modules added: sankey

@@ -13,18 +13,17 @@ BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir
 BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -bc
 
 # Note:
-  1. The number of genome groups has to be TWO!!!
-  2. Group name should NOT be 1 and 0. use some alphabet or words instead.
+1. The number of genome groups has to be TWO!!!
+2. Group name should NOT be 1 and 0. use some alphabet or words instead.
 
-# Example input files:
-  https://github.com/songweizhi/BioSAK/tree/master/demo_data/enrich
+# Example input files: https://github.com/songweizhi/BioSAK/tree/master/demo_data/enrich
 
 # please refers to https://doi.org/10.1038/s41396-020-00815-8 for how it works:
-  Functions that are enriched in the genomes in either group are identified using Mann–Whitney 
-  U tests followed by a Bonferroni correction with a p value cut-off of 0.05 being considered 
-  significant. Only significantly different functions with greater than 2-fold mean differences 
-  are considered to be enriched. Functions detected only in the genomes from one group type are 
-  considered to be enriched if they existed in at least 50 percent of the genomes in the group.
+Functions that are enriched in the genomes in either group are identified using Mann–Whitney U 
+tests followed by a Bonferroni correction with a p value cut-off of 0.05 being considered 
+significant. Only significantly different functions with greater than, by default, 2-fold mean 
+differences are considered to be enriched. Functions detected only in the genomes from one group 
+type are considered to be enriched if they existed in at least 50 percent of the genomes in the group.
 
 =================================================================================================
 '''
@@ -49,7 +48,13 @@ def remove_0_from_Pandas_Series(Pandas_Series):
     return no_0_num_list
 
 
-def summarize_stats(output_test, ko_desc_dict, file_prefix, output_dir):
+def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, file_prefix, output_dir):
+
+    fold_diff_big = fold_diff_cutoff
+    fold_diff_small = 1/fold_diff_cutoff
+    if (1/fold_diff_cutoff) > fold_diff_cutoff:
+        fold_diff_big = 1/fold_diff_cutoff
+        fold_diff_small = fold_diff_cutoff
 
     sample_1_id = ''
     sample_2_id = ''
@@ -92,10 +97,10 @@ def summarize_stats(output_test, ko_desc_dict, file_prefix, output_dir):
                     if sample_2_dectected_pct >= 50:
                         enriched_in = sample_2_id
                 elif (sample_1_mean > 0) and (sample_2_mean > 0):
-                    mean_diff = float("{0:.3f}".format(sample_1_mean / sample_2_mean))
-                    if mean_diff >= 2:
+                    mean_diff = float("{0:.3f}".format(sample_1_mean/sample_2_mean))
+                    if mean_diff >= fold_diff_big:
                         enriched_in = sample_1_id
-                    elif mean_diff <= 0.5:
+                    elif mean_diff <= fold_diff_small:
                         enriched_in = sample_2_id
 
                 if enriched_in == sample_1_id:
@@ -116,6 +121,7 @@ def enrich(args):
     file_ext            = args['x']
     grouping_file       = args['g']
     op_dir              = args['o']
+    fold_diff_cutoff    = args['diff']
     perform_bc          = args['bc']
     force_create_op_dir = args['f']
 
@@ -299,7 +305,7 @@ def enrich(args):
     output_test_handle.close()
 
     # summarize stats
-    summarize_stats(stats_op_txt, ko_desc_dict, op_prefix, op_dir)
+    summarize_stats(stats_op_txt, fold_diff_cutoff, ko_desc_dict, op_prefix, op_dir)
 
     # file report
     print('Done!')
@@ -308,12 +314,13 @@ def enrich(args):
 if __name__ == '__main__':
 
     enrich_parser = argparse.ArgumentParser(usage=enrich_usage)
-    enrich_parser.add_argument('-p',    required=False, default='',            help='prefix of output files')
-    enrich_parser.add_argument('-i',    required=True,                         help='annotation files')
-    enrich_parser.add_argument('-x',    required=True,                         help='file extension')
-    enrich_parser.add_argument('-g',    required=True,                         help='grouping file')
-    enrich_parser.add_argument('-o',    required=True,                         help='output directory')
-    enrich_parser.add_argument('-bc',   required=False, action="store_true",   help='perform Bonferroni correction')
-    enrich_parser.add_argument('-f',    required=False, action="store_true",   help='force overwrite')
+    enrich_parser.add_argument('-p',    required=False, default='',             help='prefix of output files')
+    enrich_parser.add_argument('-i',    required=True,                          help='annotation files')
+    enrich_parser.add_argument('-x',    required=True,                          help='file extension')
+    enrich_parser.add_argument('-g',    required=True,                          help='grouping file')
+    enrich_parser.add_argument('-o',    required=True,                          help='output directory')
+    enrich_parser.add_argument('-diff', required=False, default=2, type=float,  help='minimum fold difference, default is 2')
+    enrich_parser.add_argument('-bc',   required=False, action="store_true",    help='perform Bonferroni correction')
+    enrich_parser.add_argument('-f',    required=False, action="store_true",    help='force overwrite')
     args = vars(enrich_parser.parse_args())
     enrich(args)

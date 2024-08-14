@@ -52,42 +52,44 @@ def subset_df(args):
     # read in rows_to_keep_file
     rows_to_keep_set = set()
     rows_missing_set = set()
-    if os.path.isfile(rows_to_keep_file) is True:
-        file_row_index = 0
-        for each_r in open(rows_to_keep_file):
-
-            ignore_current_row = False
-            if (skip1row is True) and (file_row_index == 0):
-                ignore_current_row = True
-
-            if ignore_current_row is False:
-                row_id = each_r.strip().split()[0]
-                if row_id in df_row_header_list:
-                    rows_to_keep_set.add(row_id)
-                else:
-                    rows_missing_set.add(row_id)
-
-            file_row_index += 1
+    if rows_to_keep_file is not None:
+        if os.path.isfile(rows_to_keep_file) is False:
+            print('%s not found, program exited!' % rows_to_keep_file)
+            exit()
+        else:
+            file_row_index = 0
+            for each_r in open(rows_to_keep_file):
+                ignore_current_row = False
+                if (skip1row is True) and (file_row_index == 0):
+                    ignore_current_row = True
+                if ignore_current_row is False:
+                    row_id = each_r.strip().split()[0]
+                    if row_id in df_row_header_list:
+                        rows_to_keep_set.add(row_id)
+                    else:
+                        rows_missing_set.add(row_id)
+                file_row_index += 1
 
     # read in cols_to_keep_file
     cols_to_keep_set = set()
     cols_missing_set = set()
-    if os.path.isfile(cols_to_keep_file) is True:
-        file_row_index = 0
-        for each_c in open(cols_to_keep_file):
-
-            ignore_current_row = False
-            if (skip1row is True) and (file_row_index == 0):
-                ignore_current_row = True
-
-            if ignore_current_row is False:
-                col_id = each_c.strip().split()[0]
-                if col_id in df_col_header_list:
-                    cols_to_keep_set.add(col_id)
-                else:
-                    cols_missing_set.add(col_id)
-
-            file_row_index += 1
+    if cols_to_keep_file is not None:
+        if os.path.isfile(cols_to_keep_file) is False:
+            print('%s not found, program exited!' % cols_to_keep_file)
+            exit()
+        else:
+            file_row_index = 0
+            for each_c in open(cols_to_keep_file):
+                ignore_current_row = False
+                if (skip1row is True) and (file_row_index == 0):
+                    ignore_current_row = True
+                if ignore_current_row is False:
+                    col_id = each_c.strip().split()[0]
+                    if col_id in df_col_header_list:
+                        cols_to_keep_set.add(col_id)
+                    else:
+                        cols_missing_set.add(col_id)
+                file_row_index += 1
 
     # report
     if len(rows_missing_set) > 0:
@@ -129,8 +131,8 @@ if __name__ == '__main__':
     subset_df_parser = argparse.ArgumentParser(usage=subset_df_usage)
     subset_df_parser.add_argument('-i',         required=True,                          help='input file')
     subset_df_parser.add_argument('-o',         required=True,                          help='output file')
-    subset_df_parser.add_argument('-c',         required=False, default='',             help='header of columns to keep')
-    subset_df_parser.add_argument('-r',         required=False, default='',             help='header of rows to keep')
+    subset_df_parser.add_argument('-c',         required=False, default=None,           help='header of columns to keep')
+    subset_df_parser.add_argument('-r',         required=False, default=None,           help='header of rows to keep')
     subset_df_parser.add_argument('-s',         required=False, default='tab',          help='column separator, choose from tab and comma, default: tab')
     subset_df_parser.add_argument('-b',         required=False, action='store_true',    help='write out dataframe in 0/1 format')
     subset_df_parser.add_argument('-m',         required=False, action='store_true',    help='convert 0 to -1')

@@ -3,14 +3,16 @@ import argparse
 
 
 hpc3_usage = '''
-==================== hpc3 example commands ====================
+========================= hpc3 example commands =========================
 
 BioSAK hpc3 -q cpu-share -n iqtree_1 -c "iqtree -h"
-BioSAK hpc3 -q cpu -conda mybase -n iqtree_2 -c "iqtree -h"
-BioSAK hpc3 -q cpu-share -t 1 -n wget_cog -c "wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/cog-20.fa.gz"
+BioSAK hpc3 -q cpu-share -t 1 -n iqtree_3 -c "iqtree -h"
 BioSAK hpc3 -q cpu-share -t 12 -tpc 3 -n mcmctree -c mcmctree_cmds.txt
+BioSAK hpc3 -q cpu -a oces -conda mybase -n iqtree_2 -c "iqtree -h"
 
-===============================================================
+# To use srun, you commands must NOT contain the double quote symbol (").
+
+=========================================================================
 '''
 
 
@@ -66,7 +68,7 @@ def hpc3(args):
         if use_srun is False:
             js_file_handle.write('srun -n %s %s\n' % (core_num_per_cmd, cmd_list[-1]))
         else:
-            js_file_handle.write('srun -n %s BioSAK srun -c "%s" &\n' % (core_num_per_cmd, cmd_list[-1]))
+            js_file_handle.write('srun -n %s BioSAK srun -c "%s"\n' % (core_num_per_cmd, cmd_list[-1]))
 
         js_file_handle.write('wait\n')
 

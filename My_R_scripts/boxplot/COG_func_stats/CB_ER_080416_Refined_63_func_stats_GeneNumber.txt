@@ -1,0 +1,27 @@
+Category	GeneNumber	Description
+J	138	Translation, ribosomal structure and biogenesis
+A	1	RNA processing and modification
+K	52	Transcription
+L	65	Replication, recombination and repair
+B	0	Chromatin structure and dynamics
+D	14	Cell cycle control, cell division, chromosome partitioning
+Y	0	Nuclear structure
+V	22	Defense mechanisms
+T	52	Signal transduction mechanisms
+M	102	Cell wall/membrane/envelope biogenesis
+N	6	Cell motility
+Z	0	Cytoskeleton
+W	11	Extracellular structures
+U	25	Intracellular trafficking, secretion, and vesicular transport
+O	64	Posttranslational modification, protein turnover, chaperones
+X	2	Mobilome: prophages, transposons
+C	69	Energy production and conversion
+G	66	Carbohydrate transport and metabolism
+E	74	Amino acid transport and metabolism
+F	46	Nucleotide transport and metabolism
+H	67	Coenzyme transport and metabolism
+I	45	Lipid transport and metabolism
+P	33	Inorganic ion transport and metabolism
+Q	17	Secondary metabolites biosynthesis, transport and catabolism
+R	76	General function prediction only
+S	49	Function unknown
