@@ -116,11 +116,11 @@ BioSAK/plot_mag.py
 BioSAK/plot_sam_depth.py
 BioSAK/plot_tree.R
 BioSAK/prefix_file.py
+BioSAK/prefix_seq_by_file_name.py
 BioSAK/prokka.py
 BioSAK/reads2bam.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
-BioSAK/rename_seqs.py
 BioSAK/ribbon.py
 BioSAK/sam2bam.py
 BioSAK/sampling_GTDB_gnms.py

@@ -1,6 +1,5 @@
 import os
 import glob
-import shutil
 import argparse
 from Bio import SeqIO
 import multiprocessing as mp
@@ -14,19 +13,18 @@ arCOG_parser_usage = '''
 # Dependencies: blast+, diamond
 
 # annotate protein sequences
-BioSAK arCOG -m P -t 6 -db_dir arCOG18_db_dir -i genes.faa 
-BioSAK arCOG -m P -t 6 -db_dir arCOG18_db_dir -i faa_files -x faa -d depth_files
+BioSAK arCOG -m P -t 6 -db_dir arCOG18_db_dir -i genes.faa -o op_dir
+BioSAK arCOG -m P -t 6 -db_dir arCOG18_db_dir -i faa_files -x faa -d depth_files -o op_dir
 
 # annotate DNA sequences (ORFs)
-BioSAK arCOG -m N -t 6 -db_dir arCOG18_db_dir -i genes.ffn -d gene.depth
-BioSAK arCOG -m N -t 6 -db_dir arCOG18_db_dir -i ffn_files -x ffn
+BioSAK arCOG -m N -t 6 -db_dir arCOG18_db_dir -i genes.ffn -d gene.depth -o op_dir
+BioSAK arCOG -m N -t 6 -db_dir arCOG18_db_dir -i ffn_files -x ffn -o op_dir
 
-# Prepare DB files:
-cd path/to/your/arCOG_db_dir
-wget https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/ar18.fa.gz
-wget https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/ar18.ar14.02.csv
-wget https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/arCOGdef.tab
-wget https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/fun-20.tab
+# Download the following files to your database directory:
+https://ftp.ncbi.nih.gov/pub/COG/COG2020/data/fun-20.tab
+https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/ar18.fa.gz
+https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/arCOGdef.tab
+https://ftp.ncbi.nih.gov/pub/wolf/COGs/arCOG/tmp.ar18/ar18.ar14.02.csv
 gunzip ar18.fa.gz
 makeblastdb -in ar18.fa -dbtype prot -parse_seqids -logfile ar18.fa.log
 diamond makedb --in ar18.fa --db ar18.fa.dmnd --quiet
@@ -39,26 +37,12 @@ diamond makedb --in ar18.fa --db ar18.fa.dmnd --quiet
 time_format = '[%Y-%m-%d %H:%M:%S] '
 
 
-def force_create_folder(folder_to_create):
-    if os.path.isdir(folder_to_create):
-        shutil.rmtree(folder_to_create, ignore_errors=True)
-        if os.path.isdir(folder_to_create):
-            shutil.rmtree(folder_to_create, ignore_errors=True)
-            if os.path.isdir(folder_to_create):
-                shutil.rmtree(folder_to_create, ignore_errors=True)
-                if os.path.isdir(folder_to_create):
-                    shutil.rmtree(folder_to_create, ignore_errors=True)
-
-    os.mkdir(folder_to_create)
-
-
 def sep_path_basename_ext(file_in):
 
     file_path, file_name = os.path.split(file_in)
     if file_path == '':
         file_path = '.'
     file_basename, file_ext = os.path.splitext(file_name)
-
     return file_path, file_basename, file_ext
 
 
@@ -86,7 +70,6 @@ def get_gene_list_depth(gene_list, gene_to_depth_dict):
     for gene in gene_list:
         gene_depth = gene_to_depth_dict[gene]
         total_depth += gene_depth
-
     return total_depth
 
 
@@ -101,10 +84,7 @@ def dna2aa(dna_file, aa_file):
     query_aa_handle.close()
 
 
-def best_hit(args):
-
-    file_in = args['i']
-    file_out = args['o']
+def best_hit(file_in, file_out):
 
     file_out_handle = open(file_out, 'w')
     best_hit_line = ''
@@ -114,7 +94,6 @@ def best_hit(args):
         blast_hit_split = blast_hit.strip().split('\t')
         query_id = blast_hit_split[0]
         bit_score = float(blast_hit_split[11])
-
         if best_hit_query_id == '':
             best_hit_query_id = query_id
             best_hit_line = blast_hit
@@ -127,7 +106,6 @@ def best_hit(args):
             best_hit_query_id = query_id
             best_hit_line = blast_hit
             best_hit_score = bit_score
-
     file_out_handle.write(best_hit_line)
     file_out_handle.close()
 
@@ -168,7 +146,7 @@ def arCOG_worker(argument_list):
     pwd_func_stats_copy_pct_by_all =    '%s/%s_func_stats_pct_by_all.txt'           % (current_output_folder, input_seq_no_ext)
     pwd_func_stats_depth_pct_by_all =   '%s/%s_func_stats_depth_pct_by_all.txt'     % (current_output_folder, input_seq_no_ext)
 
-    force_create_folder(current_output_folder)
+    os.system('mkdir %s' % current_output_folder)
 
     input_seq_aa = ''
     if sequence_type in ['N', 'n']:
@@ -187,7 +165,7 @@ def arCOG_worker(argument_list):
         os.system('diamond blastp -q %s --db %s.dmnd --out %s --evalue %s --outfmt 6 --threads %s --quiet' % (input_seq_aa, pwd_prot2003_2014, pwd_blastp_output, evalue_cutoff, thread_num))
 
     # keep only best hits
-    best_hit({'i': pwd_blastp_output, 'o': pwd_blastp_output_besthits})
+    best_hit(pwd_blastp_output, pwd_blastp_output_besthits)
 
     # get query_to_ref_protein_dict
     query_to_ref_protein_dict = {}
@@ -212,15 +190,12 @@ def arCOG_worker(argument_list):
     pwd_query_to_cog_txt_handle = open(pwd_query_to_cog_txt, 'w')
     pwd_query_to_cog_txt_handle.write('Query\tarCOG\tCategory\tDescription\n')
     for query_gene in sorted(query_seq_list):
-
         if query_gene not in query_to_ref_protein_dict:
             pwd_query_to_cog_txt_handle.write('%s\n' % (query_gene))
-
         else:
             db_protein_id = query_to_ref_protein_dict[query_gene]
             if db_protein_id not in protein_id_to_cog_id_dict:
                 pwd_query_to_cog_txt_handle.write('%s\n' % (query_gene))
-
             else:
                 cog_id_list = protein_id_to_cog_id_dict[db_protein_id]
                 for cog_id in cog_id_list:
@@ -335,10 +310,10 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
     cog_num_pct_by_all_dict = {}
     all_identified_cog = set()
     for annotation_folder in annotation_folder_list:
-
         annotation_folder_basename = annotation_folder.split('_arCOG_wd')[0]
         pwd_annotation_stats_file = ''
         pwd_annotation_stats_file_pct = ''
+
         if stats_level == 'cog_id':
             if with_depth is False:
                 pwd_annotation_stats_file =             '%s/%s/%s_arcog_stats.txt'                  % (annotation_dir, annotation_folder, annotation_folder_basename)
@@ -401,14 +376,11 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
         current_cog_num_list = []
         current_cog_num_list_pct = []
         for identified_cog in all_identified_cog_list:
-
-            # get num list
             identified_cog_num = 0
             identified_cog_num_pct = 0
             if identified_cog in current_cog_num_dict:
                 identified_cog_num = current_cog_num_dict[identified_cog]
                 identified_cog_num_pct = current_cog_num_pct_dict[identified_cog]
-
             current_cog_num_list.append(identified_cog_num)
             current_cog_num_list_pct.append(identified_cog_num_pct)
 
@@ -441,15 +413,17 @@ def get_COG_annot_df(annotation_dir, stats_level, annotation_df_absolute_num, an
 
 def arCOG(args):
 
-    file_in =           args['i']
-    file_extension =    args['x']
-    sequence_type =     args['m']
-    depth_file =        args['d']
-    pct_by_all =        args['pct_by_all']
-    DB_dir =            args['db_dir']
-    num_threads =       args['t']
-    run_diamond =       args['diamond']
-    evalue_cutoff =     args['evalue']
+    file_in             = args['i']
+    output_folder       = args['o']
+    file_extension      = args['x']
+    sequence_type       = args['m']
+    depth_file          = args['d']
+    pct_by_all          = args['pct_by_all']
+    DB_dir              = args['db_dir']
+    num_threads         = args['t']
+    run_diamond         = args['diamond']
+    evalue_cutoff       = args['evalue']
+    force_create_op_dir = args['f']
 
     ar18_fa           = '%s/ar18.fa'                 % DB_dir
     ar18_fa_diamond   = '%s/ar18.fa.dmnd'            % DB_dir
@@ -577,8 +551,13 @@ def arCOG(args):
                 file_in_folder_name = file_in.split('/')[-1]
 
             # create output folder
-            output_folder = '%s_arCOG_wd' % file_in_folder_name
-            force_create_folder(output_folder)
+            if os.path.isdir(output_folder) is True:
+                if force_create_op_dir is True:
+                    os.system('rm -r %s' % output_folder)
+                else:
+                    print('Output folder detected, program exited!')
+                    exit()
+            os.system('mkdir %s' % output_folder)
 
             ######################################################### main #########################################################
 
@@ -595,11 +574,9 @@ def arCOG(args):
                 else:
                     input_file_depth = '%s/%s.depth' % (depth_file, input_file_basename)
 
-                list_for_multiple_arguments_COG.append([pwd_input_file, ar18_fa, protein_to_cog_dict,
-                                                        cog_id_to_category_dict, cog_id_to_description_dict,
-                                                        cog_category_list, cog_category_to_description_dict,
-                                                        sequence_type, output_folder, 1, run_diamond, evalue_cutoff,
-                                                        input_file_depth, pct_by_all])
+                list_for_multiple_arguments_COG.append([pwd_input_file, ar18_fa, protein_to_cog_dict, cog_id_to_category_dict, cog_id_to_description_dict,
+                                                        cog_category_list, cog_category_to_description_dict, sequence_type, output_folder, 1, run_diamond,
+                                                        evalue_cutoff, input_file_depth, pct_by_all])
 
             # run COG annotaion files with multiprocessing
             pool = mp.Pool(processes=num_threads)
@@ -661,15 +638,17 @@ def arCOG(args):
 
 if __name__ == '__main__':
 
-    COG_parser = argparse.ArgumentParser(usage=arCOG_parser_usage)
-    COG_parser.add_argument('-i',               required=True,                              help='path to input sequences (in multi-fasta format)')
-    COG_parser.add_argument('-x',               required=False,                             help='file extension')
-    COG_parser.add_argument('-m',               required=True,                              help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
-    COG_parser.add_argument('-d',               required=False, default=None,               help='gene depth file/folder')
-    COG_parser.add_argument('-pct_by_all',      required=False, action='store_true',        help='normalize by all query genes, including those without annotation')
-    COG_parser.add_argument('-db_dir',          required=True,                              help='COG_db_dir')
-    COG_parser.add_argument('-diamond',         required=False, action='store_true',        help='run diamond (for big dataset), default: blastp from NCBI')
-    COG_parser.add_argument('-t',               required=False, type=int, default=1,        help='number of threads')
-    COG_parser.add_argument('-evalue',          required=False, default=0.0001, type=float,  help='evalue cutoff, default: 0.0001')
-    args = vars(COG_parser.parse_args())
+    arCOG_parser = argparse.ArgumentParser(usage=arCOG_parser_usage)
+    arCOG_parser.add_argument('-i',               required=True,                              help='path to input sequences (in multi-fasta format)')
+    arCOG_parser.add_argument('-o',               required=True,                              help='output directory')
+    arCOG_parser.add_argument('-x',               required=False,                             help='file extension')
+    arCOG_parser.add_argument('-m',               required=True,                              help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
+    arCOG_parser.add_argument('-d',               required=False, default=None,               help='gene depth file/folder')
+    arCOG_parser.add_argument('-db_dir',          required=True,                              help='COG_db_dir')
+    arCOG_parser.add_argument('-pct_by_all',      required=False, action='store_true',        help='normalize by all query genes, including those without annotation')
+    arCOG_parser.add_argument('-diamond',         required=False, action='store_true',        help='run diamond (for big dataset), default: blastp from NCBI')
+    arCOG_parser.add_argument('-evalue',          required=False, default=0.0001,             help='evalue cutoff, accepted format 0.001, 1e-10, 1e-30, default: 0.0001')
+    arCOG_parser.add_argument('-t',               required=False, type=int, default=1,        help='number of threads')
+    arCOG_parser.add_argument('-f',               required=False, action="store_true",        help='force overwrite')
+    args = vars(arCOG_parser.parse_args())
     arCOG(args)

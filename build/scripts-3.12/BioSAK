@@ -86,6 +86,7 @@ def print_main_help():
        fa2id                   ->  Export sequence id
        slice_seq               ->  Get specified region of a sequence
        rename_seq              ->  Rename sequences in a file
+       prefix_seq_by_file_name ->  prefix sequences by file name
        select_seq              ->  Select sequences by their ids
        split_fasta             ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
@@ -171,6 +172,7 @@ if __name__ == '__main__':
         from BioSAK import arCOG
         arCOG_parser = subparsers.add_parser('arCOG', description='Wrapper for arCOG', usage=arCOG.arCOG_parser_usage)
         arCOG_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+        arCOG_parser.add_argument('-o',                   required=True,                                  help='output directory')
         arCOG_parser.add_argument('-x',                   required=False,                                 help='file extension')
         arCOG_parser.add_argument('-m',                   required=True,                                  help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
         arCOG_parser.add_argument('-d',                   required=False, default=None,                   help='gene depth file/folder')
@@ -178,7 +180,8 @@ if __name__ == '__main__':
         arCOG_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
         arCOG_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
         arCOG_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
-        arCOG_parser.add_argument('-evalue',              required=False, default=0.0001, type=float,      help='evalue cutoff, default: 0.0001')
+        arCOG_parser.add_argument('-evalue',              required=False, default=0.0001,                 help='evalue cutoff, accepted format 0.001, 1e-10, 1e-30, default: 0.0001')
+        arCOG_parser.add_argument('-f',                   required=False, action="store_true",            help='force overwrite')
         args = vars(parser.parse_args())
         arCOG.arCOG(args)
 
@@ -1016,6 +1019,15 @@ if __name__ == '__main__':
         stats_arcog_parser.add_argument('-f',           required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
         stats_arcog.stats_arcog(args)
+
+    elif sys.argv[1] == 'prefix_seq_by_file_name':
+        from BioSAK import prefix_seq_by_file_name
+        prefix_seq_by_file_name_parser = subparsers.add_parser('prefix_seq_by_file_name', usage=prefix_seq_by_file_name.prefix_seq_by_file_name_usage)
+        prefix_seq_by_file_name_parser.add_argument('-i',         required=True,                         help='input sequence folder')
+        prefix_seq_by_file_name_parser.add_argument('-x',         required=False, default='fasta',       help='file extension, default: fasta')
+        prefix_seq_by_file_name_parser.add_argument('-o',         required=True,                         help='output folder')
+        args = vars(parser.parse_args())
+        prefix_seq_by_file_name.prefix_seq_by_file_name(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

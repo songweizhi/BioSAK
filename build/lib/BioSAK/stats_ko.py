@@ -9,12 +9,12 @@ BioSAK stats_ko -ko ko_d.txt -db ko00001.keg -p Demo
 
 # Required DB files:
 ko00001.keg: https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
-
 =================================================================================================
 '''
 
 
 def ko_stats_to_txt(ko_stats_dict, ko_desc_dict, op_txt, op_stats_txt):
+
     op_txt_handle = open(op_txt, 'w')
     op_stats_txt_handle = open(op_stats_txt, 'w')
     for ko_high in sorted(list(ko_stats_dict.keys())):

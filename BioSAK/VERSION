@@ -1,5 +1,8 @@
-1.94.3
+1.95.3
 - fixed bugs
+
+1.95.0
+- new modules added: prefix_seq_by_file_name
 
 1.94.0
 - new modules added: stats_arcog
