@@ -7,7 +7,7 @@ from statsmodels.stats.multitest import multipletests
 
 
 enrich_usage = '''
-==================================== enrich example commands ====================================
+======================================= enrich example commands =======================================
 
 BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir
 BioSAK enrich -i annotation_files -x txt -g grouping.txt -o output_dir -bc
@@ -25,7 +25,7 @@ significant. Only significantly different functions with greater than, by defaul
 differences are considered to be enriched. Functions detected only in the genomes from one group 
 type are considered to be enriched if they existed in at least 50 percent of the genomes in the group.
 
-=================================================================================================
+=======================================================================================================
 '''
 
 
@@ -104,12 +104,10 @@ def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, file_prefix, ou
                         enriched_in = sample_2_id
 
                 if enriched_in == sample_1_id:
-                    summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict[ko_id]))
+                    summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
                 if enriched_in == sample_2_id:
-                    summary_txt_sample_2_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict[ko_id]))
-
+                    summary_txt_sample_2_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
         line_num_index += 1
-
     summary_txt_sample_1_handle.close()
     summary_txt_sample_2_handle.close()
 
@@ -216,7 +214,8 @@ def enrich(args):
                 identified_ko_set.add(each_line_split[0])
                 current_MAG_ko_stats_dict[each_line_split[0]] = int(each_line_split[1])
                 current_MAG_ko_total += int(each_line_split[1])
-                ko_desc_dict[each_line_split[0]] = each_line_split[2]
+                if len(each_line_split) >= 3:
+                    ko_desc_dict[each_line_split[0]] = each_line_split[2]
             line_num_index += 1
 
         current_MAG_ko_stats_dict_norm = {}
@@ -300,7 +299,7 @@ def enrich(args):
         group_2_mean = current_p_group_mean[1]
         group_1_no_zero_pct = current_p_detected_pct[0]
         group_2_no_zero_pct = current_p_detected_pct[1]
-        output_test_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id_list[x], group_1_mean, group_1_no_zero_pct, group_2_mean, group_2_no_zero_pct, current_p, current_p_adjusted, ko_desc_dict[ko_id_list[x]]))
+        output_test_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id_list[x], group_1_mean, group_1_no_zero_pct, group_2_mean, group_2_no_zero_pct, current_p, current_p_adjusted, ko_desc_dict.get(ko_id_list[x], 'na')))
         x += 1
     output_test_handle.close()
 

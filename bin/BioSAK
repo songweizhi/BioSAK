@@ -66,6 +66,7 @@ def print_main_help():
        COG2020                 ->  COG annotation (v2020, by blastp/diamond)
        arCOG                   ->  COG annotation for archaea (version ar18)
        dbCAN                   ->  CAZy annotation with dbCAN
+       Combine_KEGG_arCOG      ->  Combine KEGG and arCOG annotation results
        enrich                  ->  Functional enrichment analysis
        gapseq                  ->  Data matrix GapSeq predicted pathways
        stats_ko                ->  get stats for a list of provided KO
@@ -76,6 +77,7 @@ def print_main_help():
        top_16S_hits            ->  Classify 16S by top-blast-hits approach
        SILVA_for_BLCA          ->  Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->  Prepare BLCA-compatible GTDB SSU database
+       UNITE_for_BLCA          ->  Prepare BLCA-compatible UNITE SSU database
        BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
        Tax4Fun2IndOTU          ->  Get functional profile for individual OTUs (to be added)
     
@@ -1028,6 +1030,23 @@ if __name__ == '__main__':
         prefix_seq_by_file_name_parser.add_argument('-o',         required=True,                         help='output folder')
         args = vars(parser.parse_args())
         prefix_seq_by_file_name.prefix_seq_by_file_name(args)
+
+    elif sys.argv[1] == 'Combine_KEGG_arCOG':
+        from BioSAK import Combine_KEGG_arCOG
+        Combine_KEGG_arCOG_parser = subparsers.add_parser('Combine_KEGG_arCOG', usage=Combine_KEGG_arCOG.Combine_KEGG_arCOG_usage)
+        Combine_KEGG_arCOG_parser.add_argument('-o',        required=True,                          help='output directory')
+        Combine_KEGG_arCOG_parser.add_argument('-kegg',     required=True,                          help='annotation results from KEGG module')
+        Combine_KEGG_arCOG_parser.add_argument('-arcog',    required=True,                          help='annotation results from arCOG module')
+        Combine_KEGG_arCOG_parser.add_argument('-f',        required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        Combine_KEGG_arCOG.Combine_KEGG_arCOG(args)
+
+    elif sys.argv[1] == 'UNITE_for_BLCA':
+        from BioSAK import UNITE_for_BLCA
+        UNITE_for_BLCA_parser = subparsers.add_parser('UNITE_for_BLCA', usage=UNITE_for_BLCA.UNITE_for_BLCA_usage)
+        UNITE_for_BLCA_parser.add_argument('-i', required=True, help='sh_general_release_dynamic_04.04.2024.fasta')
+        args = vars(parser.parse_args())
+        UNITE_for_BLCA.UNITE_for_BLCA(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])
