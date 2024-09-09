@@ -53,7 +53,6 @@ BioSAK/count_num.py
 BioSAK/cross_link_seqs.py
 BioSAK/dbCAN.py
 BioSAK/download_GenBank_genome_subset_prokaryotes_csv.py
-BioSAK/dwnld_sra_reads.py
 BioSAK/enrich.py
 BioSAK/exe_cmds.py
 BioSAK/ezaai2mat.py
@@ -135,6 +134,7 @@ BioSAK/slice_seq.py
 BioSAK/split_fasta.py
 BioSAK/split_folder.py
 BioSAK/split_sam.py
+BioSAK/sra.py
 BioSAK/srun.py
 BioSAK/statsTaxa.py
 BioSAK/stats_arcog.py

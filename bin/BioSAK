@@ -130,6 +130,7 @@ def print_main_help():
        ribbon                  ->  Make a ribbon diagram
        compare_sets            ->  compare_sets
        sankey                  ->  get sankey plot
+       sra                     ->  Download reads with sratoolkit
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -1047,6 +1048,16 @@ if __name__ == '__main__':
         UNITE_for_BLCA_parser.add_argument('-i', required=True, help='sh_general_release_dynamic_04.04.2024.fasta')
         args = vars(parser.parse_args())
         UNITE_for_BLCA.UNITE_for_BLCA(args)
+
+    elif sys.argv[1] == 'sra':
+        from BioSAK import sra
+        sra_parser = subparsers.add_parser('sra', usage=sra.sra_usage)
+        sra_parser.add_argument('-i', required=True,                        help='id')
+        sra_parser.add_argument('-o', required=True,                        help='output directory')
+        sra_parser.add_argument('-t', required=False, type=int, default=1,  help='number of threads, default is 1')
+        sra_parser.add_argument('-f', required=False, action="store_true",  help='force overwrite')
+        args = vars(parser.parse_args())
+        sra.sra(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

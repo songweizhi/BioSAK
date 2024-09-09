@@ -58,7 +58,8 @@ def Combine_KEGG_arCOG(args):
     ######################################### read in kegg annotation results ##########################################
 
     fun_id_to_description_dict = dict()
-
+    fun_id_to_B_dict = dict()
+    fun_id_to_C_dict = dict()
     gnm_to_gene_dict = dict()
     ko_assignment_dod = dict()
     for each_file in ko_assignment_file_list:
@@ -75,8 +76,16 @@ def Combine_KEGG_arCOG(args):
                 gene_id = each_line_split[0]
                 gnm_to_gene_dict[gnm_id].add(gene_id)
                 if len(each_line_split) > 1:
-                    ko_id = each_line_split[4][2:]
-                    ko_desc = each_line_split[8].strip()
+                    ko_id       = each_line_split[4][2:]
+                    ko_b        = each_line_split[2]
+                    ko_b_desc   = each_line_split[6]
+                    ko_c        = each_line_split[3]
+                    ko_c_desc   = each_line_split[7]
+                    ko_desc     = each_line_split[8].strip()
+                    ko_b_with_desc = '%s__%s' % (ko_b, ko_b_desc)
+                    ko_c_with_desc = '%s__%s' % (ko_c, ko_c_desc)
+                    fun_id_to_B_dict[ko_id] = ko_b_with_desc
+                    fun_id_to_C_dict[ko_id] = ko_c_with_desc
                     fun_id_to_description_dict[ko_id] = ko_desc
                     current_genome_ko_assignment_dict[gene_id] = ko_id
         ko_assignment_dod[gnm_id] = current_genome_ko_assignment_dict
@@ -84,6 +93,8 @@ def Combine_KEGG_arCOG(args):
     ######################################### read in arcog annotation results #########################################
 
     arcog_assignment_dod = dict()
+    arcog_id_to_cate_dict = dict()
+    arcog_cate_to_desc_dict = dict()
     for each_file in arcog_assignment_file_list:
 
         f_name, f_path, f_base, f_ext = sep_path_basename_ext(each_file)
@@ -100,10 +111,26 @@ def Combine_KEGG_arCOG(args):
                 gnm_to_gene_dict[gnm_id].add(gene_id)
                 if len(each_line_split) > 1:
                     arcog_id = each_line_split[1]
+                    arcog_cates = each_line_split[2]
                     arcog_desc = each_line_split[3]
+
+                    if arcog_id not in arcog_id_to_cate_dict:
+                        arcog_id_to_cate_dict[arcog_id] = set()
+
+                    for arcog_cate in arcog_cates:
+                        arcog_id_to_cate_dict[arcog_id].add(arcog_cate)
+
                     fun_id_to_description_dict[arcog_id] = arcog_desc
                     current_genome_arcog_assignment_dict[gene_id] = arcog_id
         arcog_assignment_dod[gnm_id] = current_genome_arcog_assignment_dict
+
+        # read in cog cate to desc info
+        func_stats_txt = each_file.replace('_query_to_cog.txt', '_func_stats.txt')
+        for each in open(func_stats_txt):
+            each_split = each.strip().split('\t')
+            cate_id = each_split[0]
+            cate_desc = each_split[2]
+            arcog_cate_to_desc_dict[cate_id] = cate_desc
 
     ###################################### write out combined annotation results #######################################
 
@@ -164,8 +191,23 @@ def Combine_KEGG_arCOG(args):
             fun_num = stats_dict[each_fun]
             fun_pct = stats_dict_pct[each_fun]
             fun_desc = fun_id_to_description_dict[each_fun]
-            fun_stats_num_txt_handle.write('%s\t%s\t%s\n' % (each_fun, fun_num, fun_desc))
-            fun_stats_pct_txt_handle.write('%s\t%s\t%s\n' % (each_fun, fun_pct, fun_desc))
+
+            fun_note = ''
+            if each_fun.startswith('arCOG'):
+                fun_cate_list = sorted(list(arcog_id_to_cate_dict[each_fun]))
+                for fun_cate in fun_cate_list:
+                    fun_cate_desc = arcog_cate_to_desc_dict[fun_cate]
+                    fun_note += ('%s__%s' % (fun_cate, fun_cate_desc))
+            elif each_fun.startswith('K'):
+                print(each_fun)
+
+                fun_b = fun_id_to_B_dict[each_fun]
+                fun_c = fun_id_to_C_dict[each_fun]
+                fun_note = '%s;%s' % (fun_c, fun_b)
+
+
+            fun_stats_num_txt_handle.write('%s\t%s\t%s\t%s\n' % (each_fun, fun_num, fun_desc, fun_note))
+            fun_stats_pct_txt_handle.write('%s\t%s\t%s\t%s\n' % (each_fun, fun_pct, fun_desc, fun_note))
         fun_stats_num_txt_handle.close()
         fun_stats_pct_txt_handle.close()
 
@@ -186,6 +228,6 @@ if __name__ == '__main__':
 '''
 
 cd /Users/songweizhi/Desktop
-BioSAK Combine_KEGG_arCOG -kegg 3_combined_genomes_50_5_dRep97_284_KEGG_wd -arcog 3_combined_genomes_50_5_dRep97_284_arCOG_wd_0.0001 -o 3_combined_genomes_50_5_dRep97_284_combined_KEGG_arCOG -f 
+python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/Combine_KEGG_arCOG.py -kegg 3_combined_genomes_50_5_dRep97_284_KEGG_wd -arcog 3_combined_genomes_50_5_dRep97_284_arCOG_wd_0.0001 -o 3_combined_genomes_50_5_dRep97_284_combined_KEGG_arCOG -f
 
 '''

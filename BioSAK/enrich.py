@@ -48,7 +48,7 @@ def remove_0_from_Pandas_Series(Pandas_Series):
     return no_0_num_list
 
 
-def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, file_prefix, output_dir):
+def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, fun_to_note_dict, file_prefix, output_dir):
 
     fold_diff_big = fold_diff_cutoff
     fold_diff_small = 1/fold_diff_cutoff
@@ -73,8 +73,12 @@ def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, file_prefix, ou
 
     summary_txt_sample_1_handle = open(summary_txt_sample_1, 'w')
     summary_txt_sample_2_handle = open(summary_txt_sample_2, 'w')
-    summary_txt_sample_1_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n' % (sample_1_id, sample_2_id))
-    summary_txt_sample_2_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n' % (sample_1_id, sample_2_id))
+    if len(fun_to_note_dict) == 0:
+        summary_txt_sample_1_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n' % (sample_1_id, sample_2_id))
+        summary_txt_sample_2_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n' % (sample_1_id, sample_2_id))
+    else:
+        summary_txt_sample_1_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\tNote\n' % (sample_1_id, sample_2_id))
+        summary_txt_sample_2_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\tNote\n' % (sample_1_id, sample_2_id))
     line_num_index = 0
     for ko in open(output_test):
         if line_num_index > 0:
@@ -104,9 +108,15 @@ def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, file_prefix, ou
                         enriched_in = sample_2_id
 
                 if enriched_in == sample_1_id:
-                    summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
+                    if len(fun_to_note_dict) == 0:
+                        summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
+                    else:
+                        summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na'), fun_to_note_dict.get(ko_id, 'na')))
                 if enriched_in == sample_2_id:
-                    summary_txt_sample_2_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
+                    if len(fun_to_note_dict) == 0:
+                        summary_txt_sample_2_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
+                    else:
+                        summary_txt_sample_2_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na'), fun_to_note_dict.get(ko_id, 'na')))
         line_num_index += 1
     summary_txt_sample_1_handle.close()
     summary_txt_sample_2_handle.close()
@@ -203,6 +213,7 @@ def enrich(args):
     identified_ko_set = set()
     ko_dict_of_dict = {}
     ko_desc_dict = dict()
+    fun_id_to_note_dict = dict()
     for annotation_file in annotation_file_list_only_shared:
         f_path, MAG_id, f_ext = sep_path_basename_ext(annotation_file)
         current_MAG_ko_stats_dict = {}
@@ -216,6 +227,8 @@ def enrich(args):
                 current_MAG_ko_total += int(each_line_split[1])
                 if len(each_line_split) >= 3:
                     ko_desc_dict[each_line_split[0]] = each_line_split[2]
+                if len(each_line_split) == 4:
+                    fun_id_to_note_dict[each_line_split[0]] = each_line_split[3]
             line_num_index += 1
 
         current_MAG_ko_stats_dict_norm = {}
@@ -304,7 +317,7 @@ def enrich(args):
     output_test_handle.close()
 
     # summarize stats
-    summarize_stats(stats_op_txt, fold_diff_cutoff, ko_desc_dict, op_prefix, op_dir)
+    summarize_stats(stats_op_txt, fold_diff_cutoff, ko_desc_dict, fun_id_to_note_dict, op_prefix, op_dir)
 
     # file report
     print('Done!')
