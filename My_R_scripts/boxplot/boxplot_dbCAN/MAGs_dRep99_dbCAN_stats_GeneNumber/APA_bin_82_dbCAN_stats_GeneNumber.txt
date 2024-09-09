@@ -1,3 +1,0 @@
-Family	GeneNumber	Activities
-GT28	1	1,2-diacylglycerol 3-beta-galactosyltransferase (EC 2.4.1.46); 1,2-diacylglycerol 3-beta-glucosyltransferase (EC 2.4.1.157);  UDP-GlcNAc: Und-PP-MurAc-pentapeptide beta-N-acetylglucosaminyltransferase (EC 2.4.1.227); digalactosyldiacylglycerol synthase (EC 2.4.1.241)
-GT51	2	murein polymerase (EC 2.4.1.129).
