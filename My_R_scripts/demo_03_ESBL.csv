@@ -1,0 +1,140 @@
+﻿Public_health_network,WWTP_site,ESBL,Date,Ampicillin,Amoxicillin/Clavulanic acid,Ticacillin/Cacid,Piperacillin/Tazobactam,Cefazolin,Cefoxitin,Ceftazidime,Ceftriaxone,Cefeprime,Meropenem,Amikacin,Gentamicin,Tobramycin,Ciprofloxacin,Norfloxacin,Nitrofurantoin,Trimethorprim,Trimethoprim/Sulfamethoxazole
+South Eastern NSW,Bombo,E. coli,Jul-17,1.0,1.0,0.0,0.0,1.0,0.5,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+South Eastern NSW,Bombo,E. coli,May-18,1.0,0.5,0.0,0.0,1.0,1.0,0.0,1.0,0.0,0.0,0.0,1.0,0.5,1.0,1.0,0.0,1.0,1.0
+South Eastern NSW,Bombo,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+South Eastern NSW,Bombo,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,1.0,1.0
+Central and Eastern,Bondi,E. asburiae,May-18,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,0.5,1.0,0.0,1.0,1.0,0.0,0.0,0.5,1.0,1.0
+Central and Eastern,Bondi,E. coli,May-18,1.0,1.0,0.0,0.5,1.0,1.0,1.0,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,0.5,1.0,1.0
+Central and Eastern,Bondi,E. coli,May-18,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+Central and Eastern,Bondi,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Central and Eastern,Bondi,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Central and Eastern,Bondi,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+Northern Sydney,Brooklyn,E. coli,Jul-17,1.0,1.0,0.0,0.5,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Northern Sydney,Brooklyn,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,0.0,0.0
+Northern Sydney,Brooklyn,E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,1.0,1.0
+Western Sydney,Castle Hill,C. freundii,May-18,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Castle Hill,E. asburiae,Sep-18,1.0,1.0,1.0,0.0,1.0,1.0,1.0,1.0,0.0,1.0,0.0,1.0,0.5,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Castle Hill,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Central and Eastern,Cronulla,E. cloacae,Feb-18,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.5,0.0,0.0,0.0,0.0,0.0
+Central and Eastern,Cronulla,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Central and Eastern,Cronulla,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,1.0,1.0
+Central and Eastern,Cronulla,E. coli,Feb-18,1.0,1.0,0.0,1.0,1.0,1.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,1.0,1.0
+Central and Eastern,Cronulla,K. pneumoniae,May-18,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.5,0.0,0.0,1.0,1.0,1.0
+South Western Sydney,Glenfield,C. farmeri,Sep-18,1.0,1.0,0.0,1.0,0.5,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+South Western Sydney,Glenfield,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+South Western Sydney,Glenfield,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+South Western Sydney,Glenfield,E. coli,Sep-18,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0
+South Western Sydney,Glenfield,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+South Western Sydney,Glenfield,E. cloacae,Jul-17,1.0,1.0,0.0,0.5,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.5,0.0,0.0
+South Western Sydney,Glenfield,K. pneumoniae,Sep-18,1.0,0.0,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+South Western Sydney,Glenfield,K. pneumoniae,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.5,1.0,1.0
+South Western Sydney,Glenfield,E. cloacae,Jul-17,1.0,1.0,0.0,1.0,1.0,1.0,0.0,1.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Northern Sydney,Hornsby Heights,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0
+Northern Sydney,Hornsby Heights,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.5,1.0,1.0
+Northern Sydney,Hornsby Heights,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.5,0.0,0.0
+Northern Sydney,Hornsby Heights,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Kellyville,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Kellyville,K. pneumoniae,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.5,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.5,1.0,1.0
+Central and Eastern,Kurnell,C. malonaticus,Jul-17,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0
+South Western Sydney,Liverpool,E. coli,May-18,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,0.5,1.0,0.0,0.0,0.0,1.0,1.0,0.0,1.0,1.0
+South Western Sydney,Liverpool,E. coli,Jul-17,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0
+South Western Sydney,Liverpool,E. coli,Sep-18,1.0,0.0,0.5,0.0,1.0,0.5,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.5,1.0,1.0
+South Western Sydney,Liverpool,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+South Western Sydney,Liverpool,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,0.0,0.0
+South Western Sydney,Liverpool,K. pneumoniae,Jul-17,1.0,1.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,0.5,0.0,1.0,1.0,1.0
+Central and Eastern,Malabar,E. coli,May-18,1.0,1.0,0.0,0.5,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Central and Eastern,Malabar,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Central and Eastern,Malabar,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+Central and Eastern,Malabar,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Central and Eastern,Malabar,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Central and Eastern,Malabar,K. pneumoniae,Jul-17,1.0,1.0,0.0,1.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.5,1.0,0.0
+Central and Eastern,Malabar,R. ornithinolytica,May-18,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,1.0,1.0
+Northern Sydney,"North Head, Manly ",E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Northern Sydney,"North Head, Manly ",E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+Northern Sydney,"North Head, Manly ",E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Northern Sydney,"North Head, Manly ",E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.5,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+Northern Sydney,"North Head, Manly ",E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Northern Sydney,"North Head, Manly ",K. pneumoniae,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,North Richmond,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,North Richmond,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,North Richmond,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,North Richmond,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,North Richmond,K. pneumoniae,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Penrith,C. freundii,Sep-18,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,1.0,0.5,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,Penrith,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.5,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Penrith,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Penrith,E. coli,Sep-18,1.0,0.0,0.5,1.0,1.0,0.0,1.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Penrith,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,Penrith,K. pneumoniae,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+South Western Sydney,Picton,E. coli,May-18,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,1.0,1.0
+South Western Sydney,Picton,E. coli,Jul-17,1.0,1.0,0.0,1.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+South Western Sydney,Picton,E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0
+Western Sydney,Quakers Hill,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.5,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Quakers Hill,E. coli,May-18,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.5,1.0,1.0,0.0,1.0,1.0
+Western Sydney,Quakers Hill,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.5,1.0,1.0,0.0,1.0,1.0
+Western Sydney,Quakers Hill,K. pneumoniae,Jul-17,1.0,0.5,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0,0.5,0.0,0.5,1.0,1.0
+Nepean Blue Mountains,Richmond,E. cloacae,Sep-18,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.5,0.0,0.0
+Nepean Blue Mountains,Richmond,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Richmond,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,Richmond,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.5,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,Richmond,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.5,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,Richmond,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Western Sydney,Riverstone,E. coli,Jul-17,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,1.0,1.0,1.0,1.0,0.5,1.0,1.0
+Western Sydney,Riverstone,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Riverstone,E. coli,May-18,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Western Sydney,Riverstone,E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,0.0,1.0,1.0
+Western Sydney,Riverstone,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,1.0,1.0
+Western Sydney,Rouse Hill,E. asburiae,Sep-18,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.5,0.0,0.5,1.0,1.0
+Western Sydney,Rouse Hill,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Rouse Hill,E. coli,May-18,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+Western Sydney,Rouse Hill,E. coli,May-18,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,0.5,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0
+Western Sydney,Rouse Hill,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Rouse Hill,E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,1.0,1.0
+Western Sydney,Rouse Hill,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Western Sydney,Rouse Hill,K. pneumoniae,Jul-17,1.0,0.5,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.5,0.0,0.0,0.5,1.0,1.0
+Western Sydney,Rouse Hill,K. pneumoniae,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,0.5,1.0,0.0,0.0,0.0,0.0,0.5,0.0,0.0,0.5,1.0,0.0
+Western Sydney,Rouse Hill,K. pneumoniae,Feb-18,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,0.5,0.0,0.5,1.0,1.0
+South Eastern NSW,Shellharbour,C. freundii,Jul-17,1.0,1.0,0.0,0.5,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0
+South Eastern NSW,Shellharbour,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,1.0,1.0
+South Eastern NSW,Shellharbour,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+South Eastern NSW,Shellharbour,K. pneumoniae,Jul-17,1.0,0.5,0.0,0.0,1.0,0.0,0.5,1.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.5,1.0,1.0
+South Eastern NSW,Shellharbour,K. pneumoniae,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,0.5,0.0,0.5,1.0,1.0
+South Eastern NSW,Shellharbour,R. ornithinolytica,Sep-18,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,St Mary's,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0
+Nepean Blue Mountains,St Mary's,E. coli,Sep-18,1.0,0.0,0.5,0.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+Nepean Blue Mountains,St Mary's,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,St Mary's,E. coli,Sep-18,1.0,0.0,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+Nepean Blue Mountains,St Mary's,E. coli,Feb-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,St Mary's,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.5,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,Wallacia,C. freundii,Feb-18,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Wallacia,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Wallacia,E. coli,Jul-17,1.0,0.5,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,1.0,1.0
+Nepean Blue Mountains,Wallacia,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0
+Nepean Blue Mountains,Wallacia,E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.5,1.0,1.0,1.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,0.0,0.0
+Northern Sydney,Warriewood,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Northern Sydney,Warriewood,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Northern Sydney,Warriewood,E. coli,Sep-18,1.0,0.5,1.0,0.0,1.0,0.5,1.0,1.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0
+Northern Sydney,Warriewood,E. coli,Sep-18,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,0.5,0.0,0.0,0.5,0.0,0.0
+Northern Sydney,Warriewood,E. coli,Sep-18,1.0,1.0,0.0,0.5,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,0.5,0.0,0.0,1.0,0.0,0.0
+Northern Sydney,Warriewood,E. kobei,Jul-17,1.0,1.0,0.0,1.0,1.0,0.0,1.0,1.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.5,0.0,0.0
+Northern Sydney,Warriewood,R. ornithinolytica,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,1.0,0.5,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0
+South Western Sydney,West Camden,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+South Western Sydney,West Camden,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,1.0,1.0
+South Western Sydney,West Camden,E. coli,Sep-18,1.0,0.0,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.5,0.0,0.0,0.0,0.0,0.0
+South Western Sydney,West Camden,E. coli,Feb-18,1.0,1.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.5,0.0,0.0,1.0,1.0
+Northern Sydney,West Hornsby,E. coli,Jul-17,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,0.5,1.0,1.0
+Northern Sydney,West Hornsby,E. coli,May-18,1.0,0.5,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,1.0,1.0
+Northern Sydney,West Hornsby,E. coli,Sep-18,1.0,1.0,1.0,0.0,1.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,1.0,1.0,0.5,1.0,1.0
+Northern Sydney,West Hornsby,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.5,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.5,1.0,1.0
+Northern Sydney,West Hornsby,E. coli,Feb-18,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,1.0,1.0
+Nepean Blue Mountains,Winmalee,E. cloacae,Feb-18,1.0,1.0,0.0,1.0,1.0,1.0,1.0,0.5,0.0,0.0,1.0,0.5,0.0,0.0,0.0,0.5,0.0,0.0
+Nepean Blue Mountains,Winmalee,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Winmalee,E. coli,Jul-17,1.0,0.0,0.0,0.0,1.0,0.5,1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,1.0,0.0,0.0,0.0
+Nepean Blue Mountains,Winmalee,E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Winmalee,E. coli,Sep-18,1.0,0.5,0.5,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Nepean Blue Mountains,Winmalee,K. pneumoniae,Feb-18,1.0,1.0,0.0,0.0,1.0,0.0,1.0,1.0,0.0,0.0,0.0,1.0,0.5,0.5,0.0,0.0,1.0,1.0
+South Eastern NSW,Wollongong,E. asburiae,Jul-17,1.0,0.0,0.0,0.0,1.0,0.0,0.0,1.0,0.0,0.0,0.0,1.0,0.5,0.0,0.0,0.0,1.0,1.0
+South Eastern NSW,Wollongong,E. coli,Jul-17,1.0,1.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.5,0.0,0.0,0.0,1.0,1.0
+South Eastern NSW,Wollongong,E. coli,May-18,1.0,0.0,0.0,0.0,1.0,0.5,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.5,1.0,1.0
+South Eastern NSW,Wollongong,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,1.0,0.5,1.0,1.0,0.0,0.0,0.0
+South Eastern NSW,Wollongong,E. coli,Sep-18,1.0,0.0,0.0,0.0,1.0,0.0,1.0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
