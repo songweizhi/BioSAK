@@ -131,6 +131,9 @@ def print_main_help():
        compare_sets            ->  compare_sets
        sankey                  ->  get sankey plot
        sra                     ->  Download reads with sratoolkit
+       vis_color_scheme        ->  Visualize color scheme
+       trim                    ->  a wrapper for trimmomatic
+       FasterqDump             ->  a wrapper for fasterq-dump
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -1052,12 +1055,50 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'sra':
         from BioSAK import sra
         sra_parser = subparsers.add_parser('sra', usage=sra.sra_usage)
-        sra_parser.add_argument('-i', required=True,                        help='id')
-        sra_parser.add_argument('-o', required=True,                        help='output directory')
-        sra_parser.add_argument('-t', required=False, type=int, default=1,  help='number of threads, default is 1')
-        sra_parser.add_argument('-f', required=False, action="store_true",  help='force overwrite')
+        sra_parser.add_argument('-i', required=True, help='id')
+        sra_parser.add_argument('-o', required=True, help='output directory')
+        sra_parser.add_argument('-t', required=False, type=int, default=1, help='number of threads, default is 1')
+        sra_parser.add_argument('-dump', required=False, action="store_true", help='run fasterq-dump')
+        sra_parser.add_argument('-f', required=False, action="store_true", help='force overwrite')
         args = vars(parser.parse_args())
         sra.sra(args)
+
+    elif sys.argv[1] == 'vis_color_scheme':
+        from BioSAK import vis_color_scheme
+        vis_color_scheme_parser = subparsers.add_parser('vis_color_scheme', usage=vis_color_scheme.vis_color_scheme_usage)
+        vis_color_scheme_parser.add_argument('-i', required=True, help='lineage file')
+        vis_color_scheme_parser.add_argument('-c', required=True, help='taxon color file')
+        vis_color_scheme_parser.add_argument('-o', required=True, help='output pdf')
+        args = vars(parser.parse_args())
+        vis_color_scheme.vis_color_scheme(args)
+
+    elif sys.argv[1] == 'trim':
+        from BioSAK import trim
+        trim_parser = subparsers.add_parser('trim', usage=trim.trim_usage)
+        trim_parser.add_argument('-1',              required=True,                          help='fastq R1')
+        trim_parser.add_argument('-2',              required=True,                          help='fastq R2')
+        trim_parser.add_argument('-x',              required=True,                          help='file extension, e.g., fastq or fastq.gz')
+        trim_parser.add_argument('-a',              required=True,                          help='adapter file, e.g., TruSeq3-PE-2.fa')
+        trim_parser.add_argument('-leading',        required=False, type=int, default=25,   help='leading, default is 25')
+        trim_parser.add_argument('-trailing',       required=False, type=int, default=25,   help='trailing, default is 25')
+        trim_parser.add_argument('-crop',           required=False, type=int, default=145,  help='crop, default is 145')
+        trim_parser.add_argument('-headcrop',       required=False, type=int, default=5,    help='headcrop, default is 5')
+        trim_parser.add_argument('-swl',            required=False, type=int, default=5,    help='slidingwindow length, default is 5')
+        trim_parser.add_argument('-swq',            required=False, type=int, default=25,   help='slidingwindow q-value, default is 25')
+        trim_parser.add_argument('-minlen',         required=False, type=int, default=36,   help='minlen, default is 36')
+        args = vars(parser.parse_args())
+        trim.trim(args)
+
+    elif sys.argv[1] == 'FasterqDump':
+        from BioSAK import FasterqDump
+        FasterqDump_parser = subparsers.add_parser('FasterqDump', usage=FasterqDump.FasterqDump_usage)
+        FasterqDump_parser.add_argument('-i',       required=True,                          help='sra directory')
+        FasterqDump_parser.add_argument('-x',       required=False,default='sra',           help='sra directory, default is sra')
+        FasterqDump_parser.add_argument('-o',       required=True,                          help='output directory')
+        FasterqDump_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite')
+        FasterqDump_parser.add_argument('-gzip',    required=False, action="store_true",    help='compress with gzip')
+        args = vars(parser.parse_args())
+        FasterqDump.FasterqDump(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

@@ -146,6 +146,7 @@ def SankeyTaxon(args):
         if plot_height < 600:
             plot_height = 600
 
+    print('Rscript %s -f %s -x %s -y %s' % (pwd_get_sankey_plot_R, output_file_txt, plot_width, plot_height))
     os.system('Rscript %s -f %s -x %s -y %s' % (pwd_get_sankey_plot_R, output_file_txt, plot_width, plot_height))
 
 

@@ -4,14 +4,14 @@ import multiprocessing as mp
 
 
 sra_usage = '''
-============= sra example commands =============
+========== sra example commands ==========
 
 Requirement: sratoolkit
-
 BioSAK sra -i sra_id.txt -o op_dir -t 12
 
-================================================
+==========================================
 '''
+
 
 def sra(args):
 
@@ -19,6 +19,7 @@ def sra(args):
     op_dir              = args['o']
     num_threads         = args['t']
     force_create_op_dir = args['f']
+    run_dump            = args['dump']
 
     fasterq_dump_tmp    = '%s/fasterq_dump_tmp' % op_dir
     cmd_txt             = '%s/cmds.txt'         % op_dir
@@ -31,19 +32,28 @@ def sra(args):
             print('Output folder detected, program exited!')
             exit()
     os.system('mkdir %s' % op_dir)
-    os.system('mkdir %s' % fasterq_dump_tmp)
 
+    id_to_desc_dict = dict()
     id_set = set()
     for each_id in open(id_txt):
-        id_set.add(each_id.strip().split()[0])
+        each_id_split = each_id.strip().split()
+        sra_id = each_id_split[0]
+        sra_desc = sra_id
+        if len(each_id_split) >= 2:
+            sra_desc = each_id_split[1]
+        id_to_desc_dict[sra_id] = sra_desc
+        id_set.add(sra_id)
 
     prefetch_cmd_list = []
     fasterq_dump_cmd_list = []
     for each_id in id_set:
-        prefetch_cmd     = 'prefetch %s -O %s'                            % (each_id, op_dir)
-        fasterq_dump_cmd = 'fasterq-dump %s/%s --split-files -O %s -t %s' % (op_dir, each_id, op_dir, fasterq_dump_tmp)
+        sub_dir = id_to_desc_dict[each_id]
+        mkdir_cmd        = 'mkdir %s/%s'                                    % (op_dir, sub_dir)
+        prefetch_cmd     = 'prefetch %s -O %s/%s'                           % (each_id, op_dir, sub_dir)
+        fasterq_dump_cmd = 'fasterq-dump %s/%s/%s --split-3 -O %s/%s -t %s' % (op_dir, sub_dir, each_id, op_dir, sub_dir, fasterq_dump_tmp)
         prefetch_cmd_list.append(prefetch_cmd)
         fasterq_dump_cmd_list.append(fasterq_dump_cmd)
+        os.system(mkdir_cmd)
 
     # write out commands
     cmd_txt_handle = open(cmd_txt, 'w')
@@ -54,16 +64,20 @@ def sra(args):
     cmd_txt_handle.close()
 
     # download files with multiprocessing
+    print('Running prefetch')
     pool = mp.Pool(processes=num_threads)
     pool.map(os.system, prefetch_cmd_list)
     pool.close()
     pool.join()
 
     # extract fastq file from SRA with multiprocessing
-    pool = mp.Pool(processes=num_threads)
-    pool.map(os.system, fasterq_dump_cmd_list)
-    pool.close()
-    pool.join()
+    if run_dump is True:
+        print('Running fasterq-dump')
+        os.system('mkdir %s' % fasterq_dump_tmp)
+        pool = mp.Pool(processes=num_threads)
+        pool.map(os.system, fasterq_dump_cmd_list)
+        pool.close()
+        pool.join()
 
     print('Done!')
 
@@ -71,9 +85,10 @@ def sra(args):
 if __name__ == '__main__':
 
     sra_parser = argparse.ArgumentParser()
-    sra_parser.add_argument('-i',   required=True,                          help='id')
-    sra_parser.add_argument('-o',   required=True,                          help='output directory')
-    sra_parser.add_argument('-t',   required=False, type=int, default=1,    help='number of threads, default is 1')
-    sra_parser.add_argument('-f',   required=False, action="store_true",    help='force overwrite')
+    sra_parser.add_argument('-i',       required=True,                          help='id')
+    sra_parser.add_argument('-o',       required=True,                          help='output directory')
+    sra_parser.add_argument('-t',       required=False, type=int, default=1,    help='number of threads, default is 1')
+    sra_parser.add_argument('-dump',    required=False, action="store_true",    help='run fasterq-dump')
+    sra_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite')
     args = vars(sra_parser.parse_args())
     sra(args)

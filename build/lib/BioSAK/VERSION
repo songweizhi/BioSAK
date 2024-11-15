@@ -1,5 +1,14 @@
-1.98.2
+1.101.1
 - fixed bugs
+
+1.101.0
+- new modules added: fasterq-dump
+
+1.100.0
+- new modules added: trim
+
+1.99.0
+- new modules added: vis_color_scheme
 
 1.98.0
 - new modules added: sra
