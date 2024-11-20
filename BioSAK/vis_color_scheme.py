@@ -18,6 +18,8 @@ def vis_color_scheme(args):
 
     tax_full_lineage_txt = args['i']
     tax_to_color_txt     = args['c']
+    plot_width           = args['x']
+    plot_height          = args['y']
     output_plot          = args['o']
 
     # read in taxon to color info
@@ -38,7 +40,7 @@ def vis_color_scheme(args):
                 if len(each_rank) > max_label_len:
                     max_label_len = len(each_rank)
 
-    fig = plt.figure(1, figsize=(42, 22))
+    fig = plt.figure(1, figsize=(plot_width, plot_height))
     ax = fig.add_subplot(111)
 
     y_pos = 0.97
@@ -52,7 +54,7 @@ def vis_color_scheme(args):
                 label_txt += ' '*((max_label_len - len(each_rank)) + 10)
             else:
                 extra_space_str = ' '*(max_label_len - len(each_rank))
-                label_txt = '%s %s(%s)' % (each_rank, extra_space_str, current_color)
+                label_txt = '%s %s%s' % (each_rank, extra_space_str, current_color)
 
             if current_color == 'white':
                 ax.text(x_pos, y_pos, label_txt, color='black', family='monospace', bbox=dict(facecolor=current_color, edgecolor='black'))
@@ -71,8 +73,10 @@ def vis_color_scheme(args):
 if __name__ == '__main__':
 
     vis_color_scheme_parser = argparse.ArgumentParser(usage=vis_color_scheme_usage)
-    vis_color_scheme_parser.add_argument('-i',  required=True,  help='lineage file')
-    vis_color_scheme_parser.add_argument('-c',  required=True,  help='taxon color file')
-    vis_color_scheme_parser.add_argument('-o',  required=True,  help='output pdf')
+    vis_color_scheme_parser.add_argument('-i',  required=True,                          help='lineage file')
+    vis_color_scheme_parser.add_argument('-c',  required=True,                          help='taxon color file')
+    vis_color_scheme_parser.add_argument('-x',  required=False,type=int, default=42,    help='plot width, default is 42')
+    vis_color_scheme_parser.add_argument('-y',  required=False,type=int, default=22,    help='plot height, default is 22')
+    vis_color_scheme_parser.add_argument('-o',  required=True,                          help='output pdf')
     args = vars(vis_color_scheme_parser.parse_args())
     vis_color_scheme(args)
