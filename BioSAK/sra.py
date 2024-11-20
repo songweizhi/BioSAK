@@ -20,6 +20,7 @@ def sra(args):
     num_threads         = args['t']
     force_create_op_dir = args['f']
     run_dump            = args['dump']
+    max_size            = args['maxsize']
 
     fasterq_dump_tmp    = '%s/fasterq_dump_tmp' % op_dir
     cmd_txt             = '%s/cmds.txt'         % op_dir
@@ -49,7 +50,10 @@ def sra(args):
     for each_id in id_set:
         sub_dir = id_to_desc_dict[each_id]
         mkdir_cmd        = 'mkdir %s/%s'                                    % (op_dir, sub_dir)
-        prefetch_cmd     = 'prefetch %s -O %s/%s'                           % (each_id, op_dir, sub_dir)
+        if max_size == '20G':
+            prefetch_cmd     = 'prefetch %s -O %s/%s'                       % (each_id, op_dir, sub_dir)
+        else:
+            prefetch_cmd     = 'prefetch %s -O %s/%s --max-size %s'         % (each_id, op_dir, sub_dir, max_size)
         fasterq_dump_cmd = 'fasterq-dump %s/%s/%s --split-3 -O %s/%s -t %s' % (op_dir, sub_dir, each_id, op_dir, sub_dir, fasterq_dump_tmp)
         prefetch_cmd_list.append(prefetch_cmd)
         fasterq_dump_cmd_list.append(fasterq_dump_cmd)
@@ -88,6 +92,7 @@ if __name__ == '__main__':
     sra_parser.add_argument('-i',       required=True,                          help='id')
     sra_parser.add_argument('-o',       required=True,                          help='output directory')
     sra_parser.add_argument('-t',       required=False, type=int, default=1,    help='number of threads, default is 1')
+    sra_parser.add_argument('-maxsize', required=False, default='20G',          help='--max-size for prefetch, default is 20G')
     sra_parser.add_argument('-dump',    required=False, action="store_true",    help='run fasterq-dump')
     sra_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite')
     args = vars(sra_parser.parse_args())

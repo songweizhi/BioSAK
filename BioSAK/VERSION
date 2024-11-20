@@ -1,8 +1,8 @@
-1.101.2
+1.101.3
 - fixed bugs
 
 1.101.0
-- new modules added: fasterq-dump
+- new modules added: FasterqDump
 
 1.100.0
 - new modules added: trim

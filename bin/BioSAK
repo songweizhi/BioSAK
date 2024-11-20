@@ -1058,6 +1058,7 @@ if __name__ == '__main__':
         sra_parser.add_argument('-i',       required=True,                          help='id')
         sra_parser.add_argument('-o',       required=True,                          help='output directory')
         sra_parser.add_argument('-t',       required=False, type=int, default=1,    help='number of threads, default is 1')
+        sra_parser.add_argument('-maxsize', required=False, default='20G',          help='--max-size for prefetch, default is 20G')
         sra_parser.add_argument('-dump',    required=False, action="store_true",    help='run fasterq-dump')
         sra_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())

@@ -54,7 +54,7 @@ def vis_color_scheme(args):
                 label_txt += ' '*((max_label_len - len(each_rank)) + 10)
             else:
                 extra_space_str = ' '*(max_label_len - len(each_rank))
-                label_txt = '%s %s(%s)' % (each_rank, extra_space_str, current_color)
+                label_txt = '%s %s%s' % (each_rank, extra_space_str, current_color)
 
             if current_color == 'white':
                 ax.text(x_pos, y_pos, label_txt, color='black', family='monospace', bbox=dict(facecolor=current_color, edgecolor='black'))
