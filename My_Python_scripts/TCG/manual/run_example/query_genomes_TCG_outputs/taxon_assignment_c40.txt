@@ -1,3 +1,0 @@
-Genome	Taxon	Percentage
-AAM	s__Acidiphilium multivorum	40.87
-bin497	g__Muribaculum	75.56

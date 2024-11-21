@@ -1,3 +1,0 @@
-Genome	Taxon	Percentage
-AAM	s__Acidiphilium cryptum	59.13
-bin497	g__Muribaculum	75.56
