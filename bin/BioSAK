@@ -134,6 +134,9 @@ def print_main_help():
        vis_color_scheme        ->  Visualize color scheme
        trim                    ->  a wrapper for trimmomatic
        FasterqDump             ->  a wrapper for fasterq-dump
+       get_abd1_mask           ->  get_abd step 1
+       get_abd2_mapping        ->  get_abd step 2
+       get_abd3_stats          ->  get_abd step 3
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -1102,6 +1105,28 @@ if __name__ == '__main__':
         FasterqDump_parser.add_argument('-gzip',    required=False, action="store_true",    help='compress with gzip')
         args = vars(parser.parse_args())
         FasterqDump.FasterqDump(args)
+
+    elif sys.argv[1] == 'get_abd2_mapping':
+        from BioSAK import get_abd2_mapping
+        get_abd2_mapping_parser = subparsers.add_parser('get_abd2_mapping', usage=get_abd2_mapping.get_abd2_mapping_usage)
+        get_abd2_mapping_parser.add_argument('-1', required=True,                          help='fastq r1')
+        get_abd2_mapping_parser.add_argument('-2', required=True,                          help='fastq r2')
+        get_abd2_mapping_parser.add_argument('-r', required=True,                          help='masked reference sequence')
+        get_abd2_mapping_parser.add_argument('-o', required=True,                          help='output directory')
+        get_abd2_mapping_parser.add_argument('-p', required=True,                          help='output prefix')
+        get_abd2_mapping_parser.add_argument('-t', required=False, type=int, default=1,    help='number of threads, default is 1')
+        get_abd2_mapping_parser.add_argument('-f', required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        get_abd2_mapping.get_abd2_mapping(args)
+
+    elif sys.argv[1] == 'get_abd3_stats':
+        from BioSAK import get_abd3_stats
+        get_abd3_stats_parser = subparsers.add_parser('get_abd3_stats', usage=get_abd3_stats.get_abd3_stats_usage)
+        get_abd3_stats_parser.add_argument('-i', required=True,                          help='output directory from get_abd2_mapping')
+        get_abd3_stats_parser.add_argument('-o', required=True,                          help='output directory')
+        get_abd3_stats_parser.add_argument('-f', required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        get_abd3_stats.get_abd3_stats(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

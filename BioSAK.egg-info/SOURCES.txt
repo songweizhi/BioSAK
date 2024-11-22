@@ -75,9 +75,9 @@ BioSAK/get_MAG_reads_long.py
 BioSAK/get_Pfam_hmms.py
 BioSAK/get_TopHits_taxonomy.py
 BioSAK/get_aa_composition.py
+BioSAK/get_abd1_mask.py
 BioSAK/get_abd2_mapping.py
-BioSAK/get_abund_1_mask.py
-BioSAK/get_abund_3_stats.py
+BioSAK/get_abd3_stats.py
 BioSAK/get_bin_abundance copy.py
 BioSAK/get_data_matrix.py
 BioSAK/get_gene_depth.py
@@ -152,6 +152,8 @@ BioSAK/tmp.py
 BioSAK/tmp_1.py
 BioSAK/tmp_2.py
 BioSAK/tmp_3.py
+BioSAK/tmp_4.py
+BioSAK/tmp_5.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/transpose.py

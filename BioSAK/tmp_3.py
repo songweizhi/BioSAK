@@ -18,3 +18,6 @@ def ko_stats_to_txt(ko_stats_dict, ko_desc_dict, op_txt, op_stats_txt):
             op_txt_handle.write('%s\t%s\t%s\t%s\n' % (ko_high, ko_high_desc, ko_d, ko_d_desc))
     op_txt_handle.close()
     op_stats_txt_handle.close()
+
+print('aaa')
+
