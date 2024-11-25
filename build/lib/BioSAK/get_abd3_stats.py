@@ -2,19 +2,19 @@ import io
 import os
 import sys
 import glob
+import math
 import argparse
 import pandas as pd
 from functools import reduce
 
 
 get_abd3_stats_usage = '''
-================ get_abd3_stats example commands ================
+===================== get_abd3_stats example commands =====================
 
 BioSAK get_abd3_stats -i get_abd2_mapping_op_dir -o op_dir -f 
+BioSAK get_abd3_stats -i cov_rpkm_stat_files -o get_abd3_stats_op_dir -f 
 
-python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/get_abd3_stats.py -i cov_rpkm_stat_files -o get_abd3_stats_op_dir -f 
-
-=================================================================
+===========================================================================
 '''
 
 
@@ -53,8 +53,9 @@ def get_abd3_stats(args):
         exit()
 
     # define output file name
-    gnm_level_rpkm_dir  = '%s/genome_level_rpkm'    % op_dir
-    combined_rpkm_file  = '%s/combined.rpkm'        % op_dir
+    gnm_level_rpkm_dir       = '%s/genome_level_rpkm'   % op_dir
+    combined_rpkm_file       = '%s/combined.rpkm'       % op_dir
+    combined_rpkm_file_log10 = '%s/combined.log10.rpkm' % op_dir
 
     # create op dir
     if os.path.isdir(op_dir) is True:
@@ -105,9 +106,33 @@ def get_abd3_stats(args):
         gnm_level_rpkm_df = gnm_level_rpkm_df.drop(["Length", "Reads"], axis=1)
         rpkm_df_list.append(gnm_level_rpkm_df)
 
+    # write out combined_rpkm_file
     rpkm_df_combined = reduce(lambda left, right: pd.merge(left, right, on='bin_name',how='outer'), rpkm_df_list)
     rpkm_df_combined.to_csv(combined_rpkm_file, sep='\t',index=False)
 
+    # write out combined_rpkm_file_log10
+    # gnm_name_col = 'bin_name'
+    # rpkm_value_col = rpkm_df_combined.columns.difference([gnm_name_col])
+    # rpkm_df_combined_log10 = rpkm_df_combined[rpkm_value_col].map(math.log10)
+    # rpkm_df_combined_log10.to_csv(combined_rpkm_file_log10, sep='\t',index=False)
+    combined_rpkm_file_log10_handle = open(combined_rpkm_file_log10, 'w')
+    for each_line in open(combined_rpkm_file):
+        each_line_split = each_line.strip().split('\t')
+        if each_line.startswith('bin_name'):
+            combined_rpkm_file_log10_handle.write(each_line)
+        else:
+            value_list = [each_line_split[0]]
+            for each_value in each_line_split[1:]:
+                each_value = float(each_value)
+                if each_value == 0:
+                    value_list.append(0)
+                else:
+                    each_value_log = math.log(each_value)
+                    value_list.append(each_value_log)
+            combined_rpkm_file_log10_handle.write('%s\n' % '\t'.join([str(i) for i in value_list]))
+    combined_rpkm_file_log10_handle.close()
+
+    # final report
     print('Done!')
 
 

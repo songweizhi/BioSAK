@@ -59,6 +59,9 @@ def print_main_help():
        get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
        parse_mmseqs_tsv        ->  Parse mmseqs tsv
        fastaai                 ->  A wrapper for FastAAI
+       get_abd1_mask           ->  get_abd step 1
+       get_abd2_mapping        ->  get_abd step 2
+       get_abd3_stats          ->  get_abd step 3
        
     Functional annotation
        KEGG                    ->  KEGG annotation
@@ -134,9 +137,7 @@ def print_main_help():
        vis_color_scheme        ->  Visualize color scheme
        trim                    ->  a wrapper for trimmomatic
        FasterqDump             ->  a wrapper for fasterq-dump
-       get_abd1_mask           ->  get_abd step 1
-       get_abd2_mapping        ->  get_abd step 2
-       get_abd3_stats          ->  get_abd step 3
+
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK

@@ -154,6 +154,7 @@ BioSAK/tmp_2.py
 BioSAK/tmp_3.py
 BioSAK/tmp_4.py
 BioSAK/tmp_5.py
+BioSAK/tmp_6.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/transpose.py
