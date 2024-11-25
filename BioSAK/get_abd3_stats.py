@@ -53,8 +53,9 @@ def get_abd3_stats(args):
         exit()
 
     # define output file name
-    gnm_level_rpkm_dir  = '%s/genome_level_rpkm'    % op_dir
-    combined_rpkm_file  = '%s/combined.rpkm'        % op_dir
+    gnm_level_rpkm_dir       = '%s/genome_level_rpkm'   % op_dir
+    combined_rpkm_file       = '%s/combined.rpkm'       % op_dir
+    combined_rpkm_file_log10 = '%s/combined.log10.rpkm' % op_dir
 
     # create op dir
     if os.path.isdir(op_dir) is True:
