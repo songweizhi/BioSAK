@@ -54,7 +54,7 @@ def reads2bam(args):
     check_dependencies(['bowtie2-build', 'bowtie2', 'samtools'])
     check_input_files([ref_seq, r1_seq, r2_seq])
 
-    cmd_bowtie2_build = 'bowtie2-build -f %s %s --threads %s' % (ref_seq, op_prefix, thread_num)
+    cmd_bowtie2_build = 'bowtie2-build -f %s %s --threads %s --quiet' % (ref_seq, op_prefix, thread_num)
     bowtie2_parameter = ''
     if fq_format is True:
         bowtie2_parameter += ' -q'

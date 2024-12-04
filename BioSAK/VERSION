@@ -1,5 +1,11 @@
-1.103.5
+1.105.0
+- new modules added: UsearchNovogene
+
+1.104.3
 - fixed bugs
+
+1.104.0
+- new modules added: mmseqs
 
 1.103.0
 - new modules added: get_abd3_stats

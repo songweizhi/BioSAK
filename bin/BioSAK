@@ -57,6 +57,7 @@ def print_main_help():
        get_gene_depth          ->  Get gene depth by contig depth
        MeanMappingDepth        ->  Get mean mapping depth 
        get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
+       mmseqs                  ->  Classify metagenomic contigs with mmseqs
        parse_mmseqs_tsv        ->  Parse mmseqs tsv
        fastaai                 ->  A wrapper for FastAAI
        get_abd1_mask           ->  get_abd step 1
@@ -83,7 +84,8 @@ def print_main_help():
        UNITE_for_BLCA          ->  Prepare BLCA-compatible UNITE SSU database
        BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
        Tax4Fun2IndOTU          ->  Get functional profile for individual OTUs (to be added)
-    
+       UsearchNovogene         ->  Usearch for Novogene 16S amplicon sequencing results
+        
     Sequence manipulator
        gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
        ffn2faa/gfa2fa/get_rc   ->  Format convertors
@@ -1093,6 +1095,8 @@ if __name__ == '__main__':
         trim_parser.add_argument('-swl',            required=False, type=int, default=5,    help='slidingwindow length, default is 5')
         trim_parser.add_argument('-swq',            required=False, type=int, default=25,   help='slidingwindow q-value, default is 25')
         trim_parser.add_argument('-minlen',         required=False, type=int, default=36,   help='minlen, default is 36')
+        trim_parser.add_argument('-qci',            required=False, action="store_true",    help='provide to run fastqc for input files')
+        trim_parser.add_argument('-qco',            required=False, action="store_true",    help='provide to run fastqc for output files')
         args = vars(parser.parse_args())
         trim.trim(args)
 
@@ -1128,6 +1132,30 @@ if __name__ == '__main__':
         get_abd3_stats_parser.add_argument('-f', required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
         get_abd3_stats.get_abd3_stats(args)
+
+    elif sys.argv[1] == 'mmseqs':
+        from BioSAK import mmseqs
+        mmseqs_parser = subparsers.add_parser('mmseqs', usage=mmseqs.mmseqs_usage)
+        mmseqs_parser.add_argument('-i',    required=True,                          help='sequence file')
+        mmseqs_parser.add_argument('-o',    required=True,                          help='output directory')
+        mmseqs_parser.add_argument('-db',   required=True,                          help='db dir')
+        mmseqs_parser.add_argument('-t',    required=False, type=int, default=1,    help='number of threads, default is 1')
+        mmseqs_parser.add_argument('-f',    required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        mmseqs.mmseqs(args)
+
+    elif sys.argv[1] == 'UsearchNovogene':
+        from BioSAK import UsearchNovogene
+        UsearchNovogene_parser = subparsers.add_parser('UsearchNovogene', usage=UsearchNovogene.UsearchNovogene_usage)
+        UsearchNovogene_parser.add_argument('-i',       required=True,                          help='path to input sequences')
+        UsearchNovogene_parser.add_argument('-x',       required=True,                          help='file extension')
+        UsearchNovogene_parser.add_argument('-r',       required=True,                          help='SILVA reference sequences, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
+        UsearchNovogene_parser.add_argument('-o',       required=True,                          help='output directory')
+        UsearchNovogene_parser.add_argument('-blca',    required=False, action="store_true",    help='perform classification with BLCA')
+        UsearchNovogene_parser.add_argument('-t',       required=False, type=int, default=1,    help='number of threads, default is 1')
+        UsearchNovogene_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        UsearchNovogene.UsearchNovogene(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

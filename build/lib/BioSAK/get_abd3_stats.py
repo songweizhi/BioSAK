@@ -111,10 +111,6 @@ def get_abd3_stats(args):
     rpkm_df_combined.to_csv(combined_rpkm_file, sep='\t',index=False)
 
     # write out combined_rpkm_file_log10
-    # gnm_name_col = 'bin_name'
-    # rpkm_value_col = rpkm_df_combined.columns.difference([gnm_name_col])
-    # rpkm_df_combined_log10 = rpkm_df_combined[rpkm_value_col].map(math.log10)
-    # rpkm_df_combined_log10.to_csv(combined_rpkm_file_log10, sep='\t',index=False)
     combined_rpkm_file_log10_handle = open(combined_rpkm_file_log10, 'w')
     for each_line in open(combined_rpkm_file):
         each_line_split = each_line.strip().split('\t')

@@ -5,8 +5,8 @@ import argparse
 trim_usage = '''
 ========================== trim example commands ==========================
 
-BioSAK trim -a TruSeq3-PE-2.fa -1 R1.fastq -2 R2.fastq -x fastq
-BioSAK trim -a TruSeq3-PE-2.fa -1 R1.fastq.gz -2 R2.fastq.gz -x fastq.gz
+BioSAK trim -qci -qco -a TruSeq3-PE-2.fa -1 R1.fastq -2 R2.fastq -x fastq
+BioSAK trim -qci -qco -a TruSeq3-PE-2.fa -1 R1.fq.gz -2 R2.fq.gz -x fq.gz
 
 ===========================================================================
 '''
@@ -25,6 +25,8 @@ def trim(args):
     swl             = args['swl']
     swq             = args['swq']
     minlen          = args['minlen']
+    qc_fastq_in     = args['qci']
+    qc_fastq_out    = args['qco']
 
     r1_base = fastq_r1[:-(len(file_ext) + 1)]
     r2_base = fastq_r2[:-(len(file_ext) + 1)]
@@ -34,16 +36,22 @@ def trim(args):
     r2_p  = '%s_P.%s'   % (r2_base, file_ext)
     r2_up = '%s_UP.%s'  % (r2_base, file_ext)
 
-    trimmomatic_cmd = 'trimmomatic PE %s %s %s %s %s %s ILLUMINACLIP:%s:2:30:10 LEADING:%s TRAILING:%s CROP:%s HEADCROP:%s SLIDINGWINDOW:%s:%s MINLEN:%s' % (fastq_r1, fastq_r2, r1_p, r1_up, r2_p, r2_up, adapter_file, leading, trailing, crop, headcrop, swl, swq, minlen)
-    fastqc_cmd      = 'fastqc %s %s' % (r1_p, r2_p)
+    qc_cmd_in   = 'fastqc %s %s' % (fastq_r1, fastq_r2)
+    trim_cmd    = 'trimmomatic PE %s %s %s %s %s %s ILLUMINACLIP:%s:2:30:10 LEADING:%s TRAILING:%s CROP:%s HEADCROP:%s SLIDINGWINDOW:%s:%s MINLEN:%s' % (fastq_r1, fastq_r2, r1_p, r1_up, r2_p, r2_up, adapter_file, leading, trailing, crop, headcrop, swl, swq, minlen)
+    qc_cmd_out  = 'fastqc %s %s' % (r1_p, r2_p)
 
     # run trimmomatic
-    print(trimmomatic_cmd)
-    os.system(trimmomatic_cmd)
+    print(trim_cmd)
+    os.system(trim_cmd)
 
     # run fastqc
-    print(fastqc_cmd)
-    os.system(fastqc_cmd)
+    if qc_fastq_in is True:
+        print(qc_cmd_in)
+        os.system(qc_cmd_in)
+
+    if qc_fastq_out is True:
+        print(qc_cmd_out)
+        os.system(qc_cmd_out)
 
     print('Done!')
 
@@ -61,5 +69,7 @@ if __name__ == '__main__':
     trim_parser.add_argument('-swl',            required=False, type=int, default=5,    help='slidingwindow length, default is 5')
     trim_parser.add_argument('-swq',            required=False, type=int, default=25,   help='slidingwindow q-value, default is 25')
     trim_parser.add_argument('-minlen',         required=False, type=int, default=36,   help='minlen, default is 36')
+    trim_parser.add_argument('-qci',            required=False, action="store_true",    help='provide to run fastqc for input files')
+    trim_parser.add_argument('-qco',            required=False, action="store_true",    help='provide to run fastqc for output files')
     args = vars(trim_parser.parse_args())
     trim(args)
