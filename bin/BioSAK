@@ -60,9 +60,8 @@ def print_main_help():
        mmseqs                  ->  Classify metagenomic contigs with mmseqs
        parse_mmseqs_tsv        ->  Parse mmseqs tsv
        fastaai                 ->  A wrapper for FastAAI
-       get_abd1_mask           ->  get_abd step 1
-       get_abd2_mapping        ->  get_abd step 2
-       get_abd3_stats          ->  get_abd step 3
+       abd                     ->  get MAG abundance across metagenomes (Wenxiu Wang et al. 2024)
+       abd_mask                ->  prepare masked sequence for abd module
        
     Functional annotation
        KEGG                    ->  KEGG annotation
@@ -1111,27 +1110,28 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         FasterqDump.FasterqDump(args)
 
-    elif sys.argv[1] == 'get_abd2_mapping':
-        from BioSAK import get_abd2_mapping
-        get_abd2_mapping_parser = subparsers.add_parser('get_abd2_mapping', usage=get_abd2_mapping.get_abd2_mapping_usage)
-        get_abd2_mapping_parser.add_argument('-1', required=True,                          help='fastq r1')
-        get_abd2_mapping_parser.add_argument('-2', required=True,                          help='fastq r2')
-        get_abd2_mapping_parser.add_argument('-r', required=True,                          help='masked reference sequence')
-        get_abd2_mapping_parser.add_argument('-o', required=True,                          help='output directory')
-        get_abd2_mapping_parser.add_argument('-p', required=True,                          help='output prefix')
-        get_abd2_mapping_parser.add_argument('-t', required=False, type=int, default=1,    help='number of threads, default is 1')
-        get_abd2_mapping_parser.add_argument('-f', required=False, action="store_true",    help='force overwrite')
+    elif sys.argv[1] == 'abd':
+        from BioSAK import abd
+        abd_parser = subparsers.add_parser('abd', usage=abd.abd_usage)
+        abd_parser.add_argument('-i',           required=True,                          help='input txt')
+        abd_parser.add_argument('-r',           required=True,                          help='reference, need to be masked if you do not specify -mask')
+        abd_parser.add_argument('-o',           required=True,                          help='output directory')
+        abd_parser.add_argument('-t',           required=False, type=int, default=1,    help='number of threads, default is 1')
+        abd_parser.add_argument('-f',           required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
-        get_abd2_mapping.get_abd2_mapping(args)
+        abd.abd(args)
 
-    elif sys.argv[1] == 'get_abd3_stats':
-        from BioSAK import get_abd3_stats
-        get_abd3_stats_parser = subparsers.add_parser('get_abd3_stats', usage=get_abd3_stats.get_abd3_stats_usage)
-        get_abd3_stats_parser.add_argument('-i', required=True,                          help='output directory from get_abd2_mapping')
-        get_abd3_stats_parser.add_argument('-o', required=True,                          help='output directory')
-        get_abd3_stats_parser.add_argument('-f', required=False, action="store_true",    help='force overwrite')
+    elif sys.argv[1] == 'abd_mask':
+        from BioSAK import abd_mask
+        abd_mask_parser = subparsers.add_parser('abd_mask', usage=abd_mask.abd_mask_usage)
+        abd_mask_parser.add_argument('-i', required=True,                               help='sequence folder')
+        abd_mask_parser.add_argument('-x', required=True,                               help='sequence file extension')
+        abd_mask_parser.add_argument('-o', required=True,                               help='output directory')
+        abd_mask_parser.add_argument('-p', required=False, default='renamed_combined',  help='output prefix, default is renamed_combined')
+        abd_mask_parser.add_argument('-t', required=False, type=int, default=1,         help='number of threads, default is 1')
+        abd_mask_parser.add_argument('-f', required=False, action="store_true",         help='force overwrite')
         args = vars(parser.parse_args())
-        get_abd3_stats.get_abd3_stats(args)
+        abd_mask.abd_mask(args)
 
     elif sys.argv[1] == 'mmseqs':
         from BioSAK import mmseqs
@@ -1174,4 +1174,3 @@ __token__
 pip3 install --upgrade BioSAK        
 
 '''
-

@@ -83,10 +83,8 @@ BioSAK modules
          mmseqs                  ->  Classify metagenomic contigs with mmseqs
          parse_mmseqs_tsv        ->  Parse mmseqs tsv
          fastaai                 ->  A wrapper for FastAAI
-         get_abd1_mask           ->  get_abd step 1
-         get_abd2_mapping        ->  get_abd step 2
-         get_abd3_stats          ->  get_abd step 3
-         
+         abd                     ->  get MAG abundance across metagenomes (Wenxiu Wang et al. 2024)
+
       Functional annotation
          KEGG                    ->  KEGG annotation
          koala                   ->  Separate the combined BlastKOALA or GhostKOALA output

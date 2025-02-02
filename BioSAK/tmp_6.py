@@ -1,13 +1,12 @@
-import math
-import pandas as pd
+from Bio import SeqIO
+
+def fq2fa(fq_in, fa_out):
+    fa_out_handle = open(fa_out, 'w')
+    for each_long_read in SeqIO.parse(fq_in, 'fastq'):
+        fa_out_handle.write('>%s\n%s\n' % (each_long_read.id, each_long_read.seq))
+    fa_out_handle.close()
 
 
-d = {'col1': [0, 1], 'col2': [10, 100]}
-
-df = pd.DataFrame(data=d)
-print(df)
-
-
-df_log10 = df.map(math.log10)
-print(df_log10)
-
+fq_in = '/Users/songweizhi/Desktop/abd_demo/AphrocallistesBeatrix_subset.fastq'
+fa_out = '/Users/songweizhi/Desktop/abd_demo/AphrocallistesBeatrix_subset.fasta'
+fq2fa(fq_in, fa_out)

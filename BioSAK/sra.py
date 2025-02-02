@@ -4,12 +4,16 @@ import multiprocessing as mp
 
 
 sra_usage = '''
-========== sra example commands ==========
+============ sra example commands ============
 
 Requirement: sratoolkit
 BioSAK sra -i sra_id.txt -o op_dir -t 12
 
-==========================================
+# id file format
+SRS5161477	IR1T0
+SRS5161479	IR2T0
+
+==============================================
 '''
 
 

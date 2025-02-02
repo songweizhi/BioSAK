@@ -38,6 +38,10 @@ BioSAK/VERSION
 BioSAK/VisBlastOp.py
 BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
+BioSAK/abd.backup.py
+BioSAK/abd.py
+BioSAK/abd_mask.py
+BioSAK/abd_rename_and_combine.py
 BioSAK/abund.py
 BioSAK/add_desc.py
 BioSAK/arCOG.py
@@ -77,7 +81,6 @@ BioSAK/get_Pfam_hmms.py
 BioSAK/get_TopHits_taxonomy.py
 BioSAK/get_aa_composition.py
 BioSAK/get_abd1_mask.py
-BioSAK/get_abd2_mapping.py
 BioSAK/get_abd3_stats.py
 BioSAK/get_bin_abundance copy.py
 BioSAK/get_data_matrix.py

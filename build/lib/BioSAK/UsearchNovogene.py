@@ -12,6 +12,9 @@ BioSAK UsearchNovogene -i CleanData -x fna -f SILVA_138.2.fa -o op_dir -t 12 -f
 # SILVA reference sequences on Mac
 /Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
 
+cd /Users/songweizhi/Desktop/SpongeMicrobiomeProject
+BioSAK UsearchNovogene -i s01_CleanData -x fna -o demo_op_dir -t 10 -f -r /Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
+
 ==================================================================================
 '''
 
@@ -62,6 +65,7 @@ def UsearchNovogene(args):
     clean_data_ext      = args['x']
     silva_ref_seq       = args['r']
     op_dir              = args['o']
+    run_blca            = args['blca']
     num_threads         = args['t']
     force_create_op_dir = args['f']
 
@@ -127,50 +131,56 @@ def UsearchNovogene(args):
     os.system(cmd_6_2)
 
     # Mapping of OTUs on Reference Database
-    cmd_7  = 'blastn -query %s/s06_AllSamples_unoise_nc.fasta -outfmt 6 -out %s/s08_AllSamples_unoise_nc.txt -db %s -evalue 1e-20 -num_threads %s' % (op_dir, op_dir, silva_ref_seq, num_threads)
-    os.system(cmd_7)
+    if run_blca is False:
 
-    # keep best hit
-    blast_op          = '%s/s08_AllSamples_unoise_nc.txt'   % op_dir
-    blast_op_best_hit = '%s/s08_AllSamples_unoise_nc2.txt'  % op_dir
-    best_hit(blast_op, blast_op_best_hit)
+        cmd_7  = 'blastn -query %s/s06_AllSamples_unoise_nc.fasta -outfmt 6 -out %s/s08_AllSamples_unoise_nc.txt -db %s -evalue 1e-20 -num_threads %s' % (op_dir, op_dir, silva_ref_seq, num_threads)
+        os.system(cmd_7)
 
-    # Merge Table and Taxonomy
-    silva_ref_to_tax_dict = dict()
-    for each_seq in SeqIO.parse(silva_ref_seq, 'fasta'):
-        seq_id = each_seq.id
-        seq_tax = ' '.join(each_seq.description.split(' ')[1:])
-        silva_ref_to_tax_dict[seq_id] = seq_tax
+        # keep best hit
+        blast_op          = '%s/s08_AllSamples_unoise_nc.txt'   % op_dir
+        blast_op_best_hit = '%s/s08_AllSamples_unoise_nc2.txt'  % op_dir
+        best_hit(blast_op, blast_op_best_hit)
 
-    otu_best_hit_dict = dict()
-    for each in open(blast_op_best_hit):
-        each_split = each.strip().split('\t')
-        info_list = [each_split[1], each_split[2], each_split[3], each_split[10]]
-        otu_best_hit_dict[each_split[0]] = info_list
+        # Merge Table and Taxonomy
+        silva_ref_to_tax_dict = dict()
+        for each_seq in SeqIO.parse(silva_ref_seq, 'fasta'):
+            seq_id = each_seq.id
+            seq_tax = ' '.join(each_seq.description.split(' ')[1:])
+            silva_ref_to_tax_dict[seq_id] = seq_tax
 
-    s09_FinalOtuTable_handle = open(s09_FinalOtuTable, 'w')
-    for each_line in open(s07_OtuTable):
-        if each_line.startswith('#'):
-            s09_FinalOtuTable_handle.write('%s\tSilvaId\tIdentity\tAlignment_Length\tEvalue\ttaxonomy\n' % each_line.strip())
-        else:
-            each_line_split = each_line.strip().split('\t')
-            otu_id = each_line_split[0]
-            best_hit_info_list = otu_best_hit_dict.get(otu_id, ['na', 'na', 'na', 'na'])
-            best_hit_info_str = '\t'.join(best_hit_info_list)
-            ref_id = best_hit_info_list[0]
-            ref_tax = silva_ref_to_tax_dict.get(ref_id, 'na')
-            s09_FinalOtuTable_handle.write('%s\t%s\t%s\n' % (each_line.strip(), best_hit_info_str, ref_tax))
-    s09_FinalOtuTable_handle.close()
+        otu_best_hit_dict = dict()
+        for each in open(blast_op_best_hit):
+            each_split = each.strip().split('\t')
+            info_list = [each_split[1], each_split[2], each_split[3], each_split[10]]
+            otu_best_hit_dict[each_split[0]] = info_list
+
+        s09_FinalOtuTable_handle = open(s09_FinalOtuTable, 'w')
+        for each_line in open(s07_OtuTable):
+            if each_line.startswith('#'):
+                s09_FinalOtuTable_handle.write('%s\tSilvaId\tIdentity\tAlignment_Length\tEvalue\ttaxonomy\n' % each_line.strip())
+            else:
+                each_line_split = each_line.strip().split('\t')
+                otu_id = each_line_split[0]
+                best_hit_info_list = otu_best_hit_dict.get(otu_id, ['na', 'na', 'na', 'na'])
+                best_hit_info_str = '\t'.join(best_hit_info_list)
+                ref_id = best_hit_info_list[0]
+                ref_tax = silva_ref_to_tax_dict.get(ref_id, 'na')
+                s09_FinalOtuTable_handle.write('%s\t%s\t%s\n' % (each_line.strip(), best_hit_info_str, ref_tax))
+        s09_FinalOtuTable_handle.close()
+
+    else:
+        print('To be added!')
 
 
 if __name__ == '__main__':
 
     UsearchNovogene_parser = argparse.ArgumentParser(usage=UsearchNovogene_usage)
-    UsearchNovogene_parser.add_argument('-i', required=True,                        help='path to input sequences')
-    UsearchNovogene_parser.add_argument('-x', required=True,                        help='file extension')
-    UsearchNovogene_parser.add_argument('-r', required=True,                        help='SSU references, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
-    UsearchNovogene_parser.add_argument('-o', required=True,                        help='output directory')
-    UsearchNovogene_parser.add_argument('-t', required=False, type=int, default=1,  help='number of threads, default is 1')
-    UsearchNovogene_parser.add_argument('-f', required=False, action="store_true",  help='force overwrite')
+    UsearchNovogene_parser.add_argument('-i',       required=True,                        help='path to input sequences')
+    UsearchNovogene_parser.add_argument('-x',       required=True,                        help='file extension')
+    UsearchNovogene_parser.add_argument('-r',       required=True,                        help='SSU references, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
+    UsearchNovogene_parser.add_argument('-o',       required=True,                        help='output directory')
+    UsearchNovogene_parser.add_argument('-blca',    required=False, action="store_true",  help='perform classification with BLCA')
+    UsearchNovogene_parser.add_argument('-t',       required=False, type=int, default=1,  help='number of threads, default is 1')
+    UsearchNovogene_parser.add_argument('-f',       required=False, action="store_true",  help='force overwrite')
     args = vars(UsearchNovogene_parser.parse_args())
     UsearchNovogene(args)

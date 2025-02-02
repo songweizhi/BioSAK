@@ -1,6 +1,4 @@
-import io
 import os
-import sys
 import glob
 import math
 import argparse
@@ -13,6 +11,9 @@ get_abd3_stats_usage = '''
 
 BioSAK get_abd3_stats -i get_abd2_mapping_op_dir -o op_dir -f 
 BioSAK get_abd3_stats -i cov_rpkm_stat_files -o get_abd3_stats_op_dir -f 
+
+# Note
+0 becomes na after taking log.
 
 ===========================================================================
 '''
@@ -121,7 +122,7 @@ def get_abd3_stats(args):
             for each_value in each_line_split[1:]:
                 each_value = float(each_value)
                 if each_value == 0:
-                    value_list.append(0)
+                    value_list.append('na')
                 else:
                     each_value_log = math.log(each_value)
                     value_list.append(each_value_log)
