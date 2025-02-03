@@ -14,12 +14,13 @@ from functools import reduce
 abd_usage = '''
 =========================== abd example commands ===========================
 
-BioSAK abd -i sample.txt -r reference.fa -mask -t 36
-BioSAK abd -i sample.txt -r reference_masked.fa -t 36
+BioSAK abd -i sample.txt -o op_dir -t 36 -r reference.fa -mask
+BioSAK abd -i sample.txt -o op_dir -t 36 -r reference_masked.fa
 
 # sample.txt file format (tab separated)
 Seawater1   path/to/Seawater1_1.fastq.gz    path/to/Seawater1_2.fastq.gz
 Seawater2	path/to/Seawater2_1.fastq.gz    path/to/Seawater2_2.fastq.gz
+Aphrocallistes  AphrocallistesBeatrix_subset.fastq
 
 # Note
 1. Input reads need to be in pair.
@@ -40,231 +41,7 @@ def sep_path_basename_ext(file_in):
     return f_name, f_path, f_base, f_ext[1:]
 
 
-def get_abd1_mask(fasta_file, op_dir, num_threads):
-
-    _, _, f_base, _ = sep_path_basename_ext(fasta_file)
-
-    # get rRNA regions
-    shell_cmd_1_metaxa2_ssu_cmd     = 'metaxa2 --plus --mode m --cpu %s --multi_thread T --table T -g ssu --not_found T -i %s -o %s/%s.metaxa2_ssu'             % (num_threads, fasta_file, op_dir, f_base)
-    shell_cmd_2_metaxa2_lsu_cmd     = 'metaxa2 --plus --mode m --cpu %s --multi_thread T --table T -g lsu --not_found T -i %s -o %s/%s.metaxa2_lsu'             % (num_threads, fasta_file, op_dir, f_base)
-    shell_cmd_3                     = 'cut -f 1,9,10 %s/%s.metaxa2_ssu.extraction.results > %s/%s.masked_metaxa_ssu.bed'                                        % (op_dir, f_base, op_dir, f_base)
-    shell_cmd_4                     = 'cut -f 1,9,10 %s/%s.metaxa2_lsu.extraction.results > %s/%s.masked_metaxa_lsu.bed'                                        % (op_dir, f_base, op_dir, f_base)
-    shell_cmd_5                     = 'cat %s/%s.masked_metaxa_ssu.bed %s/%s.masked_metaxa_lsu.bed > %s/%s.masked_metaxa.bed'                                   % (op_dir, f_base, op_dir, f_base, op_dir, f_base)
-    shell_cmd_6_barrnap_bac_cmd     = 'barrnap --kingdom bac --threads %s --reject 0.3 %s > %s/%s.barrnap_bac.gff'                                              % (num_threads, fasta_file, op_dir, f_base)
-    shell_cmd_7_barrnap_arc_cmd     = 'barrnap --kingdom arc --threads %s --reject 0.3 %s > %s/%s.barrnap_arc.gff'                                              % (num_threads, fasta_file, op_dir, f_base)
-    shell_cmd_8_barrnap_euk_cmd     = 'barrnap --kingdom euk --threads %s --reject 0.3 %s > %s/%s.barrnap_euk.gff'                                              % (num_threads, fasta_file, op_dir, f_base)
-    shell_cmd_9                     = 'cut -f 1,4,5 %s/%s.barrnap_bac.gff > %s/%s.masked_barrnap_bac.bed'                                                       % (op_dir, f_base, op_dir, f_base)
-    shell_cmd_10                    = 'cut -f 1,4,5 %s/%s.barrnap_arc.gff > %s/%s.masked_barrnap_arc.bed'                                                       % (op_dir, f_base, op_dir, f_base)
-    shell_cmd_11                    = 'cut -f 1,4,5 %s/%s.barrnap_euk.gff > %s/%s.masked_barrnap_euk.bed'                                                       % (op_dir, f_base, op_dir, f_base)
-    shell_cmd_12                    = 'cat %s/%s.masked_barrnap_bac.bed %s/%s.masked_barrnap_arc.bed %s/%s.masked_barrnap_euk.bed > %s/%s.masked_barrnap.bed'   % (op_dir, f_base, op_dir, f_base, op_dir, f_base, op_dir, f_base)
-    shell_cmd_13                    = 'cat %s/%s.masked_barrnap.bed %s/%s.masked_metaxa.bed > %s/%s.masked_rrna.bed'                                            % (op_dir, f_base, op_dir, f_base, op_dir, f_base)
-
-    # get tRNA regions
-    shell_cmd_14_trna_scan_arc_cmd  = 'tRNAscan-SE -A -b %s/%s.ar.bedformat --thread 36 %s'                                                                     % (op_dir, f_base, fasta_file)
-    shell_cmd_15_trna_scan_bac_cmd  = 'tRNAscan-SE -B -b %s/%s.bac.bedformat --thread 36 %s'                                                                    % (op_dir, f_base, fasta_file)
-    shell_cmd_16                    = 'cat %s/%s.ar.bedformat %s/%s.bac.bedformat > %s/%s.bedformat'                                                            % (op_dir, f_base, op_dir, f_base, op_dir, f_base)
-    shell_cmd_17                    = 'cut -f 1,2,3 %s/%s.bedformat > %s/%s.masked_trnascan.bed'                                                                % (op_dir, f_base, op_dir, f_base)
-
-    # find duplicated areas
-    shell_cmd_18                    = 'dustmasker -in %s -out %s/%s.lowcom.out -outfmt acclist'                                                                 % (fasta_file, op_dir, f_base)
-    shell_cmd_19                    = "cut -d '>' -f 2 %s/%s.lowcom.out > %s/%s.masked_dustmasker.bed"                                                          % (op_dir, f_base, op_dir, f_base)
-
-    # cover the above area with NNNN
-    shell_cmd_20                    = "cat %s/%s.masked_rrna.bed %s/%s.masked_trnascan.bed %s/%s.masked_dustmasker.bed > %s/%s.mask.bed"                        % (op_dir, f_base, op_dir, f_base, op_dir, f_base, op_dir, f_base)
-    shell_cmd_21                    = "awk -F'\t' '$2>=0' %s/%s.mask.bed > %s/%s.mask_0.bed"                                                                    % (op_dir, f_base, op_dir, f_base)
-    shell_cmd_22                    = "bedtools maskfasta -fi %s -bed %s/%s.mask_0.bed -fo %s/%s.masked.fasta"                                                  % (fasta_file, op_dir, f_base, op_dir, f_base)
-
-    # run cmds
-    print(shell_cmd_1_metaxa2_ssu_cmd)
-    os.system(shell_cmd_1_metaxa2_ssu_cmd)
-
-    print(shell_cmd_2_metaxa2_lsu_cmd)
-    os.system(shell_cmd_2_metaxa2_lsu_cmd)
-
-    print(shell_cmd_3)
-    os.system(shell_cmd_3)
-
-    print(shell_cmd_4)
-    os.system(shell_cmd_4)
-
-    print(shell_cmd_5)
-    os.system(shell_cmd_5)
-
-    print(shell_cmd_6_barrnap_bac_cmd)
-    os.system(shell_cmd_6_barrnap_bac_cmd)
-
-    print(shell_cmd_7_barrnap_arc_cmd)
-    os.system(shell_cmd_7_barrnap_arc_cmd)
-
-    print(shell_cmd_8_barrnap_euk_cmd)
-    os.system(shell_cmd_8_barrnap_euk_cmd)
-
-    print(shell_cmd_9)
-    os.system(shell_cmd_9)
-
-    print(shell_cmd_10)
-    os.system(shell_cmd_10)
-
-    print(shell_cmd_11)
-    os.system(shell_cmd_11)
-
-    print(shell_cmd_12)
-    os.system(shell_cmd_12)
-
-    print(shell_cmd_13)
-    os.system(shell_cmd_13)
-
-    print(shell_cmd_14_trna_scan_arc_cmd)
-    os.system(shell_cmd_14_trna_scan_arc_cmd)
-
-    print(shell_cmd_15_trna_scan_bac_cmd)
-    os.system(shell_cmd_15_trna_scan_bac_cmd)
-
-    print(shell_cmd_16)
-    os.system(shell_cmd_16)
-
-    print(shell_cmd_17)
-    os.system(shell_cmd_17)
-
-    print(shell_cmd_18)
-    os.system(shell_cmd_18)
-
-    print(shell_cmd_19)
-    os.system(shell_cmd_19)
-
-    print(shell_cmd_20)
-    os.system(shell_cmd_20)
-
-    print(shell_cmd_21)
-    os.system(shell_cmd_21)
-
-    print(shell_cmd_22)
-    os.system(shell_cmd_22)
-
-    print('Masking reference sequences finished!')
-
-
-def get_abd2_mapping_worker(arg_list):
-
-    if len(arg_list) == 6:
-        op_prefix       = arg_list[0]
-        fq_r1           = arg_list[1]
-        fq_r2           = arg_list[2]
-        ref_seq         = arg_list[3]
-        op_dir          = arg_list[4]
-        num_threads     = arg_list[5]
-    elif len(arg_list) == 5:
-        op_prefix       = arg_list[0]
-        fq_nonpaired    = arg_list[1]
-        ref_seq         = arg_list[2]
-        op_dir          = arg_list[3]
-        num_threads     = arg_list[4]
-
-    # check input files
-    if os.path.isfile(ref_seq) is False:
-        print('%s not found, program exited!' % ref_seq)
-        exit()
-
-    if len(arg_list) == 6:
-        if os.path.isfile(fq_r1) is False:
-            print('%s not found, program exited!' % fq_r1)
-            exit()
-        if os.path.isfile(fq_r2) is False:
-            print('%s not found, program exited!' % fq_r2)
-            exit()
-
-    if len(arg_list) == 5:
-        if os.path.isfile(fq_nonpaired) is False:
-            print('%s not found, program exited!' % fq_nonpaired)
-            exit()
-
-    os.system('mkdir %s' % op_dir)
-
-    if len(arg_list) == 5:
-        fq_nonpaired_name, _, _, _ = sep_path_basename_ext(fq_nonpaired)
-    if len(arg_list) == 6:
-        fq1_name, _, _, _ = sep_path_basename_ext(fq_r1)
-        fq2_name, _, _, _ = sep_path_basename_ext(fq_r2)
-    ref_name, _, _, _ = sep_path_basename_ext(ref_seq)
-
-    perform_decompress          = False
-    if len(arg_list) == 5:
-        fq_nonpaired_decompressed = fq_nonpaired
-        if fq_nonpaired.endswith('.gz'):
-            fq_nonpaired_decompressed   = '%s/%s'               % (op_dir, fq_nonpaired_name[:-3])
-            gunzip_cmd_nonpaired        = 'gunzip -c %s > %s'   % (fq_nonpaired, fq_nonpaired_decompressed)
-            perform_decompress          = True
-            os.system(gunzip_cmd_nonpaired)
-
-    if len(arg_list) == 6:
-        fq_r1_decompressed = fq_r1
-        fq_r2_decompressed = fq_r2
-        if fq_r1.endswith('.gz'):
-            fq_r1_decompressed  = '%s/%s'               % (op_dir, fq1_name[:-3])
-            fq_r2_decompressed  = '%s/%s'               % (op_dir, fq2_name[:-3])
-            gunzip_cmd_r1       = 'gunzip -c %s > %s'   % (fq_r1, fq_r1_decompressed)
-            gunzip_cmd_r2       = 'gunzip -c %s > %s'   % (fq_r2, fq_r2_decompressed)
-            perform_decompress  = True
-            os.system(gunzip_cmd_r1)
-            os.system(gunzip_cmd_r2)
-
-    # index reference sequences
-    index_ref_cmd     = 'cp %s %s/; bwa index %s/%s'                                                                                                                        % (ref_seq, op_dir, op_dir, ref_name)
-
-    if len(arg_list) == 6:
-        bwa_cmd           = 'bwa mem -5SP -t %s %s/%s %s %s | samblaster > %s/%s.sam'                                                                                       % (num_threads, op_dir, ref_name, fq_r1_decompressed, fq_r2_decompressed, op_dir, op_prefix)
-    if len(arg_list) == 5:
-        bwa_cmd           = 'bwa mem -5SP -t %s %s/%s %s | samblaster > %s/%s.sam'                                                                                          % (num_threads, op_dir, ref_name, fq_nonpaired_decompressed, op_dir, op_prefix)
-
-    samtools_view_cmd = 'samtools view -@ 32 -bS -h -b %s/%s.sam > %s/%s.bam'                                                                                               % (op_dir, op_prefix, op_dir, op_prefix)
-    samtools_sort_cmd = 'samtools sort -@ 32 %s/%s.bam -o %s/%s.sorted.bam'                                                                                                 % (op_dir, op_prefix, op_dir, op_prefix)
-    coverm_filter_cmd = 'coverm filter -b %s/%s.sorted.bam --min-read-aligned-percent 0.9 --min-read-percent-identity 0.99 --output-bam-files %s/%s.sorted_filtered.bam'    % (op_dir, op_prefix, op_dir, op_prefix)
-    pileup_sh_cmd     = 'pileup.sh in=%s/%s.sorted_filtered.bam out=%s/%s.sorted_filtered.cov rpkm=%s/%s.sorted_filtered.rpkm overwrite=true'                               % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
-    if len(arg_list) == 6:
-        seqkit_stat_cmd   = 'seqkit stat %s > %s/%s.stat'                                                                                                                       % (fq_r1_decompressed, op_dir, op_prefix)
-    if len(arg_list) == 5:
-        seqkit_stat_cmd   = 'seqkit stat %s > %s/%s.stat'                                                                                                                       % (fq_nonpaired_decompressed, op_dir, op_prefix)
-
-    print(seqkit_stat_cmd)
-    os.system(seqkit_stat_cmd)
-
-    print(index_ref_cmd)
-    os.system(index_ref_cmd)
-
-    print(bwa_cmd)
-    os.system(bwa_cmd)
-    if perform_decompress is True:
-        if len(arg_list) == 6:
-            os.system('rm %s/%s' % (op_dir, fq1_name[:-3]))
-            os.system('rm %s/%s' % (op_dir, fq2_name[:-3]))
-        if len(arg_list) == 5:
-            os.system('rm %s/%s' % (op_dir, fq_nonpaired_name[:-3]))
-
-    os.system('rm %s/%s'   % (op_dir, ref_name))
-    os.system('rm %s/%s.*' % (op_dir, ref_name))
-
-    print(samtools_view_cmd)
-    os.system(samtools_view_cmd)
-    sleep(1)
-    os.system('rm %s/%s.sam' % (op_dir, op_prefix))
-
-    print(samtools_sort_cmd)
-    os.system(samtools_sort_cmd)
-    sleep(1)
-    os.system('rm %s/%s.bam' % (op_dir, op_prefix))
-
-    print(coverm_filter_cmd)
-    os.system(coverm_filter_cmd)
-    sleep(1)
-    os.system('rm %s/%s.sorted.bam' % (op_dir, op_prefix))
-
-    print(pileup_sh_cmd)
-    os.system(pileup_sh_cmd)
-    sleep(1)
-    os.system('rm %s/%s.sorted_filtered.bam' % (op_dir, op_prefix))
-
-
-def Reads_simulator(op_prefix, pwd_genome_file, read_number, read_depth, read_length, insert_size, split):
+def Reads_simulator(op_dir, op_prefix, pwd_genome_file, read_number, read_depth, read_length, insert_size):
 
     # read in reference sequences
     ref_seq_total_len = 0
@@ -297,24 +74,15 @@ def Reads_simulator(op_prefix, pwd_genome_file, read_number, read_depth, read_le
         current_ref_index += 1
 
     # simulate reads
-    output_r1_handle = ''
-    output_r2_handle = ''
-    output_combined_handle = ''
-    if split == 1:
-        output_r1 = '%s_R1.fasta' % (op_prefix)
-        output_r2 = '%s_R2.fasta' % (op_prefix)
-        output_r1_handle = open(output_r1, 'w')
-        output_r2_handle = open(output_r2, 'w')
-    else:
-        output_combined = '%s_R12.fasta' % (op_prefix)
-        output_combined_handle = open(output_combined, 'w')
+    output_r1 = '%s/%s_R1.fasta' % (op_dir, op_prefix)
+    output_r2 = '%s/%s_R2.fasta' % (op_dir, op_prefix)
+    output_r1_handle = open(output_r1, 'w')
+    output_r2_handle = open(output_r2, 'w')
 
     overall_n = 1
     for each_ref_seq in ref_to_read_num_dict:
-
         ref_seq_str = ref_seq_dict[each_ref_seq]
         ref_seq_read_num = ref_to_read_num_dict[each_ref_seq]
-
         sequence_length = len(ref_seq_str)
         fragment_length = 2 * read_length + insert_size
 
@@ -333,77 +101,77 @@ def Reads_simulator(op_prefix, pwd_genome_file, read_number, read_depth, read_le
             current_fragment_r2_reverse_complement = str(Seq(current_fragment_r2).reverse_complement())
             current_read_r1_id = '%s_%s.1' % (op_prefix, overall_n)
             current_read_r2_id = '%s_%s.2' % (op_prefix, overall_n)
-
-            if split == 1:
-                output_r1_handle.write('>%s\n' % current_read_r1_id)
-                output_r1_handle.write('%s\n'  % current_fragment_r1)
-                output_r2_handle.write('>%s\n' % current_read_r2_id)
-                output_r2_handle.write('%s\n'  % current_fragment_r2_reverse_complement)
-            else:
-                output_combined_handle.write('>%s\n' % current_read_r1_id)
-                output_combined_handle.write('%s\n'  % current_fragment_r1)
-                output_combined_handle.write('>%s\n' % current_read_r2_id)
-                output_combined_handle.write('%s\n'  % current_fragment_r2_reverse_complement)
-
+            output_r1_handle.write('>%s\n' % current_read_r1_id)
+            output_r1_handle.write('%s\n'  % current_fragment_r1)
+            output_r2_handle.write('>%s\n' % current_read_r2_id)
+            output_r2_handle.write('%s\n'  % current_fragment_r2_reverse_complement)
             n += 1
             overall_n += 1
+    output_r1_handle.close()
+    output_r2_handle.close()
+    print('Simulated reads exported to %s and %s' % (output_r1, output_r2))
 
-    if split == 1:
-        output_r1_handle.close()
-        output_r2_handle.close()
-        print('Simulated reads exported to %s and %s' % (output_r1, output_r2))
-    else:
-        output_combined_handle.close()
-        print('Simulated reads exported to %s' % output_combined)
 
-    print('Done!')
+def fq2fa(fq_in, fa_out):
+    fa_out_handle = open(fa_out, 'w')
+    for each_long_read in SeqIO.parse(fq_in, 'fastq'):
+        fa_out_handle.write('>%s\n%s\n' % (each_long_read.id, each_long_read.seq))
+    fa_out_handle.close()
 
 
 # paired reads will be simulated from the unpaired long reads
 def get_abd2_mapping_worker_long(arg_list):
 
-    op_prefix       = arg_list[0]
-    fq_nonpaired    = arg_list[1]
-    ref_seq         = arg_list[2]
-    op_dir          = arg_list[3]
-    num_threads     = arg_list[4]
+    op_prefix               = arg_list[0]
+    fq_long                 = arg_list[1]
+    ref_seq                 = arg_list[2]
+    op_dir                  = arg_list[3]
+    num_threads             = arg_list[4]
+    keep_bam_file           = arg_list[5]
+    simulate_num            = arg_list[6]
+    simulate_depth          = arg_list[7]
+    simulate_len            = arg_list[8]
+    simulate_insert_size    = arg_list[9]
+
 
     # check input files
     if os.path.isfile(ref_seq) is False:
         print('%s not found, program exited!' % ref_seq)
         exit()
 
-    if os.path.isfile(fq_nonpaired) is False:
-        print('%s not found, program exited!' % fq_nonpaired)
+    if os.path.isfile(fq_long) is False:
+        print('%s not found, program exited!' % fq_long)
         exit()
 
     os.system('mkdir %s' % op_dir)
 
-    fq_nonpaired_name, _, _, _ = sep_path_basename_ext(fq_nonpaired)
+    fq_nonpaired_name, _, _, _ = sep_path_basename_ext(fq_long)
     ref_name, _, _, _ = sep_path_basename_ext(ref_seq)
 
     perform_decompress              = False
-    fq_nonpaired_decompressed       = fq_nonpaired
-    if fq_nonpaired.endswith('.gz'):
+    fq_nonpaired_decompressed       = fq_long
+    if fq_long.endswith('.gz'):
         fq_nonpaired_decompressed   = '%s/%s'               % (op_dir, fq_nonpaired_name[:-3])
-        gunzip_cmd_nonpaired        = 'gunzip -c %s > %s'   % (fq_nonpaired, fq_nonpaired_decompressed)
+        gunzip_cmd_nonpaired        = 'gunzip -c %s > %s'   % (fq_long, fq_nonpaired_decompressed)
         perform_decompress          = True
         os.system(gunzip_cmd_nonpaired)
 
     # simulate reads here
-    # Reads_simulator()
+    long_reads_fasta = '%s/%s_long.fasta' % (op_dir, op_prefix)
+    fq2fa(fq_long, long_reads_fasta)
+    Reads_simulator(op_dir, op_prefix, long_reads_fasta, simulate_num, simulate_depth, simulate_len, simulate_insert_size)
+
+    r1_fa = '%s/%s_R1.fasta' % (op_dir, op_prefix)
+    r2_fa = '%s/%s_R1.fasta' % (op_dir, op_prefix)
 
     # index reference sequences
     index_ref_cmd     = 'cp %s %s/; bwa index %s/%s'                                                                                                                        % (ref_seq, op_dir, op_dir, ref_name)
-    bwa_cmd           = 'bwa mem -5SP -t %s %s/%s %s | samblaster > %s/%s.sam'                                                                                              % (num_threads, op_dir, ref_name, fq_nonpaired_decompressed, op_dir, op_prefix)
+    bwa_cmd           = 'bwa mem -5SP -t %s %s/%s %s %s | samblaster > %s/%s.sam'                                                                                           % (num_threads, op_dir, ref_name, r1_fa, r2_fa, op_dir, op_prefix)
     samtools_view_cmd = 'samtools view -@ 32 -bS -h -b %s/%s.sam > %s/%s.bam'                                                                                               % (op_dir, op_prefix, op_dir, op_prefix)
     samtools_sort_cmd = 'samtools sort -@ 32 %s/%s.bam -o %s/%s.sorted.bam'                                                                                                 % (op_dir, op_prefix, op_dir, op_prefix)
     coverm_filter_cmd = 'coverm filter -b %s/%s.sorted.bam --min-read-aligned-percent 0.9 --min-read-percent-identity 0.99 --output-bam-files %s/%s.sorted_filtered.bam'    % (op_dir, op_prefix, op_dir, op_prefix)
     pileup_sh_cmd     = 'pileup.sh in=%s/%s.sorted_filtered.bam out=%s/%s.sorted_filtered.cov rpkm=%s/%s.sorted_filtered.rpkm overwrite=true'                               % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
-    if len(arg_list) == 6:
-        seqkit_stat_cmd   = 'seqkit stat %s > %s/%s.stat'                                                                                                                       % (fq_r1_decompressed, op_dir, op_prefix)
-    if len(arg_list) == 5:
-        seqkit_stat_cmd   = 'seqkit stat %s > %s/%s.stat'                                                                                                                       % (fq_nonpaired_decompressed, op_dir, op_prefix)
+    seqkit_stat_cmd   = 'seqkit stat %s > %s/%s.stat'                                                                                                                       % (r1_fa, op_dir, op_prefix)
 
     print(seqkit_stat_cmd)
     os.system(seqkit_stat_cmd)
@@ -416,8 +184,11 @@ def get_abd2_mapping_worker_long(arg_list):
     if perform_decompress is True:
         os.system('rm %s/%s' % (op_dir, fq_nonpaired_name[:-3]))
 
-    os.system('rm %s/%s'   % (op_dir, ref_name))
-    os.system('rm %s/%s.*' % (op_dir, ref_name))
+    os.system('rm %s'       % long_reads_fasta)
+    os.system('rm %s'       % r1_fa)
+    os.system('rm %s'       % r2_fa)
+    os.system('rm %s/%s'    % (op_dir, ref_name))
+    os.system('rm %s/%s.*'  % (op_dir, ref_name))
 
     print(samtools_view_cmd)
     os.system(samtools_view_cmd)
@@ -436,8 +207,10 @@ def get_abd2_mapping_worker_long(arg_list):
 
     print(pileup_sh_cmd)
     os.system(pileup_sh_cmd)
-    sleep(1)
-    os.system('rm %s/%s.sorted_filtered.bam' % (op_dir, op_prefix))
+    if keep_bam_file is False:
+        os.system('rm %s/%s.sorted_filtered.bam' % (op_dir, op_prefix))
+    else:
+        os.system('samtools index %s/%s.sorted_filtered.bam' % (op_dir, op_prefix))
 
 
 def get_abd2_mapping_worker_paired(arg_list):
@@ -448,6 +221,7 @@ def get_abd2_mapping_worker_paired(arg_list):
     ref_seq         = arg_list[3]
     op_dir          = arg_list[4]
     num_threads     = arg_list[5]
+    keep_bam_file   = arg_list[6]
 
     # check input files
     if os.path.isfile(ref_seq) is False:
@@ -520,8 +294,10 @@ def get_abd2_mapping_worker_paired(arg_list):
 
     print(pileup_sh_cmd)
     os.system(pileup_sh_cmd)
-    sleep(1)
-    os.system('rm %s/%s.sorted_filtered.bam' % (op_dir, op_prefix))
+    if keep_bam_file is False:
+        os.system('rm %s/%s.sorted_filtered.bam' % (op_dir, op_prefix))
+    else:
+        os.system('samtools index %s/%s.sorted_filtered.bam' % (op_dir, op_prefix))
 
 
 def get_abd3_stats(rpkm_stat_cov_dir, stats_dir):
@@ -620,12 +396,17 @@ def abd(args):
     input_txt           = args['i']
     ref_seq             = args['r']
     op_dir              = args['o']
-    run_mask            = args['mask']
+    keep_bam_file       = args['keep_bam']
     num_threads         = args['t']
     force_overwrite     = args['f']
 
+    # parameters for read_simulator
+    read_simulator_num          = 5000000
+    read_simulator_depth        = None
+    read_simulator_len          = 150
+    read_simulator_insert_size  = 200
+
     # define file name
-    mask_wd             = '%s/mask_wd'              % op_dir
     cov_rpkm_stat_dir   = '%s/cov_rpkm_stat_files'  % op_dir
     stats_dir           = '%s/stats_dir'            % op_dir
 
@@ -638,46 +419,75 @@ def abd(args):
             exit()
     os.system('mkdir %s' % op_dir)
 
-    #################### mask reference sequences ####################
-
-    ref_seq_masked = ref_seq
-    if run_mask is True:
-        os.system('mkdir %s' % mask_wd)
-        get_abd1_mask(ref_seq, mask_wd, num_threads)
-        _, _, ref_seq_base, _ = sep_path_basename_ext(ref_seq)
-        ref_seq_masked = '%s/%s.masked.fasta' % (mask_wd, ref_seq_base)
-
     #################### mapping ####################
 
     # run mapping
-    sample_lol = []
+    sample_lol_long = []
+    sample_lol_paired = []
     for each_sample in open(input_txt):
         current_arg_list = each_sample.strip().split('\t')
-        sample_lol.append(current_arg_list)
+        if len(current_arg_list) == 3:
+            sample_lol_paired.append(current_arg_list)
+        elif len(current_arg_list) == 2:
+            sample_lol_long.append(current_arg_list)
 
-    threads_per_job = num_threads//len(sample_lol)
+    #################### mapping paired reads ####################
 
-    arg_lol= []
-    for arg_list in sample_lol:
-        sample_id = arg_list[0]
-        current_op_dir = '%s/%s_mapping_wd' % (op_dir, sample_id)
-        arg_list.append(ref_seq_masked)
-        arg_list.append(current_op_dir)
-        arg_list.append(threads_per_job)
-        arg_lol.append(arg_list)
+    if len(sample_lol_paired) > 0:
 
-    # run mapping with multiprocessing
-    pool = mp.Pool(processes=num_threads)
-    pool.map(get_abd2_mapping_worker_paired, arg_lol)
-    pool.close()
-    pool.join()
+        threads_per_job_paired = num_threads//len(sample_lol_paired)
+
+        arg_lol= []
+        for arg_list in sample_lol_paired:
+            sample_id = arg_list[0]
+            current_op_dir = '%s/%s_mapping_wd' % (op_dir, sample_id)
+            arg_list.append(ref_seq)
+            arg_list.append(current_op_dir)
+            arg_list.append(threads_per_job_paired)
+            arg_list.append(keep_bam_file)
+            arg_lol.append(arg_list)
+
+        # run mapping with multiprocessing
+        pool = mp.Pool(processes=num_threads)
+        pool.map(get_abd2_mapping_worker_paired, arg_lol)
+        pool.close()
+        pool.join()
+
+    #################### mapping long reads ####################
+
+    if len(sample_lol_long) > 0:
+        threads_per_job_long = num_threads//len(sample_lol_long)
+
+        arg_lol= []
+        for arg_list in sample_lol_long:
+            sample_id = arg_list[0]
+            current_op_dir = '%s/%s_mapping_wd' % (op_dir, sample_id)
+            arg_list.append(ref_seq)
+            arg_list.append(current_op_dir)
+            arg_list.append(threads_per_job_long)
+            arg_list.append(keep_bam_file)
+            arg_list.append(read_simulator_num)
+            arg_list.append(read_simulator_depth)
+            arg_list.append(read_simulator_len)
+            arg_list.append(read_simulator_insert_size)
+            arg_lol.append(arg_list)
+
+        # run mapping with multiprocessing
+        pool = mp.Pool(processes=num_threads)
+        pool.map(get_abd2_mapping_worker_long, arg_lol)
+        pool.close()
+        pool.join()
 
     #################### get stats ####################
 
     # mkdir
     os.mkdir(cov_rpkm_stat_dir)
-    cp_cmd = 'cp %s/*mapping_wd/* %s' % (op_dir, cov_rpkm_stat_dir)
-    os.system(cp_cmd)
+    cp_cmd_rpkm = 'cp %s/*mapping_wd/*.rpkm %s' % (op_dir, cov_rpkm_stat_dir)
+    cp_cmd_stat = 'cp %s/*mapping_wd/*.stat %s' % (op_dir, cov_rpkm_stat_dir)
+    cp_cmd_cov = 'cp %s/*mapping_wd/*.cov %s' % (op_dir, cov_rpkm_stat_dir)
+    os.system(cp_cmd_rpkm)
+    os.system(cp_cmd_stat)
+    os.system(cp_cmd_cov)
 
     # get stats
     get_abd3_stats(cov_rpkm_stat_dir, stats_dir)
@@ -688,18 +498,17 @@ def abd(args):
     print('Estimated abundance exported to:')
     print('%s/df_rpkm.txt'       % stats_dir)
     print('%s/df_rpkm.log10.txt' % stats_dir)
-
     print('Done!')
 
 
 if __name__ == '__main__':
 
-    get_abd_parser = argparse.ArgumentParser()
-    get_abd_parser.add_argument('-i',           required=True,                          help='input txt')
-    get_abd_parser.add_argument('-r',           required=True,                          help='reference, need to be masked if you do not specify -mask')
-    get_abd_parser.add_argument('-o',           required=True,                          help='output directory')
-    get_abd_parser.add_argument('-mask',        required=False, action="store_true",    help='specify to mask reference sequence')
-    get_abd_parser.add_argument('-t',           required=False, type=int, default=1,    help='number of threads, default is 1')
-    get_abd_parser.add_argument('-f',           required=False, action="store_true",    help='force overwrite')
-    args = vars(get_abd_parser.parse_args())
+    abd_parser = argparse.ArgumentParser()
+    abd_parser.add_argument('-i',           required=True,                          help='input txt')
+    abd_parser.add_argument('-r',           required=True,                          help='reference, need to be masked')
+    abd_parser.add_argument('-o',           required=True,                          help='output directory')
+    abd_parser.add_argument('-keep_bam',    required=False, action="store_true",    help='do not delete bam file')
+    abd_parser.add_argument('-t',           required=False, type=int, default=1,    help='number of threads, default is 1')
+    abd_parser.add_argument('-f',           required=False, action="store_true",    help='force overwrite')
+    args = vars(abd_parser.parse_args())
     abd(args)

@@ -49,16 +49,16 @@ def abd_mask(args):
 
     seq_dir         = args['i']
     seq_ext         = args['x']
-    op_prefix       = args['p']
     op_dir          = args['o']
-    force_overwrite = args['f']
+    op_prefix       = args['p']
     num_threads     = args['t']
+    force_overwrite = args['f']
 
     ########################################## define file and directory name ##########################################
 
-    renamed_combined_fna    = '%s/renamed_combined.fna' % op_dir
-    renamed_combined_txt    = '%s/renamed_combined.txt' % op_dir
-    tRNAscan_wd             = '%s/tRNAscan_wd'          % op_dir
+    renamed_combined_fna    = '%s/%s.fna'       % (op_dir, op_prefix)
+    renamed_combined_txt    = '%s/%s.txt'       % (op_dir, op_prefix)
+    tRNAscan_wd             = '%s/tRNAscan_wd'  % op_dir
 
     ####################################################################################################################
 
@@ -170,17 +170,17 @@ def abd_mask(args):
     ####################################################################################################################
 
     # find duplicated areas
-    shell_cmd_18                    = 'dustmasker -in %s -out %s/%s.lowcom.out -outfmt acclist'                                                                 % (renamed_combined_fna, op_dir, op_prefix)
-    shell_cmd_19                    = "cut -d '>' -f 2 %s/%s.lowcom.out > %s/%s.masked_dustmasker.bed"                                                          % (op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_18    = 'dustmasker -in %s -out %s/%s.lowcom.out -outfmt acclist'         % (renamed_combined_fna, op_dir, op_prefix)
+    shell_cmd_19    = "cut -d '>' -f 2 %s/%s.lowcom.out > %s/%s.masked_dustmasker.bed"  % (op_dir, op_prefix, op_dir, op_prefix)
     print(shell_cmd_18)
     os.system(shell_cmd_18)
     print(shell_cmd_19)
     os.system(shell_cmd_19)
 
     # cover the above area with NNNN
-    shell_cmd_20                    = "cat %s/%s.masked_rrna.bed %s/%s.masked_trnascan.bed %s/%s.masked_dustmasker.bed > %s/%s.mask.bed"                        % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_21                    = "awk -F'\t' '$2>=0' %s/%s.mask.bed > %s/%s.mask_0.bed"                                                                    % (op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_22                    = "bedtools maskfasta -fi %s -bed %s/%s.mask_0.bed -fo %s/%s.masked.fasta"                                                  % (renamed_combined_fna, op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_20    = "cat %s/%s.masked_rrna.bed %s/%s.masked_trnascan.bed %s/%s.masked_dustmasker.bed > %s/%s.mask.bed"    % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_21    = "awk -F'\t' '$2>=0' %s/%s.mask.bed > %s/%s.mask_0.bed"                                                % (op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_22    = "bedtools maskfasta -fi %s -bed %s/%s.mask_0.bed -fo %s/%s.masked.fna"                                % (renamed_combined_fna, op_dir, op_prefix, op_dir, op_prefix)
     print(shell_cmd_20)
     os.system(shell_cmd_20)
     print(shell_cmd_21)
@@ -190,6 +190,7 @@ def abd_mask(args):
 
     ####################################################################################################################
 
+    print('Masked sequences exported to %s/%s.masked.fna' % (op_dir, op_prefix))
     print('Done!')
 
 

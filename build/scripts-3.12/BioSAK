@@ -1116,7 +1116,7 @@ if __name__ == '__main__':
         abd_parser.add_argument('-i',           required=True,                          help='input txt')
         abd_parser.add_argument('-r',           required=True,                          help='reference, need to be masked if you do not specify -mask')
         abd_parser.add_argument('-o',           required=True,                          help='output directory')
-        abd_parser.add_argument('-mask',        required=False, action="store_true",    help='specify to mask reference sequence')
+        abd_parser.add_argument('-keep_bam',    required=False, action="store_true",    help='do not delete bam file')
         abd_parser.add_argument('-t',           required=False, type=int, default=1,    help='number of threads, default is 1')
         abd_parser.add_argument('-f',           required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())

@@ -1,8 +1,8 @@
+1.107.2
+- fixed bugs
+
 1.107.0
 - new modules added: abd_mask
-
-1.106.7
-- fixed bugs
 
 1.106.0
 - new modules added: get_abd1_mask, get_abd2_mapping and get_abd3_stats

@@ -1,5 +1,6 @@
 import os
 import argparse
+from Bio import SeqIO
 
 
 fq2fa_usage = '''
@@ -11,12 +12,15 @@ BioSAK fq2fa -i reads_R2.fq -o reads_R2.fa
 ============================================
 '''
 
-
 def fq2fa(args):
+
     fq_in   = args['i']
     fa_out  = args['o']
-    sed_cmd = "sed -n '1~4s/^@/>/p;2~4p' %s > %s" % (fq_in, fa_out)
-    os.system(sed_cmd)
+
+    fa_out_handle = open(fa_out, 'w')
+    for each_long_read in SeqIO.parse(fq_in, 'fastq'):
+        fa_out_handle.write('>%s\n%s\n' % (each_long_read.id, each_long_read.seq))
+    fa_out_handle.close()
 
 
 if __name__ == "__main__":
