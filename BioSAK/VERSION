@@ -1,23 +1,17 @@
-1.107.2
+1.108.0
+- new modules added: rename_df_row
+
+1.107.7
 - fixed bugs
 
 1.107.0
-- new modules added: abd_mask
-
-1.106.0
-- new modules added: get_abd1_mask, get_abd2_mapping and get_abd3_stats
+- new modules added: abd and abd_mask
 
 1.105.0
 - new modules added: UsearchNovogene
 
 1.104.0
 - new modules added: mmseqs
-
-1.103.0
-- new modules added: get_abd3_stats
-
-1.102.0
-- new modules added: get_abd2_mapping
 
 1.101.0
 - new modules added: FasterqDump

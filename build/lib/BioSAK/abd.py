@@ -132,7 +132,8 @@ def get_abd2_mapping_worker_long(arg_list):
     simulate_depth          = arg_list[7]
     simulate_len            = arg_list[8]
     simulate_insert_size    = arg_list[9]
-
+    ref_index_dir           = arg_list[10]
+    mapping_dir             = arg_list[11]
 
     # check input files
     if os.path.isfile(ref_seq) is False:
@@ -165,8 +166,7 @@ def get_abd2_mapping_worker_long(arg_list):
     r2_fa = '%s/%s_R1.fasta' % (op_dir, op_prefix)
 
     # index reference sequences
-    index_ref_cmd     = 'cp %s %s/; bwa index %s/%s'                                                                                                                        % (ref_seq, op_dir, op_dir, ref_name)
-    bwa_cmd           = 'bwa mem -5SP -t %s %s/%s %s %s | samblaster > %s/%s.sam'                                                                                           % (num_threads, op_dir, ref_name, r1_fa, r2_fa, op_dir, op_prefix)
+    bwa_cmd           = 'bwa mem -5SP -t %s %s/%s %s %s | samblaster > %s/%s.sam'                                                                                           % (num_threads, ref_index_dir, ref_name, r1_fa, r2_fa, op_dir, op_prefix)
     samtools_view_cmd = 'samtools view -@ 32 -bS -h -b %s/%s.sam > %s/%s.bam'                                                                                               % (op_dir, op_prefix, op_dir, op_prefix)
     samtools_sort_cmd = 'samtools sort -@ 32 %s/%s.bam -o %s/%s.sorted.bam'                                                                                                 % (op_dir, op_prefix, op_dir, op_prefix)
     coverm_filter_cmd = 'coverm filter -b %s/%s.sorted.bam --min-read-aligned-percent 0.9 --min-read-percent-identity 0.99 --output-bam-files %s/%s.sorted_filtered.bam'    % (op_dir, op_prefix, op_dir, op_prefix)
@@ -175,9 +175,6 @@ def get_abd2_mapping_worker_long(arg_list):
 
     print(seqkit_stat_cmd)
     os.system(seqkit_stat_cmd)
-
-    print(index_ref_cmd)
-    os.system(index_ref_cmd)
 
     print(bwa_cmd)
     os.system(bwa_cmd)
@@ -222,6 +219,8 @@ def get_abd2_mapping_worker_paired(arg_list):
     op_dir          = arg_list[4]
     num_threads     = arg_list[5]
     keep_bam_file   = arg_list[6]
+    ref_index_dir   = arg_list[7]
+    mapping_dir     = arg_list[8]
 
     # check input files
     if os.path.isfile(ref_seq) is False:
@@ -255,8 +254,7 @@ def get_abd2_mapping_worker_paired(arg_list):
         os.system(gunzip_cmd_r2)
 
     # index reference sequences
-    index_ref_cmd     = 'cp %s %s/; bwa index %s/%s'                                                                                                                        % (ref_seq, op_dir, op_dir, ref_name)
-    bwa_cmd           = 'bwa mem -5SP -t %s %s/%s %s %s | samblaster > %s/%s.sam'                                                                                           % (num_threads, op_dir, ref_name, fq_r1_decompressed, fq_r2_decompressed, op_dir, op_prefix)
+    bwa_cmd           = 'bwa mem -5SP -t %s %s/%s %s %s | samblaster > %s/%s.sam'                                                                                           % (num_threads, ref_index_dir, ref_name, fq_r1_decompressed, fq_r2_decompressed, op_dir, op_prefix)
     samtools_view_cmd = 'samtools view -@ 32 -bS -h -b %s/%s.sam > %s/%s.bam'                                                                                               % (op_dir, op_prefix, op_dir, op_prefix)
     samtools_sort_cmd = 'samtools sort -@ 32 %s/%s.bam -o %s/%s.sorted.bam'                                                                                                 % (op_dir, op_prefix, op_dir, op_prefix)
     coverm_filter_cmd = 'coverm filter -b %s/%s.sorted.bam --min-read-aligned-percent 0.9 --min-read-percent-identity 0.99 --output-bam-files %s/%s.sorted_filtered.bam'    % (op_dir, op_prefix, op_dir, op_prefix)
@@ -265,9 +263,6 @@ def get_abd2_mapping_worker_paired(arg_list):
 
     print(seqkit_stat_cmd)
     os.system(seqkit_stat_cmd)
-
-    print(index_ref_cmd)
-    os.system(index_ref_cmd)
 
     print(bwa_cmd)
     os.system(bwa_cmd)
@@ -300,7 +295,7 @@ def get_abd2_mapping_worker_paired(arg_list):
         os.system('samtools index %s/%s.sorted_filtered.bam' % (op_dir, op_prefix))
 
 
-def get_abd3_stats(rpkm_stat_cov_dir, stats_dir):
+def get_abd3_stats(rpkm_stat_cov_dir, genome_rename_file, stats_dir):
 
     # check input files
     if os.path.isdir(rpkm_stat_cov_dir) is False:
@@ -321,13 +316,22 @@ def get_abd3_stats(rpkm_stat_cov_dir, stats_dir):
         exit()
 
     # define output file name
-    gnm_level_rpkm_dir       = '%s/rpkm_by_genome'    % stats_dir
-    combined_rpkm_file       = '%s/df_rpkm.txt'       % stats_dir
-    combined_rpkm_file_log10 = '%s/df_rpkm.log10.txt' % stats_dir
+    gnm_level_rpkm_dir               = '%s/rpkm_by_genome'              % stats_dir
+    combined_rpkm_file               = '%s/rpkm_df.txt'                 % stats_dir
+    combined_rpkm_file_renamed       = '%s/rpkm_df.renamed.txt'         % stats_dir
+    combined_rpkm_file_log10         = '%s/rpkm_df.log10.txt'           % stats_dir
+    combined_rpkm_file_log10_renamed = '%s/rpkm_df.renamed.log10.txt'   % stats_dir
 
     # create op dir
     os.system('mkdir %s' % stats_dir)
     os.system('mkdir %s' % gnm_level_rpkm_dir)
+
+    # get genome rename dict
+    gnm_rename_dict = dict()
+    if genome_rename_file is not None:
+        for line in open(genome_rename_file):
+            line_split = line.strip().split('\t')
+            gnm_rename_dict[line_split[0]] = line_split[1]
 
     # read in stat file
     sample_total_read_num_dict = dict()
@@ -390,15 +394,43 @@ def get_abd3_stats(rpkm_stat_cov_dir, stats_dir):
             combined_rpkm_file_log10_handle.write('%s\n' % '\t'.join([str(i) for i in value_list]))
     combined_rpkm_file_log10_handle.close()
 
+    # rename gnm id in the final dataframe
+    if len(gnm_rename_dict) > 0:
+
+        # rename combined_rpkm_file_renamed
+        combined_rpkm_file_renamed_handle = open(combined_rpkm_file_renamed, 'w')
+        for each_line in open(combined_rpkm_file):
+            if each_line.startswith('bin_name'):
+                combined_rpkm_file_renamed_handle.write(each_line)
+            else:
+                each_line_split = each_line.strip().split('\t')
+                gnm_id = each_line_split[0]
+                gnm_id_new = gnm_rename_dict.get(gnm_id, gnm_id)
+                combined_rpkm_file_renamed_handle.write(each_line.replace(gnm_id, gnm_id_new))
+        combined_rpkm_file_renamed_handle.close()
+
+        # rename combined_rpkm_file_log10_renamed
+        combined_rpkm_file_log10_renamed_handle = open(combined_rpkm_file_log10_renamed, 'w')
+        for each_line in open(combined_rpkm_file_log10):
+            if each_line.startswith('bin_name'):
+                combined_rpkm_file_log10_renamed_handle.write(each_line)
+            else:
+                each_line_split = each_line.strip().split('\t')
+                gnm_id = each_line_split[0]
+                gnm_id_new = gnm_rename_dict.get(gnm_id, gnm_id)
+                combined_rpkm_file_log10_renamed_handle.write(each_line.replace(gnm_id, gnm_id_new))
+        combined_rpkm_file_log10_renamed_handle.close()
+
 
 def abd(args):
 
-    input_txt           = args['i']
-    ref_seq             = args['r']
-    op_dir              = args['o']
-    keep_bam_file       = args['keep_bam']
-    num_threads         = args['t']
-    force_overwrite     = args['f']
+    input_txt               = args['i']
+    ref_seq                 = args['r']
+    op_dir                  = args['o']
+    keep_bam_file           = args['keep_bam']
+    num_threads             = args['t']
+    force_overwrite         = args['f']
+    rename_txt              = args['rename']
 
     # parameters for read_simulator
     read_simulator_num          = 5000000
@@ -406,7 +438,15 @@ def abd(args):
     read_simulator_len          = 150
     read_simulator_insert_size  = 200
 
+    # check input file
+    if rename_txt is not None:
+        if os.path.isfile(rename_txt) is False:
+            print('%s not found, program exited!' % rename_txt)
+            exit()
+
     # define file name
+    ref_seq_index_dir   = '%s/ref_seq_index'        % op_dir
+    mapping_wd          = '%s/mapping_wd'           % op_dir
     cov_rpkm_stat_dir   = '%s/cov_rpkm_stat_files'  % op_dir
     stats_dir           = '%s/stats_dir'            % op_dir
 
@@ -419,7 +459,18 @@ def abd(args):
             exit()
     os.system('mkdir %s' % op_dir)
 
+    #################### index reference sequences ####################
+
+    os.system('mkdir %s' % ref_seq_index_dir)
+
+    ref_name, _, _, _ = sep_path_basename_ext(ref_seq)
+    index_ref_cmd     = 'cp %s %s/; bwa index %s/%s'    % (ref_seq, ref_seq_index_dir, ref_seq_index_dir, ref_name)
+    print(index_ref_cmd)
+    os.system(index_ref_cmd)
+
     #################### mapping ####################
+
+    os.system('mkdir %s' % mapping_wd)
 
     # run mapping
     sample_lol_long = []
@@ -440,11 +491,13 @@ def abd(args):
         arg_lol= []
         for arg_list in sample_lol_paired:
             sample_id = arg_list[0]
-            current_op_dir = '%s/%s_mapping_wd' % (op_dir, sample_id)
+            current_op_dir = '%s/%s' % (mapping_wd, sample_id)
             arg_list.append(ref_seq)
             arg_list.append(current_op_dir)
             arg_list.append(threads_per_job_paired)
             arg_list.append(keep_bam_file)
+            arg_list.append(ref_seq_index_dir)
+            arg_list.append(mapping_wd)
             arg_lol.append(arg_list)
 
         # run mapping with multiprocessing
@@ -461,7 +514,7 @@ def abd(args):
         arg_lol= []
         for arg_list in sample_lol_long:
             sample_id = arg_list[0]
-            current_op_dir = '%s/%s_mapping_wd' % (op_dir, sample_id)
+            current_op_dir = '%s/%s' % (mapping_wd, sample_id)
             arg_list.append(ref_seq)
             arg_list.append(current_op_dir)
             arg_list.append(threads_per_job_long)
@@ -470,6 +523,8 @@ def abd(args):
             arg_list.append(read_simulator_depth)
             arg_list.append(read_simulator_len)
             arg_list.append(read_simulator_insert_size)
+            arg_list.append(ref_seq_index_dir)
+            arg_list.append(mapping_wd)
             arg_lol.append(arg_list)
 
         # run mapping with multiprocessing
@@ -482,22 +537,22 @@ def abd(args):
 
     # mkdir
     os.mkdir(cov_rpkm_stat_dir)
-    cp_cmd_rpkm = 'cp %s/*mapping_wd/*.rpkm %s' % (op_dir, cov_rpkm_stat_dir)
-    cp_cmd_stat = 'cp %s/*mapping_wd/*.stat %s' % (op_dir, cov_rpkm_stat_dir)
-    cp_cmd_cov = 'cp %s/*mapping_wd/*.cov %s' % (op_dir, cov_rpkm_stat_dir)
+    cp_cmd_rpkm = 'cp %s/*/*.rpkm %s'   % (mapping_wd, cov_rpkm_stat_dir)
+    cp_cmd_stat = 'cp %s/*/*.stat %s'   % (mapping_wd, cov_rpkm_stat_dir)
+    cp_cmd_cov  = 'cp %s/*/*.cov %s'    % (mapping_wd, cov_rpkm_stat_dir)
     os.system(cp_cmd_rpkm)
     os.system(cp_cmd_stat)
     os.system(cp_cmd_cov)
 
     # get stats
-    get_abd3_stats(cov_rpkm_stat_dir, stats_dir)
+    get_abd3_stats(cov_rpkm_stat_dir, rename_txt, stats_dir)
 
     #################### final report ####################
 
     # final report
     print('Estimated abundance exported to:')
-    print('%s/df_rpkm.txt'       % stats_dir)
-    print('%s/df_rpkm.log10.txt' % stats_dir)
+    print('%s/rpkm_df.txt'       % stats_dir)
+    print('%s/rpkm_df.log10.txt' % stats_dir)
     print('Done!')
 
 
@@ -507,6 +562,7 @@ if __name__ == '__main__':
     abd_parser.add_argument('-i',           required=True,                          help='input txt')
     abd_parser.add_argument('-r',           required=True,                          help='reference, need to be masked')
     abd_parser.add_argument('-o',           required=True,                          help='output directory')
+    abd_parser.add_argument('-rename',      required=False, default=None,           help='rename genome id in the final dataframe')
     abd_parser.add_argument('-keep_bam',    required=False, action="store_true",    help='do not delete bam file')
     abd_parser.add_argument('-t',           required=False, type=int, default=1,    help='number of threads, default is 1')
     abd_parser.add_argument('-f',           required=False, action="store_true",    help='force overwrite')

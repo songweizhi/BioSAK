@@ -131,6 +131,7 @@ BioSAK/prefix_file.py
 BioSAK/prefix_seq_by_file_name.py
 BioSAK/prokka.py
 BioSAK/reads2bam.py
+BioSAK/rename_df_row.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/ribbon.py

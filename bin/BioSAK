@@ -138,7 +138,7 @@ def print_main_help():
        vis_color_scheme        ->  Visualize color scheme
        trim                    ->  a wrapper for trimmomatic
        FasterqDump             ->  a wrapper for fasterq-dump
-
+       rename_df_row           ->  rename row headers in a dataframe
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -1157,6 +1157,16 @@ if __name__ == '__main__':
         UsearchNovogene_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
         UsearchNovogene.UsearchNovogene(args)
+
+    elif sys.argv[1] == 'rename_df_row':
+        from BioSAK import rename_df_row
+        rename_df_row_parser = subparsers.add_parser('rename_df_row', usage=rename_df_row.rename_df_row_usage)
+        rename_df_row_parser.add_argument('-i',             required=True,                          help='input dataframe')
+        rename_df_row_parser.add_argument('-r',             required=True,                          help='rename file, tab separated')
+        rename_df_row_parser.add_argument('-o',             required=True,                          help='output dataframe')
+        rename_df_row_parser.add_argument('-skip_top_row',  required=False, action="store_true",    help='skip the first row')
+        args = vars(parser.parse_args())
+        rename_df_row.rename_df_row(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])
