@@ -133,7 +133,6 @@ def get_abd2_mapping_worker_long(arg_list):
     simulate_len            = arg_list[8]
     simulate_insert_size    = arg_list[9]
     ref_index_dir           = arg_list[10]
-    mapping_dir             = arg_list[11]
 
     # check input files
     if os.path.isfile(ref_seq) is False:
@@ -153,13 +152,13 @@ def get_abd2_mapping_worker_long(arg_list):
     fq_nonpaired_decompressed       = fq_long
     if fq_long.endswith('.gz'):
         fq_nonpaired_decompressed   = '%s/%s'               % (op_dir, fq_nonpaired_name[:-3])
-        gunzip_cmd_nonpaired        = 'gunzip -c %s > %s'   % (fq_long, fq_nonpaired_decompressed)
+        gunzip_cmd_long             = 'gunzip -c %s > %s'   % (fq_long, fq_nonpaired_decompressed)
         perform_decompress          = True
-        os.system(gunzip_cmd_nonpaired)
+        os.system(gunzip_cmd_long)
 
     # simulate reads here
     long_reads_fasta = '%s/%s_long.fasta' % (op_dir, op_prefix)
-    fq2fa(fq_long, long_reads_fasta)
+    fq2fa(fq_nonpaired_decompressed, long_reads_fasta)
     Reads_simulator(op_dir, op_prefix, long_reads_fasta, simulate_num, simulate_depth, simulate_len, simulate_insert_size)
 
     r1_fa = '%s/%s_R1.fasta' % (op_dir, op_prefix)
@@ -220,7 +219,6 @@ def get_abd2_mapping_worker_paired(arg_list):
     num_threads     = arg_list[5]
     keep_bam_file   = arg_list[6]
     ref_index_dir   = arg_list[7]
-    mapping_dir     = arg_list[8]
 
     # check input files
     if os.path.isfile(ref_seq) is False:
@@ -485,7 +483,6 @@ def abd(args):
     #################### mapping paired reads ####################
 
     if len(sample_lol_paired) > 0:
-
         threads_per_job_paired = num_threads//len(sample_lol_paired)
 
         arg_lol= []
