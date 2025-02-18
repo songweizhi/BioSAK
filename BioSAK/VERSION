@@ -1,8 +1,11 @@
+1.109.0
+- new modules added: blca
+
+1.108.6
+- fixed bugs
+
 1.108.0
 - new modules added: rename_df_row
-
-1.107.7
-- fixed bugs
 
 1.107.0
 - new modules added: abd and abd_mask
@@ -247,7 +250,7 @@
 1.24.0
 - rename_reads_for_Reago
 
-1.23.0
+1.23.1
 - new module added: plot_sam_depth
 
 1.22.0

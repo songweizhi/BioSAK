@@ -225,10 +225,3 @@ if __name__ == '__main__':
     parser.add_argument('-no_label',required=False, action='store_true',    help='output format (svg or pdf), default: svg')
     args = vars(parser.parse_args())
     VisGeneFlk(args)
-
-
-
-'''
-python3 /Users/songweizhi/PycharmProjects/BioSAK/BioSAK/VisGeneFlk.py -gene HEOOAKGO_03443 -gbk Afipia_birgiae_34632.gbk -len 50000 -fmt pdf
-
-'''

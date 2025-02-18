@@ -7,13 +7,16 @@ from Bio import SeqIO
 UsearchNovogene_usage = '''
 ======================== UsearchNovogene example commands ========================
 
-BioSAK UsearchNovogene -i CleanData -x fna -f SILVA_138.2.fa -o op_dir -t 12 -f
+BioSAK UsearchNovogene -i CleanData -x fna -r SILVA_138.2.fa -o op_dir -t 12 -f
 
 # SILVA reference sequences on Mac
 /Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
 
 cd /Users/songweizhi/Desktop/SpongeMicrobiomeProject
 BioSAK UsearchNovogene -i s01_CleanData -x fna -o demo_op_dir -t 10 -f -r /Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
+
+# This is a wrapper for the following steps:
+
 
 ==================================================================================
 '''
@@ -66,6 +69,8 @@ def UsearchNovogene(args):
     silva_ref_seq       = args['r']
     op_dir              = args['o']
     run_blca            = args['blca']
+    blca_ref_seq        = args['ref']
+    blca_ref_tax        = args['tax']
     num_threads         = args['t']
     force_create_op_dir = args['f']
 
@@ -74,6 +79,7 @@ def UsearchNovogene(args):
     dir_DereplicatedData    = '%s/s02_DereplicatedData'                         % op_dir
     s07_OtuTable            = '%s/s07_AllSamples_unoise_otu_table1.txt'         % op_dir
     s09_FinalOtuTable       = '%s/s09_AllSamples_unoise_otu_table_final.txt'    % op_dir
+    s10_blca_op_dir         = '%s/s10_AllSamples_BLCA_classifications'          % op_dir
 
     # create output folder
     if os.path.isdir(op_dir) is True:
@@ -106,34 +112,42 @@ def UsearchNovogene(args):
 
         # run dereplicate
         cmd_fastx_uniques = 'usearch -fastx_uniques %s -fastaout %s -sizeout' % (pwd_fa_renamed, pwd_fa_uniques)
+        print(cmd_fastx_uniques)
         os.system(cmd_fastx_uniques)
 
     # combine sequences from all samples
     cmd_2 = 'cat %s/*.fasta > %s/s03_AllSamples.fasta' % (dir_DereplicatedData, op_dir)
+    print(cmd_2)
     os.system(cmd_2)
 
     # dereplicate AllSamples.fasta
     cmd_3  = 'usearch -fastx_uniques %s/s03_AllSamples.fasta -fastaout %s/s04_AllSamples_uniques.fasta -sizein -sizeout -strand both' % (op_dir, op_dir)
+    print(cmd_3)
     os.system(cmd_3)
 
     # Generating unique sequences using UNOISE
     cmd_4  = 'usearch -unoise3 %s/s04_AllSamples_uniques.fasta -zotus %s/s05_AllSamples_denoised.fasta' % (op_dir, op_dir)
+    print(cmd_4)
     os.system(cmd_4)
 
     # Chimera Removal
     cmd_5  = 'usearch -uchime2_ref %s/s05_AllSamples_denoised.fasta -db %s -strand plus -mode high_confidence -notmatched %s/s06_AllSamples_unoise_nc.fasta' % (op_dir, silva_ref_seq, op_dir)
+    print(cmd_5)
     os.system(cmd_5)
 
     # generate OTU table, an OTU table is made by the otutab command
     cmd_6_1 = 'usearch -otutab %s/s03_AllSamples.fasta -db %s/s06_AllSamples_unoise_nc.fasta -id 0.97 -otutabout %s/s07_AllSamples_unoise_otu_table1.txt'                               % (op_dir, op_dir, op_dir)
     cmd_6_2 = 'usearch -otutab %s/s03_AllSamples.fasta -db %s/s06_AllSamples_unoise_nc.fasta -id 0.97 -otutabout %s/s07_AllSamples_unoise_otu_table2.txt -maxaccepts 0 -maxrejects 0'   % (op_dir, op_dir, op_dir)
+    print(cmd_6_1)
     os.system(cmd_6_1)
+    print(cmd_6_2)
     os.system(cmd_6_2)
 
     # Mapping of OTUs on Reference Database
     if run_blca is False:
 
         cmd_7  = 'blastn -query %s/s06_AllSamples_unoise_nc.fasta -outfmt 6 -out %s/s08_AllSamples_unoise_nc.txt -db %s -evalue 1e-20 -num_threads %s' % (op_dir, op_dir, silva_ref_seq, num_threads)
+        print(cmd_7)
         os.system(cmd_7)
 
         # keep best hit
@@ -169,7 +183,17 @@ def UsearchNovogene(args):
         s09_FinalOtuTable_handle.close()
 
     else:
-        print('To be added!')
+        print('classify sequences with BLCA')
+        from blca import blca
+        blca_arg_dict = dict()
+        blca_arg_dict['i']   = op_dir
+        blca_arg_dict['x']   = '_unoise_nc.fasta'
+        blca_arg_dict['o']   = s10_blca_op_dir
+        blca_arg_dict['ref'] = blca_ref_seq
+        blca_arg_dict['tax'] = blca_ref_tax
+        blca_arg_dict['t']   = num_threads
+        blca_arg_dict['f']   = True
+        blca(blca_arg_dict)
 
 
 if __name__ == '__main__':
@@ -180,6 +204,8 @@ if __name__ == '__main__':
     UsearchNovogene_parser.add_argument('-r',       required=True,                        help='SSU references, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
     UsearchNovogene_parser.add_argument('-o',       required=True,                        help='output directory')
     UsearchNovogene_parser.add_argument('-blca',    required=False, action="store_true",  help='perform classification with BLCA')
+    UsearchNovogene_parser.add_argument('-ref',     required=False,                       help='BLCA reference sequences')
+    UsearchNovogene_parser.add_argument('-tax',     required=False,                       help='BLCA reference taxonomy')
     UsearchNovogene_parser.add_argument('-t',       required=False, type=int, default=1,  help='number of threads, default is 1')
     UsearchNovogene_parser.add_argument('-f',       required=False, action="store_true",  help='force overwrite')
     args = vars(UsearchNovogene_parser.parse_args())

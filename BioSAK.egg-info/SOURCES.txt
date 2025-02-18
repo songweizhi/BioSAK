@@ -40,12 +40,19 @@ BioSAK/VisGeneFlk.py
 BioSAK/__init__.py
 BioSAK/abd.backup.py
 BioSAK/abd.py
+BioSAK/abd_16s_amplicon.py
+BioSAK/abd_16s_metagenome.py
 BioSAK/abd_mask.py
 BioSAK/abd_rename_and_combine.py
 BioSAK/abund.py
 BioSAK/add_desc.py
 BioSAK/arCOG.py
 BioSAK/bam2reads.py
+BioSAK/blca.py
+BioSAK/blca_generate_abundance_table.py
+BioSAK/blca_main.py
+BioSAK/blca_subset_db_acc.py
+BioSAK/blca_subset_db_gg.py
 BioSAK/boxplot.py
 BioSAK/boxplot_last1row.R
 BioSAK/boxplot_matrix_COG.py
@@ -105,6 +112,7 @@ BioSAK/keep_best_hit.py
 BioSAK/ko00001.keg
 BioSAK/koala.py
 BioSAK/link_16S_MAG.py
+BioSAK/link_16s.py
 BioSAK/magabund.py
 BioSAK/magabund2.py
 BioSAK/manipulator_fasta.py

@@ -77,6 +77,7 @@ def print_main_help():
        stats_arcog             ->  get stats for a list of provided arCOG 
 
     16S rRNA related
+       blca                    ->  Classify 16S with BLCA
        top_16S_hits            ->  Classify 16S by top-blast-hits approach
        SILVA_for_BLCA          ->  Prepare BLCA-compatible SILVA SSU database
        GTDB_for_BLCA           ->  Prepare BLCA-compatible GTDB SSU database
@@ -93,7 +94,7 @@ def print_main_help():
        slice_seq               ->  Get specified region of a sequence
        rename_seq              ->  Rename sequences in a file
        prefix_seq_by_file_name ->  prefix sequences by file name
-       select_seq              ->  Select sequences by their ids
+       select_seq              ->  Select sequences by id
        split_fasta             ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine fasta files, prefix sequence id with file name
@@ -357,13 +358,13 @@ if __name__ == '__main__':
 
     elif sys.argv[1] == 'select_seq':
         from BioSAK import select_seq
-        select_seq_parser = subparsers.add_parser('select_seq', description='select sequences by id', usage=select_seq.select_seq_usage)
-        select_seq_parser.add_argument('-seq',       required=True,                        help='sequence file')
-        select_seq_parser.add_argument('-id',        required=True,                        help='sequence ids,one id per line')
-        select_seq_parser.add_argument('-option',    required=True, type=int,              help='choose from 0 and 1')
-        select_seq_parser.add_argument('-out',       required=True,                        help='output file')
-        select_seq_parser.add_argument('-fq',        required=False, action="store_true",  help='in fastq format, default: fa')
-        select_seq_parser.add_argument('-oneline',   required=False, action="store_true",  help='put sequence in single line')
+        select_seq_parser = subparsers.add_parser('select_seq', description='select sequences', usage=select_seq.select_seq_usage)
+        select_seq_parser.add_argument('-i',       required=True,                          help='fasta file')
+        select_seq_parser.add_argument('-id',       required=True,                          help='sequence id,one id per line')
+        select_seq_parser.add_argument('-o',       required=True,                          help='output file')
+        select_seq_parser.add_argument('-exclude', required=False, action="store_true",    help='specify to extract sequences except those in -id')
+        select_seq_parser.add_argument('-fq',      required=False, action="store_true",    help='in fastq format, default: fa')
+        select_seq_parser.add_argument('-oneline', required=False, action="store_true",    help='put sequence in single line')
         args = vars(parser.parse_args())
         select_seq.select_seq(args)
 
@@ -515,6 +516,7 @@ if __name__ == '__main__':
         VisGeneFlk_parser.add_argument('-len',     required=True, type=int,                help='length (in bp) of flanking sequences to plot')
         VisGeneFlk_parser.add_argument('-scale',   required=False, type=int, default=200,  help='scale for plotting, default: 200bp per cm')
         VisGeneFlk_parser.add_argument('-fmt',     required=False, default='svg',          help='output format (svg or pdf), default: svg')
+        VisGeneFlk_parser.add_argument('-no_label', required=False, action='store_true',    help='output format (svg or pdf), default: svg')
         args = vars(parser.parse_args())
         VisGeneFlk.VisGeneFlk(args)
 
@@ -1094,8 +1096,8 @@ if __name__ == '__main__':
         trim_parser.add_argument('-swl',            required=False, type=int, default=5,    help='slidingwindow length, default is 5')
         trim_parser.add_argument('-swq',            required=False, type=int, default=25,   help='slidingwindow q-value, default is 25')
         trim_parser.add_argument('-minlen',         required=False, type=int, default=36,   help='minlen, default is 36')
-        trim_parser.add_argument('-qci',            required=False, action="store_true",    help='provide to run fastqc for input files')
-        trim_parser.add_argument('-qco',            required=False, action="store_true",    help='provide to run fastqc for output files')
+        trim_parser.add_argument('-qci',            required=False, action="store_true",    help='specify to run fastqc for input files')
+        trim_parser.add_argument('-qco',            required=False, action="store_true",    help='specify to run fastqc for output files')
         args = vars(parser.parse_args())
         trim.trim(args)
 
@@ -1116,6 +1118,7 @@ if __name__ == '__main__':
         abd_parser.add_argument('-i',           required=True,                          help='input txt')
         abd_parser.add_argument('-r',           required=True,                          help='reference, need to be masked if you do not specify -mask')
         abd_parser.add_argument('-o',           required=True,                          help='output directory')
+        abd_parser.add_argument('-rename',      required=False, default=None,           help='rename genome id in the final dataframe')
         abd_parser.add_argument('-keep_bam',    required=False, action="store_true",    help='do not delete bam file')
         abd_parser.add_argument('-t',           required=False, type=int, default=1,    help='number of threads, default is 1')
         abd_parser.add_argument('-f',           required=False, action="store_true",    help='force overwrite')
@@ -1167,6 +1170,19 @@ if __name__ == '__main__':
         rename_df_row_parser.add_argument('-skip_top_row',  required=False, action="store_true",    help='skip the first row')
         args = vars(parser.parse_args())
         rename_df_row.rename_df_row(args)
+
+    elif sys.argv[1] == 'blca':
+        from BioSAK import blca
+        blca_parser = subparsers.add_parser('blca', usage=blca.blca_usage)
+        blca_parser.add_argument('-i',  required=True,                              help='path to input sequences (in multi-fasta format)')
+        blca_parser.add_argument('-x',  required=False,                             help='file extension')
+        blca_parser.add_argument('-o',  required=True,                              help='output directory')
+        blca_parser.add_argument('-ref', required=True,                             help='reference sequences')
+        blca_parser.add_argument('-tax', required=True,                             help='reference taxonomy')
+        blca_parser.add_argument('-t',  required=False, type=int, default=1,        help='number of threads')
+        blca_parser.add_argument('-f',  required=False, action="store_true",        help='force overwrite')
+        args = vars(parser.parse_args())
+        blca.blca(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

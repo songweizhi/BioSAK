@@ -6,28 +6,24 @@ from BioSAK.global_functions import time_format
 
 
 select_seq_usage = '''
-======================= select_seq example commands =======================
+========================= select_seq example commands =========================
 
-# Extract sequences with provided id
-BioSAK select_seq -seq ctg.fasta -id seq_id.txt -out output.1.fa -option 1 
-BioSAK select_seq -seq reads.fastq -id read_id.txt -out output.1.fq -option 1 -fq
+BioSAK select_seq -i input.fa -id seq_id.txt -o output.fa
+BioSAK select_seq -i input.fa -id seq_id.txt -o output.fa -exclude
 
-# Extract sequences except those in seq_id.txt
-BioSAK select_seq -seq ctg.fasta -id seq_id.txt -out output.0.fa -option 0
-BioSAK select_seq -seq ctg.fasta -id seq_id.txt -out output.0.fa -option 0 -oneline
+# ID file format: 
+one id per line, do not include great than (>) symbol.
 
-# seq_id.txt file format: one id per line, great than symbol excluded.
-
-===========================================================================
+===============================================================================
 '''
 
 def select_seq(args):
 
     # read in argument
-    seq_file        = args['seq']
+    seq_file        = args['i']
     id_file         = args['id']
-    select_option   = args['option']
-    output_file     = args['out']
+    output_file     = args['o']
+    select_option   = args['exclude']
     one_line        = args['oneline']
     in_fastq        = args['fq']
 
@@ -42,9 +38,9 @@ def select_seq(args):
         seq_in_format = 'fastq'
 
     # report
-    if select_option == 1:
+    if select_option is False:
         print(datetime.now().strftime(time_format) + 'Extracting sequences in %s' % id_file)
-    if select_option == 0:
+    else:
         print(datetime.now().strftime(time_format) + 'Extracting sequences except those in %s' % id_file)
 
     # extract sequences
@@ -81,12 +77,12 @@ def select_seq(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(usage=select_seq_usage)
-    parser.add_argument('-seq',       required=True,                        help='sequence file')
-    parser.add_argument('-id',        required=True,                        help='sequence ids,one id per line')
-    parser.add_argument('-option',    required=True, type=int,              help='choose from 0 and 1')
-    parser.add_argument('-out',       required=True,                        help='output file')
-    parser.add_argument('-fq',        required=False, action="store_true",  help='in fastq format, default: fa')
-    parser.add_argument('-oneline',   required=False, action="store_true",  help='put sequence in single line')
-    args = vars(parser.parse_args())
+    select_seq_parser = argparse.ArgumentParser(usage=select_seq_usage)
+    select_seq_parser.add_argument('-i',       required=True,                          help='fasta file')
+    select_seq_parser.add_argument('-id',       required=True,                          help='sequence id,one id per line')
+    select_seq_parser.add_argument('-o',       required=True,                          help='output file')
+    select_seq_parser.add_argument('-exclude', required=False, action="store_true",    help='specify to extract sequences except those in -id')
+    select_seq_parser.add_argument('-fq',      required=False, action="store_true",    help='in fastq format, default: fa')
+    select_seq_parser.add_argument('-oneline', required=False, action="store_true",    help='put sequence in single line')
+    args = vars(select_seq_parser.parse_args())
     select_seq(args)
