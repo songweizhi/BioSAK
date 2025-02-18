@@ -4,23 +4,27 @@ import argparse
 from Bio import SeqIO
 
 
-UsearchNovogene_usage = '''
-======================== UsearchNovogene example commands ========================
+Usearch16S_usage = '''
+========================== Usearch16S example commands ==========================
 
-BioSAK UsearchNovogene -i CleanData -x fna -r SILVA_138.2.fa -o op_dir -t 12 -f
+BioSAK Usearch16S -i CleanData -x fna -o op_dir -t 12 -f -r SILVA_138.2.fa
+BioSAK Usearch16S -i CleanData -x fna -o op_dir -t 12 -f -blca -ref ssu_r220.fasta -tax ssu_r220.tax
 
 # SILVA reference sequences on Mac
 /Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
 
-cd /Users/songweizhi/Desktop/SpongeMicrobiomeProject
-BioSAK UsearchNovogene -i s01_CleanData -x fna -o demo_op_dir -t 10 -f -r /Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
+# BLCA db files on Mac (GTDB SSU)
+-ref /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.fasta
+-tax /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.tax
 
 # This is a wrapper for the following steps:
 
-
-==================================================================================
+=================================================================================
 '''
-
+'''
+cd /Users/songweizhi/Desktop/SpongeMicrobiomeProject
+BioSAK Usearch16S -i s01_CleanData -x fna -o demo_op_dir -t 10 -f -r /Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
+'''
 
 def sep_path_basename_ext(file_in):
 
@@ -62,7 +66,7 @@ def best_hit(file_in, file_out):
     file_out_handle.close()
 
 
-def UsearchNovogene(args):
+def Usearch16S(args):
 
     clean_data_dir      = args['i']
     clean_data_ext      = args['x']
@@ -198,15 +202,15 @@ def UsearchNovogene(args):
 
 if __name__ == '__main__':
 
-    UsearchNovogene_parser = argparse.ArgumentParser(usage=UsearchNovogene_usage)
-    UsearchNovogene_parser.add_argument('-i',       required=True,                        help='path to input sequences')
-    UsearchNovogene_parser.add_argument('-x',       required=True,                        help='file extension')
-    UsearchNovogene_parser.add_argument('-r',       required=True,                        help='SSU references, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
-    UsearchNovogene_parser.add_argument('-o',       required=True,                        help='output directory')
-    UsearchNovogene_parser.add_argument('-blca',    required=False, action="store_true",  help='perform classification with BLCA')
-    UsearchNovogene_parser.add_argument('-ref',     required=False,                       help='BLCA reference sequences')
-    UsearchNovogene_parser.add_argument('-tax',     required=False,                       help='BLCA reference taxonomy')
-    UsearchNovogene_parser.add_argument('-t',       required=False, type=int, default=1,  help='number of threads, default is 1')
-    UsearchNovogene_parser.add_argument('-f',       required=False, action="store_true",  help='force overwrite')
-    args = vars(UsearchNovogene_parser.parse_args())
-    UsearchNovogene(args)
+    Usearch16S_parser = argparse.ArgumentParser(usage=Usearch16S_usage)
+    Usearch16S_parser.add_argument('-i',       required=True,                        help='path to input sequences')
+    Usearch16S_parser.add_argument('-x',       required=True,                        help='file extension')
+    Usearch16S_parser.add_argument('-r',       required=True,                        help='SSU references, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
+    Usearch16S_parser.add_argument('-o',       required=True,                        help='output directory')
+    Usearch16S_parser.add_argument('-blca',    required=False, action="store_true",  help='perform classification with BLCA')
+    Usearch16S_parser.add_argument('-ref',     required=False,                       help='BLCA reference sequences')
+    Usearch16S_parser.add_argument('-tax',     required=False,                       help='BLCA reference taxonomy')
+    Usearch16S_parser.add_argument('-t',       required=False, type=int, default=1,  help='number of threads, default is 1')
+    Usearch16S_parser.add_argument('-f',       required=False, action="store_true",  help='force overwrite')
+    args = vars(Usearch16S_parser.parse_args())
+    Usearch16S(args)

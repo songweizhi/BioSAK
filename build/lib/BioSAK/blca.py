@@ -6,20 +6,20 @@ import multiprocessing as mp
 
 
 blca_usage = '''
-============================== blca example commands ==============================
+=============================== blca example commands ===============================
 
 BioSAK blca -f -t 12 -i otu_fa -x fna -o demo -ref ssu_r220.fasta -tax ssu_r220.tax
+
+# db files on Mac
+-ref /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.fasta
+-tax /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.tax
 
 # To prepare database files for BLCA:
 BioSAK GTDB_for_BLCA -h
 BioSAK SILVA_for_BLCA -h
 BioSAK UNITE_for_BLCA -h
 
-# db files on Mac
--ref /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.fasta
--tax /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.tax
-
-===================================================================================
+=====================================================================================
 '''
 
 
@@ -171,12 +171,12 @@ def blca(args):
 if __name__ == '__main__':
 
     blca_parser = argparse.ArgumentParser(usage=blca_usage)
-    blca_parser.add_argument('-i',  required=True,                              help='path to input sequences (in multi-fasta format)')
-    blca_parser.add_argument('-x',  required=False,                             help='file extension')
-    blca_parser.add_argument('-o',  required=True,                              help='output directory')
+    blca_parser.add_argument('-i',   required=True,                              help='path to input sequences (in multi-fasta format)')
+    blca_parser.add_argument('-x',   required=False,                             help='file extension')
+    blca_parser.add_argument('-o',   required=True,                              help='output directory')
     blca_parser.add_argument('-ref', required=True,                             help='reference sequences')
     blca_parser.add_argument('-tax', required=True,                             help='reference taxonomy')
-    blca_parser.add_argument('-t',  required=False, type=int, default=1,        help='number of threads')
-    blca_parser.add_argument('-f',  required=False, action="store_true",        help='force overwrite')
+    blca_parser.add_argument('-t',   required=False, type=int, default=1,        help='number of threads')
+    blca_parser.add_argument('-f',   required=False, action="store_true",        help='force overwrite')
     args = vars(blca_parser.parse_args())
     blca(args)

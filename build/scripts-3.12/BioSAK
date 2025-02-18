@@ -77,6 +77,7 @@ def print_main_help():
        stats_arcog             ->  get stats for a list of provided arCOG 
 
     16S rRNA related
+       Usearch16S              ->  Usearch for Novogene 16S amplicon sequencing results
        blca                    ->  Classify 16S with BLCA
        top_16S_hits            ->  Classify 16S by top-blast-hits approach
        SILVA_for_BLCA          ->  Prepare BLCA-compatible SILVA SSU database
@@ -84,7 +85,6 @@ def print_main_help():
        UNITE_for_BLCA          ->  Prepare BLCA-compatible UNITE SSU database
        BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
        Tax4Fun2IndOTU          ->  Get functional profile for individual OTUs (to be added)
-       UsearchNovogene         ->  Usearch for Novogene 16S amplicon sequencing results
         
     Sequence manipulator
        gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
@@ -1148,18 +1148,20 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         mmseqs.mmseqs(args)
 
-    elif sys.argv[1] == 'UsearchNovogene':
-        from BioSAK import UsearchNovogene
-        UsearchNovogene_parser = subparsers.add_parser('UsearchNovogene', usage=UsearchNovogene.UsearchNovogene_usage)
-        UsearchNovogene_parser.add_argument('-i',       required=True,                          help='path to input sequences')
-        UsearchNovogene_parser.add_argument('-x',       required=True,                          help='file extension')
-        UsearchNovogene_parser.add_argument('-r',       required=True,                          help='SILVA reference sequences, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
-        UsearchNovogene_parser.add_argument('-o',       required=True,                          help='output directory')
-        UsearchNovogene_parser.add_argument('-blca',    required=False, action="store_true",    help='perform classification with BLCA')
-        UsearchNovogene_parser.add_argument('-t',       required=False, type=int, default=1,    help='number of threads, default is 1')
-        UsearchNovogene_parser.add_argument('-f',       required=False, action="store_true",    help='force overwrite')
+    elif sys.argv[1] == 'Usearch16S':
+        from BioSAK import Usearch16S
+        Usearch16S_parser = subparsers.add_parser('Usearch16S', usage=Usearch16S.Usearch16S_usage)
+        Usearch16S_parser.add_argument('-i',    required=True,                          help='path to input sequences')
+        Usearch16S_parser.add_argument('-x',    required=True,                          help='file extension')
+        Usearch16S_parser.add_argument('-r',    required=True,                          help='SILVA reference sequences, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
+        Usearch16S_parser.add_argument('-o',    required=True,                          help='output directory')
+        Usearch16S_parser.add_argument('-blca', required=False, action="store_true",    help='perform classification with BLCA')
+        Usearch16S_parser.add_argument('-ref',  required=False,                         help='BLCA reference sequences')
+        Usearch16S_parser.add_argument('-tax',  required=False,                         help='BLCA reference taxonomy')
+        Usearch16S_parser.add_argument('-t',    required=False, type=int, default=1,    help='number of threads, default is 1')
+        Usearch16S_parser.add_argument('-f',    required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
-        UsearchNovogene.UsearchNovogene(args)
+        Usearch16S.Usearch16S(args)
 
     elif sys.argv[1] == 'rename_df_row':
         from BioSAK import rename_df_row

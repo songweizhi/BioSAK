@@ -171,12 +171,12 @@ def blca(args):
 if __name__ == '__main__':
 
     blca_parser = argparse.ArgumentParser(usage=blca_usage)
-    blca_parser.add_argument('-i',  required=True,                              help='path to input sequences (in multi-fasta format)')
-    blca_parser.add_argument('-x',  required=False,                             help='file extension')
-    blca_parser.add_argument('-o',  required=True,                              help='output directory')
+    blca_parser.add_argument('-i',   required=True,                              help='path to input sequences (in multi-fasta format)')
+    blca_parser.add_argument('-x',   required=False,                             help='file extension')
+    blca_parser.add_argument('-o',   required=True,                              help='output directory')
     blca_parser.add_argument('-ref', required=True,                             help='reference sequences')
     blca_parser.add_argument('-tax', required=True,                             help='reference taxonomy')
-    blca_parser.add_argument('-t',  required=False, type=int, default=1,        help='number of threads')
-    blca_parser.add_argument('-f',  required=False, action="store_true",        help='force overwrite')
+    blca_parser.add_argument('-t',   required=False, type=int, default=1,        help='number of threads')
+    blca_parser.add_argument('-f',   required=False, action="store_true",        help='force overwrite')
     args = vars(blca_parser.parse_args())
     blca(args)

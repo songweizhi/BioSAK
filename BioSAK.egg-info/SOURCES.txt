@@ -33,7 +33,7 @@ BioSAK/SankeyTaxon.py
 BioSAK/SubsampleLongReads.py
 BioSAK/Tax4Fun2IndOTU.py
 BioSAK/UNITE_for_BLCA.py
-BioSAK/UsearchNovogene.py
+BioSAK/Usearch16S.py
 BioSAK/VERSION
 BioSAK/VisBlastOp.py
 BioSAK/VisGeneFlk.py
