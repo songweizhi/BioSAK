@@ -4,25 +4,25 @@ from BioSAK.global_functions import sep_path_basename_ext
 
 
 SILVA_for_BLCA_usage = '''
-====================== SILVA_for_BLCA example commands ======================
+================= SILVA_for_BLCA example commands =================
 
-BioSAK SILVA_for_BLCA -SILVA_ssu SILVA_138_SSURef_NR99_tax_silva.fasta
+BioSAK SILVA_for_BLCA -i SILVA_138.2_SSURef_NR99_tax_silva.fasta
 
 # output_file:
-SILVA_138_SSURef_NR99_tax_silva_BLCAparsed.fasta
-SILVA_138_SSURef_NR99_tax_silva_BLCAparsed.taxonomy
+SILVA_138.2_SSURef_NR99_tax_silva.blca.fa
+SILVA_138.2_SSURef_NR99_tax_silva.blca.tax
 
-=============================================================================
+===================================================================
 '''
 
 
 def SILVA_for_BLCA(args):
 
-    SILVA_db_file = args['SILVA_ssu']
+    SILVA_db_file = args['i']
 
-    SILVA_db_file_path, SILVA_db_file_basename, SILVA_db_file_ext = sep_path_basename_ext(SILVA_db_file)
-    file_out_sequence = '%s/%s_BLCAparsed.fasta'    % (SILVA_db_file_path, SILVA_db_file_basename)
-    file_out_taxonomy = '%s/%s_BLCAparsed.taxonomy' % (SILVA_db_file_path, SILVA_db_file_basename)
+    db_path, db_base, db_ext = sep_path_basename_ext(SILVA_db_file)
+    file_out_sequence = '%s/%s.blca.fa'     % (db_path, db_base)
+    file_out_taxonomy = '%s/%s.blca.tax'    % (db_path, db_base)
 
     rank_list = ['species', 'genus', 'family', 'order', 'class', 'phylum', 'superkingdom']
 
@@ -74,18 +74,20 @@ def SILVA_for_BLCA(args):
             file_out_taxonomy_handle.write('%s\t%s\n' % (SILVA_seq.id, SILVA_seq_taxon_str))
 
             # write out to sequence file
-            file_out_sequence_handle.write('>%s\n' % SILVA_seq.id)
+            file_out_sequence_handle.write('>%s\n' % SILVA_seq.description)
             file_out_sequence_handle.write('%s\n' % SILVA_seq.seq)
 
     file_out_sequence_handle.close()
     file_out_taxonomy_handle.close()
 
+    print('Done!')
+    print('You may need to run:')
+    print('makeblastdb -dbtype nucl -parse_seqids -in %s' % file_out_sequence)
+
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(usage=SILVA_for_BLCA_usage)
-
-    parser.add_argument('-SILVA_ssu', required=True, help='SILVA SSU file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
-
+    parser.add_argument('-i', required=True, help='SILVA SSU file, e.g. SILVA_138.2_SSURef_NR99_tax_silva.fasta')
     args = vars(parser.parse_args())
     SILVA_for_BLCA(args)

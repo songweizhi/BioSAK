@@ -404,15 +404,15 @@ if __name__ == '__main__':
 
     elif sys.argv[1] == 'SILVA_for_BLCA':
         from BioSAK import SILVA_for_BLCA
-        SILVA_for_BLCA_parser = subparsers.add_parser('SILVA_for_BLCA', description='Prepare BLCA-compatible SILVA SSU database', usage=SILVA_for_BLCA.SILVA_for_BLCA_usage)
-        SILVA_for_BLCA_parser.add_argument('-SILVA_ssu', required=True, help='SILVA SSU sequence file, e.g. SILVA_138_SSURef_NR99_tax_silva.fasta')
+        SILVA_for_BLCA_parser = subparsers.add_parser('SILVA_for_BLCA', description='Prepare BLCA compatible SILVA SSU database', usage=SILVA_for_BLCA.SILVA_for_BLCA_usage)
+        SILVA_for_BLCA_parser.add_argument('-i', required=True, help='SILVA SSU file, e.g. SILVA_138.2_SSURef_NR99_tax_silva.fasta')
         args = vars(parser.parse_args())
         SILVA_for_BLCA.SILVA_for_BLCA(args)
 
     elif sys.argv[1] == 'GTDB_for_BLCA':
         from BioSAK import GTDB_for_BLCA
-        GTDB_for_BLCA_parser = subparsers.add_parser('GTDB_for_BLCA', description='Prepare BLCA-compatible GTDB SSU database', usage=GTDB_for_BLCA.GTDB_for_BLCA_usage)
-        GTDB_for_BLCA_parser.add_argument('-GTDB_ssu', required=True, help='GTDB SSU sequence file, e.g. bac120_ar122_ssu_r89.fna')
+        GTDB_for_BLCA_parser = subparsers.add_parser('GTDB_for_BLCA', description='Prepare BLCA compatible GTDB SSU database', usage=GTDB_for_BLCA.GTDB_for_BLCA_usage)
+        GTDB_for_BLCA_parser.add_argument('-i', required=True, help='GTDB SSU file, e.g. ssu_all_r220.fna')
         args = vars(parser.parse_args())
         GTDB_for_BLCA.GTDB_for_BLCA(args)
 
@@ -1151,15 +1151,14 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'Usearch16S':
         from BioSAK import Usearch16S
         Usearch16S_parser = subparsers.add_parser('Usearch16S', usage=Usearch16S.Usearch16S_usage)
-        Usearch16S_parser.add_argument('-i',    required=True,                          help='path to input sequences')
-        Usearch16S_parser.add_argument('-x',    required=True,                          help='file extension')
-        Usearch16S_parser.add_argument('-r',    required=True,                          help='SILVA reference sequences, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
-        Usearch16S_parser.add_argument('-o',    required=True,                          help='output directory')
-        Usearch16S_parser.add_argument('-blca', required=False, action="store_true",    help='perform classification with BLCA')
-        Usearch16S_parser.add_argument('-ref',  required=False,                         help='BLCA reference sequences')
-        Usearch16S_parser.add_argument('-tax',  required=False,                         help='BLCA reference taxonomy')
-        Usearch16S_parser.add_argument('-t',    required=False, type=int, default=1,    help='number of threads, default is 1')
-        Usearch16S_parser.add_argument('-f',    required=False, action="store_true",    help='force overwrite')
+        Usearch16S_parser.add_argument('-i',       required=True,                        help='path to input sequences')
+        Usearch16S_parser.add_argument('-x',       required=True,                        help='file extension')
+        Usearch16S_parser.add_argument('-o',       required=True,                        help='output directory')
+        Usearch16S_parser.add_argument('-r',       required=False,                       help='reference sequences')
+        Usearch16S_parser.add_argument('-blca',    required=False, action="store_true",  help='perform classification with BLCA')
+        Usearch16S_parser.add_argument('-c',       required=False,                       help='reference sequence taxonomy')
+        Usearch16S_parser.add_argument('-t',       required=False, type=int, default=1,  help='number of threads, default is 1')
+        Usearch16S_parser.add_argument('-f',       required=False, action="store_true",  help='force overwrite')
         args = vars(parser.parse_args())
         Usearch16S.Usearch16S(args)
 

@@ -1,30 +1,37 @@
 import os
 import glob
+import math
 import argparse
+import subprocess
 from Bio import SeqIO
+import multiprocessing as mp
 
 
 Usearch16S_usage = '''
-========================== Usearch16S example commands ==========================
+====================================== Usearch16S example commands ======================================
 
-BioSAK Usearch16S -i CleanData -x fna -o op_dir -t 12 -f -r SILVA_138.2.fa
-BioSAK Usearch16S -i CleanData -x fna -o op_dir -t 12 -f -blca -ref ssu_r220.fasta -tax ssu_r220.tax
+# This is a wrapper for the following Usearch modules, please refer to the output cmds.txt for details:
+-fastx_uniques, -unoise3, -uchime2_ref, -otutab
 
-# SILVA reference sequences on Mac
-/Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
+# classify OTU with best hit approach
+BioSAK Usearch16S -i CleanData -x fna -o op_dir -t 12 -f -r ssu_all_r220.blca.fa
+BioSAK Usearch16S -i CleanData -x fna -o op_dir -t 12 -f -r SILVA_138.2_SSURef_NR99_tax_silva.blca.fa
 
-# BLCA db files on Mac (GTDB SSU)
--ref /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.fasta
--tax /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.tax
+# classify OTU with BLCA
+BioSAK Usearch16S -i CleanData -x fna -o op_dir -t 12 -f -blca -r ssu_all_r220.blca.fa -c ssu_all_r220.blca.tax
+BioSAK Usearch16S -i CleanData -x fna -o op_dir -t 12 -f -blca -r SILVA_138.2_SSURef_NR99_tax_silva.blca.fa -c SILVA_138.2_SSURef_NR99_tax_silva.blca.tax
 
-# This is a wrapper for the following steps:
+# GTDB SSU (BLCA compatible)
+-r /Users/songweizhi/DB/BLCA/GTDB_SSU/ssu_all_r220.blca.fa
+-c /Users/songweizhi/DB/BLCA/GTDB_SSU/ssu_all_r220.blca.tax
 
-=================================================================================
+# SILVA SSU (BLCA compatible)
+-r /Users/songweizhi/DB/BLCA/SILVA_SSU/SILVA_138.2_SSURef_NR99_tax_silva.blca.fa
+-c /Users/songweizhi/DB/BLCA/SILVA_SSU/SILVA_138.2_SSURef_NR99_tax_silva.blca.tax
+
+=========================================================================================================
 '''
-'''
-cd /Users/songweizhi/Desktop/SpongeMicrobiomeProject
-BioSAK Usearch16S -i s01_CleanData -x fna -o demo_op_dir -t 10 -f -r /Users/songweizhi/DB/SILVA/138.2/SILVA_138.2_SSURef_NR99_tax_silva.fasta
-'''
+
 
 def sep_path_basename_ext(file_in):
 
@@ -34,6 +41,19 @@ def sep_path_basename_ext(file_in):
     f_base, f_ext = os.path.splitext(f_name)
 
     return f_name, f_path, f_base, f_ext[1:]
+
+
+def check_executables(program_list):
+
+    not_detected_programs = []
+    for needed_program in program_list:
+
+        if subprocess.call(['which', needed_program], stdout=open(os.devnull, 'wb')) != 0:
+            not_detected_programs.append(needed_program)
+
+    if not_detected_programs != []:
+        print('%s not detected, program exited!' % ','.join(not_detected_programs))
+        exit()
 
 
 def best_hit(file_in, file_out):
@@ -66,24 +86,186 @@ def best_hit(file_in, file_out):
     file_out_handle.close()
 
 
+def parse_blca_op(blca_output):
+
+    blca_op_name, blca_op_path, blca_op_base, blca_op_ext = sep_path_basename_ext(blca_output)
+    output_file_1 = '%s/%s.1.txt' % (blca_op_path, blca_op_base)
+    output_file_2 = '%s/%s.2.txt' % (blca_op_path, blca_op_base)
+
+    # read in input file
+    s16_taxon_blca_dict = {}
+    for each_16s_taxon in open(blca_output):
+        each_16s_taxon_split = each_16s_taxon.strip().split('\t')
+        s16_taxon_blca_dict[each_16s_taxon_split[0]] = each_16s_taxon_split[1]
+
+    taxon_dict_formatted_with_num = {}
+    taxon_dict_formatted_no_num = {}
+    for each_16s in s16_taxon_blca_dict:
+        taxon_blca_raw = s16_taxon_blca_dict[each_16s]
+        formatted_taxon_str_with_num = 'Unclassified'
+        formatted_taxon_str_no_num = 'Unclassified'
+        if taxon_blca_raw != 'Unclassified':
+            taxon_blca_raw_split_1 = taxon_blca_raw.strip().split(':')[1:]
+            formatted_taxon_list_with_num = []
+            formatted_taxon_list_no_num = []
+            for each_str in taxon_blca_raw_split_1:
+                each_str_split = each_str.split(';')
+
+                # determine_current_rank
+                current_rank = ''
+                if each_str_split[-1] == 'phylum':
+                    current_rank = 'd'
+                elif each_str_split[-1] == 'class':
+                    current_rank = 'p'
+                elif each_str_split[-1] == 'order':
+                    current_rank = 'c'
+                elif each_str_split[-1] == 'family':
+                    current_rank = 'o'
+                elif each_str_split[-1] == 'genus':
+                    current_rank = 'f'
+                elif each_str_split[-1] == 'species':
+                    current_rank = 'g'
+                elif each_str_split[-1] == '':
+                    current_rank = 's'
+
+                taxon_with_confidence = '%s(%s)' % (each_str_split[0], each_str_split[1][:5])
+                taxon_without_confidence = '%s__%s' % (current_rank, each_str_split[0])
+
+                formatted_taxon_list_with_num.append(taxon_with_confidence)
+                formatted_taxon_list_no_num.append(taxon_without_confidence)
+
+            formatted_taxon_str_with_num = ';'.join(formatted_taxon_list_with_num)
+            formatted_taxon_str_no_num = ';'.join(formatted_taxon_list_no_num)
+
+        formatted_taxon_str_with_numno_space = '_'.join(formatted_taxon_str_with_num.split(' '))
+        formatted_taxon_str_no_num_no_space = '_'.join(formatted_taxon_str_no_num.split(' '))
+
+        taxon_dict_formatted_with_num[each_16s] = formatted_taxon_str_with_numno_space
+        taxon_dict_formatted_no_num[each_16s] = formatted_taxon_str_no_num_no_space
+
+    output_file_1_handle = open(output_file_1, 'w')
+    output_file_2_handle = open(output_file_2, 'w')
+    for each_seq in taxon_dict_formatted_with_num:
+        output_file_1_handle.write('%s\t%s\n' % (each_seq, taxon_dict_formatted_with_num[each_seq]))
+        output_file_2_handle.write('%s\t%s\n' % (each_seq, taxon_dict_formatted_no_num[each_seq]))
+    output_file_1_handle.close()
+    output_file_2_handle.close()
+
+
+def split_fasta(fasta_in, per_file_seq_num, num_of_file, output_dir):
+
+    fasta_in_name, fasta_in_path, fasta_in_basename, fasta_in_ext = sep_path_basename_ext(fasta_in)
+
+    if (per_file_seq_num is None) and (num_of_file is None):
+        print('Please either use the "-ns" flag to define the number of sequence per file or the "-nf" flag to specify the number of files to be generated.')
+        exit()
+    elif (per_file_seq_num is not None) and (num_of_file is not None):
+        print('Options "-ns" and "-nf" are incompatible, only specify one of them.')
+        exit()
+    elif (per_file_seq_num is not None) and (num_of_file is None):
+
+        if os.path.isdir(output_dir) is True:
+            print('Output folder detected, please provide a different name!')
+            exit()
+        else:
+            os.mkdir(output_dir)
+
+        n = 1
+        for seq_record in SeqIO.parse(fasta_in, 'fasta'):
+            file_index = (n - 1) // per_file_seq_num + 1
+            pwd_sub_file = '%s/%s_%s.fa' % (output_dir, fasta_in_basename, file_index)
+            if per_file_seq_num == 1:
+                pwd_sub_file = '%s/%s.fa' % (output_dir, seq_record.id)
+            # write out sequence
+            with open(pwd_sub_file, 'a') as pwd_sub_file_handle:
+                pwd_sub_file_handle.write('>%s\n' % seq_record.id)
+                pwd_sub_file_handle.write('%s\n'  % str(seq_record.seq))
+            n += 1
+    elif (per_file_seq_num is None) and (num_of_file is not None):
+
+        if os.path.isdir(output_dir) is True:
+            print('Output folder detected, please provide a different name!')
+            exit()
+        else:
+            os.mkdir(output_dir)
+
+        # get total number of sequences
+        total_seq_num = 0
+        for each_seq in SeqIO.parse(fasta_in, 'fasta'):
+            total_seq_num += 1
+        seq_num_per_file = math.ceil(total_seq_num/num_of_file)
+
+        # write out
+        seq_index = 1
+        for seq_record in SeqIO.parse(fasta_in, 'fasta'):
+            file_index = math.ceil(seq_index/seq_num_per_file)
+            pwd_sub_file = '%s/%s_%s.fa' % (output_dir, fasta_in_basename, file_index)
+
+            # write out sequence
+            with open(pwd_sub_file, 'a') as pwd_sub_file_handle:
+                pwd_sub_file_handle.write('>%s\n' % seq_record.id)
+                pwd_sub_file_handle.write('%s\n'  % str(seq_record.seq))
+            seq_index += 1
+
+def blca(fa_dir, fa_ext, output_folder, ref_seq, ref_tax, num_threads):
+
+    pwd_current_file  = os.path.realpath(__file__)
+    current_file_path = '/'.join(pwd_current_file.split('/')[:-1])
+    blca_main_py      = '%s/blca_main.py' % (current_file_path)
+
+    seq_file_re = '%s/*.%s' % (fa_dir, fa_ext)
+    seq_file_list = glob.glob(seq_file_re)
+
+    # prepare blca commands
+    blca_cmd_list = []
+    for seq_file in seq_file_list:
+        blca_cmd = 'python3 %s -q %s -r %s -p %s -i %s -o %s' % (blca_main_py, ref_seq, ref_tax, 1, seq_file, output_folder)
+        blca_cmd_list.append(blca_cmd)
+
+    # run blca with multiprocessing
+    pool = mp.Pool(processes=num_threads)
+    pool.map(os.system, blca_cmd_list)
+    pool.close()
+    pool.join()
+
+    # parse blca output
+    blca_op_re = '%s/*.blca.out' % output_folder
+    blca_op_list = glob.glob(blca_op_re)
+    for blca_op in blca_op_list:
+        parse_blca_op(blca_op)
+
+
 def Usearch16S(args):
 
     clean_data_dir      = args['i']
     clean_data_ext      = args['x']
-    silva_ref_seq       = args['r']
     op_dir              = args['o']
     run_blca            = args['blca']
-    blca_ref_seq        = args['ref']
-    blca_ref_tax        = args['tax']
+    ref_seq             = args['r']
+    ref_tax             = args['c']
     num_threads         = args['t']
     force_create_op_dir = args['f']
 
+    if run_blca is True:
+        check_executables(['blastn', 'blastdbcmd', 'clustalo', 'muscle'])
+
     # define file name
-    dir_clean_data_renamed  = '%s/s01_CleanData_renamed'                        % op_dir
-    dir_DereplicatedData    = '%s/s02_DereplicatedData'                         % op_dir
-    s07_OtuTable            = '%s/s07_AllSamples_unoise_otu_table1.txt'         % op_dir
-    s09_FinalOtuTable       = '%s/s09_AllSamples_unoise_otu_table_final.txt'    % op_dir
-    s10_blca_op_dir         = '%s/s10_AllSamples_BLCA_classifications'          % op_dir
+    cmd_txt                     = '%s/cmds.txt'                                 % op_dir
+    dir_clean_data_renamed      = '%s/s01_CleanData_renamed'                    % op_dir
+    dir_DereplicatedData        = '%s/s02_DereplicatedData'                     % op_dir
+    unoise_nc_fa                = '%s/s06_AllSamples_unoise_nc.fasta'           % op_dir
+    unoise_nc_fa_split_dir      = '%s/s06_AllSamples_unoise_nc_split'           % op_dir
+    s07_OtuTable                = '%s/s07_AllSamples_unoise_otu_table.txt'      % op_dir
+    s09_FinalOtuTable           = '%s/s09_AllSamples_unoise_otu_tax.txt'        % op_dir
+    s10_blca_op_dir             = '%s/s10_AllSamples_BLCA_classifications'      % op_dir
+    combined_blca_blastn_tmp    = '%s/s08_AllSamples_unoise_nc.blca.blastn.tmp' % op_dir
+    combined_blca_blastn_sorted = '%s/s08_AllSamples_unoise_nc.blca.blastn'     % op_dir
+    combined_blca_out_tmp       = '%s/s08_AllSamples_unoise_nc.blca.out.tmp'    % op_dir
+    combined_blca_out_sorted    = '%s/s08_AllSamples_unoise_nc.blca.out'        % op_dir
+    combined_blca_1_txt_tmp     = '%s/s08_AllSamples_unoise_nc.blca.1.txt.tmp'  % op_dir
+    combined_blca_1_txt_sorted  = '%s/s08_AllSamples_unoise_nc.blca.1.txt'      % op_dir
+    combined_blca_2_txt_tmp     = '%s/s08_AllSamples_unoise_nc.blca.2.txt.tmp'  % op_dir
+    combined_blca_2_txt_sorted  = '%s/s08_AllSamples_unoise_nc.blca.2.txt'      % op_dir
 
     # create output folder
     if os.path.isdir(op_dir) is True:
@@ -101,10 +283,9 @@ def Usearch16S(args):
 
     for each_file in clean_data_list:
 
-        fa_name, fa_path, fa_base, fa_ext = sep_path_basename_ext(each_file)
-
-        pwd_fa_renamed = '%s/%s'                % (dir_clean_data_renamed, fa_name)
-        pwd_fa_uniques = '%s/%s_uniques.fasta'  % (dir_DereplicatedData, fa_base)
+        fa_name, _, fa_base, _  = sep_path_basename_ext(each_file)
+        pwd_fa_renamed          = '%s/%s'                           % (dir_clean_data_renamed, fa_name)
+        pwd_fa_uniques          = '%s/%s_uniques.fasta'             % (dir_DereplicatedData, fa_base)
 
         # add sample id to contig id
         pwd_fa_renamed_handle = open(pwd_fa_renamed, 'w')
@@ -116,52 +297,57 @@ def Usearch16S(args):
 
         # run dereplicate
         cmd_fastx_uniques = 'usearch -fastx_uniques %s -fastaout %s -sizeout' % (pwd_fa_renamed, pwd_fa_uniques)
-        print(cmd_fastx_uniques)
+        with open(cmd_txt, 'a') as cmd_txt_handle:
+            cmd_txt_handle.write(cmd_fastx_uniques + '\n')
         os.system(cmd_fastx_uniques)
 
     # combine sequences from all samples
     cmd_2 = 'cat %s/*.fasta > %s/s03_AllSamples.fasta' % (dir_DereplicatedData, op_dir)
-    print(cmd_2)
+    with open(cmd_txt, 'a') as cmd_txt_handle:
+        cmd_txt_handle.write(cmd_2 + '\n')
     os.system(cmd_2)
 
     # dereplicate AllSamples.fasta
     cmd_3  = 'usearch -fastx_uniques %s/s03_AllSamples.fasta -fastaout %s/s04_AllSamples_uniques.fasta -sizein -sizeout -strand both' % (op_dir, op_dir)
-    print(cmd_3)
+    with open(cmd_txt, 'a') as cmd_txt_handle:
+        cmd_txt_handle.write(cmd_3 + '\n')
     os.system(cmd_3)
 
     # Generating unique sequences using UNOISE
     cmd_4  = 'usearch -unoise3 %s/s04_AllSamples_uniques.fasta -zotus %s/s05_AllSamples_denoised.fasta' % (op_dir, op_dir)
-    print(cmd_4)
+    with open(cmd_txt, 'a') as cmd_txt_handle:
+        cmd_txt_handle.write(cmd_4 + '\n')
     os.system(cmd_4)
 
     # Chimera Removal
-    cmd_5  = 'usearch -uchime2_ref %s/s05_AllSamples_denoised.fasta -db %s -strand plus -mode high_confidence -notmatched %s/s06_AllSamples_unoise_nc.fasta' % (op_dir, silva_ref_seq, op_dir)
-    print(cmd_5)
+    cmd_5  = 'usearch -uchime2_ref %s/s05_AllSamples_denoised.fasta -db %s -strand plus -mode high_confidence -notmatched %s/s06_AllSamples_unoise_nc.fasta' % (op_dir, ref_seq, op_dir)
+    if run_blca is True:
+        cmd_5  = 'usearch -uchime2_ref %s/s05_AllSamples_denoised.fasta -db %s -strand plus -mode high_confidence -notmatched %s/s06_AllSamples_unoise_nc.fasta' % (op_dir, ref_seq, op_dir)
+    with open(cmd_txt, 'a') as cmd_txt_handle:
+        cmd_txt_handle.write(cmd_5 + '\n')
     os.system(cmd_5)
 
     # generate OTU table, an OTU table is made by the otutab command
-    cmd_6_1 = 'usearch -otutab %s/s03_AllSamples.fasta -db %s/s06_AllSamples_unoise_nc.fasta -id 0.97 -otutabout %s/s07_AllSamples_unoise_otu_table1.txt'                               % (op_dir, op_dir, op_dir)
-    cmd_6_2 = 'usearch -otutab %s/s03_AllSamples.fasta -db %s/s06_AllSamples_unoise_nc.fasta -id 0.97 -otutabout %s/s07_AllSamples_unoise_otu_table2.txt -maxaccepts 0 -maxrejects 0'   % (op_dir, op_dir, op_dir)
-    print(cmd_6_1)
-    os.system(cmd_6_1)
-    print(cmd_6_2)
-    os.system(cmd_6_2)
+    cmd_6 = 'usearch -otutab %s/s03_AllSamples.fasta -db %s/s06_AllSamples_unoise_nc.fasta -id 0.97 -otutabout %s/s07_AllSamples_unoise_otu_table.txt' % (op_dir, op_dir, op_dir)
+    with open(cmd_txt, 'a') as cmd_txt_handle:
+        cmd_txt_handle.write(cmd_6 + '\n')
+    os.system(cmd_6)
 
     # Mapping of OTUs on Reference Database
     if run_blca is False:
-
-        cmd_7  = 'blastn -query %s/s06_AllSamples_unoise_nc.fasta -outfmt 6 -out %s/s08_AllSamples_unoise_nc.txt -db %s -evalue 1e-20 -num_threads %s' % (op_dir, op_dir, silva_ref_seq, num_threads)
-        print(cmd_7)
+        cmd_7  = 'blastn -query %s/s06_AllSamples_unoise_nc.fasta -outfmt 6 -out %s/s08_AllSamples_unoise_nc.txt -db %s -evalue 1e-20 -num_threads %s' % (op_dir, op_dir, ref_seq, num_threads)
+        with open(cmd_txt, 'a') as cmd_txt_handle:
+            cmd_txt_handle.write(cmd_7 + '\n')
         os.system(cmd_7)
 
         # keep best hit
-        blast_op          = '%s/s08_AllSamples_unoise_nc.txt'   % op_dir
-        blast_op_best_hit = '%s/s08_AllSamples_unoise_nc2.txt'  % op_dir
+        blast_op          = '%s/s08_AllSamples_unoise_nc_blastn.txt'          % op_dir
+        blast_op_best_hit = '%s/s08_AllSamples_unoise_nc_blastn_best_hit.txt' % op_dir
         best_hit(blast_op, blast_op_best_hit)
 
         # Merge Table and Taxonomy
         silva_ref_to_tax_dict = dict()
-        for each_seq in SeqIO.parse(silva_ref_seq, 'fasta'):
+        for each_seq in SeqIO.parse(ref_seq, 'fasta'):
             seq_id = each_seq.id
             seq_tax = ' '.join(each_seq.description.split(' ')[1:])
             silva_ref_to_tax_dict[seq_id] = seq_tax
@@ -175,29 +361,57 @@ def Usearch16S(args):
         s09_FinalOtuTable_handle = open(s09_FinalOtuTable, 'w')
         for each_line in open(s07_OtuTable):
             if each_line.startswith('#'):
-                s09_FinalOtuTable_handle.write('%s\tSilvaId\tIdentity\tAlignment_Length\tEvalue\ttaxonomy\n' % each_line.strip())
+                s09_FinalOtuTable_handle.write('ID\tIdentity\tAlignment_Length\tEvalue\tTaxonomy\n')
             else:
                 each_line_split = each_line.strip().split('\t')
                 otu_id = each_line_split[0]
                 best_hit_info_list = otu_best_hit_dict.get(otu_id, ['na', 'na', 'na', 'na'])
-                best_hit_info_str = '\t'.join(best_hit_info_list)
+                best_hit_info_list_without_ref_id = []
+                best_hit_info_list_without_ref_id.append(best_hit_info_list[1])
+                best_hit_info_list_without_ref_id.append(best_hit_info_list[2])
+                best_hit_info_list_without_ref_id.append(best_hit_info_list[3])
+                best_hit_info_str = '\t'.join(best_hit_info_list_without_ref_id)
                 ref_id = best_hit_info_list[0]
                 ref_tax = silva_ref_to_tax_dict.get(ref_id, 'na')
-                s09_FinalOtuTable_handle.write('%s\t%s\t%s\n' % (each_line.strip(), best_hit_info_str, ref_tax))
+                s09_FinalOtuTable_handle.write('%s\t%s\t%s\n' % (otu_id, best_hit_info_str, ref_tax))
         s09_FinalOtuTable_handle.close()
 
     else:
-        print('classify sequences with BLCA')
-        from blca import blca
-        blca_arg_dict = dict()
-        blca_arg_dict['i']   = op_dir
-        blca_arg_dict['x']   = '_unoise_nc.fasta'
-        blca_arg_dict['o']   = s10_blca_op_dir
-        blca_arg_dict['ref'] = blca_ref_seq
-        blca_arg_dict['tax'] = blca_ref_tax
-        blca_arg_dict['t']   = num_threads
-        blca_arg_dict['f']   = True
-        blca(blca_arg_dict)
+        # split fasta file
+        split_fasta(unoise_nc_fa, None, num_threads, unoise_nc_fa_split_dir)
+
+        # create blca output directory
+        os.system('mkdir %s' % s10_blca_op_dir)
+
+        # run blca
+        blca(unoise_nc_fa_split_dir, 'fa', s10_blca_op_dir, ref_seq, ref_tax, num_threads)
+
+        # combine results
+        os.system('cat %s/*.blastn > %s'       % (s10_blca_op_dir, combined_blca_blastn_tmp))
+        os.system('cat %s/*.blca.out > %s'     % (s10_blca_op_dir, combined_blca_out_tmp))
+        os.system('cat %s/*.blca.1.txt > %s'   % (s10_blca_op_dir, combined_blca_1_txt_tmp))
+        os.system('cat %s/*.blca.2.txt > %s'   % (s10_blca_op_dir, combined_blca_2_txt_tmp))
+
+        # sort results
+        os.system('cat %s | sort > %s' % (combined_blca_blastn_tmp, combined_blca_blastn_sorted))
+        os.system('cat %s | sort > %s' % (combined_blca_out_tmp, combined_blca_out_sorted))
+        os.system('cat %s | sort > %s' % (combined_blca_1_txt_tmp, combined_blca_1_txt_sorted))
+        os.system('cat %s | sort > %s' % (combined_blca_2_txt_tmp, combined_blca_2_txt_sorted))
+
+        # remove tmp files
+        os.system('rm -r %s' % s10_blca_op_dir)
+        os.system('rm %s'    % combined_blca_blastn_tmp)
+        os.system('rm %s'    % combined_blca_out_tmp)
+        os.system('rm %s'    % combined_blca_1_txt_tmp)
+        os.system('rm %s'    % combined_blca_2_txt_tmp)
+
+    # final report
+    print('OTU table exported to: %s' % s07_OtuTable)
+    if run_blca is False:
+        print('OTU taxonomy exported to: %s' % s09_FinalOtuTable)
+    else:
+        print('OTU taxonomy exported to: %s and %s' % (combined_blca_1_txt_sorted, combined_blca_2_txt_sorted))
+    print('Done')
 
 
 if __name__ == '__main__':
@@ -205,11 +419,10 @@ if __name__ == '__main__':
     Usearch16S_parser = argparse.ArgumentParser(usage=Usearch16S_usage)
     Usearch16S_parser.add_argument('-i',       required=True,                        help='path to input sequences')
     Usearch16S_parser.add_argument('-x',       required=True,                        help='file extension')
-    Usearch16S_parser.add_argument('-r',       required=True,                        help='SSU references, e.g., SILVA_138.2_SSURef_NR99_tax_silva.fasta')
     Usearch16S_parser.add_argument('-o',       required=True,                        help='output directory')
+    Usearch16S_parser.add_argument('-r',       required=False,                       help='reference sequences')
     Usearch16S_parser.add_argument('-blca',    required=False, action="store_true",  help='perform classification with BLCA')
-    Usearch16S_parser.add_argument('-ref',     required=False,                       help='BLCA reference sequences')
-    Usearch16S_parser.add_argument('-tax',     required=False,                       help='BLCA reference taxonomy')
+    Usearch16S_parser.add_argument('-c',       required=False,                       help='reference sequence taxonomy')
     Usearch16S_parser.add_argument('-t',       required=False, type=int, default=1,  help='number of threads, default is 1')
     Usearch16S_parser.add_argument('-f',       required=False, action="store_true",  help='force overwrite')
     args = vars(Usearch16S_parser.parse_args())

@@ -1,4 +1,4 @@
-1.109.2
+1.109.5
 - fixed bugs
 
 1.109.0
@@ -11,7 +11,7 @@
 - new modules added: abd and abd_mask
 
 1.105.0
-- new modules added: UsearchNovogene
+- new modules added: Usearch16S
 
 1.104.0
 - new modules added: mmseqs
