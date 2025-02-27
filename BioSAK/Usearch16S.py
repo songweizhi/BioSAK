@@ -105,37 +105,41 @@ def parse_blca_op(blca_output):
         formatted_taxon_str_with_num = 'Unclassified'
         formatted_taxon_str_no_num = 'Unclassified'
         if taxon_blca_raw != 'Unclassified':
-            taxon_blca_raw_split_1 = taxon_blca_raw.strip().split(':')[1:]
-            formatted_taxon_list_with_num = []
-            formatted_taxon_list_no_num = []
-            for each_str in taxon_blca_raw_split_1:
-                each_str_split = each_str.split(';')
+            split2 = taxon_blca_raw.strip().split(';')[:-1]
+            formatted_taxon_list_with_num2 = []
+            formatted_taxon_list_no_num2 = []
+            element_index = 0
+            while element_index < len(split2):
+                taxon_blca = split2[element_index]
+                confidence_value = split2[element_index + 1]
+                confidence_value = float("{0:.2f}".format(float(confidence_value)))
+                taxon_rank_blca = taxon_blca.split(':')[0]
 
-                # determine_current_rank
-                current_rank = ''
-                if each_str_split[-1] == 'phylum':
-                    current_rank = 'd'
-                elif each_str_split[-1] == 'class':
-                    current_rank = 'p'
-                elif each_str_split[-1] == 'order':
-                    current_rank = 'c'
-                elif each_str_split[-1] == 'family':
-                    current_rank = 'o'
-                elif each_str_split[-1] == 'genus':
-                    current_rank = 'f'
-                elif each_str_split[-1] == 'species':
-                    current_rank = 'g'
-                elif each_str_split[-1] == '':
-                    current_rank = 's'
+                taxon_rank_gtdb = ''
+                if taxon_rank_blca == 'superkingdom':
+                    taxon_rank_gtdb = 'd'
+                elif taxon_rank_blca == 'phylum':
+                    taxon_rank_gtdb = 'p'
+                elif taxon_rank_blca == 'class':
+                    taxon_rank_gtdb = 'c'
+                elif taxon_rank_blca == 'order':
+                    taxon_rank_gtdb = 'o'
+                elif taxon_rank_blca == 'family':
+                    taxon_rank_gtdb = 'f'
+                elif taxon_rank_blca == 'genus':
+                    taxon_rank_gtdb = 'g'
+                elif taxon_rank_blca == 'species':
+                    taxon_rank_gtdb = 's'
 
-                taxon_with_confidence = '%s(%s)' % (each_str_split[0], each_str_split[1][:5])
-                taxon_without_confidence = '%s__%s' % (current_rank, each_str_split[0])
+                taxon_name_blca  = ':'.join(taxon_blca.split(':')[1:]).replace(':', '')
+                current_rank_with_num = '%s__%s(%s)' % (taxon_rank_gtdb, taxon_name_blca, confidence_value)
+                current_rank_no_num   = '%s__%s' % (taxon_rank_gtdb, taxon_name_blca)
+                formatted_taxon_list_with_num2.append(current_rank_with_num)
+                formatted_taxon_list_no_num2.append(current_rank_no_num)
+                element_index += 2
 
-                formatted_taxon_list_with_num.append(taxon_with_confidence)
-                formatted_taxon_list_no_num.append(taxon_without_confidence)
-
-            formatted_taxon_str_with_num = ';'.join(formatted_taxon_list_with_num)
-            formatted_taxon_str_no_num = ';'.join(formatted_taxon_list_no_num)
+            formatted_taxon_str_with_num = ';'.join(formatted_taxon_list_with_num2)
+            formatted_taxon_str_no_num = ';'.join(formatted_taxon_list_no_num2)
 
         formatted_taxon_str_with_numno_space = '_'.join(formatted_taxon_str_with_num.split(' '))
         formatted_taxon_str_no_num_no_space = '_'.join(formatted_taxon_str_no_num.split(' '))
@@ -247,7 +251,7 @@ def Usearch16S(args):
     force_create_op_dir = args['f']
 
     if run_blca is True:
-        check_executables(['blastn', 'blastdbcmd', 'clustalo', 'muscle'])
+        check_executables(['blastn', 'blastdbcmd', 'clustalo', 'muscle', 'usearch'])
 
     # define file name
     cmd_txt                     = '%s/cmds.txt'                                 % op_dir
@@ -280,12 +284,19 @@ def Usearch16S(args):
 
     clean_data_re = '%s/*.%s' % (clean_data_dir, clean_data_ext)
     clean_data_list = glob.glob(clean_data_re)
+    if len(clean_data_list) == 0:
+        print('Input sequences not found, program exited!')
+        exit()
 
-    for each_file in clean_data_list:
+    file_index = 1
+    for each_file in sorted(clean_data_list):
 
         fa_name, _, fa_base, _  = sep_path_basename_ext(each_file)
         pwd_fa_renamed          = '%s/%s'                           % (dir_clean_data_renamed, fa_name)
         pwd_fa_uniques          = '%s/%s_uniques.fasta'             % (dir_DereplicatedData, fa_base)
+
+        print('Running usearch -fastx_uniques on %s/%s: %s' % (file_index, len(clean_data_list), fa_base))
+        file_index += 1
 
         # add sample id to contig id
         pwd_fa_renamed_handle = open(pwd_fa_renamed, 'w')
@@ -296,7 +307,7 @@ def Usearch16S(args):
         pwd_fa_renamed_handle.close()
 
         # run dereplicate
-        cmd_fastx_uniques = 'usearch -fastx_uniques %s -fastaout %s -sizeout' % (pwd_fa_renamed, pwd_fa_uniques)
+        cmd_fastx_uniques = 'usearch -fastx_uniques %s -fastaout %s -sizeout &>/dev/null' % (pwd_fa_renamed, pwd_fa_uniques)
         with open(cmd_txt, 'a') as cmd_txt_handle:
             cmd_txt_handle.write(cmd_fastx_uniques + '\n')
         os.system(cmd_fastx_uniques)
@@ -305,32 +316,37 @@ def Usearch16S(args):
     cmd_2 = 'cat %s/*.fasta > %s/s03_AllSamples.fasta' % (dir_DereplicatedData, op_dir)
     with open(cmd_txt, 'a') as cmd_txt_handle:
         cmd_txt_handle.write(cmd_2 + '\n')
+    print(cmd_2)
     os.system(cmd_2)
 
     # dereplicate AllSamples.fasta
-    cmd_3  = 'usearch -fastx_uniques %s/s03_AllSamples.fasta -fastaout %s/s04_AllSamples_uniques.fasta -sizein -sizeout -strand both' % (op_dir, op_dir)
+    cmd_3  = 'usearch -fastx_uniques %s/s03_AllSamples.fasta -fastaout %s/s04_AllSamples_uniques.fasta -sizein -sizeout -strand both &>/dev/null' % (op_dir, op_dir)
     with open(cmd_txt, 'a') as cmd_txt_handle:
         cmd_txt_handle.write(cmd_3 + '\n')
+    print(cmd_3)
     os.system(cmd_3)
 
     # Generating unique sequences using UNOISE
-    cmd_4  = 'usearch -unoise3 %s/s04_AllSamples_uniques.fasta -zotus %s/s05_AllSamples_denoised.fasta' % (op_dir, op_dir)
+    cmd_4  = 'usearch -unoise3 %s/s04_AllSamples_uniques.fasta -zotus %s/s05_AllSamples_denoised.fasta &>/dev/null' % (op_dir, op_dir)
     with open(cmd_txt, 'a') as cmd_txt_handle:
         cmd_txt_handle.write(cmd_4 + '\n')
+    print(cmd_4)
     os.system(cmd_4)
 
     # Chimera Removal
-    cmd_5  = 'usearch -uchime2_ref %s/s05_AllSamples_denoised.fasta -db %s -strand plus -mode high_confidence -notmatched %s/s06_AllSamples_unoise_nc.fasta' % (op_dir, ref_seq, op_dir)
+    cmd_5  = 'usearch -uchime2_ref %s/s05_AllSamples_denoised.fasta -db %s -strand plus -mode high_confidence -notmatched %s/s06_AllSamples_unoise_nc.fasta &>/dev/null' % (op_dir, ref_seq, op_dir)
     if run_blca is True:
-        cmd_5  = 'usearch -uchime2_ref %s/s05_AllSamples_denoised.fasta -db %s -strand plus -mode high_confidence -notmatched %s/s06_AllSamples_unoise_nc.fasta' % (op_dir, ref_seq, op_dir)
+        cmd_5  = 'usearch -uchime2_ref %s/s05_AllSamples_denoised.fasta -db %s -strand plus -mode high_confidence -notmatched %s/s06_AllSamples_unoise_nc.fasta &>/dev/null' % (op_dir, ref_seq, op_dir)
     with open(cmd_txt, 'a') as cmd_txt_handle:
         cmd_txt_handle.write(cmd_5 + '\n')
+    print(cmd_5)
     os.system(cmd_5)
 
     # generate OTU table, an OTU table is made by the otutab command
-    cmd_6 = 'usearch -otutab %s/s03_AllSamples.fasta -db %s/s06_AllSamples_unoise_nc.fasta -id 0.97 -otutabout %s/s07_AllSamples_unoise_otu_table.txt' % (op_dir, op_dir, op_dir)
+    cmd_6 = 'usearch -otutab %s/s03_AllSamples.fasta -db %s/s06_AllSamples_unoise_nc.fasta -id 0.97 -otutabout %s/s07_AllSamples_unoise_otu_table.txt &>/dev/null' % (op_dir, op_dir, op_dir)
     with open(cmd_txt, 'a') as cmd_txt_handle:
         cmd_txt_handle.write(cmd_6 + '\n')
+    print(cmd_6)
     os.system(cmd_6)
 
     # Mapping of OTUs on Reference Database
@@ -338,6 +354,7 @@ def Usearch16S(args):
         cmd_7  = 'blastn -query %s/s06_AllSamples_unoise_nc.fasta -outfmt 6 -out %s/s08_AllSamples_unoise_nc.txt -db %s -evalue 1e-20 -num_threads %s' % (op_dir, op_dir, ref_seq, num_threads)
         with open(cmd_txt, 'a') as cmd_txt_handle:
             cmd_txt_handle.write(cmd_7 + '\n')
+        print(cmd_7)
         os.system(cmd_7)
 
         # keep best hit

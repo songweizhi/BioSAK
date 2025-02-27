@@ -6,20 +6,19 @@ import multiprocessing as mp
 
 
 blca_usage = '''
-=============================== blca example commands ===============================
+============================== blca example commands ==============================
 
-BioSAK blca -f -t 12 -i otu_fa -x fna -o demo -ref ssu_r220.fasta -tax ssu_r220.tax
+BioSAK blca -f -t 12 -i otu_fa -x fna -o demo -r ssu_r220.fasta -c ssu_r220.tax
 
-# db files on Mac
--ref /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.fasta
--tax /Users/songweizhi/DB/GTDB_SSU/ssu_all_r220.tax
+# GTDB SSU (BLCA compatible)
+-r /Users/songweizhi/DB/BLCA/GTDB_SSU/ssu_all_r220.blca.fa
+-c /Users/songweizhi/DB/BLCA/GTDB_SSU/ssu_all_r220.blca.tax
 
-# To prepare database files for BLCA:
-BioSAK GTDB_for_BLCA -h
-BioSAK SILVA_for_BLCA -h
-BioSAK UNITE_for_BLCA -h
+# SILVA SSU (BLCA compatible)
+-r /Users/songweizhi/DB/BLCA/SILVA_SSU/SILVA_138.2_SSURef_NR99_tax_silva.blca.fa
+-c /Users/songweizhi/DB/BLCA/SILVA_SSU/SILVA_138.2_SSURef_NR99_tax_silva.blca.tax
 
-=====================================================================================
+===================================================================================
 '''
 
 
@@ -65,37 +64,41 @@ def parse_blca_op(blca_output):
         formatted_taxon_str_with_num = 'Unclassified'
         formatted_taxon_str_no_num = 'Unclassified'
         if taxon_blca_raw != 'Unclassified':
-            taxon_blca_raw_split_1 = taxon_blca_raw.strip().split(':')[1:]
-            formatted_taxon_list_with_num = []
-            formatted_taxon_list_no_num = []
-            for each_str in taxon_blca_raw_split_1:
-                each_str_split = each_str.split(';')
+            split2 = taxon_blca_raw.strip().split(';')[:-1]
+            formatted_taxon_list_with_num2 = []
+            formatted_taxon_list_no_num2 = []
+            element_index = 0
+            while element_index < len(split2):
+                taxon_blca = split2[element_index]
+                confidence_value = split2[element_index + 1]
+                confidence_value = float("{0:.2f}".format(float(confidence_value)))
+                taxon_rank_blca = taxon_blca.split(':')[0]
 
-                # determine_current_rank
-                current_rank = ''
-                if each_str_split[-1] == 'phylum':
-                    current_rank = 'd'
-                elif each_str_split[-1] == 'class':
-                    current_rank = 'p'
-                elif each_str_split[-1] == 'order':
-                    current_rank = 'c'
-                elif each_str_split[-1] == 'family':
-                    current_rank = 'o'
-                elif each_str_split[-1] == 'genus':
-                    current_rank = 'f'
-                elif each_str_split[-1] == 'species':
-                    current_rank = 'g'
-                elif each_str_split[-1] == '':
-                    current_rank = 's'
+                taxon_rank_gtdb = ''
+                if taxon_rank_blca == 'superkingdom':
+                    taxon_rank_gtdb = 'd'
+                elif taxon_rank_blca == 'phylum':
+                    taxon_rank_gtdb = 'p'
+                elif taxon_rank_blca == 'class':
+                    taxon_rank_gtdb = 'c'
+                elif taxon_rank_blca == 'order':
+                    taxon_rank_gtdb = 'o'
+                elif taxon_rank_blca == 'family':
+                    taxon_rank_gtdb = 'f'
+                elif taxon_rank_blca == 'genus':
+                    taxon_rank_gtdb = 'g'
+                elif taxon_rank_blca == 'species':
+                    taxon_rank_gtdb = 's'
 
-                taxon_with_confidence = '%s(%s)' % (each_str_split[0], each_str_split[1][:5])
-                taxon_without_confidence = '%s__%s' % (current_rank, each_str_split[0])
+                taxon_name_blca  = ':'.join(taxon_blca.split(':')[1:]).replace(':', '')
+                current_rank_with_num = '%s__%s(%s)' % (taxon_rank_gtdb, taxon_name_blca, confidence_value)
+                current_rank_no_num   = '%s__%s' % (taxon_rank_gtdb, taxon_name_blca)
+                formatted_taxon_list_with_num2.append(current_rank_with_num)
+                formatted_taxon_list_no_num2.append(current_rank_no_num)
+                element_index += 2
 
-                formatted_taxon_list_with_num.append(taxon_with_confidence)
-                formatted_taxon_list_no_num.append(taxon_without_confidence)
-
-            formatted_taxon_str_with_num = ';'.join(formatted_taxon_list_with_num)
-            formatted_taxon_str_no_num = ';'.join(formatted_taxon_list_no_num)
+            formatted_taxon_str_with_num = ';'.join(formatted_taxon_list_with_num2)
+            formatted_taxon_str_no_num = ';'.join(formatted_taxon_list_no_num2)
 
         formatted_taxon_str_with_numno_space = '_'.join(formatted_taxon_str_with_num.split(' '))
         formatted_taxon_str_no_num_no_space = '_'.join(formatted_taxon_str_no_num.split(' '))
@@ -117,8 +120,8 @@ def blca(args):
     fa_dir              = args['i']
     fa_ext              = args['x']
     output_folder       = args['o']
-    ref_seq             = args['ref']
-    ref_tax             = args['tax']
+    ref_seq             = args['r']
+    ref_tax             = args['c']
     num_threads         = args['t']
     force_overwrite     = args['f']
 
@@ -174,8 +177,8 @@ if __name__ == '__main__':
     blca_parser.add_argument('-i',   required=True,                              help='path to input sequences (in multi-fasta format)')
     blca_parser.add_argument('-x',   required=False,                             help='file extension')
     blca_parser.add_argument('-o',   required=True,                              help='output directory')
-    blca_parser.add_argument('-ref', required=True,                             help='reference sequences')
-    blca_parser.add_argument('-tax', required=True,                             help='reference taxonomy')
+    blca_parser.add_argument('-r',   required=True,                              help='reference sequences')
+    blca_parser.add_argument('-c',   required=True,                              help='reference taxonomy')
     blca_parser.add_argument('-t',   required=False, type=int, default=1,        help='number of threads')
     blca_parser.add_argument('-f',   required=False, action="store_true",        help='force overwrite')
     args = vars(blca_parser.parse_args())
