@@ -140,6 +140,7 @@ def print_main_help():
        trim                    ->  a wrapper for trimmomatic
        FasterqDump             ->  a wrapper for fasterq-dump
        rename_df_row           ->  rename row headers in a dataframe
+       blast                   ->  Parse batch online blast output
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -1184,6 +1185,17 @@ if __name__ == '__main__':
         blca_parser.add_argument('-f',  required=False, action="store_true",        help='force overwrite')
         args = vars(parser.parse_args())
         blca.blca(args)
+
+    elif sys.argv[1] == 'blast':
+        from BioSAK import blast
+        blast_parser = subparsers.add_parser('blast', usage=blast.blast_usage)
+        blast_parser.add_argument('-i',      required=True,                          help='input file')
+        blast_parser.add_argument('-o',      required=True,                          help='output file')
+        blast_parser.add_argument('-n',      required=False,type=int, default=9999,  help='top hits to keep, default is all')
+        blast_parser.add_argument('-iden',   required=False,type=float, default=80,  help='minimum identity, default is 80')
+        blast_parser.add_argument('-cov',    required=False,type=float, default=50,  help='minimum coverage, default is 50')
+        args = vars(parser.parse_args())
+        blast.blast(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

@@ -48,6 +48,7 @@ BioSAK/abund.py
 BioSAK/add_desc.py
 BioSAK/arCOG.py
 BioSAK/bam2reads.py
+BioSAK/blast.py
 BioSAK/blca.py
 BioSAK/blca_generate_abundance_table.py
 BioSAK/blca_main.py
