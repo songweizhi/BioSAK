@@ -1,4 +1,5 @@
 import os
+import glob
 import argparse
 import multiprocessing as mp
 
@@ -27,6 +28,7 @@ def sra(args):
     max_size            = args['maxsize']
 
     fasterq_dump_tmp    = '%s/fasterq_dump_tmp' % op_dir
+    sra_dir             = '%s/sra_dir'          % op_dir
     cmd_txt             = '%s/cmds.txt'         % op_dir
 
     # create output folder
@@ -37,6 +39,7 @@ def sra(args):
             print('Output folder detected, program exited!')
             exit()
     os.system('mkdir %s' % op_dir)
+    os.system('mkdir %s' % sra_dir)
 
     id_to_desc_dict = dict()
     id_set = set()
@@ -51,6 +54,7 @@ def sra(args):
 
     prefetch_cmd_list = []
     fasterq_dump_cmd_list = []
+
     for each_id in id_set:
         sub_dir = id_to_desc_dict[each_id]
         mkdir_cmd        = 'mkdir %s/%s'                                    % (op_dir, sub_dir)
@@ -58,7 +62,8 @@ def sra(args):
             prefetch_cmd     = 'prefetch %s -O %s/%s'                       % (each_id, op_dir, sub_dir)
         else:
             prefetch_cmd     = 'prefetch %s -O %s/%s --max-size %s'         % (each_id, op_dir, sub_dir, max_size)
-        fasterq_dump_cmd = 'fasterq-dump %s/%s/%s --split-3 -O %s/%s -t %s' % (op_dir, sub_dir, each_id, op_dir, sub_dir, fasterq_dump_tmp)
+
+        fasterq_dump_cmd = 'fasterq-dump %s/%s.sra --split-3 -O %s -t %s' % (sra_dir, each_id, op_dir, fasterq_dump_tmp)
         prefetch_cmd_list.append(prefetch_cmd)
         fasterq_dump_cmd_list.append(fasterq_dump_cmd)
         os.system(mkdir_cmd)
@@ -78,6 +83,15 @@ def sra(args):
     pool.close()
     pool.join()
 
+    for each_id in id_set:
+
+        sra_file_re = '%s/%s/*/*.sra' % (op_dir, each_id)
+        print(sra_file_re)
+        print(glob.glob(sra_file_re))
+        sra_file    = glob.glob(sra_file_re)[0]
+        os.system('mv %s %s/%s.sra' % (sra_file, sra_dir, each_id))
+        os.system('rm -r %s/%s' % (op_dir, each_id))
+
     # extract fastq file from SRA with multiprocessing
     if run_dump is True:
         print('Running fasterq-dump')
@@ -87,6 +101,7 @@ def sra(args):
         pool.close()
         pool.join()
 
+    os.system('rm -r %s' % fasterq_dump_tmp)
     print('Done!')
 
 

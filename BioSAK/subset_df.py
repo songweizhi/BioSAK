@@ -7,8 +7,8 @@ subset_df_usage = '''
 ============================ subset_df example commands ============================
 
 BioSAK subset_df -i demo_df.txt -r row_id.txt -o df_subset.txt
-BioSAK subset_df -i demo_df.txt -c col_id.txt -o df_subset.txt
-BioSAK subset_df -i demo_df.txt -r row_id.txt -c col_id.txt -o df_subset.txt
+BioSAK subset_df -i demo_df.txt -c col_id.txt -o df_subset.txt -e
+BioSAK subset_df -i demo_df.txt -r row_id.txt -c col_id.txt -o df_subset.txt -e
 BioSAK subset_df -i demo_df.txt -r row_id.txt -c col_id.txt -o df_subset.txt -b -m
 
 # Note
@@ -30,6 +30,7 @@ def subset_df(args):
     in_binary           = args['b']
     zero_as_minus_one   = args['m']
     skip1row            = args['skip1row']
+    exclude_rows_cols   = args['e']
     column_name_pos     = 0
     row_name_pos        = 0
 
@@ -50,7 +51,7 @@ def subset_df(args):
     df_col_header_list = df.columns.values.tolist()
 
     # read in rows_to_keep_file
-    rows_to_keep_set = set()
+    rows_found_set = set()
     rows_missing_set = set()
     if rows_to_keep_file is not None:
         if os.path.isfile(rows_to_keep_file) is False:
@@ -65,13 +66,13 @@ def subset_df(args):
                 if ignore_current_row is False:
                     row_id = each_r.strip().split()[0]
                     if row_id in df_row_header_list:
-                        rows_to_keep_set.add(row_id)
+                        rows_found_set.add(row_id)
                     else:
                         rows_missing_set.add(row_id)
                 file_row_index += 1
 
     # read in cols_to_keep_file
-    cols_to_keep_set = set()
+    cols_found_set = set()
     cols_missing_set = set()
     if cols_to_keep_file is not None:
         if os.path.isfile(cols_to_keep_file) is False:
@@ -86,7 +87,7 @@ def subset_df(args):
                 if ignore_current_row is False:
                     col_id = each_c.strip().split()[0]
                     if col_id in df_col_header_list:
-                        cols_to_keep_set.add(col_id)
+                        cols_found_set.add(col_id)
                     else:
                         cols_missing_set.add(col_id)
                 file_row_index += 1
@@ -99,6 +100,19 @@ def subset_df(args):
         print('The following columns are missing from the dataframe:\n%s' % ','.join(sorted(list(cols_missing_set))))
 
     ####################################################################################################################
+
+    rows_to_keep_set = set()
+    cols_to_keep_set = set()
+    if exclude_rows_cols is False:
+        rows_to_keep_set = rows_found_set
+        cols_to_keep_set = cols_found_set
+    else:
+        for each_row in df_row_header_list:
+            if each_row not in rows_found_set:
+                rows_to_keep_set.add(each_row)
+        for each_col in df_col_header_list:
+            if each_col not in cols_found_set:
+                cols_to_keep_set.add(each_col)
 
     # turn sets into lists
     rows_to_keep_list_sorted = sorted(list(rows_to_keep_set))
@@ -135,6 +149,7 @@ if __name__ == '__main__':
     subset_df_parser.add_argument('-r',         required=False, default=None,           help='header of rows to keep')
     subset_df_parser.add_argument('-s',         required=False, default='tab',          help='column separator, choose from tab and comma, default: tab')
     subset_df_parser.add_argument('-b',         required=False, action='store_true',    help='write out dataframe in 0/1 format')
+    subset_df_parser.add_argument('-e',         required=False, action='store_true',    help='subset df by excluding the specified rows/columns')
     subset_df_parser.add_argument('-m',         required=False, action='store_true',    help='convert 0 to -1')
     subset_df_parser.add_argument('-skip1row',  required=False, action='store_true',    help='skip the 1st row of the -c/-r file')
     args = vars(subset_df_parser.parse_args())

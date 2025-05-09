@@ -348,6 +348,7 @@ def Usearch16S(args):
         cmd_txt_handle.write(cmd_6 + '\n')
     print(cmd_6)
     os.system(cmd_6)
+    print('usearch -otutab finished')
 
     # Mapping of OTUs on Reference Database
     if run_blca is False:
@@ -395,12 +396,14 @@ def Usearch16S(args):
 
     else:
         # split fasta file
+        print('split fasta')
         split_fasta(unoise_nc_fa, None, num_threads, unoise_nc_fa_split_dir)
 
         # create blca output directory
         os.system('mkdir %s' % s10_blca_op_dir)
 
         # run blca
+        print('running blca')
         blca(unoise_nc_fa_split_dir, 'fa', s10_blca_op_dir, ref_seq, ref_tax, num_threads)
 
         # combine results

@@ -43,6 +43,8 @@ def print_main_help():
        metaAssembly            ->  Get metadata of NCBI assembly records
        metaBiosample           ->  Get metadata of NCBI biosample records
        statsTaxa               ->  stats GTDB taxa
+       GenBank1                ->  get sequence/organism/voucher info, prepare commands 
+       GenBank2                ->  get sequence/organism/voucher info, summarize
 
     Metagenomics
        metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
@@ -85,7 +87,11 @@ def print_main_help():
        UNITE_for_BLCA          ->  Prepare BLCA-compatible UNITE SSU database
        BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
        Tax4Fun2IndOTU          ->  Get functional profile for individual OTUs (to be added)
-        
+       get_eu_otu              ->  Get eukaryotic OTUs
+       rm_low_abd_otu          ->  Remove low abd otu from table
+       combine_low_abd_otu     ->  Combine low abundance OTUs
+       rm_low_depth_sample     ->  Remove samples from OTU table with small number of sequences
+
     Sequence manipulator
        gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
        ffn2faa/gfa2fa/get_rc   ->  Format convertors
@@ -141,7 +147,8 @@ def print_main_help():
        FasterqDump             ->  a wrapper for fasterq-dump
        rename_df_row           ->  rename row headers in a dataframe
        blast                   ->  Parse batch online blast output
-       
+       taxdump                 ->  Parse NCBI Taxonomy database
+
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
 
@@ -871,6 +878,7 @@ if __name__ == '__main__':
         subset_df_parser.add_argument('-r',         required=False, default=None,           help='header of rows to keep')
         subset_df_parser.add_argument('-s',         required=False, default='tab',          help='column separator, choose from tab and comma, default: tab')
         subset_df_parser.add_argument('-b',         required=False, action='store_true',    help='write out dataframe in 0/1 format')
+        subset_df_parser.add_argument('-e',         required=False, action='store_true',    help='subset df by excluding the specified rows/columns')
         subset_df_parser.add_argument('-m',         required=False, action='store_true',    help='convert 0 to -1')
         subset_df_parser.add_argument('-skip1row',  required=False, action='store_true',    help='skip the 1st row of the -c/-r file')
         args = vars(parser.parse_args())
@@ -1194,8 +1202,82 @@ if __name__ == '__main__':
         blast_parser.add_argument('-n',      required=False,type=int, default=9999,  help='top hits to keep, default is all')
         blast_parser.add_argument('-iden',   required=False,type=float, default=80,  help='minimum identity, default is 80')
         blast_parser.add_argument('-cov',    required=False,type=float, default=50,  help='minimum coverage, default is 50')
+        blast_parser.add_argument('-tax',    required=False, default=None,           help='NCBI taxonomy file')
         args = vars(parser.parse_args())
         blast.blast(args)
+
+    elif sys.argv[1] == 'taxdump':
+        from BioSAK import taxdump
+        taxdump_parser = subparsers.add_parser('taxdump', usage=taxdump.taxdump_usage)
+        taxdump_parser.add_argument('-node',    required=True, help='nodes.dmp')
+        taxdump_parser.add_argument('-name',    required=True, help='names.dmp')
+        taxdump_parser.add_argument('-o',       required=True, help='output file')
+        args = vars(parser.parse_args())
+        taxdump.taxdump(args)
+
+    elif sys.argv[1] == 'rm_low_abd_otu':
+        from BioSAK import rm_low_abd_otu
+        rm_low_abd_otu_parser = subparsers.add_parser('rm_low_abd_otu', usage=rm_low_abd_otu.rm_low_abd_otu_usage)
+        rm_low_abd_otu_parser.add_argument('-i', required=True,                                 help='input otu count table')
+        rm_low_abd_otu_parser.add_argument('-c', required=False, default=0.001, type=float,     help='relative abundance cutoff, default is 0.001')
+        rm_low_abd_otu_parser.add_argument('-o', required=True,                                 help='output otu count table')
+        args = vars(parser.parse_args())
+        rm_low_abd_otu.rm_low_abd_otu(args)
+
+    elif sys.argv[1] == 'get_eu_otu':
+        from BioSAK import get_eu_otu
+        get_eu_otu_parser = subparsers.add_parser('get_eu_otu', usage=get_eu_otu.get_eu_otu_usage)
+        get_eu_otu_parser.add_argument('-i',    required=True,                              help='blast result, outfmt need to be 6')
+        get_eu_otu_parser.add_argument('-o',    required=True,                              help='output of identified eukaryotic OTUs')
+        get_eu_otu_parser.add_argument('-node', required=True,                              help='nodes.dmp ')
+        get_eu_otu_parser.add_argument('-db',   required=True,                              help='RefSeq taxonomy file')
+        get_eu_otu_parser.add_argument('-c',    required=False, type=float, default=0.3,    help='consider as eukaryotic if the proportion of eukaryotic hits higher than this cutoff, default is 0.3')
+        get_eu_otu_parser.add_argument('-n',    required=False, type=int, default=10,       help='number of top hits to consider, default is 10')
+        args = vars(parser.parse_args())
+        get_eu_otu.get_eu_otu(args)
+
+    elif sys.argv[1] == 'rm_low_depth_sample':
+        from BioSAK import rm_low_depth_sample
+        rm_low_depth_sample_parser = subparsers.add_parser('rm_low_depth_sample', usage=rm_low_depth_sample.rm_low_depth_sample_usage)
+        rm_low_depth_sample_parser.add_argument('-i', required=True,                            help='input otu count table')
+        rm_low_depth_sample_parser.add_argument('-c', required=False, default=20000,type=int,   help='minimal number of sequences, default is 20000')
+        rm_low_depth_sample_parser.add_argument('-o', required=True,                            help='output otu count table')
+        args = vars(parser.parse_args())
+        rm_low_depth_sample.rm_low_depth_sample(args)
+
+    elif sys.argv[1] == 'combine_low_abd_otu':
+        from BioSAK import combine_low_abd_otu
+        combine_low_abd_otu_parser = subparsers.add_parser('combine_low_abd_otu', usage=combine_low_abd_otu.combine_low_abd_otu_usage)
+        combine_low_abd_otu_parser.add_argument('-i', required=True,                            help='input otu count table')
+        combine_low_abd_otu_parser.add_argument('-c', required=False, default=0.5, type=float,  help='relative abundance cutoff, default is 0.5')
+        combine_low_abd_otu_parser.add_argument('-s', required=False, default=None,             help='interested sample txt')
+        combine_low_abd_otu_parser.add_argument('-o', required=True,                            help='output otu count table')
+        args = vars(parser.parse_args())
+        combine_low_abd_otu.combine_low_abd_otu(args)
+
+    elif sys.argv[1] == 'GenBank1':
+        from BioSAK import GenBank1
+        GenBank1_parser = subparsers.add_parser('GenBank1', usage=GenBank1.GenBank1_usage)
+        GenBank1_parser.add_argument('-i',          required=True,                       help='input txt containing accession id')
+        GenBank1_parser.add_argument('-o',          required=True,                       help='output dir')
+        GenBank1_parser.add_argument('-seq',        required=False, action="store_true", help='get sequences')
+        GenBank1_parser.add_argument('-organism',   required=False, action="store_true", help='get organism info')
+        GenBank1_parser.add_argument('-voucher',    required=False, action="store_true", help='get voucher info')
+        GenBank1_parser.add_argument('-f',          required=False, action="store_true", help='force overwrite')
+        args = vars(parser.parse_args())
+        GenBank1.GenBank1(args)
+
+    elif sys.argv[1] == 'GenBank2':
+        from BioSAK import GenBank2
+        GenBank2_parser = subparsers.add_parser('GenBank2', usage=GenBank2.GenBank2_usage)
+        GenBank2_parser.add_argument('-i',          required=True,                       help='input txt containing accession id')
+        GenBank2_parser.add_argument('-o',          required=True,                       help='output dir')
+        GenBank2_parser.add_argument('-seq',        required=False, action="store_true", help='get sequences')
+        GenBank2_parser.add_argument('-organism',   required=False, action="store_true", help='get organism info')
+        GenBank2_parser.add_argument('-voucher',    required=False, action="store_true", help='get voucher info')
+        GenBank2_parser.add_argument('-tax',        required=False, default=None,        help='NCBI taxonomy file, specify to get the full taxon lineage')
+        args = vars(parser.parse_args())
+        GenBank2.GenBank2(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

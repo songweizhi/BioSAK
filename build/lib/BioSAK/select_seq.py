@@ -23,7 +23,7 @@ def select_seq(args):
     seq_file        = args['i']
     id_file         = args['id']
     output_file     = args['o']
-    select_option   = args['exclude']
+    exclude_seqs    = args['exclude']
     one_line        = args['oneline']
     in_fastq        = args['fq']
 
@@ -38,7 +38,7 @@ def select_seq(args):
         seq_in_format = 'fastq'
 
     # report
-    if select_option is False:
+    if exclude_seqs is False:
         print(datetime.now().strftime(time_format) + 'Extracting sequences in %s' % id_file)
     else:
         print(datetime.now().strftime(time_format) + 'Extracting sequences except those in %s' % id_file)
@@ -47,7 +47,7 @@ def select_seq(args):
     output_file_handle = open(output_file, 'w')
     for seq_record in SeqIO.parse(seq_file, seq_in_format):
         seq_id = seq_record.id
-        if select_option == 1:
+        if exclude_seqs is False:
             if seq_id in seq_id_list:
 
                 if in_fastq is False:
@@ -58,7 +58,7 @@ def select_seq(args):
                 else:
                     SeqIO.write(seq_record, output_file_handle, 'fastq')
 
-        if select_option == 0:
+        else:
             if seq_id not in seq_id_list:
 
                 if in_fastq is False:

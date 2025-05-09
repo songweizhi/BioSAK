@@ -1,5 +1,23 @@
-1.110.1
+1.116.2
 - fixed bugs
+
+1.116.0
+- new modules added: GenBank1 and GenBank2
+
+1.115.0
+- new modules added: combine_low_abd_otu
+
+1.114.0
+- new modules added: rm_low_depth_sample
+
+1.113.0
+- new modules added: get_eu_otu
+
+1.112.0
+- new modules added: rm_low_abd_otu
+
+1.111.0
+- new modules added: taxdump
 
 1.110.0
 - new modules added: blast
