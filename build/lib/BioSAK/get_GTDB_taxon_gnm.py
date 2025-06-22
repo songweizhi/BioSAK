@@ -93,7 +93,8 @@ def get_GTDB_taxon_gnm(args):
             gnm_size = each_ref_split[col_index['genome_size']]
             gtdb_taxonomy = each_ref_split[col_index['gtdb_taxonomy']]
             for each_interested_taxon in taxons_to_retrieve_set:
-                if each_interested_taxon in gtdb_taxonomy:
+                with_semicolon = '%s;' % each_interested_taxon
+                if with_semicolon in gtdb_taxonomy:
 
                     # check completeness
                     cpl_passed = False

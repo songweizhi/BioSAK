@@ -43,8 +43,7 @@ def print_main_help():
        metaAssembly            ->  Get metadata of NCBI assembly records
        metaBiosample           ->  Get metadata of NCBI biosample records
        statsTaxa               ->  stats GTDB taxa
-       GenBank1                ->  get sequence/organism/voucher info, prepare commands 
-       GenBank2                ->  get sequence/organism/voucher info, summarize
+       GenBank                 ->  get sequence/organism/voucher info
 
     Metagenomics
        metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
@@ -69,9 +68,11 @@ def print_main_help():
        KEGG                    ->  KEGG annotation
        koala                   ->  Separate the combined BlastKOALA or GhostKOALA output
        COG2020                 ->  COG annotation (v2020, by blastp/diamond)
+       COG2024                 ->  COG annotation (v2024, by blastp/diamond)
        arCOG                   ->  COG annotation for archaea (version ar18)
        dbCAN                   ->  CAZy annotation with dbCAN
        Combine_KEGG_arCOG      ->  Combine KEGG and arCOG annotation results
+       Combine_KEGG_COG        ->  Combine KEGG and COG annotation results
        enrich                  ->  Functional enrichment analysis
        gapseq                  ->  Data matrix GapSeq predicted pathways
        stats_ko                ->  get stats for a list of provided KO
@@ -187,6 +188,21 @@ if __name__ == '__main__':
         COG2020_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
         args = vars(parser.parse_args())
         COG2020.COG2020(args)
+
+    elif sys.argv[1] == 'COG2024':
+        from BioSAK import COG2024
+        COG2024_parser = subparsers.add_parser('COG2024', description='Wrapper for COG annotation (v2024)', usage=COG2024.COG2024_parser_usage)
+        COG2024_parser.add_argument('-i',                   required=True,                                  help='path to input sequences (in multi-fasta format)')
+        COG2024_parser.add_argument('-x',                   required=False,                                 help='file extension')
+        COG2024_parser.add_argument('-m',                   required=True,                                  help='sequence type, "N/n" for "nucleotide", "P/p" for "protein"')
+        COG2024_parser.add_argument('-d',                   required=False, default=None,                   help='gene depth file/folder')
+        COG2024_parser.add_argument('-pct_by_all',          required=False, action='store_true',            help='normalize by all query genes, rather than those with COG assignment')
+        COG2024_parser.add_argument('-db_dir',              required=True,                                  help='DB folder')
+        COG2024_parser.add_argument('-diamond',             required=False, action='store_true',            help='run diamond (for big dataset), default is NCBI blastp')
+        COG2024_parser.add_argument('-t',                   required=False, default=1,     type=int,        help='number of threads')
+        COG2024_parser.add_argument('-evalue',              required=False, default=0.001, type=float,      help='evalue cutoff, default: 0.001')
+        args = vars(parser.parse_args())
+        COG2024.COG2024(args)
 
     elif sys.argv[1] == 'arCOG':
         from BioSAK import arCOG
@@ -1061,6 +1077,16 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         Combine_KEGG_arCOG.Combine_KEGG_arCOG(args)
 
+    elif sys.argv[1] == 'Combine_KEGG_COG':
+        from BioSAK import Combine_KEGG_COG
+        Combine_KEGG_COG_parser = subparsers.add_parser('Combine_KEGG_COG', usage=Combine_KEGG_COG.Combine_KEGG_COG_usage)
+        Combine_KEGG_COG_parser.add_argument('-o',      required=True,                          help='output directory')
+        Combine_KEGG_COG_parser.add_argument('-kegg',   required=True,                          help='annotation results from KEGG module')
+        Combine_KEGG_COG_parser.add_argument('-cog',    required=True,                          help='annotation results from COG module')
+        Combine_KEGG_COG_parser.add_argument('-f',      required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        Combine_KEGG_COG.Combine_KEGG_COG(args)
+
     elif sys.argv[1] == 'UNITE_for_BLCA':
         from BioSAK import UNITE_for_BLCA
         UNITE_for_BLCA_parser = subparsers.add_parser('UNITE_for_BLCA', usage=UNITE_for_BLCA.UNITE_for_BLCA_usage)
@@ -1163,6 +1189,7 @@ if __name__ == '__main__':
         Usearch16S_parser.add_argument('-i',       required=True,                        help='path to input sequences')
         Usearch16S_parser.add_argument('-x',       required=True,                        help='file extension')
         Usearch16S_parser.add_argument('-o',       required=True,                        help='output directory')
+        Usearch16S_parser.add_argument('-l',       required=False,                       help='allowed length range, default is 0-9999')
         Usearch16S_parser.add_argument('-r',       required=False,                       help='reference sequences')
         Usearch16S_parser.add_argument('-blca',    required=False, action="store_true",  help='perform classification with BLCA')
         Usearch16S_parser.add_argument('-c',       required=False,                       help='reference sequence taxonomy')
@@ -1255,29 +1282,15 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         combine_low_abd_otu.combine_low_abd_otu(args)
 
-    elif sys.argv[1] == 'GenBank1':
-        from BioSAK import GenBank1
-        GenBank1_parser = subparsers.add_parser('GenBank1', usage=GenBank1.GenBank1_usage)
-        GenBank1_parser.add_argument('-i',          required=True,                       help='input txt containing accession id')
-        GenBank1_parser.add_argument('-o',          required=True,                       help='output dir')
-        GenBank1_parser.add_argument('-seq',        required=False, action="store_true", help='get sequences')
-        GenBank1_parser.add_argument('-organism',   required=False, action="store_true", help='get organism info')
-        GenBank1_parser.add_argument('-voucher',    required=False, action="store_true", help='get voucher info')
-        GenBank1_parser.add_argument('-f',          required=False, action="store_true", help='force overwrite')
+    elif sys.argv[1] == 'GenBank':
+        from BioSAK import GenBank
+        GenBank_parser = subparsers.add_parser('GenBank', usage=GenBank.GenBank_usage)
+        GenBank_parser.add_argument('-i',   required=True,                       help='input txt containing accession id')
+        GenBank_parser.add_argument('-o',   required=True,                       help='output dir')
+        GenBank_parser.add_argument('-tax', required=False, default=None,        help='NCBI taxonomy file, specify to get the full taxon lineage')
+        GenBank_parser.add_argument('-f',   required=False, action="store_true", help='force overwrite')
         args = vars(parser.parse_args())
-        GenBank1.GenBank1(args)
-
-    elif sys.argv[1] == 'GenBank2':
-        from BioSAK import GenBank2
-        GenBank2_parser = subparsers.add_parser('GenBank2', usage=GenBank2.GenBank2_usage)
-        GenBank2_parser.add_argument('-i',          required=True,                       help='input txt containing accession id')
-        GenBank2_parser.add_argument('-o',          required=True,                       help='output dir')
-        GenBank2_parser.add_argument('-seq',        required=False, action="store_true", help='get sequences')
-        GenBank2_parser.add_argument('-organism',   required=False, action="store_true", help='get organism info')
-        GenBank2_parser.add_argument('-voucher',    required=False, action="store_true", help='get voucher info')
-        GenBank2_parser.add_argument('-tax',        required=False, default=None,        help='NCBI taxonomy file, specify to get the full taxon lineage')
-        args = vars(parser.parse_args())
-        GenBank2.GenBank2(args)
+        GenBank.GenBank(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

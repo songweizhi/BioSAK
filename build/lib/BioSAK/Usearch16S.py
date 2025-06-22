@@ -249,13 +249,24 @@ def Usearch16S(args):
     ref_tax             = args['c']
     num_threads         = args['t']
     force_create_op_dir = args['f']
+    len_range_str       = args['l']
+
+    if len_range_str.startswith('-'):
+        min_len = 0
+        max_len = int(len_range_str[1:])
+    elif len_range_str.endswith('-'):
+        min_len = int(len_range_str[:-1])
+        max_len = 9999999
+    else:
+        min_len = int(len_range_str.split('-')[0])
+        max_len = int(len_range_str.split('-')[1])
 
     if run_blca is True:
         check_executables(['blastn', 'blastdbcmd', 'clustalo', 'muscle', 'usearch'])
 
     # define file name
     cmd_txt                     = '%s/cmds.txt'                                 % op_dir
-    dir_clean_data_renamed      = '%s/s01_CleanData_renamed'                    % op_dir
+    dir_clean_data_renamed      = '%s/s01_CleanData_renamed_%s_%sbp'            % (op_dir, min_len, max_len)
     dir_DereplicatedData        = '%s/s02_DereplicatedData'                     % op_dir
     unoise_nc_fa                = '%s/s06_AllSamples_unoise_nc.fasta'           % op_dir
     unoise_nc_fa_split_dir      = '%s/s06_AllSamples_unoise_nc_split'           % op_dir
@@ -302,8 +313,10 @@ def Usearch16S(args):
         pwd_fa_renamed_handle = open(pwd_fa_renamed, 'w')
         for each_seq in SeqIO.parse(each_file, 'fasta'):
             seq_id = each_seq.id
-            pwd_fa_renamed_handle.write('>%s;sample=%s;\n' % (seq_id, fa_base))
-            pwd_fa_renamed_handle.write(str(each_seq.seq) + '\n')
+            seq_len = len(each_seq.seq)
+            if max_len >= seq_len >= min_len:
+                pwd_fa_renamed_handle.write('>%s;sample=%s;\n' % (seq_id, fa_base))
+                pwd_fa_renamed_handle.write(str(each_seq.seq) + '\n')
         pwd_fa_renamed_handle.close()
 
         # run dereplicate
@@ -440,6 +453,7 @@ if __name__ == '__main__':
     Usearch16S_parser.add_argument('-i',       required=True,                        help='path to input sequences')
     Usearch16S_parser.add_argument('-x',       required=True,                        help='file extension')
     Usearch16S_parser.add_argument('-o',       required=True,                        help='output directory')
+    Usearch16S_parser.add_argument('-l',       required=False,                       help='allowed length range, default is 0-9999999')
     Usearch16S_parser.add_argument('-r',       required=False,                       help='reference sequences')
     Usearch16S_parser.add_argument('-blca',    required=False, action="store_true",  help='perform classification with BLCA')
     Usearch16S_parser.add_argument('-c',       required=False,                       help='reference sequence taxonomy')
