@@ -167,6 +167,7 @@ BioSAK/srun.py
 BioSAK/statsTaxa.py
 BioSAK/stats_arcog.py
 BioSAK/stats_blast_hit.py
+BioSAK/stats_cog2024.py
 BioSAK/stats_ko.py
 BioSAK/submitHPC.py
 BioSAK/subset_GTDB_meta.py

@@ -76,8 +76,8 @@ def print_main_help():
        enrich                  ->  Functional enrichment analysis
        gapseq                  ->  Data matrix GapSeq predicted pathways
        stats_ko                ->  get stats for a list of provided KO
-       stats_cog2020           ->  get stats for a list of provided COG (to be added)
        stats_arcog             ->  get stats for a list of provided arCOG 
+       stats_cog2024           ->  get stats for a list of provided COG (v2024)
 
     16S rRNA related
        Usearch16S              ->  Usearch for Novogene 16S amplicon sequencing results
@@ -1044,6 +1044,7 @@ if __name__ == '__main__':
         stats_ko_parser.add_argument('-ko',         required=True,                          help='ko.txt')
         stats_ko_parser.add_argument('-db',         required=True,                          help='ko00001.keg')
         stats_ko_parser.add_argument('-o',          required=True,                          help='output directory')
+        stats_ko_parser.add_argument('-e',          required=False, default='',             help='IDs to exclude, at ABC levels')
         stats_ko_parser.add_argument('-f',          required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
         stats_ko.stats_ko(args)
@@ -1057,6 +1058,16 @@ if __name__ == '__main__':
         stats_arcog_parser.add_argument('-f',           required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
         stats_arcog.stats_arcog(args)
+
+    elif sys.argv[1] == 'stats_cog2024':
+        from BioSAK import stats_cog2024
+        stats_cog2024_parser = subparsers.add_parser('stats_cog2024', usage=stats_cog2024.stats_cog2024_usage)
+        stats_cog2024_parser.add_argument('-cog',   required=True,                          help='cog_ids.txt')
+        stats_cog2024_parser.add_argument('-db',    required=True,                          help='DB folder, contains cog-24.def.tab and cog-24.fun.tab')
+        stats_cog2024_parser.add_argument('-o',     required=True,                          help='output directory')
+        stats_cog2024_parser.add_argument('-f',     required=False, action="store_true",    help='force overwrite')
+        args = vars(parser.parse_args())
+        stats_cog2024.stats_cog2024(args)
 
     elif sys.argv[1] == 'prefix_seq_by_file_name':
         from BioSAK import prefix_seq_by_file_name

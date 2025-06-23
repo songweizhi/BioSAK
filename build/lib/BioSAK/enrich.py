@@ -107,6 +107,11 @@ def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, fun_to_note_dic
                     elif mean_diff <= fold_diff_small:
                         enriched_in = sample_2_id
 
+                if mean_diff != 'NA':
+                    if mean_diff < 1:
+                        mean_diff = 1/mean_diff
+                        mean_diff = float("{0:.3f}".format(mean_diff))
+
                 if enriched_in == sample_1_id:
                     if len(fun_to_note_dict) == 0:
                         summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))

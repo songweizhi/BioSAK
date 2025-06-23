@@ -5,10 +5,16 @@ import argparse
 stats_ko_usage = '''
 =================================== stats_ko example commands ===================================
 
-BioSAK stats_ko -ko ko_d.txt -db ko00001.keg -p Demo
+BioSAK stats_ko -ko ko_d.txt -db ko00001.keg -o op_dir -e A09150,A09160,09144,03008
 
 # Required DB files:
 ko00001.keg: https://www.genome.jp/kegg-bin/download_htext?htext=ko00001&format=htext&filedir=
+
+A09150	Organismal Systems
+A09160  Human Diseases
+09144 Cellular community - eukaryotes
+03008 Ribosome biogenesis in eukaryotes
+
 =================================================================================================
 '''
 
@@ -30,10 +36,13 @@ def ko_stats_to_txt(ko_stats_dict, ko_desc_dict, op_txt, op_stats_txt):
 
 def stats_ko(args):
 
-    ko_txt              = args['ko']
-    op_dir              = args['o']
-    db_file             = args['db']
-    force_create_op_dir = args['f']
+    ko_txt                  = args['ko']
+    op_dir                  = args['o']
+    db_file                 = args['db']
+    force_create_op_dir     = args['f']
+    specified_ids_to_ignore = args['e']
+
+    specified_ids_to_ignore_set = specified_ids_to_ignore.split(',')
 
     ####################################################################################################################
 
@@ -102,6 +111,23 @@ def stats_ko(args):
     for each_d in Ds_description_dict:
         ABCD_description_dict[each_d] = Ds_description_dict[each_d]
 
+    to_ignore_ABC_set = set()
+    for d in D2ABCD_dict:
+        for each in D2ABCD_dict[d]:
+            each_split = each.split('|')
+            id_a = each_split[0][2:]
+            id_b = each_split[1][2:]
+            id_c = each_split[2][2:]
+            if id_a in specified_ids_to_ignore_set:
+                to_ignore_ABC_set.add(id_a)
+                to_ignore_ABC_set.add(id_b)
+                to_ignore_ABC_set.add(id_c)
+            if id_b in specified_ids_to_ignore_set:
+                to_ignore_ABC_set.add(id_b)
+                to_ignore_ABC_set.add(id_c)
+            if id_c in specified_ids_to_ignore_set:
+                to_ignore_ABC_set.add(id_c)
+
     ########################################################################################################################
 
     input_ko_id_set = set()
@@ -120,15 +146,24 @@ def stats_ko(args):
             ko_a = ko_abcd_split[0][2:]
             ko_b = ko_abcd_split[1][2:]
             ko_c = ko_abcd_split[2][2:]
-            if ko_a not in ko_a_stats_dict:
-                ko_a_stats_dict[ko_a] = set()
-            if ko_b not in ko_b_stats_dict:
-                ko_b_stats_dict[ko_b] = set()
-            if ko_c not in ko_c_stats_dict:
-                ko_c_stats_dict[ko_c] = set()
-            ko_a_stats_dict[ko_a].add(ko_id)
-            ko_b_stats_dict[ko_b].add(ko_id)
-            ko_c_stats_dict[ko_c].add(ko_id)
+
+            # ko_a
+            if ko_a not in to_ignore_ABC_set:
+                if ko_a not in ko_a_stats_dict:
+                    ko_a_stats_dict[ko_a] = set()
+                ko_a_stats_dict[ko_a].add(ko_id)
+
+            # ko_b
+            if ko_b not in to_ignore_ABC_set:
+                if ko_b not in ko_b_stats_dict:
+                    ko_b_stats_dict[ko_b] = set()
+                ko_b_stats_dict[ko_b].add(ko_id)
+
+            # ko_c
+            if ko_c not in to_ignore_ABC_set:
+                if ko_c not in ko_c_stats_dict:
+                    ko_c_stats_dict[ko_c] = set()
+                ko_c_stats_dict[ko_c].add(ko_id)
 
     ko_stats_to_txt(ko_a_stats_dict, ABCD_description_dict, op_a_txt, op_a_stats_txt)
     ko_stats_to_txt(ko_b_stats_dict, ABCD_description_dict, op_b_txt, op_b_stats_txt)
@@ -143,6 +178,7 @@ if __name__ == "__main__":
     stats_ko_parser.add_argument('-ko', required=True,                          help='ko.txt')
     stats_ko_parser.add_argument('-db', required=True,                          help='ko00001.keg')
     stats_ko_parser.add_argument('-o',  required=True,                          help='output directory')
+    stats_ko_parser.add_argument('-e',  required=False, default='',             help='IDs to exclude, at ABC levels')
     stats_ko_parser.add_argument('-f',  required=False, action="store_true",    help='force overwrite')
     args = vars(stats_ko_parser.parse_args())
     stats_ko(args)
