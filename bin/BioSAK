@@ -78,7 +78,8 @@ def print_main_help():
        stats_ko                ->  get stats for a list of provided KO
        stats_arcog             ->  get stats for a list of provided arCOG 
        stats_cog2024           ->  get stats for a list of provided COG (v2024)
-
+       combine_fun_stats       ->  combine outputs from stats_ko, stats_arcog or stats_cog2024
+        
     16S rRNA related
        Usearch16S              ->  Usearch for Novogene 16S amplicon sequencing results
        blca                    ->  Classify 16S with BLCA
@@ -1302,6 +1303,17 @@ if __name__ == '__main__':
         GenBank_parser.add_argument('-f',   required=False, action="store_true", help='force overwrite')
         args = vars(parser.parse_args())
         GenBank.GenBank(args)
+
+    elif sys.argv[1] == 'combine_fun_stats':
+        from BioSAK import combine_fun_stats
+        combine_fun_stats_parser = subparsers.add_parser('combine_fun_stats', usage=combine_fun_stats.combine_fun_stats_usage)
+        combine_fun_stats_parser.add_argument('-f1',    required=True,  help='fun stats 1')
+        combine_fun_stats_parser.add_argument('-f2',    required=True,  help='fun stats 2')
+        combine_fun_stats_parser.add_argument('-l1',    required=True,  help='fun stats 1 label')
+        combine_fun_stats_parser.add_argument('-l2',    required=True,  help='fun stats 2 label')
+        combine_fun_stats_parser.add_argument('-o',     required=True,  help='output directory')
+        args = vars(parser.parse_args())
+        combine_fun_stats.combine_fun_stats(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

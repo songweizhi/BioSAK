@@ -67,6 +67,7 @@ BioSAK/boxplot_matrix_dbCAN.py
 BioSAK/cat_fa.py
 BioSAK/cdd2cog.pl
 BioSAK/checkm_marker.py
+BioSAK/combine_fun_stats.py
 BioSAK/combine_low_abd_otu.py
 BioSAK/compare_sets.py
 BioSAK/count_num.py
