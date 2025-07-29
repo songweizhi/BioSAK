@@ -22,6 +22,3 @@ hksd_s46	To be determined	Lamma Island	南丫島	22.2	114.135	doc/images/iNatura
 hksd_s47	To be determined	Beaufort Island	螺洲	22.1862	114.2495	doc/images/iNaturalist_7.jpeg	iNaturalist	15/7/2022	https://www.inaturalist.org/observations/129501117	na
 hksd_s48	To be determined	Cape D Aguilar	鶴咀	22.2079	114.2561	doc/images/iNaturalist_8.jpg	iNaturalist	16/1/2019	https://www.inaturalist.org/observations/90668622	na
 hksd_s49	To be determined	Tai Tau Chau	大頭洲	22.2305	114.2562	doc/images/iNaturalist_9.jpg	iNaturalist	27/4/2020	https://www.inaturalist.org/observations/43853818	na
-hksd_s39	Clathrina	NA	NA	22.3318	114.1604	doc/images/AFCD Clathrina sp.jpg	AFCD website	na	https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html	Taxon from AFCD website
-hksd_s40	Haliclona	NA	NA	22.3318	114.1604	doc/images/AFCD Haliclona sp.jpg	AFCD website	na	https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html	Taxon from AFCD website
-hksd_s41	Tethya	NA	NA	22.3318	114.1604	doc/images/AFCD Tethya sp.jpg	AFCD website	na	https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html	Taxon from AFCD website
