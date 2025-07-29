@@ -1,0 +1,27 @@
+Accession	Taxon	Location_Eng	Location_Chi	Latitude	Longitude	Image	Source	Date	Link	Description
+hksd_s25	Haliclona cymaeformis	Port Island	赤洲	22.5012	114.3599	doc/images/iNaturalist Haliclona cymaeformis 2.jpeg	iNaturalist	11/8/2024	https://www.inaturalist.org/observations/235107478	na
+hksd_s34	Spheciospongia vagabunda	To Tei Wan	土地湾	22.2272	114.2323	doc/images/iNaturalist Vagabond Boring Sponge.jpg	iNaturalist	2023-09	https://www.inaturalist.org/observations/191950337	na
+hksd_s28	Tethya robusta	Hoi Ha Wan	海下湾	22.4606	114.33	doc/images/iNaturalist Tethya robusta.jpg	iNaturalist	29/4/2018	https://www.inaturalist.org/observations/11885016	na
+hksd_s31	To be determined	Cheung Sha Beach	長沙泳灘	22.2319	113.9577	doc/images/iNaturalist Blue Tube Sponge 2.jpg	iNaturalist	29/4/2022	https://www.inaturalist.org/observations/115029406	na
+hksd_s30	To be determined	Cheung Chau	長洲	22.2178	114.0328	doc/images/iNaturalist Blue Tube Sponge.jpg	iNaturalist	16/5/2022	https://www.inaturalist.org/observations/118617763	na
+hksd_s32	To be determined	Lamma Island	南丫島	22.2139	114.1212	doc/images/iNaturalist Blue Tube Sponge 3.jpg	iNaturalist	13/7/2021	https://www.inaturalist.org/observations/86840854	na
+hksd_s35	Spheciospongia vagabunda	Shelter Island	牛尾洲	22.3205	114.3032	doc/images/iNaturalist Vagabond Boring Sponge 2.jpg	iNaturalist	2023-09	https://www.inaturalist.org/observations/191950310	na
+hksd_s43	To be determined	Hong Kong eastern waters	香港东部水域	22.3737	114.39	doc/images/iNaturalist_2.jpeg	iNaturalist	3/5/2025	https://www.inaturalist.org/observations/278315711	na
+hksd_s42	To be determined	Wu Chau	烏洲	22.4268	114.2731	doc/images/iNaturalist_1.jpeg	iNaturalist	27/4/2025	https://www.inaturalist.org/observations/276267276	na
+hksd_s44	To be determined	Port Island	赤洲	22.501	114.3565	doc/images/iNaturalist_4.jpg	iNaturalist	23/10/2017	https://www.inaturalist.org/observations/84093154	na
+hksd_s33	To be determined	Peng Chau	坪洲	22.2918	114.0445	doc/images/iNaturalist_3.jpg	iNaturalist	22/10/2018	https://www.inaturalist.org/observations/17751658	na
+hksd_s26	Haliclona cymaeformis	Hong Kong eastern waters	香港东部水域	22.2434	114.3342	doc/images/iNaturalist Haliclona cymaeformis 3.jpg	iNaturalist	2019-04	https://www.inaturalist.org/observations/24307423	na
+hksd_s37	Mycale cecilia	Hong Kong eastern waters	香港东部水域	22.2008	114.3471	doc/images/iNaturalist Mycale cecilia.jpg	iNaturalist	2023-07	https://www.inaturalist.org/observations/175067646	na
+hksd_s45	To be determined	High Island Reservoir	萬宜水庫	22.3599	114.3757	doc/images/iNaturalist_5.jpeg	iNaturalist	22/1/2019	https://www.inaturalist.org/observations/19881180	na
+hksd_s27	Haliclona cymaeformis	Stanley	赤柱	22.2216	114.2149	doc/images/iNaturalist Haliclona cymaeformis 4.jpg	iNaturalist	14/9/2019	https://www.inaturalist.org/observations/32710575	na
+hksd_s38	Heteropia glomerosa	Basalt island	火石洲	22.3156	114.3653	doc/images/iNaturalist Heteropia glomerosa.jpeg	iNaturalist	7/4/2021	https://www.inaturalist.org/observations/73290910	na
+hksd_s36	Spheciospongia vagabunda	Wang Chau	橫洲	22.3292	114.3738	doc/images/iNaturalist Vagabond Boring Sponge 3.jpeg	iNaturalist	27/5/2022	https://www.inaturalist.org/observations/119367626	na
+hksd_s29	Chondrilla australiensis	Hong Kong Southern waters	香港南部水域	22.0797	114.2075	doc/images/iNaturalist Chondrilla australiensis.jpg	iNaturalist	2022-05	https://www.inaturalist.org/observations/116697499	na
+hksd_s24	Haliclona cymaeformis	Hong Kong eastern waters	香港东部水域	22.3416	114.272	doc/images/iNaturalist Haliclona cymaeformis.jpg	iNaturalist	15/5/2025	https://www.inaturalist.org/observations/281390084	na
+hksd_s46	To be determined	Lamma Island	南丫島	22.2	114.135	doc/images/iNaturalist_6.jpeg	iNaturalist	12/7/2022	https://www.inaturalist.org/observations/129498968	na
+hksd_s47	To be determined	Beaufort Island	螺洲	22.1862	114.2495	doc/images/iNaturalist_7.jpeg	iNaturalist	15/7/2022	https://www.inaturalist.org/observations/129501117	na
+hksd_s48	To be determined	Cape D Aguilar	鶴咀	22.2079	114.2561	doc/images/iNaturalist_8.jpg	iNaturalist	16/1/2019	https://www.inaturalist.org/observations/90668622	na
+hksd_s49	To be determined	Tai Tau Chau	大頭洲	22.2305	114.2562	doc/images/iNaturalist_9.jpg	iNaturalist	27/4/2020	https://www.inaturalist.org/observations/43853818	na
+hksd_s39	Clathrina	NA	NA	22.3318	114.1604	doc/images/AFCD Clathrina sp.jpg	AFCD website	na	https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html	Taxon from AFCD website
+hksd_s40	Haliclona	NA	NA	22.3318	114.1604	doc/images/AFCD Haliclona sp.jpg	AFCD website	na	https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html	Taxon from AFCD website
+hksd_s41	Tethya	NA	NA	22.3318	114.1604	doc/images/AFCD Tethya sp.jpg	AFCD website	na	https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html	Taxon from AFCD website

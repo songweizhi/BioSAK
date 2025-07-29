@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Species Map with Metadata and Charts</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
+    }
+    #charts-container {
+      display: flex;
+      height: 30vh; /* one-third of viewport height */
+      width: 60%;
+      padding: 10px;
+      gap: 20px;
+      box-sizing: border-box;
+      background: #f5f5f5;
+    }
+    .chart-box {
+      flex: 1;
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 10px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+    .chart-box h3 {
+      margin: 0 0 10px 0;
+      font-size: 16px;
+      text-align: center;
+    }
+    #map {
+      height: 70vh; /* remaining two-thirds */
+      width: 100%;
+    }
+    .popup-content img {
+      max-width: 150px;
+      margin-top: 5px;
+      display: block;
+      cursor: pointer;
+    }
+    .popup-content {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+    .leaflet-popup-content, .popup-content {
+      user-select: text;
+    }
+    .cluster-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .cluster-item {
+      border: 1px solid #ccc;
+      padding: 6px;
+      border-radius: 6px;
+      background: #f9f9f9;
+    }
+    .cluster-item img {
+      max-width: 100%;
+      margin-top: 5px;
+      cursor: pointer;
+    }
+    .control-panel {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+    .control-panel select, .control-panel button {
+      margin-top: 5px;
+      display: block;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="charts-container">
+    <div class="chart-box">
+      <h3>Taxon Distribution</h3>
+      <canvas id="taxonChart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Location Distribution</h3>
+      <canvas id="locationChart"></canvas>
+    </div>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="control-panel">
+    <label for="taxonFilter">Taxon:</label>
+    <select id="taxonFilter"><option value="all">All</option></select>
+    <label for="locationFilter">Location:</label>
+    <select id="locationFilter"><option value="all">All</option></select>
+    <label for="sourceFilter">Source:</label>
+    <select id="sourceFilter"><option value="all">All</option></select>
+    <button id="toggleClustering">Disable Clustering</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const map = L.map("map").setView([22.3193, 114.1694], 11);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: "abcd",
+      maxZoom: 20,
+    }).addTo(map);
+
+    const speciesData = [
+
+      // add photo attributes here
+
+    ];
+
+
+    const clusterGroup = L.markerClusterGroup();
+    const normalGroup = L.layerGroup();
+    let clusteringEnabled = true;
+    let isHoveringPopup = false;
+    let popupTimeout = null;
+
+    // Initialize charts
+    let taxonChart, locationChart;
+
+    function createPopupContent(species) {
+      return `<div class="popup-content">
+        <strong>Accession:</strong> ${species.accession}<br/>
+        <strong>Taxon:</strong> ${species.taxon}<br/>
+        <strong>Location (eng):</strong> ${species.loci_eng}<br/>
+        <strong>Location (chi):</strong> ${species.loci_chi}<br/>
+        <strong>Coordinates (lat/long):</strong> ${species.coord}<br/>
+        <strong>Source:</strong> ${species.source}<br/>
+        <strong>Observed:</strong> ${species.date}<br/>
+        <strong>Link:</strong> <a href="${species.link}" target="_blank">${species.link}</a><br/>
+        <strong>Description:</strong> ${species.desc}<br/>
+        <a href="${species.photo}" target="_blank">
+          <img src="${species.photo}" alt="${species.taxon} photo"/>
+        </a>
+      </div>`;
+    }
+
+    function generateMarkers(data, group) {
+      group.clearLayers();
+      data.forEach((species) => {
+        const popupContent = createPopupContent(species);
+        const marker = L.marker([species.lat, species.lng])
+          .bindPopup(popupContent)
+          .on("mouseover", function () {
+            this.openPopup();
+          })
+          .on("mouseout", function () {
+            if (!isHoveringPopup) popupTimeout = setTimeout(() => this.closePopup(), 300);
+          });
+        group.addLayer(marker);
+      });
+    }
+
+    function updateFilters() {
+      const taxonSet = new Set();
+      const locationSet = new Set();
+      const sourceSet = new Set();
+      speciesData.forEach(s => {
+        taxonSet.add(s.taxon);
+        locationSet.add(s.loci_eng);
+        sourceSet.add(s.source);
+      });
+      const taxonSelect = document.getElementById("taxonFilter");
+      const locationSelect = document.getElementById("locationFilter");
+      const sourceSelect = document.getElementById("sourceFilter");
+
+      // Clear existing options except "all"
+      taxonSelect.innerHTML = '<option value="all">All</option>';
+      locationSelect.innerHTML = '<option value="all">All</option>';
+      sourceSelect.innerHTML = '<option value="all">All</option>';
+
+      for (const t of taxonSet) taxonSelect.innerHTML += `<option value="${t}">${t}</option>`;
+      for (const l of locationSet) locationSelect.innerHTML += `<option value="${l}">${l}</option>`;
+      for (const s of sourceSet) sourceSelect.innerHTML += `<option value="${s}">${s}</option>`;
+    }
+
+    function filterData() {
+      const tVal = document.getElementById("taxonFilter").value;
+      const lVal = document.getElementById("locationFilter").value;
+      const sVal = document.getElementById("sourceFilter").value;
+      return speciesData.filter(s =>
+        (tVal === "all" || s.taxon === tVal) &&
+        (lVal === "all" || s.loci_eng === lVal) &&
+        (sVal === "all" || s.source === sVal));
+    }
+
+    function updateCharts(filtered) {
+      // Aggregate taxon counts
+      const taxonCounts = {};
+      const locationCounts = {};
+
+      filtered.forEach(s => {
+        taxonCounts[s.taxon] = (taxonCounts[s.taxon] || 0) + 1;
+        locationCounts[s.loci_eng] = (locationCounts[s.loci_eng] || 0) + 1;
+      });
+
+      // Sort descending by count, limit top 10 for readability
+      const sortedTaxon = Object.entries(taxonCounts).sort((a,b) => b[1] - a[1]).slice(0,10);
+      const sortedLocation = Object.entries(locationCounts).sort((a,b) => b[1] - a[1]).slice(0,10);
+
+      const taxonLabels = sortedTaxon.map(t => t[0]);
+      const taxonData = sortedTaxon.map(t => t[1]);
+
+      const locationLabels = sortedLocation.map(l => l[0]);
+      const locationData = sortedLocation.map(l => l[1]);
+
+      // Update taxonChart
+      if (taxonChart) {
+        taxonChart.data.labels = taxonLabels;
+        taxonChart.data.datasets[0].data = taxonData;
+        taxonChart.update();
+      } else {
+        const ctxTaxon = document.getElementById('taxonChart').getContext('2d');
+        taxonChart = new Chart(ctxTaxon, {
+          type: 'bar',
+          data: {
+            labels: taxonLabels,
+            datasets: [{
+              label: 'Count',
+              data: taxonData,
+              backgroundColor: 'rgba(54, 162, 235, 0.7)'
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                beginAtZero: true,
+                ticks: {
+                  precision:0
+                }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: true }
+            }
+          }
+        });
+      }
+
+      // Update locationChart
+      if (locationChart) {
+        locationChart.data.labels = locationLabels;
+        locationChart.data.datasets[0].data = locationData;
+        locationChart.update();
+      } else {
+        const ctxLocation = document.getElementById('locationChart').getContext('2d');
+        locationChart = new Chart(ctxLocation, {
+          type: 'bar',
+          data: {
+            labels: locationLabels,
+            datasets: [{
+              label: 'Count',
+              data: locationData,
+              backgroundColor: 'rgba(255, 159, 64, 0.7)'
+            }]
+          },
+          options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                beginAtZero: true,
+                ticks: {
+                  precision:0
+                }
+              }
+            },
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: true }
+            }
+          }
+        });
+      }
+    }
+
+    function filterAndRender() {
+      const filtered = filterData();
+      if (clusteringEnabled) {
+        generateMarkers(filtered, clusterGroup);
+        map.removeLayer(normalGroup);
+        map.addLayer(clusterGroup);
+      } else {
+        generateMarkers(filtered, normalGroup);
+        map.removeLayer(clusterGroup);
+        map.addLayer(normalGroup);
+      }
+      updateCharts(filtered);
+    }
+
+    document.getElementById("taxonFilter").addEventListener("change", filterAndRender);
+    document.getElementById("locationFilter").addEventListener("change", filterAndRender);
+    document.getElementById("sourceFilter").addEventListener("change", filterAndRender);
+
+    document.getElementById("toggleClustering").addEventListener("click", () => {
+      clusteringEnabled = !clusteringEnabled;
+      document.getElementById("toggleClustering").innerText = clusteringEnabled ? "Disable Clustering" : "Enable Clustering";
+      filterAndRender();
+    });
+
+    map.on("popupopen", function (e) {
+      const popupEl = e.popup.getElement();
+      popupEl.addEventListener("mouseenter", () => {
+        isHoveringPopup = true;
+        clearTimeout(popupTimeout);
+      });
+      popupEl.addEventListener("mouseleave", () => {
+        isHoveringPopup = false;
+        popupTimeout = setTimeout(() => map.closePopup(), 300);
+      });
+    });
+
+    clusterGroup.on("clustermouseover", function (a) {
+      const markers = a.layer.getAllChildMarkers();
+      const columns = Math.min(markers.length, 5);
+      let content = `<div class="cluster-grid" style="grid-template-columns: repeat(${columns}, 1fr);">`;
+      markers.forEach((m) => {
+        content += `<div class="cluster-item">${m.getPopup().getContent()}</div>`;
+      });
+      content += "</div>";
+      const popup = L.popup({ maxWidth: 1200, autoPan: false })
+        .setLatLng(a.layer.getLatLng())
+        .setContent(content)
+        .openOn(map);
+    });
+
+    clusterGroup.on("clustermouseout", function () {
+      if (!isHoveringPopup) {
+        popupTimeout = setTimeout(() => map.closePopup(), 300);
+      }
+    });
+
+    // Initialize
+    updateFilters();
+    filterAndRender();
+  </script>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Species Map with Metadata</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <style>
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+    .popup-content img {
+      max-width: 150px;
+      margin-top: 5px;
+      display: block;
+      cursor: pointer;
+    }
+    .popup-content {
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+    .leaflet-popup-content, .popup-content {
+      user-select: text;
+    }
+    .cluster-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .cluster-item {
+      border: 1px solid #ccc;
+      padding: 6px;
+      border-radius: 6px;
+      background: #f9f9f9;
+    }
+    .cluster-item img {
+      max-width: 100%;
+      margin-top: 5px;
+      cursor: pointer;
+    }
+    .control-panel {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+      background: white;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }
+    .control-panel select, .control-panel button {
+      margin-top: 5px;
+      display: block;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div class="control-panel">
+    <label for="taxonFilter">Taxon:</label>
+    <select id="taxonFilter"><option value="all">All</option></select>
+    <label for="locationFilter">Location:</label>
+    <select id="locationFilter"><option value="all">All</option></select>
+    <label for="sourceFilter">Source:</label>
+    <select id="sourceFilter"><option value="all">All</option></select>
+    <button id="toggleClustering">Disable Clustering</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <script>
+    const map = L.map("map").setView([22.3193, 114.1694], 11);
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      subdomains: "abcd",
+      maxZoom: 20,
+    }).addTo(map);
+
+    const speciesData = [
+      
+      {accession: "hksd_s25", photo: "doc/images/iNaturalist Haliclona cymaeformis 2.jpeg", taxon: "Haliclona cymaeformis", loci: "", loci_eng: "Port Island", loci_chi: "赤洲", lat: 22.5012, lng: 114.3599, desc: "na", coord: "22.5012/114.3599", source: "iNaturalist", date: "11/8/2024", link: "https://www.inaturalist.org/observations/235107478"},
+      {accession: "hksd_s34", photo: "doc/images/iNaturalist Vagabond Boring Sponge.jpg", taxon: "Spheciospongia vagabunda", loci: "", loci_eng: "To Tei Wan", loci_chi: "土地湾", lat: 22.2272, lng: 114.2323, desc: "na", coord: "22.2272/114.2323", source: "iNaturalist", date: "2023-09", link: "https://www.inaturalist.org/observations/191950337"},
+      {accession: "hksd_s28", photo: "doc/images/iNaturalist Tethya robusta.jpg", taxon: "Tethya robusta", loci: "", loci_eng: "Hoi Ha Wan", loci_chi: "海下湾", lat: 22.4606, lng: 114.33, desc: "na", coord: "22.4606/114.33", source: "iNaturalist", date: "29/4/2018", link: "https://www.inaturalist.org/observations/11885016"},
+      {accession: "hksd_s31", photo: "doc/images/iNaturalist Blue Tube Sponge 2.jpg", taxon: "To be determined", loci: "", loci_eng: "Cheung Sha Beach", loci_chi: "長沙泳灘", lat: 22.2319, lng: 113.9577, desc: "na", coord: "22.2319/113.9577", source: "iNaturalist", date: "29/4/2022", link: "https://www.inaturalist.org/observations/115029406"},
+      {accession: "hksd_s30", photo: "doc/images/iNaturalist Blue Tube Sponge.jpg", taxon: "To be determined", loci: "", loci_eng: "Cheung Chau", loci_chi: "長洲", lat: 22.2178, lng: 114.0328, desc: "na", coord: "22.2178/114.0328", source: "iNaturalist", date: "16/5/2022", link: "https://www.inaturalist.org/observations/118617763"},
+      {accession: "hksd_s32", photo: "doc/images/iNaturalist Blue Tube Sponge 3.jpg", taxon: "To be determined", loci: "", loci_eng: "Lamma Island", loci_chi: "南丫島", lat: 22.2139, lng: 114.1212, desc: "na", coord: "22.2139/114.1212", source: "iNaturalist", date: "13/7/2021", link: "https://www.inaturalist.org/observations/86840854"},
+      {accession: "hksd_s35", photo: "doc/images/iNaturalist Vagabond Boring Sponge 2.jpg", taxon: "Spheciospongia vagabunda", loci: "", loci_eng: "Shelter Island", loci_chi: "牛尾洲", lat: 22.3205, lng: 114.3032, desc: "na", coord: "22.3205/114.3032", source: "iNaturalist", date: "2023-09", link: "https://www.inaturalist.org/observations/191950310"},
+      {accession: "hksd_s43", photo: "doc/images/iNaturalist_2.jpeg", taxon: "To be determined", loci: "", loci_eng: "Hong Kong eastern waters", loci_chi: "香港东部水域", lat: 22.3737, lng: 114.39, desc: "na", coord: "22.3737/114.39", source: "iNaturalist", date: "3/5/2025", link: "https://www.inaturalist.org/observations/278315711"},
+      {accession: "hksd_s42", photo: "doc/images/iNaturalist_1.jpeg", taxon: "To be determined", loci: "", loci_eng: "Wu Chau", loci_chi: "烏洲", lat: 22.4268, lng: 114.2731, desc: "na", coord: "22.4268/114.2731", source: "iNaturalist", date: "27/4/2025", link: "https://www.inaturalist.org/observations/276267276"},
+      {accession: "hksd_s44", photo: "doc/images/iNaturalist_4.jpg", taxon: "To be determined", loci: "", loci_eng: "Port Island", loci_chi: "赤洲", lat: 22.501, lng: 114.3565, desc: "na", coord: "22.501/114.3565", source: "iNaturalist", date: "23/10/2017", link: "https://www.inaturalist.org/observations/84093154"},
+      {accession: "hksd_s33", photo: "doc/images/iNaturalist_3.jpg", taxon: "To be determined", loci: "", loci_eng: "Peng Chau", loci_chi: "坪洲", lat: 22.2918, lng: 114.0445, desc: "na", coord: "22.2918/114.0445", source: "iNaturalist", date: "22/10/2018", link: "https://www.inaturalist.org/observations/17751658"},
+      {accession: "hksd_s26", photo: "doc/images/iNaturalist Haliclona cymaeformis 3.jpg", taxon: "Haliclona cymaeformis", loci: "", loci_eng: "Hong Kong eastern waters", loci_chi: "香港东部水域", lat: 22.2434, lng: 114.3342, desc: "na", coord: "22.2434/114.3342", source: "iNaturalist", date: "2019-04", link: "https://www.inaturalist.org/observations/24307423"},
+      {accession: "hksd_s37", photo: "doc/images/iNaturalist Mycale cecilia.jpg", taxon: "Mycale cecilia", loci: "", loci_eng: "Hong Kong eastern waters", loci_chi: "香港东部水域", lat: 22.2008, lng: 114.3471, desc: "na", coord: "22.2008/114.3471", source: "iNaturalist", date: "2023-07", link: "https://www.inaturalist.org/observations/175067646"},
+      {accession: "hksd_s45", photo: "doc/images/iNaturalist_5.jpeg", taxon: "To be determined", loci: "", loci_eng: "High Island Reservoir", loci_chi: "萬宜水庫", lat: 22.3599, lng: 114.3757, desc: "na", coord: "22.3599/114.3757", source: "iNaturalist", date: "22/1/2019", link: "https://www.inaturalist.org/observations/19881180"},
+      {accession: "hksd_s27", photo: "doc/images/iNaturalist Haliclona cymaeformis 4.jpg", taxon: "Haliclona cymaeformis", loci: "", loci_eng: "Stanley", loci_chi: "赤柱", lat: 22.2216, lng: 114.2149, desc: "na", coord: "22.2216/114.2149", source: "iNaturalist", date: "14/9/2019", link: "https://www.inaturalist.org/observations/32710575"},
+      {accession: "hksd_s38", photo: "doc/images/iNaturalist Heteropia glomerosa.jpeg", taxon: "Heteropia glomerosa", loci: "", loci_eng: "Basalt island", loci_chi: "火石洲", lat: 22.3156, lng: 114.3653, desc: "na", coord: "22.3156/114.3653", source: "iNaturalist", date: "7/4/2021", link: "https://www.inaturalist.org/observations/73290910"},
+      {accession: "hksd_s36", photo: "doc/images/iNaturalist Vagabond Boring Sponge 3.jpeg", taxon: "Spheciospongia vagabunda", loci: "", loci_eng: "Wang Chau", loci_chi: "橫洲", lat: 22.3292, lng: 114.3738, desc: "na", coord: "22.3292/114.3738", source: "iNaturalist", date: "27/5/2022", link: "https://www.inaturalist.org/observations/119367626"},
+      {accession: "hksd_s29", photo: "doc/images/iNaturalist Chondrilla australiensis.jpg", taxon: "Chondrilla australiensis", loci: "", loci_eng: "Hong Kong Southern waters", loci_chi: "香港南部水域", lat: 22.0797, lng: 114.2075, desc: "na", coord: "22.0797/114.2075", source: "iNaturalist", date: "2022-05", link: "https://www.inaturalist.org/observations/116697499"},
+      {accession: "hksd_s24", photo: "doc/images/iNaturalist Haliclona cymaeformis.jpg", taxon: "Haliclona cymaeformis", loci: "", loci_eng: "Hong Kong eastern waters", loci_chi: "香港东部水域", lat: 22.3416, lng: 114.272, desc: "na", coord: "22.3416/114.272", source: "iNaturalist", date: "15/5/2025", link: "https://www.inaturalist.org/observations/281390084"},
+      {accession: "hksd_s46", photo: "doc/images/iNaturalist_6.jpeg", taxon: "To be determined", loci: "", loci_eng: "Lamma Island", loci_chi: "南丫島", lat: 22.2, lng: 114.135, desc: "na", coord: "22.2/114.135", source: "iNaturalist", date: "12/7/2022", link: "https://www.inaturalist.org/observations/129498968"},
+      {accession: "hksd_s47", photo: "doc/images/iNaturalist_7.jpeg", taxon: "To be determined", loci: "", loci_eng: "Beaufort Island", loci_chi: "螺洲", lat: 22.1862, lng: 114.2495, desc: "na", coord: "22.1862/114.2495", source: "iNaturalist", date: "15/7/2022", link: "https://www.inaturalist.org/observations/129501117"},
+      {accession: "hksd_s48", photo: "doc/images/iNaturalist_8.jpg", taxon: "To be determined", loci: "", loci_eng: "Cape D Aguilar", loci_chi: "鶴咀", lat: 22.2079, lng: 114.2561, desc: "na", coord: "22.2079/114.2561", source: "iNaturalist", date: "16/1/2019", link: "https://www.inaturalist.org/observations/90668622"},
+      {accession: "hksd_s49", photo: "doc/images/iNaturalist_9.jpg", taxon: "To be determined", loci: "", loci_eng: "Tai Tau Chau", loci_chi: "大頭洲", lat: 22.2305, lng: 114.2562, desc: "na", coord: "22.2305/114.2562", source: "iNaturalist", date: "27/4/2020", link: "https://www.inaturalist.org/observations/43853818"},
+      {accession: "hksd_s39", photo: "doc/images/AFCD Clathrina sp.jpg", taxon: "Clathrina", loci: "", loci_eng: "NA", loci_chi: "NA", lat: 22.3318, lng: 114.1604, desc: "Taxon from AFCD website", coord: "22.3318/114.1604", source: "AFCD website", date: "na", link: "https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html"},
+      {accession: "hksd_s40", photo: "doc/images/AFCD Haliclona sp.jpg", taxon: "Haliclona", loci: "", loci_eng: "NA", loci_chi: "NA", lat: 22.3318, lng: 114.1604, desc: "Taxon from AFCD website", coord: "22.3318/114.1604", source: "AFCD website", date: "na", link: "https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html"},
+      {accession: "hksd_s41", photo: "doc/images/AFCD Tethya sp.jpg", taxon: "Tethya", loci: "", loci_eng: "NA", loci_chi: "NA", lat: 22.3318, lng: 114.1604, desc: "Taxon from AFCD website", coord: "22.3318/114.1604", source: "AFCD website", date: "na", link: "https://www.afcd.gov.hk/english/conservation/con_mar/con_mar_cor/con_mar_cor_hkcaml/corals_porifera.html"},
+      
+    ];
+    const clusterGroup = L.markerClusterGroup();
+    const normalGroup = L.layerGroup();
+    let clusteringEnabled = true;
+    let isHoveringPopup = false;
+    let popupTimeout = null;
+
+    function createPopupContent(species) {
+      return `<div class="popup-content">
+        <strong>Accession:</strong> ${species.accession}<br/>
+        <strong>Taxon:</strong> ${species.taxon}<br/>
+        <strong>Location (eng):</strong> ${species.loci_eng}<br/>
+        <strong>Location (chi):</strong> ${species.loci_chi}<br/>
+        <strong>Coordinates (lat/long):</strong> ${species.coord}<br/>
+        <strong>Source:</strong> ${species.source}<br/>
+        <strong>Observed:</strong> ${species.date}<br/>
+        <strong>Link:</strong> <a href="${species.link}" target="_blank">${species.link}</a><br/>
+        <strong>Description:</strong> ${species.desc}<br/>
+        <a href="${species.photo}" target="_blank">
+          <img src="${species.photo}" alt="${species.taxon} photo"/>
+        </a>
+      </div>`;
+    }
+
+    function generateMarkers(data, group) {
+      group.clearLayers();
+      data.forEach((species) => {
+        const popupContent = createPopupContent(species);
+        const marker = L.marker([species.lat, species.lng])
+          .bindPopup(popupContent)
+          .on("mouseover", function () {
+            this.openPopup();
+          })
+          .on("mouseout", function () {
+            if (!isHoveringPopup) popupTimeout = setTimeout(() => this.closePopup(), 300);
+          });
+        group.addLayer(marker);
+      });
+    }
+
+    function updateFilters() {
+      const taxonSet = new Set();
+      const locationSet = new Set();
+      const sourceSet = new Set();
+      speciesData.forEach(s => {
+        taxonSet.add(s.taxon);
+        locationSet.add(s.loci_eng);
+        sourceSet.add(s.source);
+      });
+      const taxonSelect = document.getElementById("taxonFilter");
+      const locationSelect = document.getElementById("locationFilter");
+      const sourceSelect = document.getElementById("sourceFilter");
+      for (const t of taxonSet) taxonSelect.innerHTML += `<option value="${t}">${t}</option>`;
+      for (const l of locationSet) locationSelect.innerHTML += `<option value="${l}">${l}</option>`;
+      for (const s of sourceSet) sourceSelect.innerHTML += `<option value="${s}">${s}</option>`;
+    }
+
+    function filterAndRender() {
+      const tVal = document.getElementById("taxonFilter").value;
+      const lVal = document.getElementById("locationFilter").value;
+      const sVal = document.getElementById("sourceFilter").value;
+      const filtered = speciesData.filter(s =>
+        (tVal === "all" || s.taxon === tVal) &&
+        (lVal === "all" || s.loci_eng === lVal) &&
+        (sVal === "all" || s.source === sVal));
+      if (clusteringEnabled) {
+        generateMarkers(filtered, clusterGroup);
+        map.removeLayer(normalGroup);
+        map.addLayer(clusterGroup);
+      } else {
+        generateMarkers(filtered, normalGroup);
+        map.removeLayer(clusterGroup);
+        map.addLayer(normalGroup);
+      }
+    }
+
+    document.getElementById("taxonFilter").addEventListener("change", filterAndRender);
+    document.getElementById("locationFilter").addEventListener("change", filterAndRender);
+    document.getElementById("sourceFilter").addEventListener("change", filterAndRender);
+
+    document.getElementById("toggleClustering").addEventListener("click", () => {
+      clusteringEnabled = !clusteringEnabled;
+      document.getElementById("toggleClustering").innerText = clusteringEnabled ? "Disable Clustering" : "Enable Clustering";
+      filterAndRender();
+    });
+
+    map.on("popupopen", function (e) {
+      const popupEl = e.popup.getElement();
+      popupEl.addEventListener("mouseenter", () => {
+        isHoveringPopup = true;
+        clearTimeout(popupTimeout);
+      });
+      popupEl.addEventListener("mouseleave", () => {
+        isHoveringPopup = false;
+        popupTimeout = setTimeout(() => map.closePopup(), 300);
+      });
+    });
+
+    clusterGroup.on("clustermouseover", function (a) {
+      const markers = a.layer.getAllChildMarkers();
+      const columns = Math.min(markers.length, 5);
+      let content = `<div class="cluster-grid" style="grid-template-columns: repeat(${columns}, 1fr);">`;
+      markers.forEach((m) => {
+        content += `<div class="cluster-item">${m.getPopup().getContent()}</div>`;
+      });
+      content += "</div>";
+      const popup = L.popup({ maxWidth: 1200, autoPan: false })
+        .setLatLng(a.layer.getLatLng())
+        .setContent(content)
+        .openOn(map);
+    });
+
+    clusterGroup.on("clustermouseout", function () {
+      if (!isHoveringPopup) {
+        popupTimeout = setTimeout(() => map.closePopup(), 300);
+      }
+    });
+
+    map.addLayer(clusterGroup);
+    updateFilters();
+    filterAndRender();
+  </script>
+</body>
+</html>

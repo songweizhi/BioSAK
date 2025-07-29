@@ -253,9 +253,7 @@ def enrich(args):
             if ko_id in current_MAG_ko_stats:
                 ko_id_num = current_MAG_ko_stats[ko_id]
             current_MAG_ko_stats_list.append(ko_id_num)
-
         current_MAG_ko_stats_list_str = [str(i) for i in current_MAG_ko_stats_list]
-
         mag_group = grouping_dict[MAG]
         file_out_handle.write('%s,%s,%s\n' % (mag_group, MAG, ','.join(current_MAG_ko_stats_list_str)))
     file_out_handle.close()
