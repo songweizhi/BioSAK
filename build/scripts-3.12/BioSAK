@@ -150,7 +150,8 @@ def print_main_help():
        rename_df_row           ->  rename row headers in a dataframe
        blast                   ->  Parse batch online blast output
        taxdump                 ->  Parse NCBI Taxonomy database
-
+       get_single_page_web     ->  Get single page website
+       
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
 
@@ -1314,6 +1315,15 @@ if __name__ == '__main__':
         combine_fun_stats_parser.add_argument('-o',     required=True,  help='output directory')
         args = vars(parser.parse_args())
         combine_fun_stats.combine_fun_stats(args)
+
+    elif sys.argv[1] == 'get_single_page_web':
+        from BioSAK import get_single_page_web
+        get_single_page_web_parser = subparsers.add_parser('get_single_page_web', usage=get_single_page_web.get_single_page_web_usage)
+        get_single_page_web_parser.add_argument('-m', required=True, help='sample metadata')
+        get_single_page_web_parser.add_argument('-w', required=True, help='webpage template')
+        get_single_page_web_parser.add_argument('-o', required=True, help='output webpage')
+        args = vars(parser.parse_args())
+        get_single_page_web.get_single_page_web(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

@@ -109,6 +109,7 @@ BioSAK/get_ko_gene_seqs.py
 BioSAK/get_krona_plot.py
 BioSAK/get_reads_from_sam.py
 BioSAK/get_reads_id_in_sam.py
+BioSAK/get_single_page_web.py
 BioSAK/get_top_hit.py
 BioSAK/get_total_length.py
 BioSAK/gff2chrom.py

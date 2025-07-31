@@ -14,6 +14,7 @@ A09150	Organismal Systems
 A09160  Human Diseases
 09144 Cellular community - eukaryotes
 03008 Ribosome biogenesis in eukaryotes
+99980 Enzymes with EC numbers
 
 =================================================================================================
 '''

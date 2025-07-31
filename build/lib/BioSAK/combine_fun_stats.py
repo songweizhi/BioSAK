@@ -2,11 +2,11 @@ import argparse
 
 
 combine_fun_stats_usage = '''
-=========================================== combine_fun_stats example commands ===========================================
+========================================= combine_fun_stats example commands =========================================
 
-python3 combine_fun_stats.py -f1 sponge_ko_c_stats.txt -f2 seawater_ko_c_stats.txt -l1 Sponge -l2 Seawater -o summary.txt
+BioSAK combine_fun_stats -f1 sponge_ko_c_stats.txt -f2 seawater_ko_c_stats.txt -l1 Sponge -l2 Seawater -o summary.txt
 
-==========================================================================================================================
+======================================================================================================================
 '''
 
 def combine_fun_stats(args):
