@@ -15,8 +15,6 @@ Contact
 
 <sup>2</sup> Department of Ocean Science, Hong Kong University of Science and Technology, Hong Kong
 
-E-mail: shanbio@hku.hk and songwz03@gmail.com
-
 
 Installation
 ---
@@ -49,10 +47,12 @@ Installation
 + A license statement is [here](LICENSE).
 
 
++ A changelog is [here](BioSAK/VERSION).
+
+
 BioSAK modules
 ---
 
-+ A changelog is [here](BioSAK/VERSION).
 
 + Type `BioSAK -h` to see a full list of modules
 
