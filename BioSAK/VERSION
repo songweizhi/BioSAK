@@ -1,3 +1,6 @@
+1.121.3
+- fixed bugs
+
 1.121.0
 - new modules added: get_single_page_web
 
@@ -6,9 +9,6 @@
 
 1.119.0
 - new modules added: stats_cog2024
-
-1.118.3
-- fixed bugs
 
 1.118.1
 - new modules added: Combine_KEGG_COG

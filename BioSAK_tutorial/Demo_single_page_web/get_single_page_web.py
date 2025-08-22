@@ -64,3 +64,4 @@ if __name__ == '__main__':
     get_single_page_web_parser.add_argument('-o', required=True, help='output webpage')
     args = vars(get_single_page_web_parser.parse_args())
     get_single_page_web(args)
+

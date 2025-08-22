@@ -4,8 +4,8 @@ import argparse
 get_single_page_web_usage = '''
 ================================ get_single_page_web example commands ================================
 
-python3 get_single_page_web.py -m doc/metadata.txt -w doc/template.html -o single_page_web.html
-python3 get_single_page_web.py -m doc/metadata.txt -w doc/template_with_barchart.html -o single_page_web_with_barchart.html
+BioSAK get_single_page_web -m doc/metadata.txt -w doc/template.html -o single_page_web.html
+BioSAK get_single_page_web -m doc/metadata.txt -w doc/template_with_barchart.html -o single_page_web_with_barchart.html
 
 ======================================================================================================
 '''

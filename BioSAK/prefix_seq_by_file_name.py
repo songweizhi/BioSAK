@@ -26,6 +26,7 @@ def prefix_seq_by_file_name(args):
     seq_file_in     = args['i']
     file_extension  = args['x']
     op_dir          = args['o']
+    keep_desc       = args['desc']
 
     seq_in_re = '%s/*.%s' % (seq_file_in, file_extension)
     seq_in_list = glob.glob(seq_in_re)
@@ -49,7 +50,10 @@ def prefix_seq_by_file_name(args):
         file_out_handle = open(file_out, 'w')
         seq_index = 1
         for each_seq in SeqIO.parse(each_file, 'fasta'):
-            file_out_handle.write('>%s_%s\n' % (f_base, seq_index))
+            if keep_desc is True:
+                file_out_handle.write('>%s_%s %s\n' % (f_base, seq_index, each_seq.description))
+            else:
+                file_out_handle.write('>%s_%s\n' % (f_base, seq_index))
             file_out_handle.write('%s\n' % each_seq.seq)
             seq_index += 1
         file_out_handle.close()
@@ -64,5 +68,6 @@ if __name__ == '__main__':
     prefix_seq_by_file_name_parser.add_argument('-i',         required=True,                         help='input sequence folder')
     prefix_seq_by_file_name_parser.add_argument('-x',         required=False, default='fasta',       help='file extension, default: fasta')
     prefix_seq_by_file_name_parser.add_argument('-o',         required=True,                         help='output folder')
+    prefix_seq_by_file_name_parser.add_argument('-desc',      action="store_true",                   help='keep sequence description')
     args = vars(prefix_seq_by_file_name_parser.parse_args())
     prefix_seq_by_file_name(args)

@@ -1077,6 +1077,7 @@ if __name__ == '__main__':
         prefix_seq_by_file_name_parser.add_argument('-i',         required=True,                         help='input sequence folder')
         prefix_seq_by_file_name_parser.add_argument('-x',         required=False, default='fasta',       help='file extension, default: fasta')
         prefix_seq_by_file_name_parser.add_argument('-o',         required=True,                         help='output folder')
+        prefix_seq_by_file_name_parser.add_argument('-desc',      action="store_true",                   help='keep sequence description')
         args = vars(parser.parse_args())
         prefix_seq_by_file_name.prefix_seq_by_file_name(args)
 
