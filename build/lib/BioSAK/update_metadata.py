@@ -27,7 +27,7 @@ def update_metadata(args):
     col_index = dict()
     line_num_index = 0
     for each_line in open(new_attribute_file):
-        line_split = each_line.strip().split('\t')
+        line_split = each_line.strip().split(new_attribute_sep)
         if line_num_index == 0:
             col_index = {key: i for i, key in enumerate(line_split)}
         else:
@@ -35,7 +35,7 @@ def update_metadata(args):
             value_list = []
             for interested_col in interested_col_list:
                 value_list.append(line_split[col_index[interested_col]])
-            value_str = '\t'.join(value_list)
+            value_str = metadata_txt_sep.join(value_list)
             new_attribute_dict[sample_id] = value_str
         line_num_index += 1
 
@@ -43,12 +43,12 @@ def update_metadata(args):
     metadata_txt_out_handle = open(metadata_txt_out, 'w')
     line_num_index = 0
     for each_line in open(metadata_txt_in):
-        each_line_split = each_line.strip().split('\t')
+        each_line_split = each_line.strip().split(metadata_txt_sep)
         sample_id = each_line_split[0]
         if line_num_index == 0:
-            metadata_txt_out_handle.write('%s\t%s\n' % (each_line.strip(), '\t'.join(interested_col_list)))
+            metadata_txt_out_handle.write('%s%s%s\n' % (each_line.strip(), metadata_txt_sep, metadata_txt_sep.join(interested_col_list)))
         else:
-            metadata_txt_out_handle.write('%s\t%s\n' % (each_line.strip(), new_attribute_dict[sample_id]))
+            metadata_txt_out_handle.write('%s%s%s\n' % (each_line.strip(), metadata_txt_sep, new_attribute_dict[sample_id]))
         line_num_index += 1
     metadata_txt_out_handle.close()
 
