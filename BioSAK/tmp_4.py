@@ -1,36 +1,63 @@
-#!/usr/bin/env python
-# coding: utf-8
+import os
+import glob
 
-import pandas as pd
-import io, sys
 
-fn1 = sys.argv[1] #GSD-20.sorted_filtered.rpkm
-fn2 = sys.argv[2] #allsample.stat
-fn3 = sys.argv[3] #test_out.txt
+def summarise_metadata(file_dir, file_ext, summary_txt):
 
-def get_sample_reads(sample_name):
-    with io.open (fn2,'r', encoding = 'utf-8' ) as f:
-        lines = f.readlines()
-        for line in lines:
-            if str(sample_name) == line.split('\t')[0].split('_1.fastq')[0]: #sample name GSD-20_1.fastq
-                sample_reads = line.split('\t')[1]
-                sample_reads_fnl = int(sample_reads.replace('\n','').replace(',', ''))
-                return  sample_reads_fnl
 
-if __name__ == '__main__':
+    file_re = '%s/*.%s' % (file_dir, file_ext)
+    file_list = glob.glob(file_re)
 
-    rpkm_out1 = pd.read_csv(fn1, sep = '\t',header = 4)
+    all_col_name_set  = set()
+    sample_metadata_dod = dict()
+    for each_file in file_list:
+        file_name = os.path.basename(each_file)
+        sample_id = file_name[:-(len(file_ext) + 1)]
+        current_sample_metadata_dict = dict()
+        col_index = dict()
+        line_num_index = 0
+        for each_line in open(each_file):
+            line_num_index += 1
+            line_split = each_line.split('\t')
+            if line_num_index == 1:
+                col_index = {key: i for i, key in enumerate(line_split)}
+            else:
+                bioSample_attribute_name  = line_split[col_index['Assembly BioSample Attribute Name']]
+                bioSample_attribute_value = line_split[col_index['Assembly BioSample Attribute Value']]
+                for each_col in col_index:
+                    if each_col not in ['Assembly BioSample Attribute Name', 'Assembly BioSample Attribute Value']:
+                        if each_col not in current_sample_metadata_dict:
+                            current_sample_metadata_dict[each_col] = set()
+                        current_sample_metadata_dict[each_col].add(line_split[col_index[each_col]].strip())
+                        all_col_name_set.add(each_col.strip())
+                    else:
+                        if each_col == 'Assembly BioSample Attribute Name':
+                            new_col_name = 'Assembly BioSample Attribute Name - %s' % bioSample_attribute_name
+                            if bioSample_attribute_name not in current_sample_metadata_dict:
+                                current_sample_metadata_dict[new_col_name] = set()
+                            current_sample_metadata_dict[new_col_name].add(bioSample_attribute_value)
+                            all_col_name_set.add(new_col_name.strip())
+        sample_metadata_dod[sample_id] = current_sample_metadata_dict
 
-    rpkm_out2 = rpkm_out1[['#Name', 'Length', 'Reads']]
-    rpkm_out2['bin_name'] = rpkm_out2['#Name'].str.rsplit('_', n=1, expand=True)[0] #contig name 'bin1_1', bin name 'bin1'
-    rpkm_out2['Length'] =  rpkm_out2['Length'].astype(int)
-    rpkm_out2['Reads'] =  rpkm_out2['Reads'].astype(int)
 
-    rpkm_out3 = rpkm_out2.groupby(["bin_name"])[['Length','Reads']].sum()
+    summary_txt_handle = open(summary_txt, 'w')
+    summary_txt_handle.write('ID\t%s\n' % '\t'.join(sorted(list(all_col_name_set))))
+    for each_sample in sample_metadata_dod:
+        metadata_dict = sample_metadata_dod[each_sample]
+        value_list = []
+        value_list.append(each_sample)
+        for each_col in sorted(list(all_col_name_set)):
+            col_value = metadata_dict.get(each_col, set())
+            col_value_str = ','.join(sorted(list(col_value)))
+            if col_value_str == '':
+                col_value_str = 'na'
+            value_list.append(col_value_str)
+        str_to_write = '\t'.join(value_list)
+        summary_txt_handle.write(str_to_write + '\n')
+    summary_txt_handle.close()
 
-    sample_name = str(fn1).split('.')[0]
-    sample_reads_fnl = get_sample_reads(sample_name)
-    rpkm_out3[sample_name+'_rpkm']=(rpkm_out3['Reads']*1000000000)/(rpkm_out3['Length']*sample_reads_fnl*2) #calulate RPKM
-    rpkm_out3.to_csv(fn3,sep='\t')
 
+file_dir    = '/Users/songweizhi/Desktop/Sponge_r226/02_AOA_genomes/GCA_GCF_1167_metadata/tmp2'
+file_ext    = 'txt'
+summary_txt = '/Users/songweizhi/Desktop/Sponge_r226/02_AOA_genomes/GCA_GCF_1167_metadata/tmp2_summary.txt'
 

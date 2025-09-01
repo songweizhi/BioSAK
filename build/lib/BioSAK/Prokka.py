@@ -104,7 +104,7 @@ if __name__ == '__main__':
     parser.add_argument('-i',          required=True,                          help='genome folder')
     parser.add_argument('-x',          required=True, default='fna',           help='file extension, deafult: fna')
     parser.add_argument('-d',          required=True,                          help='genome domain, Bacteria or Archaea')
-    parser.add_argument('-m',          required=False, action="store_true",    help='annotate MAG')
+    parser.add_argument('-m',          required=False,                         help='genome type, choose from MAG/nonMAG, default nonMAG')
     parser.add_argument('-e',          required=False, action="store_true",    help='execute commands')
     parser.add_argument('-t',          required=False, type=int, default=1,    help='number of threads')
     args = vars(parser.parse_args())

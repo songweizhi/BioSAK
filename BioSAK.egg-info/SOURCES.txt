@@ -186,6 +186,7 @@ BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/transpose.py
 BioSAK/trim.py
+BioSAK/update_metadata.py
 BioSAK/usearch_uc.py
 BioSAK/vis_color_scheme.py
 BioSAK/wilcox.py

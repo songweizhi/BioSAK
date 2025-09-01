@@ -151,6 +151,7 @@ def print_main_help():
        blast                   ->  Parse batch online blast output
        taxdump                 ->  Parse NCBI Taxonomy database
        get_single_page_web     ->  Get single page website
+       update_metadata         ->  update metadata file
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -783,7 +784,7 @@ if __name__ == '__main__':
         prokka_parser.add_argument('-i',          required=True,                          help='genome folder')
         prokka_parser.add_argument('-x',          required=True, default='fna',           help='file extension, deafult: fna')
         prokka_parser.add_argument('-d',          required=True,                          help='genome domain, Bacteria or Archaea')
-        prokka_parser.add_argument('-m',          required=False, action="store_true",    help='annotate MAG')
+        prokka_parser.add_argument('-m',          required=False,                         help='genome type, choose from MAG/nonMAG, default nonMAG')
         prokka_parser.add_argument('-e',          required=False, action="store_true",    help='execute commands')
         prokka_parser.add_argument('-t',          required=False, type=int, default=1,    help='number of threads')
         args = vars(parser.parse_args())
@@ -1325,6 +1326,18 @@ if __name__ == '__main__':
         get_single_page_web_parser.add_argument('-o', required=True, help='output webpage')
         args = vars(parser.parse_args())
         get_single_page_web.get_single_page_web(args)
+
+    elif sys.argv[1] == 'update_metadata':
+        from BioSAK import update_metadata
+        update_metadata_parser = subparsers.add_parser('update_metadata', usage=update_metadata.update_metadata_usage)
+        update_metadata_parser.add_argument('-i',  required=True,                   help='input metadata file')
+        update_metadata_parser.add_argument('-o',  required=True,                   help='output metadata file')
+        update_metadata_parser.add_argument('-a',  required=True,                   help='new attribute file')
+        update_metadata_parser.add_argument('-c',  required=True,                   help='interested column header')
+        update_metadata_parser.add_argument('-ms', required=False, default='\t',    help='metadata column separator')
+        update_metadata_parser.add_argument('-as', required=False, default='\t',    help='new attribute file column separator')
+        args = vars(parser.parse_args())
+        update_metadata.update_metadata(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])
