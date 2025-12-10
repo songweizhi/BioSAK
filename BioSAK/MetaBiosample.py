@@ -63,30 +63,31 @@ def MetaBiosample(args):
     for each_id in accession_set:
         biosample_id = each_id.strip()
         op_meta_txt = '%s/tmp/%s_metadata.txt' % (op_dir, biosample_id)
-        xtract_cmd  = 'xtract -pattern DocumentSummary -element Accession -element Date -first Title %s' % cmd_att_part
-        esearch_cmd = 'esearch -db biosample -query %s | esummary | %s> %s' % (biosample_id, xtract_cmd, op_meta_txt)
+        #xtract_cmd  = 'xtract -pattern DocumentSummary -element Accession -element Date -first Title %s' % cmd_att_part
+        #esearch_cmd = 'esearch -db biosample -query %s | esummary | %s> %s' % (biosample_id, xtract_cmd, op_meta_txt)
+        esearch_cmd = 'esearch -db biosample -query %s | efetch > %s' % (biosample_id, op_meta_txt)
         esearch_cmd_list.append(esearch_cmd)
 
-    cat_cmd = 'cat %s/tmp/*_metadata.txt > %s/combined_metadata.txt' % (op_dir, op_dir)
+    # cat_cmd = 'cat %s/tmp/*_metadata.txt > %s/combined_metadata.txt' % (op_dir, op_dir)
 
-    cmd_txt = '%s/cmd.txt' % op_dir
-    with open(cmd_txt, 'w') as cmd_txt_handle:
-        cmd_txt_handle.write('\n'.join(sorted(esearch_cmd_list)) + '\n')
-        cmd_txt_handle.write(cat_cmd)
+    # cmd_txt = '%s/cmd.txt' % op_dir
+    # with open(cmd_txt, 'w') as cmd_txt_handle:
+    #     cmd_txt_handle.write('\n'.join(sorted(esearch_cmd_list)) + '\n')
+    #     cmd_txt_handle.write(cat_cmd)
 
     if execute_cmd is True:
         pool = mp.Pool(processes=thread_num)
         pool.map(os.system, esearch_cmd_list)
         pool.close()
         pool.join()
-        os.system(cat_cmd)
+        # os.system(cat_cmd)
 
 
 if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser(usage=MetaBiosample_usage)
     arg_parser.add_argument('-i',   required=True,                        help='biosample id file, one id per line')
-    arg_parser.add_argument('-a',   required=True,                        help='attributes to extract')
+    arg_parser.add_argument('-a',   required=False,                        help='attributes to extract')
     arg_parser.add_argument('-o',   required=True,                        help='output folder')
     arg_parser.add_argument('-t',   required=False, type=int, default=1,  help='number of threads, default: 1')
     arg_parser.add_argument('-f',   required=False, action="store_true",  help='Force overwrite existing results')

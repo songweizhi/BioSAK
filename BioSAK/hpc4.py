@@ -2,21 +2,28 @@ import os
 import argparse
 
 
-hpc3_usage = '''
-========================= hpc3 example commands =========================
+hpc4_usage = '''
+========================= hpc4 example commands =========================
 
-BioSAK hpc3 -q cpu-share -n iqtree_1 -c "iqtree -h"
-BioSAK hpc3 -q cpu-share -t 1 -n iqtree_3 -c "iqtree -h"
-BioSAK hpc3 -q cpu-share -t 12 -tpc 3 -n mcmctree -c mcmctree_cmds.txt
-BioSAK hpc3 -q cpu -a oces -conda mybase -n iqtree_2 -c "iqtree -h"
+BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a spongeholobiont -q amd -n iqtree -c "iqtree -h"
+BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a spongeholobiont -q intel -n iqtree -c "iqtree -h"
+BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a marmolecol -q gpu-a30 -tpc 3 -n mcmctree -c mcmctree_cmds.txt
+BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a marmolecol -q gpu-l20 -n iqtree_2 -c "iqtree -h"
 
 # To use srun, you commands must NOT contain the double quote symbol (").
+
+# Max resources per User
+intel	    256 cores	2 nodes	    120h	10	15
+amd	        1536 cores	6 nodes	    120h	20	30
+gpu-a30	    16 gpu 	    4 nodes	    120h	4	8
+gpu-l20	    8 gpu       2 nodes	    120h	2	4
+gpu-rtx5880	12 gpu	    2 nodes	    120h	4	8
 
 =========================================================================
 '''
 
 
-def hpc3(args):
+def hpc4(args):
 
     cmd                 = args['c']
     job_name            = args['n']
@@ -42,7 +49,7 @@ def hpc3(args):
     js_file_handle.write('#SBATCH -t %s\n'          % walltime)
     js_file_handle.write('#SBATCH -N %s -n %s\n'    % (node_num, core_num))
     js_file_handle.write('#SBATCH -J %s\n'          % job_name)
-    if queue_name in ['cpu', 'gpu', 'himem']:
+    if queue_name in ['cpu', 'gpu', 'himem', 'amd', 'intel', 'gpu-a30', 'gpu-l20']:
         js_file_handle.write('#SBATCH -A %s\n'      % setting_a)
     js_file_handle.write('#SBATCH -p %s\n\n'        % queue_name)
     js_file_handle.write('cd $SLURM_SUBMIT_DIR\n\n')
@@ -80,17 +87,17 @@ def hpc3(args):
 
 if __name__ == '__main__':
 
-    hpc3_parser = argparse.ArgumentParser(usage=hpc3_usage)
-    hpc3_parser.add_argument('-c',        required=True,                          help='command to submit')
-    hpc3_parser.add_argument('-n',        required=True,                          help='job name')
-    hpc3_parser.add_argument('-m',        required=False, default=None,           help='email address')
-    hpc3_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
-    hpc3_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
-    hpc3_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
-    hpc3_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
-    hpc3_parser.add_argument('-a',        required=False, default='boqianpy',     help='-A, boqianpy or oces, default: boqianpy')
-    hpc3_parser.add_argument('-q',        required=True,                          help='queue, select from: cpu, cpu-share')
-    hpc3_parser.add_argument('-conda',    required=False, default=None,           help='conda environment')
-    hpc3_parser.add_argument('-srun',     required=False,  action='store_true',   help='use srun')
-    args = vars(hpc3_parser.parse_args())
-    hpc3(args)
+    hpc4_parser = argparse.ArgumentParser(usage=hpc4_usage)
+    hpc4_parser.add_argument('-c',        required=True,                          help='command to submit')
+    hpc4_parser.add_argument('-n',        required=True,                          help='job name')
+    hpc4_parser.add_argument('-m',        required=False, default=None,           help='email address')
+    hpc4_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
+    hpc4_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
+    hpc4_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
+    hpc4_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
+    hpc4_parser.add_argument('-a',        required=False, default='boqianpy',     help='-A, boqianpy or oces, default: boqianpy')
+    hpc4_parser.add_argument('-q',        required=True,                          help='queue, select from: cpu, cpu-share')
+    hpc4_parser.add_argument('-conda',    required=False, default=None,           help='conda environment')
+    hpc4_parser.add_argument('-srun',     required=False,  action='store_true',   help='use srun')
+    args = vars(hpc4_parser.parse_args())
+    hpc4(args)

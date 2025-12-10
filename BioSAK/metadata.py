@@ -1,17 +1,17 @@
 import argparse
 
 
-update_metadata_usage = '''
-==================================== update_metadata example commands ====================================
+metadata_usage = '''
+======================================= metadata example commands =======================================
 
 BioSAK update_metadata -i meta.txt -o meta_new.txt -a checkm_quality.tsv -c 'Completeness,Contamination'
 BioSAK update_metadata -i meta.txt -o meta_new.txt -a gtdb_taxonomy.tsv -c classification
 
-==========================================================================================================
+=========================================================================================================
 '''
 
 
-def update_metadata(args):
+def metadata(args):
 
     metadata_txt_in       = args['i']
     new_attribute_file    = args['a']
@@ -21,6 +21,7 @@ def update_metadata(args):
     new_attribute_sep     = args['as']
 
     interested_col_list = interested_col_header.split(',')
+    default_key_str = metadata_txt_sep.join(['na']*len(interested_col_list))
 
     # read in new attribute
     new_attribute_dict = dict()
@@ -48,19 +49,19 @@ def update_metadata(args):
         if line_num_index == 0:
             metadata_txt_out_handle.write('%s%s%s\n' % (each_line.strip(), metadata_txt_sep, metadata_txt_sep.join(interested_col_list)))
         else:
-            metadata_txt_out_handle.write('%s%s%s\n' % (each_line.strip(), metadata_txt_sep, new_attribute_dict[sample_id]))
+            metadata_txt_out_handle.write('%s%s%s\n' % (each_line.strip(), metadata_txt_sep, new_attribute_dict.get(sample_id, default_key_str)))
         line_num_index += 1
     metadata_txt_out_handle.close()
 
 
 if __name__ == '__main__':
 
-    update_metadata_parser = argparse.ArgumentParser(usage=update_metadata_usage)
-    update_metadata_parser.add_argument('-i',  required=True,                   help='input metadata file')
-    update_metadata_parser.add_argument('-o',  required=True,                   help='output metadata file')
-    update_metadata_parser.add_argument('-a',  required=True,                   help='new attribute file')
-    update_metadata_parser.add_argument('-c',  required=True,                   help='interested column header')
-    update_metadata_parser.add_argument('-ms', required=False, default='\t',    help='metadata column separator')
-    update_metadata_parser.add_argument('-as', required=False, default='\t',    help='new attribute file column separator')
-    args = vars(update_metadata_parser.parse_args())
-    update_metadata(args)
+    metadata_parser = argparse.ArgumentParser(usage=metadata_usage)
+    metadata_parser.add_argument('-i',  required=True,                   help='input metadata file')
+    metadata_parser.add_argument('-o',  required=True,                   help='output metadata file')
+    metadata_parser.add_argument('-a',  required=True,                   help='new attribute file')
+    metadata_parser.add_argument('-c',  required=True,                   help='interested column header')
+    metadata_parser.add_argument('-ms', required=False, default='\t',    help='metadata column separator')
+    metadata_parser.add_argument('-as', required=False, default='\t',    help='new attribute file column separator')
+    args = vars(metadata_parser.parse_args())
+    metadata(args)

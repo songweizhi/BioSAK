@@ -10,7 +10,7 @@ sra_usage = '''
 Requirement: sratoolkit
 BioSAK sra -i sra_id.txt -o op_dir -t 12
 
-# id file format
+# the format of input file (tab separated)
 SRS5161477	IR1T0
 SRS5161479	IR2T0
 
@@ -55,13 +55,13 @@ def sra(args):
     prefetch_cmd_list = []
     fasterq_dump_cmd_list = []
 
-    for each_id in id_set:
-        sub_dir = id_to_desc_dict[each_id]
-        mkdir_cmd        = 'mkdir %s/%s'                                    % (op_dir, sub_dir)
+    for each_id in sorted(list(id_set)):
+        customized_name = id_to_desc_dict.get(each_id, each_id)
+        mkdir_cmd        = 'mkdir %s/%s'                                    % (op_dir, customized_name)
         if max_size == '20G':
-            prefetch_cmd     = 'prefetch %s -O %s/%s'                       % (each_id, op_dir, sub_dir)
+            prefetch_cmd     = 'prefetch %s -O %s/%s'                       % (each_id, op_dir, customized_name)
         else:
-            prefetch_cmd     = 'prefetch %s -O %s/%s --max-size %s'         % (each_id, op_dir, sub_dir, max_size)
+            prefetch_cmd     = 'prefetch %s -O %s/%s --max-size %s'         % (each_id, op_dir, customized_name, max_size)
 
         fasterq_dump_cmd = 'fasterq-dump %s/%s.sra --split-3 -O %s -t %s' % (sra_dir, each_id, op_dir, fasterq_dump_tmp)
         prefetch_cmd_list.append(prefetch_cmd)
@@ -84,13 +84,11 @@ def sra(args):
     pool.join()
 
     for each_id in id_set:
-
-        sra_file_re = '%s/%s/*/*.sra' % (op_dir, each_id)
-        print(sra_file_re)
-        print(glob.glob(sra_file_re))
+        customized_name = id_to_desc_dict.get(each_id, each_id)
+        sra_file_re = '%s/%s/*/*.sra' % (op_dir, customized_name)
         sra_file    = glob.glob(sra_file_re)[0]
-        os.system('mv %s %s/%s.sra' % (sra_file, sra_dir, each_id))
-        os.system('rm -r %s/%s' % (op_dir, each_id))
+        os.system('mv %s %s/%s.sra' % (sra_file, sra_dir, customized_name))
+        os.system('rm -r %s/%s' % (op_dir, customized_name))
 
     # extract fastq file from SRA with multiprocessing
     if run_dump is True:
@@ -100,8 +98,8 @@ def sra(args):
         pool.map(os.system, fasterq_dump_cmd_list)
         pool.close()
         pool.join()
+        os.system('rm -r %s' % fasterq_dump_tmp)
 
-    os.system('rm -r %s' % fasterq_dump_tmp)
     print('Done!')
 
 

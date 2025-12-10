@@ -1,8 +1,11 @@
-1.122.1
+1.123.10
 - fixed bugs
 
+1.123.0
+- new modules added: cdb
+
 1.122.0
-- new modules added: update_metadata
+- new modules added: metadata
 
 1.121.0
 - new modules added: get_single_page_web

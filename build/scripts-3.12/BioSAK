@@ -63,6 +63,7 @@ def print_main_help():
        fastaai                 ->  A wrapper for FastAAI
        abd                     ->  get MAG abundance across metagenomes (Wenxiu Wang et al. 2024)
        abd_mask                ->  prepare masked sequence for abd module
+       cdb                     ->  reformat dRep Cdb file
        
     Functional annotation
        KEGG                    ->  KEGG annotation
@@ -125,7 +126,7 @@ def print_main_help():
     Others
        js_cmds                 ->  Put commands in job scripts
        js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
-       hpc3                    ->  Submit jobs on HKUST hpc3
+       hpc4                    ->  Submit jobs on HKUST hpc4
        srun                    ->  srun one-line commands on HKUST hpc3
        exe_cmds                ->  Execute commands with multiprocessing
        split_folder            ->  Split folder
@@ -145,13 +146,13 @@ def print_main_help():
        sankey                  ->  get sankey plot
        sra                     ->  Download reads with sratoolkit
        vis_color_scheme        ->  Visualize color scheme
-       trim                    ->  a wrapper for trimmomatic
-       FasterqDump             ->  a wrapper for fasterq-dump
-       rename_df_row           ->  rename row headers in a dataframe
+       trim                    ->  A wrapper for trimmomatic
+       FasterqDump             ->  A wrapper for fasterq-dump
+       rename_df_row           ->  Rename row headers in a dataframe
        blast                   ->  Parse batch online blast output
        taxdump                 ->  Parse NCBI Taxonomy database
        get_single_page_web     ->  Get single page website
-       update_metadata         ->  update metadata file
+       metadata                ->  Update metadata file
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -826,22 +827,22 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         parse_mmseqs_tsv.parse_mmseqs_tsv(args)
 
-    elif sys.argv[1] == 'hpc3':
-        from BioSAK import hpc3
-        hpc3_parser = subparsers.add_parser('hpc3', usage=hpc3.hpc3_usage)
-        hpc3_parser.add_argument('-c',        required=True,                          help='command to submit')
-        hpc3_parser.add_argument('-n',        required=True,                          help='job name')
-        hpc3_parser.add_argument('-m',        required=False, default=None,           help='email address')
-        hpc3_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
-        hpc3_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
-        hpc3_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
-        hpc3_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
-        hpc3_parser.add_argument('-a',        required=False, default='boqianpy',     help='-A, boqianpy or oces, default: boqianpy')
-        hpc3_parser.add_argument('-q',        required=True,                          help='queue, select from cpu, cpu-share, himem and himem-share')
-        hpc3_parser.add_argument('-conda',    required=False, default=None,           help='conda environment')
-        hpc3_parser.add_argument('-srun',     required=False, action='store_true',    help='use srun')
+    elif sys.argv[1] == 'hpc4':
+        from BioSAK import hpc4
+        hpc4_parser = subparsers.add_parser('hpc4', usage=hpc4.hpc4_usage)
+        hpc4_parser.add_argument('-c',        required=True,                          help='command to submit')
+        hpc4_parser.add_argument('-n',        required=True,                          help='job name')
+        hpc4_parser.add_argument('-m',        required=False, default=None,           help='email address')
+        hpc4_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
+        hpc4_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
+        hpc4_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
+        hpc4_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
+        hpc4_parser.add_argument('-a',        required=False, default='boqianpy',     help='-A, boqianpy or oces, default: boqianpy')
+        hpc4_parser.add_argument('-q',        required=True,                          help='queue, select from cpu, cpu-share, himem and himem-share')
+        hpc4_parser.add_argument('-conda',    required=False, default=None,           help='conda environment')
+        hpc4_parser.add_argument('-srun',     required=False, action='store_true',    help='use srun')
         args = vars(parser.parse_args())
-        hpc3.hpc3(args)
+        hpc4.hpc4(args)
 
     elif sys.argv[1] == 'enrich':
         from BioSAK import enrich
@@ -1323,21 +1324,29 @@ if __name__ == '__main__':
         get_single_page_web_parser = subparsers.add_parser('get_single_page_web', usage=get_single_page_web.get_single_page_web_usage)
         get_single_page_web_parser.add_argument('-m', required=True, help='sample metadata')
         get_single_page_web_parser.add_argument('-w', required=True, help='webpage template')
+        get_single_page_web_parser.add_argument('-d', required=True, help='photo directory')
         get_single_page_web_parser.add_argument('-o', required=True, help='output webpage')
         args = vars(parser.parse_args())
         get_single_page_web.get_single_page_web(args)
 
-    elif sys.argv[1] == 'update_metadata':
-        from BioSAK import update_metadata
-        update_metadata_parser = subparsers.add_parser('update_metadata', usage=update_metadata.update_metadata_usage)
-        update_metadata_parser.add_argument('-i',  required=True,                   help='input metadata file')
-        update_metadata_parser.add_argument('-o',  required=True,                   help='output metadata file')
-        update_metadata_parser.add_argument('-a',  required=True,                   help='new attribute file')
-        update_metadata_parser.add_argument('-c',  required=True,                   help='interested column header')
-        update_metadata_parser.add_argument('-ms', required=False, default='\t',    help='metadata column separator')
-        update_metadata_parser.add_argument('-as', required=False, default='\t',    help='new attribute file column separator')
+    elif sys.argv[1] == 'metadata':
+        from BioSAK import metadata
+        metadata_parser = subparsers.add_parser('metadata', usage=metadata.metadata_usage)
+        metadata_parser.add_argument('-i',  required=True,                   help='input metadata file')
+        metadata_parser.add_argument('-o',  required=True,                   help='output metadata file')
+        metadata_parser.add_argument('-a',  required=True,                   help='new attribute file')
+        metadata_parser.add_argument('-c',  required=True,                   help='interested column header')
+        metadata_parser.add_argument('-ms', required=False, default='\t',    help='metadata column separator')
+        metadata_parser.add_argument('-as', required=False, default='\t',    help='new attribute file column separator')
         args = vars(parser.parse_args())
-        update_metadata.update_metadata(args)
+        metadata.metadata(args)
+
+    elif sys.argv[1] == 'cdb':
+        from BioSAK import cdb
+        cdb_parser = subparsers.add_parser('cdb', usage=cdb.cdb_usage)
+        cdb_parser.add_argument('-i', required=True, help='input Cdb.csv')
+        args = vars(parser.parse_args())
+        cdb.cdb(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])
