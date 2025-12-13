@@ -153,6 +153,7 @@ def print_main_help():
        taxdump                 ->  Parse NCBI Taxonomy database
        get_single_page_web     ->  Get single page website
        metadata                ->  Update metadata file
+       subset_gene_by_gnm      ->  Subset gene by genome
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
@@ -1332,12 +1333,13 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'metadata':
         from BioSAK import metadata
         metadata_parser = subparsers.add_parser('metadata', usage=metadata.metadata_usage)
-        metadata_parser.add_argument('-i',  required=True,                   help='input metadata file')
-        metadata_parser.add_argument('-o',  required=True,                   help='output metadata file')
-        metadata_parser.add_argument('-a',  required=True,                   help='new attribute file')
-        metadata_parser.add_argument('-c',  required=True,                   help='interested column header')
-        metadata_parser.add_argument('-ms', required=False, default='\t',    help='metadata column separator')
-        metadata_parser.add_argument('-as', required=False, default='\t',    help='new attribute file column separator')
+        metadata_parser.add_argument('-i',      required=True,                          help='input metadata file')
+        metadata_parser.add_argument('-o',      required=True,                          help='output metadata file')
+        metadata_parser.add_argument('-a',      required=True,                          help='new attribute file')
+        metadata_parser.add_argument('-c',      required=True,                          help='interested column header')
+        metadata_parser.add_argument('-ms',     required=False, default='\t',           help='metadata column separator')
+        metadata_parser.add_argument('-as',     required=False, default='\t',           help='new attribute file column separator')
+        metadata_parser.add_argument('-id_col', required=False, type=int, default=1,    help='id column in input metadata file, default is 1 (the first column)')
         args = vars(parser.parse_args())
         metadata.metadata(args)
 
@@ -1347,6 +1349,17 @@ if __name__ == '__main__':
         cdb_parser.add_argument('-i', required=True, help='input Cdb.csv')
         args = vars(parser.parse_args())
         cdb.cdb(args)
+
+    elif sys.argv[1] == 'subset_gene_by_gnm':
+        from BioSAK import subset_gene_by_gnm
+        subset_gene_by_gnm_parser = subparsers.add_parser('subset_gene_by_gnm', usage=subset_gene_by_gnm.subset_gene_by_gnm_usage)
+        subset_gene_by_gnm_parser.add_argument('-i', required=True,                         help='input folder')
+        subset_gene_by_gnm_parser.add_argument('-x', required=False, default=None,          help='file extension')
+        subset_gene_by_gnm_parser.add_argument('-g', required=False, default=None,          help='genome id')
+        subset_gene_by_gnm_parser.add_argument('-o', required=True,                         help='output folder')
+        subset_gene_by_gnm_parser.add_argument('-f', required=False, action="store_true",   help='force overwrite')
+        args = vars(parser.parse_args())
+        subset_gene_by_gnm.subset_gene_by_gnm(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

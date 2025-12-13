@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import argparse
 from Bio import SeqIO
 from BioSAK.global_functions import sep_path_basename_ext

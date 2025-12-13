@@ -1,5 +1,8 @@
-1.123.10
+1.124.1
 - fixed bugs
+
+1.124.0
+- new modules added: subset_gene_by_gnm
 
 1.123.0
 - new modules added: cdb

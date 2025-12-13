@@ -176,6 +176,7 @@ BioSAK/stats_ko.py
 BioSAK/submitHPC.py
 BioSAK/subset_GTDB_meta.py
 BioSAK/subset_df.py
+BioSAK/subset_gene_by_gnm.py
 BioSAK/subset_tree.py
 BioSAK/taxdump.py
 BioSAK/tmp_1.py

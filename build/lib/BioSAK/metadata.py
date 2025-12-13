@@ -4,8 +4,8 @@ import argparse
 metadata_usage = '''
 ======================================= metadata example commands =======================================
 
-BioSAK update_metadata -i meta.txt -o meta_new.txt -a checkm_quality.tsv -c 'Completeness,Contamination'
-BioSAK update_metadata -i meta.txt -o meta_new.txt -a gtdb_taxonomy.tsv -c classification
+BioSAK metadata -id_col 1 -i meta.txt -o meta_new.txt -a checkm_quality.tsv -c 'Completeness,Contamination'
+BioSAK metadata -id_col 2 -i meta.txt -o meta_new.txt -a gtdb_taxonomy.tsv -c classification
 
 =========================================================================================================
 '''
@@ -19,6 +19,7 @@ def metadata(args):
     metadata_txt_out      = args['o']
     metadata_txt_sep      = args['ms']
     new_attribute_sep     = args['as']
+    id_column             = args['id_col']
 
     interested_col_list = interested_col_header.split(',')
     default_key_str = metadata_txt_sep.join(['na']*len(interested_col_list))
@@ -45,7 +46,7 @@ def metadata(args):
     line_num_index = 0
     for each_line in open(metadata_txt_in):
         each_line_split = each_line.strip().split(metadata_txt_sep)
-        sample_id = each_line_split[0]
+        sample_id = each_line_split[id_column - 1]
         if line_num_index == 0:
             metadata_txt_out_handle.write('%s%s%s\n' % (each_line.strip(), metadata_txt_sep, metadata_txt_sep.join(interested_col_list)))
         else:
@@ -63,5 +64,6 @@ if __name__ == '__main__':
     metadata_parser.add_argument('-c',  required=True,                   help='interested column header')
     metadata_parser.add_argument('-ms', required=False, default='\t',    help='metadata column separator')
     metadata_parser.add_argument('-as', required=False, default='\t',    help='new attribute file column separator')
+    metadata_parser.add_argument('-id_col', required=False, type=int, default=1,    help='id column in input metadata file, default is 1 (the first column)')
     args = vars(metadata_parser.parse_args())
     metadata(args)
