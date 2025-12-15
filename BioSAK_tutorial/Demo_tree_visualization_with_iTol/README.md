@@ -15,18 +15,18 @@ This short note shows how to visualize all these info in one Figure.
     + [color_lifestyle.txt](files_needed/color_lifestyle.txt): (optional) color designation for lifestyle, provide as Hex Color Codes
     + [color_taxon.txt](files_needed/color_taxon.txt): (optional) color designation for taxon, provide as Hex Color Codes
 
-1. Here, we are going to use BioSAK's iTOL module to prepare iTOL recognizable files.
+1. Here, we are going to use TreeSAK's iTOL module to prepare iTOL recognizable files.
 Please refer to its [manual page](https://github.com/songweizhi/BioSAK) for installation.
 Here are some other [tools](https://itol.embl.de/help.cgi#external) suggested by iTOL.
       
-       BioSAK iTOL -ColorRange -lg taxon.txt -lt Class -out iTOL_taxon_Range.txt -gc color_taxon.txt
-       BioSAK iTOL -ColorStrip -lg taxon.txt -lt Class -out iTOL_taxon_Strip.txt -gc color_taxon.txt
-       BioSAK iTOL -ColorStrip -lg lifestyle.txt -lt Life_Style -out iTOL_lifestyle.txt -gc color_lifestyle.txt
-       BioSAK iTOL -Heatmap -lm abundance.txt -lt Abundance -out iTOL_abundance.txt
-       BioSAK iTOL -SimpleBar -lv size.txt -scale 0-3-6-9 -lt Size -out iTOL_size.txt
+       TreeSAK iTOL -ColorRange -lg taxon.txt -lt Class -o iTOL_taxon_Range.txt -gc color_taxon.txt
+       TreeSAK iTOL -ColorStrip -lg taxon.txt -lt Class -o iTOL_taxon_Strip.txt -gc color_taxon.txt
+       TreeSAK iTOL -ColorStrip -lg lifestyle.txt -lt Life_Style -o iTOL_lifestyle.txt -gc color_lifestyle.txt
+       TreeSAK iTOL -Heatmap -lm abundance.txt -lt Abundance -o iTOL_abundance.txt
+       TreeSAK iTOL -SimpleBar -lv size.txt -scale 0-3-6-9 -lt Size -o iTOL_size.txt
        
        # for help
-       BioSAK iTOL -h
+       TreeSAK iTOL -h
 
 1. Paste/Upload [tree.newick](files_needed/tree.newick) to iTOL via [https://itol.embl.de/upload.cgi](https://itol.embl.de/upload.cgi).
 
