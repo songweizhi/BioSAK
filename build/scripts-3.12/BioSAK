@@ -42,6 +42,7 @@ def print_main_help():
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
        metaAssembly            ->  Get metadata of NCBI assembly records
        metaBiosample           ->  Get metadata of NCBI biosample records
+       sra2biosample           ->  Get Biosample Id of SRA record
        statsTaxa               ->  stats GTDB taxa
        GenBank                 ->  get sequence/organism/voucher info
 
@@ -107,6 +108,7 @@ def print_main_help():
        split_fasta             ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine fasta files, prefix sequence id with file name
+       rm_desc                 ->  Remove sequence descriptions
            
     Sam and Bam
        reads2bam               ->  Mapping and sorting
@@ -142,7 +144,7 @@ def print_main_help():
        submitHPC               ->  A wrapper for submitHPC.sh
        KeepRemovingTmp         ->  Keep removing old files in a folder
        ribbon                  ->  Make a ribbon diagram
-       compare_sets            ->  compare_sets
+       compare                 ->  compare sets
        sankey                  ->  get sankey plot
        sra                     ->  Download reads with sratoolkit
        vis_color_scheme        ->  Visualize color scheme
@@ -753,16 +755,13 @@ if __name__ == '__main__':
         SubsampleLongReads.SubsampleLongReads(args)
 
     elif sys.argv[1] == 'metaBiosample':
-        from BioSAK import MetaBiosample
-        MetaBiosample_parser = subparsers.add_parser('MetaBiosample', usage=MetaBiosample.MetaBiosample_usage)
-        MetaBiosample_parser.add_argument('-i',     required=True,                          help='biosample id file, one id per line')
-        MetaBiosample_parser.add_argument('-a',     required=True,                          help='attributes to extract')
-        MetaBiosample_parser.add_argument('-o',     required=True,                          help='output folder')
-        MetaBiosample_parser.add_argument('-t',     required=False, type=int, default=1,    help='number of threads, default: 1')
-        MetaBiosample_parser.add_argument('-f',     required=False, action="store_true",    help='Force overwrite existing results')
-        MetaBiosample_parser.add_argument('-exe',   required=False, action="store_true",    help='execute cmds')
+        from BioSAK import metaBiosample
+        metaBiosample_parser = subparsers.add_parser('metaBiosample', usage=metaBiosample.metaBiosample_usage)
+        metaBiosample_parser.add_argument('-i',     required=True,                          help='biosample id file, one id per line')
+        metaBiosample_parser.add_argument('-o',     required=True,                          help='output folder')
+        metaBiosample_parser.add_argument('-f',     required=False, action="store_true",    help='Force overwrite existing results')
         args = vars(parser.parse_args())
-        MetaBiosample.MetaBiosample(args)
+        metaBiosample.metaBiosample(args)
 
     elif sys.argv[1] == 'metabat2concoct':
         from BioSAK import metabat2concoct
@@ -964,13 +963,13 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         mann_whitney_u.mann_whitney_u(args)
 
-    elif sys.argv[1] == 'compare_sets':
-        from BioSAK import compare_sets
-        compare_sets_parser = subparsers.add_parser('compare_sets', usage=compare_sets.compare_sets_usage)
-        compare_sets_parser.add_argument('-1', required=True, help='file 1')
-        compare_sets_parser.add_argument('-2', required=True, help='file 2')
+    elif sys.argv[1] == 'compare':
+        from BioSAK import compare
+        compare_parser = subparsers.add_parser('compare', usage=compare.compare_usage)
+        compare_parser.add_argument('-1', required=True, help='file 1')
+        compare_parser.add_argument('-2', required=True, help='file 2')
         args = vars(parser.parse_args())
-        compare_sets.compare_sets(args)
+        compare.compare(args)
 
     elif sys.argv[1] == 'ribbon':
         from BioSAK import ribbon
@@ -1360,6 +1359,22 @@ if __name__ == '__main__':
         subset_gene_by_gnm_parser.add_argument('-f', required=False, action="store_true",   help='force overwrite')
         args = vars(parser.parse_args())
         subset_gene_by_gnm.subset_gene_by_gnm(args)
+
+    elif sys.argv[1] == 'sra2biosample':
+        from BioSAK import sra2biosample
+        sra2biosample_parser = subparsers.add_parser('sra2biosample', usage=sra2biosample.sra2biosample_usage)
+        sra2biosample_parser.add_argument('-i', required=True, help='input SRA id')
+        sra2biosample_parser.add_argument('-o', required=True, help='output file')
+        args = vars(parser.parse_args())
+        sra2biosample.sra2biosample(args)
+
+    elif sys.argv[1] == 'rm_desc':
+        from BioSAK import rm_desc
+        rm_desc_parser = subparsers.add_parser('rm_desc', usage=rm_desc.rm_desc_usage)
+        rm_desc_parser.add_argument('-i', required=True, help='input fasta file')
+        rm_desc_parser.add_argument('-o', required=True, help='output fasta file')
+        args = vars(parser.parse_args())
+        rm_desc.rm_desc(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

@@ -7,7 +7,7 @@ from Bio import SeqIO
 GenBank_usage = '''
 ====================== GenBank example commands ======================
 
-BioSAK GenBank -i accession.txt -o op_dir -f -tax ncbi_taxonomy.txt
+BioSAK GenBank -f -i accession.txt -o op_dir -tax ncbi_taxonomy.txt
 
 -tax /Users/songweizhi/DB/taxdump_20250321/ncbi_taxonomy.txt
 
@@ -58,15 +58,20 @@ def combine_esearch_op_organism(op_dir, tax_lineage_dict, op_txt):
         accession_id = f_base.split('_organism')[0]
 
         organism_info = ''
+        full_lineage_str = ''
         with open(each_file) as f:
             organism_info = f.readline().replace('ORGANISM', '').strip()
-            organism_g = organism_info.split()[0]
-            g_full_lineage = tax_lineage_dict.get(organism_g, ('g__' + organism_g))
-            full_lineage_str = '%s;s__%s' % (g_full_lineage, organism_info)
+            if organism_info != '':
+                organism_g = organism_info.split()[0]
+                g_full_lineage = tax_lineage_dict.get(organism_g, ('g__' + organism_g))
+                full_lineage_str = '%s;s__%s' % (g_full_lineage, organism_info)
+
         if len(tax_lineage_dict) == 0:
-            op_txt_handle.write('%s\t%s\n' % (accession_id, organism_info))
+            if organism_info != '':
+                op_txt_handle.write('%s\t%s\n' % (accession_id, organism_info))
         else:
-            op_txt_handle.write('%s\t%s\n' % (accession_id, full_lineage_str))
+            if full_lineage_str != '':
+                op_txt_handle.write('%s\t%s\n' % (accession_id, full_lineage_str))
     op_txt_handle.close()
 
 
@@ -131,13 +136,14 @@ def GenBank(args):
         os.system('cat %s | grep "specimen_voucher" > %s' % (gbk_file, voucher_txt))
 
         # get sequence file
-        gbk_record = SeqIO.read(gbk_file, "genbank")
-        seq_id   = gbk_record.id
-        seq_desc = gbk_record.description
-        seq_str  = get_origin_seq_from_gbk(gbk_file)
-        with open(fa_file, 'w') as f1:
-            f1.write('>%s %s\n' % (seq_id, seq_desc))
-            f1.write('%s\n' % seq_str)
+        if os.path.isfile(gbk_file):
+            gbk_record = SeqIO.read(gbk_file, "genbank")
+            seq_id   = gbk_record.id
+            seq_desc = gbk_record.description
+            seq_str  = get_origin_seq_from_gbk(gbk_file)
+            with open(fa_file, 'w') as f1:
+                f1.write('>%s %s\n' % (seq_id, seq_desc))
+                f1.write('%s\n' % seq_str)
 
     # write out command
     with open(cmd_txt_gbk, 'a') as f2:

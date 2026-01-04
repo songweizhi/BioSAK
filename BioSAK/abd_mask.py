@@ -8,7 +8,17 @@ import multiprocessing as mp
 abd_mask_usage = '''
 ====================== abd_mask example commands ======================
 
+Dependencies: metaxa2, barrnap, tRNAscan-SE, dustmasker, bedtools
+
 BioSAK abd_mask -i gnm_dir -x fna -o mask_wd -p dRep99_406 -t 36 -f
+
+It will:
+1. rename input genomes to remove underscore
+2. rename sequences in the genomes, in the format of gnm1_1, gnm1_2...   
+3. remove sequences shorter than 2000 bp
+4. run metaxa2, barrnap and tRNAscan-SE
+5. mask the identified regions with Ns
+6. The masked sequences will be exported to [prefix].masked.fna
 
 =======================================================================
 '''
@@ -24,7 +34,7 @@ def sep_path_basename_ext(file_in):
     return f_name, f_path, f_base, f_ext[1:]
 
 
-def rename_and_cat_gnm(gnm_dir, gnm_ext, combined_renamed_fna, rename_txt):
+def rename_filter_cat_gnm(gnm_dir, gnm_ext, combined_renamed_fna, rename_txt):
 
     gnm_file_re = '%s/*.%s' % (gnm_dir, gnm_ext)
     gnm_file_list = glob.glob(gnm_file_re)
@@ -38,9 +48,9 @@ def rename_and_cat_gnm(gnm_dir, gnm_ext, combined_renamed_fna, rename_txt):
 
         seq_index = 1
         for each_seq in SeqIO.parse(each_gnm, 'fasta'):
-            combined_renamed_fa_handle.write('>%s_%s\n%s\n' % (gnm_id_no_underscore, seq_index, str(each_seq.seq)))
-            seq_index += 1
-
+            if len(each_seq.seq) >= 2000:
+                combined_renamed_fa_handle.write('>%s_%s\n%s\n' % (gnm_id_no_underscore, seq_index, str(each_seq.seq)))
+                seq_index += 1
     gnm_rename_txt_handle.close()
     combined_renamed_fa_handle.close()
 
@@ -78,62 +88,52 @@ def abd_mask(args):
     os.system('mkdir %s' % op_dir)
 
     # rename and combine sequences
-    print('rename and combine input genomes')
-    rename_and_cat_gnm(seq_dir, seq_ext, renamed_combined_fna, renamed_combined_txt)
+    print('rename, filter and combine input genomes')
+    rename_filter_cat_gnm(seq_dir, seq_ext, renamed_combined_fna, renamed_combined_txt)
 
     ####################################################################################################################
 
     # get rRNA regions
-    shell_cmd_1_metaxa2_ssu_cmd     = 'metaxa2 --plus --mode m --cpu %s --multi_thread T --table T -g ssu --not_found T -i %s -o %s/%s.metaxa2_ssu'             % (num_threads, renamed_combined_fna, op_dir, op_prefix)
-    shell_cmd_2_metaxa2_lsu_cmd     = 'metaxa2 --plus --mode m --cpu %s --multi_thread T --table T -g lsu --not_found T -i %s -o %s/%s.metaxa2_lsu'             % (num_threads, renamed_combined_fna, op_dir, op_prefix)
-    shell_cmd_3                     = 'cut -f 1,9,10 %s/%s.metaxa2_ssu.extraction.results > %s/%s.masked_metaxa_ssu.bed'                                        % (op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_4                     = 'cut -f 1,9,10 %s/%s.metaxa2_lsu.extraction.results > %s/%s.masked_metaxa_lsu.bed'                                        % (op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_5                     = 'cat %s/%s.masked_metaxa_ssu.bed %s/%s.masked_metaxa_lsu.bed > %s/%s.masked_metaxa.bed'                                   % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_6_barrnap_bac_cmd     = 'barrnap --kingdom bac --threads %s --reject 0.3 %s > %s/%s.barrnap_bac.gff'                                              % (num_threads, renamed_combined_fna, op_dir, op_prefix)
-    shell_cmd_7_barrnap_arc_cmd     = 'barrnap --kingdom arc --threads %s --reject 0.3 %s > %s/%s.barrnap_arc.gff'                                              % (num_threads, renamed_combined_fna, op_dir, op_prefix)
-    shell_cmd_8_barrnap_euk_cmd     = 'barrnap --kingdom euk --threads %s --reject 0.3 %s > %s/%s.barrnap_euk.gff'                                              % (num_threads, renamed_combined_fna, op_dir, op_prefix)
-    shell_cmd_9                     = 'cut -f 1,4,5 %s/%s.barrnap_bac.gff > %s/%s.masked_barrnap_bac.bed'                                                       % (op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_10                    = 'cut -f 1,4,5 %s/%s.barrnap_arc.gff > %s/%s.masked_barrnap_arc.bed'                                                       % (op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_11                    = 'cut -f 1,4,5 %s/%s.barrnap_euk.gff > %s/%s.masked_barrnap_euk.bed'                                                       % (op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_12                    = 'cat %s/%s.masked_barrnap_bac.bed %s/%s.masked_barrnap_arc.bed %s/%s.masked_barrnap_euk.bed > %s/%s.masked_barrnap.bed'   % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
-    shell_cmd_13                    = 'cat %s/%s.masked_barrnap.bed %s/%s.masked_metaxa.bed > %s/%s.masked_rrna.bed'                                            % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_1_metaxa2_ssu_cmd     = 'metaxa2 --plus --mode m --cpu %s --multi_thread T --table T -g ssu --not_found T -i %s -o %s/%s.metaxa2_ssu --temp %s/metaxa2_temp_dir'  % (num_threads, renamed_combined_fna, op_dir, op_prefix, op_dir)
+    shell_cmd_2_metaxa2_lsu_cmd     = 'metaxa2 --plus --mode m --cpu %s --multi_thread T --table T -g lsu --not_found T -i %s -o %s/%s.metaxa2_lsu --temp %s/metaxa2_temp_dir'  % (num_threads, renamed_combined_fna, op_dir, op_prefix, op_dir)
+    shell_cmd_3                     = 'cut -f 1,9,10 %s/%s.metaxa2_ssu.extraction.results > %s/%s.masked_metaxa_ssu.bed'                                                        % (op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_4                     = 'cut -f 1,9,10 %s/%s.metaxa2_lsu.extraction.results > %s/%s.masked_metaxa_lsu.bed'                                                        % (op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_5                     = 'cat %s/%s.masked_metaxa_ssu.bed %s/%s.masked_metaxa_lsu.bed > %s/%s.masked_metaxa.bed'                                                   % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_6_barrnap_bac_cmd     = 'barrnap --kingdom bac --threads %s --reject 0.3 %s > %s/%s.barrnap_bac.gff'                                                              % (num_threads, renamed_combined_fna, op_dir, op_prefix)
+    shell_cmd_7_barrnap_arc_cmd     = 'barrnap --kingdom arc --threads %s --reject 0.3 %s > %s/%s.barrnap_arc.gff'                                                              % (num_threads, renamed_combined_fna, op_dir, op_prefix)
+    shell_cmd_8_barrnap_euk_cmd     = 'barrnap --kingdom euk --threads %s --reject 0.3 %s > %s/%s.barrnap_euk.gff'                                                              % (num_threads, renamed_combined_fna, op_dir, op_prefix)
+    shell_cmd_9                     = 'cut -f 1,4,5 %s/%s.barrnap_bac.gff > %s/%s.masked_barrnap_bac.bed'                                                                       % (op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_10                    = 'cut -f 1,4,5 %s/%s.barrnap_arc.gff > %s/%s.masked_barrnap_arc.bed'                                                                       % (op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_11                    = 'cut -f 1,4,5 %s/%s.barrnap_euk.gff > %s/%s.masked_barrnap_euk.bed'                                                                       % (op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_12                    = 'cat %s/%s.masked_barrnap_bac.bed %s/%s.masked_barrnap_arc.bed %s/%s.masked_barrnap_euk.bed > %s/%s.masked_barrnap.bed'                   % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
+    shell_cmd_13                    = 'cat %s/%s.masked_barrnap.bed %s/%s.masked_metaxa.bed > %s/%s.masked_rrna.bed'                                                            % (op_dir, op_prefix, op_dir, op_prefix, op_dir, op_prefix)
+
+    os.system('mkdir %s/metaxa2_temp_dir' % op_dir)
 
     print(shell_cmd_1_metaxa2_ssu_cmd)
     os.system(shell_cmd_1_metaxa2_ssu_cmd)
-
     print(shell_cmd_2_metaxa2_lsu_cmd)
     os.system(shell_cmd_2_metaxa2_lsu_cmd)
-
     print(shell_cmd_3)
     os.system(shell_cmd_3)
-
     print(shell_cmd_4)
     os.system(shell_cmd_4)
-
     print(shell_cmd_5)
     os.system(shell_cmd_5)
-
     print(shell_cmd_6_barrnap_bac_cmd)
     os.system(shell_cmd_6_barrnap_bac_cmd)
-
     print(shell_cmd_7_barrnap_arc_cmd)
     os.system(shell_cmd_7_barrnap_arc_cmd)
-
     print(shell_cmd_8_barrnap_euk_cmd)
     os.system(shell_cmd_8_barrnap_euk_cmd)
-
     print(shell_cmd_9)
     os.system(shell_cmd_9)
-
     print(shell_cmd_10)
     os.system(shell_cmd_10)
-
     print(shell_cmd_11)
     os.system(shell_cmd_11)
-
     print(shell_cmd_12)
     os.system(shell_cmd_12)
-
     print(shell_cmd_13)
     os.system(shell_cmd_13)
 

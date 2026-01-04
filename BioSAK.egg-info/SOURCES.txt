@@ -24,7 +24,6 @@ BioSAK/KEGG_boxplot_last1row.R
 BioSAK/KEGG_get_eukaryotic_kos.py
 BioSAK/KeepRemovingTmp.py
 BioSAK/MeanMappingDepth.py
-BioSAK/MetaBiosample.py
 BioSAK/MetaCHIP_phylo.hmm
 BioSAK/MetaCyc_reactions_with_ec.txt
 BioSAK/NetEnzymes.py
@@ -70,7 +69,7 @@ BioSAK/cdd2cog.pl
 BioSAK/checkm_marker.py
 BioSAK/combine_fun_stats.py
 BioSAK/combine_low_abd_otu.py
-BioSAK/compare_sets.py
+BioSAK/compare.py
 BioSAK/count_num.py
 BioSAK/cross_link_seqs.py
 BioSAK/dbCAN.py
@@ -134,6 +133,7 @@ BioSAK/mean_MAG_cov.py
 BioSAK/merge_df.py
 BioSAK/merge_seq.py
 BioSAK/metaAssembly.py
+BioSAK/metaBiosample.py
 BioSAK/metabat2concoct.py
 BioSAK/metabat2maxbin.py
 BioSAK/metadata.py
@@ -154,6 +154,7 @@ BioSAK/rename_df_row.py
 BioSAK/rename_reads_for_Reago.py
 BioSAK/rename_seq.py
 BioSAK/ribbon.py
+BioSAK/rm_desc.py
 BioSAK/rm_low_abd_otu.py
 BioSAK/rm_low_depth_sample.py
 BioSAK/sam2bam.py
@@ -167,6 +168,7 @@ BioSAK/split_fasta.py
 BioSAK/split_folder.py
 BioSAK/split_sam.py
 BioSAK/sra.py
+BioSAK/sra2biosample.py
 BioSAK/srun.py
 BioSAK/statsTaxa.py
 BioSAK/stats_arcog.py
@@ -184,6 +186,7 @@ BioSAK/tmp_2.py
 BioSAK/tmp_3.py
 BioSAK/tmp_4.py
 BioSAK/tmp_5.py
+BioSAK/tmp_6.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/transpose.py

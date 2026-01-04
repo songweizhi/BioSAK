@@ -1,5 +1,11 @@
-1.124.1
+1.126.0
+- new modules added: rm_desc
+
+1.125.12
 - fixed bugs
+
+1.125.0
+- new modules added: sra2biosample
 
 1.124.0
 - new modules added: subset_gene_by_gnm

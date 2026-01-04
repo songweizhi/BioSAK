@@ -13,11 +13,11 @@ BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a marmolecol -q gpu-l20 -n iqtre
 # To use srun, you commands must NOT contain the double quote symbol (").
 
 # Max resources per User
-intel	    256 cores	2 nodes	    120h	10	15
-amd	        1536 cores	6 nodes	    120h	20	30
-gpu-a30	    16 gpu 	    4 nodes	    120h	4	8
-gpu-l20	    8 gpu       2 nodes	    120h	2	4
-gpu-rtx5880	12 gpu	    2 nodes	    120h	4	8
+intel       256 cores   2 nodes	    120h	10	15
+amd         1536 cores  6 nodes	    120h	20	30
+gpu-a30     16 gpu      4 nodes	    120h	4	8
+gpu-l20     8 gpu       2 nodes	    120h	2	4
+gpu-rtx5880 12 gpu      2 nodes	    120h	4	8
 
 =========================================================================
 '''

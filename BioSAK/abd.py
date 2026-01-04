@@ -14,7 +14,6 @@ from functools import reduce
 abd_usage = '''
 =========================== abd example commands ===========================
 
-BioSAK abd -i sample.txt -o op_dir -t 36 -r reference.fa -mask
 BioSAK abd -i sample.txt -o op_dir -t 36 -r reference_masked.fa
 
 # sample.txt file format (tab separated)
@@ -24,8 +23,7 @@ Aphrocallistes  AphrocallistesBeatrix_subset.fastq
 
 # Note
 1. Input reads need to be in pair.
-2. No underscore in genome name.
-3. Sequence id format: gnm1_1, gnm1_2, gnm1_3 ...
+2. prepare the genome file with "abd_mask" module
 
 ============================================================================
 '''
