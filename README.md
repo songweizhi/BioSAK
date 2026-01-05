@@ -9,7 +9,7 @@
 Contact
 ---
 
-[Shan Zhang](https://www.pharma.hku.hk/en/Our-People/Professoriate-Staff/Research-Assistant-Professor/Shan-ZHANG/Shan-ZHANG-Profile)<sup>1</sup> and [Weizhi Song](https://facultyprofiles.hkust.edu.hk/profiles.php?profile=weizhi-song-ocessongwz)<sup>2</sup>
+Shan Zhang ([link](https://www.pharma.hku.hk/en/Our-People/Professoriate-Staff/Research-Assistant-Professor/Shan-ZHANG/Shan-ZHANG-Profile))<sup>1</sup> and Weizhi Song ([link](https://facultyprofiles.hkust.edu.hk/profiles.php?profile=weizhi-song-ocessongwz))<sup>2</sup>
 
 <sup>1</sup> Department of Pharmacology and Pharmacy, LKS Faculty of Medicine, The University of Hong Kong, Hong Kong
 
