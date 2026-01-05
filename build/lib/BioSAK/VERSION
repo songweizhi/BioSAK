@@ -1,8 +1,11 @@
+1.127.0
+- new modules added: rm_short
+
+1.126.2
+- fixed bugs
+
 1.126.0
 - new modules added: rm_desc
-
-1.125.12
-- fixed bugs
 
 1.125.0
 - new modules added: sra2biosample

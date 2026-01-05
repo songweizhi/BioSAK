@@ -157,6 +157,7 @@ BioSAK/ribbon.py
 BioSAK/rm_desc.py
 BioSAK/rm_low_abd_otu.py
 BioSAK/rm_low_depth_sample.py
+BioSAK/rm_short.py
 BioSAK/sam2bam.py
 BioSAK/sampling_GTDB_gnms.py
 BioSAK/sankey.R
@@ -187,6 +188,8 @@ BioSAK/tmp_3.py
 BioSAK/tmp_4.py
 BioSAK/tmp_5.py
 BioSAK/tmp_6.py
+BioSAK/tmp_7.py
+BioSAK/tmp_8.py
 BioSAK/top_16S_hits.py
 BioSAK/top_hits_in_a_group.py
 BioSAK/transpose.py

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: biosak
-Version: 1.126.0
+Version: 1.127.0
 Summary: BioSAK
 Home-page: https://github.com/songweizhi/BioSAK
 Author: Weizhi Song
@@ -20,4 +20,4 @@ Requires-Dist: beautifulsoup4
 Requires-Dist: ete3
 Requires-Dist: statsmodels
 
- BioSAK v1.126.0 
+ BioSAK v1.127.0 

@@ -37,7 +37,9 @@ def gbk2faa_single(arg_list):
     for seq_record in SeqIO.parse(gbk_in, 'genbank'):
         for feature in seq_record.features:
             if feature.type == 'CDS':
+
                 feature_locus_tag = feature.qualifiers['locus_tag'][0]
+                protein_id = feature.qualifiers['protein_id'][0]
                 feature_translation = feature.qualifiers['translation'][0]
                 faa_out_handle.write('>%s\n' % feature_locus_tag)
                 faa_out_handle.write('%s\n' % feature_translation)

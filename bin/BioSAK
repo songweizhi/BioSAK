@@ -109,6 +109,7 @@ def print_main_help():
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine fasta files, prefix sequence id with file name
        rm_desc                 ->  Remove sequence descriptions
+       rm_short                ->  Remove short sequences
            
     Sam and Bam
        reads2bam               ->  Mapping and sorting
@@ -1301,10 +1302,12 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'GenBank':
         from BioSAK import GenBank
         GenBank_parser = subparsers.add_parser('GenBank', usage=GenBank.GenBank_usage)
-        GenBank_parser.add_argument('-i',   required=True,                       help='input txt containing accession id')
-        GenBank_parser.add_argument('-o',   required=True,                       help='output dir')
-        GenBank_parser.add_argument('-tax', required=False, default=None,        help='NCBI taxonomy file, specify to get the full taxon lineage')
-        GenBank_parser.add_argument('-f',   required=False, action="store_true", help='force overwrite')
+        GenBank_parser.add_argument('-i',               required=True,                       help='input txt containing accession id')
+        GenBank_parser.add_argument('-o',               required=True,                       help='output dir')
+        GenBank_parser.add_argument('-tax',             required=False, default=None,        help='NCBI taxonomy file, specify to get the full taxon lineage')
+        GenBank_parser.add_argument('-aa',              required=False, action="store_true", help='export amino acid sequence')
+        GenBank_parser.add_argument('-f',               required=False, action="store_true", help='force overwrite')
+        GenBank_parser.add_argument('-skip_esearch',    required=False, action="store_true", help='skip esearch')
         args = vars(parser.parse_args())
         GenBank.GenBank(args)
 
@@ -1375,6 +1378,15 @@ if __name__ == '__main__':
         rm_desc_parser.add_argument('-o', required=True, help='output fasta file')
         args = vars(parser.parse_args())
         rm_desc.rm_desc(args)
+
+    elif sys.argv[1] == 'rm_short':
+        from BioSAK import rm_short
+        rm_short_parser = subparsers.add_parser('rm_short', usage=rm_short.rm_short_usage)
+        rm_short_parser.add_argument('-i', required=True,           help='input fasta file')
+        rm_short_parser.add_argument('-l', required=True, type=int, help='length cutoff in bp')
+        rm_short_parser.add_argument('-o', required=True,           help='output fasta file')
+        args = vars(parser.parse_args())
+        rm_short.rm_short(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])
