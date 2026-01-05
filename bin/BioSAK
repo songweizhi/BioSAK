@@ -34,7 +34,7 @@ def print_main_help():
     help_message = ''' 
                  ...::: BioSAK v%s :::...
 
-    Genome databases
+    Databases
        get_GTDB_taxon_gnm      ->  Get id of genomes from specified GTDB taxons
        get_genome_GTDB         ->  Batch download GTDB genomes
        get_genome_NCBI         ->  Batch download GenBank genomes
@@ -45,6 +45,10 @@ def print_main_help():
        sra2biosample           ->  Get Biosample Id of SRA record
        statsTaxa               ->  stats GTDB taxa
        GenBank                 ->  get sequence/organism/voucher info
+       sra                     ->  Download reads with sratoolkit
+       FasterqDump             ->  A wrapper for fasterq-dump
+       get_Pfam_hmms           ->  Get Pfam profiles by id
+       taxdump                 ->  Parse NCBI Taxonomy database
 
     Metagenomics
        metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
@@ -96,7 +100,7 @@ def print_main_help():
        combine_low_abd_otu     ->  Combine low abundance OTUs
        rm_low_depth_sample     ->  Remove samples from OTU table with small number of sequences
 
-    Sequence manipulator
+    Sequence/reads manipulator
        gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
        ffn2faa/gfa2fa/get_rc   ->  Format convertors
        fq2fa                   ->  Convert fastq to fasta
@@ -108,9 +112,14 @@ def print_main_help():
        split_fasta             ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine fasta files, prefix sequence id with file name
+       subset_gene_by_gnm      ->  Subset gene by genome
        rm_desc                 ->  Remove sequence descriptions
        rm_short                ->  Remove short sequences
-           
+       Reads_simulator         ->  Simulate NGS reads
+       SubsampleLongReads      ->  Subsample Long Reads
+       rename_reads_Reago      ->  Rename paired reads for Reago
+       trim                    ->  A wrapper for trimmomatic
+
     Sam and Bam
        reads2bam               ->  Mapping and sorting
        sam2bam                 ->  Sam to BAM with samtools
@@ -125,38 +134,35 @@ def print_main_help():
        transpose               ->  Transpose dataframe
        wilcox                  ->  Wilcoxon signed-rank test (non-parametric paired T-test)
        mannwhitneyu            ->  Mann-Whitney U rank test on two independent samples
+       rename_df_row           ->  Rename row headers in a dataframe
     
-    Others
-       js_cmds                 ->  Put commands in job scripts
-       js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
-       hpc4                    ->  Submit jobs on HKUST hpc4
-       srun                    ->  srun one-line commands on HKUST hpc3
-       exe_cmds                ->  Execute commands with multiprocessing
+    Files and folders
        split_folder            ->  Split folder
        prefix_file             ->  Prefix file
-       BestHit                 ->  Keep best blast hits (outfmt 6)
-       VisGeneFlk              ->  Visualize gene flanking regions
-       usearch_uc              ->  Parse Usearch uc file
-       get_Pfam_hmms           ->  Get Pfam profiles by id
-       Reads_simulator         ->  Simulate NGS reads
-       SubsampleLongReads      ->  Subsample Long Reads
-       rename_reads_Reago      ->  Rename paired reads for Reago
-       cross_link_seqs         ->  Cross link matched regions between two sequences
-       submitHPC               ->  A wrapper for submitHPC.sh
        KeepRemovingTmp         ->  Keep removing old files in a folder
-       ribbon                  ->  Make a ribbon diagram
        compare                 ->  compare sets
+    
+    HPC related
+       js_cmds                 ->  Put commands in job scripts
+       exe_cmds                ->  Execute commands with multiprocessing
+       submitHPC               ->  A wrapper for submitHPC.sh
+       srun                    ->  srun one-line commands on HKUST hpc3
+       js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
+       hpc4                    ->  Submit jobs on HKUST hpc4
+
+    Diagram and visualization
+       VisGeneFlk              ->  Visualize gene flanking regions
+       ribbon                  ->  Make a ribbon diagram
        sankey                  ->  get sankey plot
-       sra                     ->  Download reads with sratoolkit
+       cross_link_seqs         ->  Cross link matched regions between two sequences
        vis_color_scheme        ->  Visualize color scheme
-       trim                    ->  A wrapper for trimmomatic
-       FasterqDump             ->  A wrapper for fasterq-dump
-       rename_df_row           ->  Rename row headers in a dataframe
-       blast                   ->  Parse batch online blast output
-       taxdump                 ->  Parse NCBI Taxonomy database
        get_single_page_web     ->  Get single page website
+          
+    Others
+       blast                   ->  Parse batch online blast output
+       BestHit                 ->  Keep best blast hits (outfmt 6)
+       usearch_uc              ->  Parse Usearch uc file
        metadata                ->  Update metadata file
-       subset_gene_by_gnm      ->  Subset gene by genome
        
     1. Phylogenetic tree-related modules have been moved to TreeSAK
     2. Upgrade with: pip3 install --upgrade BioSAK
