@@ -58,133 +58,133 @@ BioSAK modules
 + Type `BioSAK -h` to see a full list of modules
 
 
-                ...::: BioSAK v1.127.0 :::...
-    Databases
-       get_GTDB_taxon_gnm      ->  Get id of genomes from specified GTDB taxons
-       get_genome_GTDB         ->  Batch download GTDB genomes
-       get_genome_NCBI         ->  Batch download GenBank genomes
-       sampling_GTDB_gnms      ->  Select GTDB genomes
-       subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
-       metaAssembly            ->  Get metadata of NCBI assembly records
-       metaBiosample           ->  Get metadata of NCBI biosample records
-       sra2biosample           ->  Get Biosample Id of SRA record
-       statsTaxa               ->  stats GTDB taxa
-       GenBank                 ->  get sequence/organism/voucher info
-       sra                     ->  Download reads with sratoolkit
-       FasterqDump             ->  A wrapper for fasterq-dump
-       get_Pfam_hmms           ->  Get Pfam profiles by id
-       taxdump                 ->  Parse NCBI Taxonomy database
-
-    Metagenomics
-       metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
-       metabat2maxbin          ->  convert MetaBAT depth to MaxBin depth
-       CheckM                  ->  Parse CheckM outputs
-       Plot_MAG                ->  plot MAGs, (GC vs depth)
-       magabund                ->  Calculate MAG abundance
-       mean_MAG_cov            ->  Get mean MAG depth (by MetaBAT depth)
-       RunGraphMB              ->  Prepare input files for GraphMB
-       gc                      ->  Get GC content
-       get_gnm_size            ->  Get the total length of genome(s)
-       get_gene_depth          ->  Get gene depth by contig depth
-       MeanMappingDepth        ->  Get mean mapping depth 
-       get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
-       mmseqs                  ->  Classify metagenomic contigs with mmseqs
-       parse_mmseqs_tsv        ->  Parse mmseqs tsv
-       fastaai                 ->  A wrapper for FastAAI
-       abd                     ->  get MAG abundance across metagenomes (Wenxiu Wang et al. 2024)
-       abd_mask                ->  prepare masked sequence for abd module
-       cdb                     ->  reformat dRep Cdb file
-       
-    Functional annotation
-       KEGG                    ->  KEGG annotation
-       koala                   ->  Separate the combined BlastKOALA or GhostKOALA output
-       COG2020                 ->  COG annotation (v2020, by blastp/diamond)
-       COG2024                 ->  COG annotation (v2024, by blastp/diamond)
-       arCOG                   ->  COG annotation for archaea (version ar18)
-       dbCAN                   ->  CAZy annotation with dbCAN
-       Combine_KEGG_arCOG      ->  Combine KEGG and arCOG annotation results
-       Combine_KEGG_COG        ->  Combine KEGG and COG annotation results
-       enrich                  ->  Functional enrichment analysis
-       gapseq                  ->  Data matrix GapSeq predicted pathways
-       stats_ko                ->  get stats for a list of provided KO
-       stats_arcog             ->  get stats for a list of provided arCOG 
-       stats_cog2024           ->  get stats for a list of provided COG (v2024)
-       combine_fun_stats       ->  combine outputs from stats_ko, stats_arcog or stats_cog2024
+                         ...::: BioSAK v1.127.0 :::...
+        Databases
+           get_GTDB_taxon_gnm      ->  Get id of genomes from specified GTDB taxons
+           get_genome_GTDB         ->  Batch download GTDB genomes
+           get_genome_NCBI         ->  Batch download GenBank genomes
+           sampling_GTDB_gnms      ->  Select GTDB genomes
+           subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
+           metaAssembly            ->  Get metadata of NCBI assembly records
+           metaBiosample           ->  Get metadata of NCBI biosample records
+           sra2biosample           ->  Get Biosample Id of SRA record
+           statsTaxa               ->  stats GTDB taxa
+           GenBank                 ->  get sequence/organism/voucher info
+           sra                     ->  Download reads with sratoolkit
+           FasterqDump             ->  A wrapper for fasterq-dump
+           get_Pfam_hmms           ->  Get Pfam profiles by id
+           taxdump                 ->  Parse NCBI Taxonomy database
+    
+        Metagenomics
+           metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
+           metabat2maxbin          ->  convert MetaBAT depth to MaxBin depth
+           CheckM                  ->  Parse CheckM outputs
+           Plot_MAG                ->  plot MAGs, (GC vs depth)
+           magabund                ->  Calculate MAG abundance
+           mean_MAG_cov            ->  Get mean MAG depth (by MetaBAT depth)
+           RunGraphMB              ->  Prepare input files for GraphMB
+           gc                      ->  Get GC content
+           get_gnm_size            ->  Get the total length of genome(s)
+           get_gene_depth          ->  Get gene depth by contig depth
+           MeanMappingDepth        ->  Get mean mapping depth 
+           get_MAG_reads_long      ->  Extract MAG-specific long reads for reassembling
+           mmseqs                  ->  Classify metagenomic contigs with mmseqs
+           parse_mmseqs_tsv        ->  Parse mmseqs tsv
+           fastaai                 ->  A wrapper for FastAAI
+           abd                     ->  get MAG abundance across metagenomes (Wenxiu Wang et al. 2024)
+           abd_mask                ->  prepare masked sequence for abd module
+           cdb                     ->  reformat dRep Cdb file
+           
+        Functional annotation
+           KEGG                    ->  KEGG annotation
+           koala                   ->  Separate the combined BlastKOALA or GhostKOALA output
+           COG2020                 ->  COG annotation (v2020, by blastp/diamond)
+           COG2024                 ->  COG annotation (v2024, by blastp/diamond)
+           arCOG                   ->  COG annotation for archaea (version ar18)
+           dbCAN                   ->  CAZy annotation with dbCAN
+           Combine_KEGG_arCOG      ->  Combine KEGG and arCOG annotation results
+           Combine_KEGG_COG        ->  Combine KEGG and COG annotation results
+           enrich                  ->  Functional enrichment analysis
+           gapseq                  ->  Data matrix GapSeq predicted pathways
+           stats_ko                ->  get stats for a list of provided KO
+           stats_arcog             ->  get stats for a list of provided arCOG 
+           stats_cog2024           ->  get stats for a list of provided COG (v2024)
+           combine_fun_stats       ->  combine outputs from stats_ko, stats_arcog or stats_cog2024
+            
+        16S rRNA related
+           Usearch16S              ->  Usearch for Novogene 16S amplicon sequencing results
+           blca                    ->  Classify 16S with BLCA
+           top_16S_hits            ->  Classify 16S by top-blast-hits approach
+           SILVA_for_BLCA          ->  Prepare BLCA-compatible SILVA SSU database
+           GTDB_for_BLCA           ->  Prepare BLCA-compatible GTDB SSU database
+           UNITE_for_BLCA          ->  Prepare BLCA-compatible UNITE SSU database
+           BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
+           Tax4Fun2IndOTU          ->  Get functional profile for individual OTUs (to be added)
+           get_eu_otu              ->  Get eukaryotic OTUs
+           rm_low_abd_otu          ->  Remove low abd otu from table
+           combine_low_abd_otu     ->  Combine low abundance OTUs
+           rm_low_depth_sample     ->  Remove samples from OTU table with small number of sequences
+    
+        Sequence/reads manipulator
+           gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
+           ffn2faa/gfa2fa/get_rc   ->  Format convertors
+           fq2fa                   ->  Convert fastq to fasta
+           fa2id                   ->  Export sequence id
+           slice_seq               ->  Get specified region of a sequence
+           rename_seq              ->  Rename sequences in a file
+           prefix_seq_by_file_name ->  prefix sequences by file name
+           select_seq              ->  Select sequences by id
+           split_fasta             ->  Split one fasta file into multiple files
+           merge_seq               ->  Merge sequence files, remove duplicated ones if any
+           cat_fa                  ->  Combine fasta files, prefix sequence id with file name
+           subset_gene_by_gnm      ->  Subset gene by genome
+           rm_desc                 ->  Remove sequence descriptions
+           rm_short                ->  Remove short sequences
+           Reads_simulator         ->  Simulate NGS reads
+           SubsampleLongReads      ->  Subsample Long Reads
+           rename_reads_Reago      ->  Rename paired reads for Reago
+           trim                    ->  A wrapper for trimmomatic
+    
+        Sam and Bam
+           reads2bam               ->  Mapping and sorting
+           sam2bam                 ->  Sam to BAM with samtools
+           split_sam               ->  Split SAM/BAM file by reference
+           bam2reads               ->  Extract reads (id) from sam file
+           plot_sam_depth          ->  Plot SAM depth
         
-    16S rRNA related
-       Usearch16S              ->  Usearch for Novogene 16S amplicon sequencing results
-       blca                    ->  Classify 16S with BLCA
-       top_16S_hits            ->  Classify 16S by top-blast-hits approach
-       SILVA_for_BLCA          ->  Prepare BLCA-compatible SILVA SSU database
-       GTDB_for_BLCA           ->  Prepare BLCA-compatible GTDB SSU database
-       UNITE_for_BLCA          ->  Prepare BLCA-compatible UNITE SSU database
-       BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
-       Tax4Fun2IndOTU          ->  Get functional profile for individual OTUs (to be added)
-       get_eu_otu              ->  Get eukaryotic OTUs
-       rm_low_abd_otu          ->  Remove low abd otu from table
-       combine_low_abd_otu     ->  Combine low abundance OTUs
-       rm_low_depth_sample     ->  Remove samples from OTU table with small number of sequences
-
-    Sequence/reads manipulator
-       gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
-       ffn2faa/gfa2fa/get_rc   ->  Format convertors
-       fq2fa                   ->  Convert fastq to fasta
-       fa2id                   ->  Export sequence id
-       slice_seq               ->  Get specified region of a sequence
-       rename_seq              ->  Rename sequences in a file
-       prefix_seq_by_file_name ->  prefix sequences by file name
-       select_seq              ->  Select sequences by id
-       split_fasta             ->  Split one fasta file into multiple files
-       merge_seq               ->  Merge sequence files, remove duplicated ones if any
-       cat_fa                  ->  Combine fasta files, prefix sequence id with file name
-       subset_gene_by_gnm      ->  Subset gene by genome
-       rm_desc                 ->  Remove sequence descriptions
-       rm_short                ->  Remove short sequences
-       Reads_simulator         ->  Simulate NGS reads
-       SubsampleLongReads      ->  Subsample Long Reads
-       rename_reads_Reago      ->  Rename paired reads for Reago
-       trim                    ->  A wrapper for trimmomatic
-
-    Sam and Bam
-       reads2bam               ->  Mapping and sorting
-       sam2bam                 ->  Sam to BAM with samtools
-       split_sam               ->  Split SAM/BAM file by reference
-       bam2reads               ->  Extract reads (id) from sam file
-       plot_sam_depth          ->  Plot SAM depth
+        Dataframe and Statistics
+           subset_df               ->  Subset dataframe
+           merge_df                ->  Merge dataframes
+           add_desc                ->  Add function description to input of the iTOL module
+           transpose               ->  Transpose dataframe
+           wilcox                  ->  Wilcoxon signed-rank test (non-parametric paired T-test)
+           mannwhitneyu            ->  Mann-Whitney U rank test on two independent samples
+           rename_df_row           ->  Rename row headers in a dataframe
+        
+        Files and folders
+           compare                 ->  compare sets
+           split_folder            ->  Split folder
+           prefix_file             ->  Prefix file
+           KeepRemovingTmp         ->  Keep removing old files in a folder
+        
+        HPC related
+           js_cmds                 ->  Put commands in job scripts
+           exe_cmds                ->  Execute commands with multiprocessing
+           submitHPC               ->  A wrapper for submitHPC.sh
+           srun                    ->  srun one-line commands on HKUST hpc3
+           js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
+           hpc4                    ->  Submit jobs on HKUST hpc4
     
-    Dataframe and Statistics
-       subset_df               ->  Subset dataframe
-       merge_df                ->  Merge dataframes
-       add_desc                ->  Add function description to input of the iTOL module
-       transpose               ->  Transpose dataframe
-       wilcox                  ->  Wilcoxon signed-rank test (non-parametric paired T-test)
-       mannwhitneyu            ->  Mann-Whitney U rank test on two independent samples
-       rename_df_row           ->  Rename row headers in a dataframe
-    
-    Files and folders
-       compare                 ->  compare sets
-       split_folder            ->  Split folder
-       prefix_file             ->  Prefix file
-       KeepRemovingTmp         ->  Keep removing old files in a folder
-    
-    HPC related
-       js_cmds                 ->  Put commands in job scripts
-       exe_cmds                ->  Execute commands with multiprocessing
-       submitHPC               ->  A wrapper for submitHPC.sh
-       srun                    ->  srun one-line commands on HKUST hpc3
-       js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
-       hpc4                    ->  Submit jobs on HKUST hpc4
-
-    Diagram and visualization
-       VisGeneFlk              ->  Visualize gene flanking regions
-       ribbon                  ->  Make a ribbon diagram
-       sankey                  ->  get sankey plot
-       cross_link_seqs         ->  Cross link matched regions between two sequences
-       vis_color_scheme        ->  Visualize color scheme
-       get_single_page_web     ->  Get single page website
-          
-    Others
-       blast                   ->  Parse batch online blast output
-       BestHit                 ->  Keep best blast hits (outfmt 6)
-       usearch_uc              ->  Parse Usearch uc file
-       metadata                ->  Update metadata file
+        Diagram and visualization
+           VisGeneFlk              ->  Visualize gene flanking regions
+           ribbon                  ->  Make a ribbon diagram
+           sankey                  ->  get sankey plot
+           cross_link_seqs         ->  Cross link matched regions between two sequences
+           vis_color_scheme        ->  Visualize color scheme
+           get_single_page_web     ->  Get single page website
+              
+        Others
+           blast                   ->  Parse batch online blast output
+           BestHit                 ->  Keep best blast hits (outfmt 6)
+           usearch_uc              ->  Parse Usearch uc file
+           metadata                ->  Update metadata file
