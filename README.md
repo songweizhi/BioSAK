@@ -112,18 +112,18 @@ BioSAK modules
            combine_fun_stats       ->  combine outputs from stats_ko, stats_arcog or stats_cog2024
             
         16S rRNA related
-           Usearch16S              ->  Usearch for Novogene 16S amplicon sequencing results
            blca                    ->  Classify 16S with BLCA
-           top_16S_hits            ->  Classify 16S by top-blast-hits approach
            SILVA_for_BLCA          ->  Prepare BLCA-compatible SILVA SSU database
            GTDB_for_BLCA           ->  Prepare BLCA-compatible GTDB SSU database
            UNITE_for_BLCA          ->  Prepare BLCA-compatible UNITE SSU database
            BLCA_op_parser          ->  Make the BLCA outputs bit easier to read
+           top_16S_hits            ->  Classify 16S by top-blast-hits approach
            Tax4Fun2IndOTU          ->  Get functional profile for individual OTUs (to be added)
            get_eu_otu              ->  Get eukaryotic OTUs
            rm_low_abd_otu          ->  Remove low abd otu from table
            combine_low_abd_otu     ->  Combine low abundance OTUs
            rm_low_depth_sample     ->  Remove samples from OTU table with small number of sequences
+           Usearch16S              ->  Usearch for Novogene 16S amplicon sequencing results
     
         Sequence/reads manipulator
            gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
