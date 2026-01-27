@@ -108,7 +108,7 @@ def print_main_help():
        slice_seq               ->  Get specified region of a sequence
        rename_seq              ->  Rename sequences in a file
        prefix_seq_by_file_name ->  prefix sequences by file name
-       select_seq              ->  Select sequences by id
+       select                  ->  Select sequences by id
        split_fasta             ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine fasta files, prefix sequence id with file name
@@ -394,17 +394,16 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         slice_seq.slice_seq(args)
 
-    elif sys.argv[1] == 'select_seq':
-        from BioSAK import select_seq
-        select_seq_parser = subparsers.add_parser('select_seq', description='select sequences', usage=select_seq.select_seq_usage)
-        select_seq_parser.add_argument('-i',       required=True,                          help='fasta file')
-        select_seq_parser.add_argument('-id',       required=True,                          help='sequence id,one id per line')
-        select_seq_parser.add_argument('-o',       required=True,                          help='output file')
-        select_seq_parser.add_argument('-exclude', required=False, action="store_true",    help='specify to extract sequences except those in -id')
-        select_seq_parser.add_argument('-fq',      required=False, action="store_true",    help='in fastq format, default: fa')
-        select_seq_parser.add_argument('-oneline', required=False, action="store_true",    help='put sequence in single line')
+    elif sys.argv[1] == 'select':
+        from BioSAK import select
+        select_parser = subparsers.add_parser('select', description='select sequences', usage=select.select_usage)
+        select_parser.add_argument('-i',  required=True,                          help='fasta file')
+        select_parser.add_argument('-id', required=True,                          help='sequence id,one id per line')
+        select_parser.add_argument('-o',  required=True,                          help='output file')
+        select_parser.add_argument('-e',  required=False, action="store_true",    help='specify to extract sequences except those in -id')
+        select_parser.add_argument('-fq', required=False, action="store_true",    help='in fastq format, default: fa')
         args = vars(parser.parse_args())
-        select_seq.select_seq(args)
+        select.select(args)
 
     elif sys.argv[1] == 'get_Pfam_hmms':
         from BioSAK import get_Pfam_hmms
@@ -1312,8 +1311,9 @@ if __name__ == '__main__':
         GenBank_parser.add_argument('-o',               required=True,                       help='output dir')
         GenBank_parser.add_argument('-tax',             required=False, default=None,        help='NCBI taxonomy file, specify to get the full taxon lineage')
         GenBank_parser.add_argument('-aa',              required=False, action="store_true", help='export amino acid sequence')
-        GenBank_parser.add_argument('-f',               required=False, action="store_true", help='force overwrite')
         GenBank_parser.add_argument('-skip_esearch',    required=False, action="store_true", help='skip esearch')
+        GenBank_parser.add_argument('-itol',            required=False, action="store_true", help='include iTOL header')
+        GenBank_parser.add_argument('-f',               required=False, action="store_true", help='force overwrite')
         args = vars(parser.parse_args())
         GenBank.GenBank(args)
 
