@@ -101,8 +101,8 @@ def print_main_help():
        rm_low_depth_sample     ->  Remove samples from OTU table with small number of sequences
 
     Sequence/reads manipulator
-       gbk2fna/gbk2faa/gbk2ffn ->  Format convertors
-       ffn2faa/gfa2fa/get_rc   ->  Format convertors
+       gbk2fna/gbk2faa/gbk2ffn ->  Format convertor
+       ffn2faa/gfa2fa/rc       ->  Format convertor
        fq2fa                   ->  Convert fastq to fasta
        fa2id                   ->  Export sequence id
        slice_seq               ->  Get specified region of a sequence
@@ -156,8 +156,9 @@ def print_main_help():
        sankey                  ->  get sankey plot
        cross_link_seqs         ->  Cross link matched regions between two sequences
        vis_color_scheme        ->  Visualize color scheme
+       rstudio_color           ->  Visualize color scheme in Rstudio
        get_single_page_web     ->  Get single page website
-          
+       
     Others
        blast                   ->  Parse batch online blast output
        BestHit                 ->  Keep best blast hits (outfmt 6)
@@ -376,12 +377,12 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         format_converter.ffn2faa(args)
 
-    elif sys.argv[1] == 'get_rc':
-        from BioSAK import format_converter
-        get_rc_parser = subparsers.add_parser('get_rc', description='get reverse complement sequence', usage=format_converter.sequence_manipulator_usage)
-        get_rc_parser.add_argument('-seq', required=True, help='input sequence(s)')
+    elif sys.argv[1] == 'rc':
+        from BioSAK import rc
+        rc_parser = subparsers.add_parser('rc', description='get reverse complement sequence', usage=rc.rc_usage)
+        rc_parser.add_argument('-i', required=True, help='input sequence(s)')
         args = vars(parser.parse_args())
-        format_converter.get_rc(args)
+        rc.rc(args)
 
     elif sys.argv[1] == 'slice_seq':
         from BioSAK import slice_seq
@@ -1393,6 +1394,16 @@ if __name__ == '__main__':
         rm_short_parser.add_argument('-o', required=True,           help='output fasta file')
         args = vars(parser.parse_args())
         rm_short.rm_short(args)
+
+    elif sys.argv[1] == 'rstudio_color':
+        from BioSAK import rstudio_color
+        rstudio_color_parser = subparsers.add_parser('rstudio_color', usage=rstudio_color.rstudio_color_usage)
+        rstudio_color_parser.add_argument('-i', required=True,                          help='color code txt')
+        rstudio_color_parser.add_argument('-t', required=False, default=None,           help='taxonomy, in GTDB format')
+        rstudio_color_parser.add_argument('-l', required=False, default=25, type=int,   help='fix length for each label column, default is 25')
+        rstudio_color_parser.add_argument('-o', required=True,                          help='output R file')
+        args = vars(parser.parse_args())
+        rstudio_color.rstudio_color(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

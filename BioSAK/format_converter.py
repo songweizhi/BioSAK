@@ -14,10 +14,6 @@ BioSAK gbk2ffn -gbk bin_1.gbk
 BioSAK gbk2faa -gbk bin_1.gbk
 BioSAK ffn2faa -ffn bin_1.ffn
 
-# get reverse complement sequence(s) for single and multiple sequence(s)
-BioSAK get_rc -seq AAAAATTTTTGGGGGCCCCC
-BioSAK get_rc -seq bin_1.ffn
-
 ======================================================================================================
 '''
 
@@ -136,40 +132,6 @@ def ffn2faa(args):
         seq_record_seq_aa = seq_record_seq.translate()
         export_seq_record(str(seq_record_seq_aa), str(seq_record.id), '', 'P', faa_out_handle)
     faa_out_handle.close()
-
-
-def get_rc(args):
-
-    seq_in = args['seq']
-
-    # check whether seq_in is a file
-    if os.path.isfile(seq_in) is True:
-
-        seq_in_path, seq_in_basename, seq_in_extension = sep_path_basename_ext(seq_in)
-        seq_out = '%s/%s_rc%s' % (seq_in_path, seq_in_basename, seq_in_extension)
-
-        seq_out_handle = open(seq_out, 'w')
-        for seq_record in SeqIO.parse(seq_in, 'fasta'):
-            seq_record_rc_id = '%s_rc' % seq_record.id
-            seq_record_seq = seq_record.seq
-            seq_record_seq_rc = seq_record_seq.reverse_complement()
-            export_seq_record(str(seq_record_seq_rc), seq_record_rc_id, '', 'N', seq_out_handle)
-        seq_out_handle.close()
-
-    else:
-        # check whether input is DNA sequence
-        nc_bases = ['A', 'a', 'T', 't', 'G', 'g', 'C', 'c']
-        nc_bases_count = 0
-        for nc_base in nc_bases:
-            nc_bases_count += seq_in.count(nc_base)
-
-        if nc_bases_count == len(seq_in):
-            seq_in_rc = str(Seq(seq_in).reverse_complement())
-            print('>seq_in_rc\n%s\n' % seq_in_rc)
-
-        else:
-            print('Sequence file not exist or non DNA sequence detected, program exited!')
-            exit()
 
 
 def fq2fa(args):

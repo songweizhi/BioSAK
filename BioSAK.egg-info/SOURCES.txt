@@ -149,6 +149,7 @@ BioSAK/plot_tree.R
 BioSAK/prefix_file.py
 BioSAK/prefix_seq_by_file_name.py
 BioSAK/prokka.py
+BioSAK/rc.py
 BioSAK/reads2bam.py
 BioSAK/rename_df_row.py
 BioSAK/rename_reads_for_Reago.py
@@ -158,6 +159,7 @@ BioSAK/rm_desc.py
 BioSAK/rm_low_abd_otu.py
 BioSAK/rm_low_depth_sample.py
 BioSAK/rm_short.py
+BioSAK/rstudio_color.py
 BioSAK/sam2bam.py
 BioSAK/sampling_GTDB_gnms.py
 BioSAK/sankey.R
