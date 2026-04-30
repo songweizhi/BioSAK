@@ -29,6 +29,7 @@ def hpc4(args):
     job_name            = args['n']
     email_address       = args['m']
     walltime            = args['wt']
+    memory              = args['mem']
     node_num            = args['node']
     core_num            = args['t']
     core_num_per_cmd    = args['tpc']
@@ -48,8 +49,9 @@ def hpc4(args):
 
     js_file_handle.write('#SBATCH -t %s\n'          % walltime)
     js_file_handle.write('#SBATCH -N %s -n %s\n'    % (node_num, core_num))
+    js_file_handle.write('#SBATCH --mem=%s\n'       % memory)
     js_file_handle.write('#SBATCH -J %s\n'          % job_name)
-    if queue_name in ['cpu', 'gpu', 'himem', 'amd', 'intel', 'gpu-a30', 'gpu-l20']:
+    if queue_name in ['amd', 'intel', 'gpu-a30', 'gpu-l20', 'gpu-rtx5880']:
         js_file_handle.write('#SBATCH -A %s\n'      % setting_a)
     js_file_handle.write('#SBATCH -p %s\n\n'        % queue_name)
     js_file_handle.write('cd $SLURM_SUBMIT_DIR\n\n')
@@ -95,6 +97,7 @@ if __name__ == '__main__':
     hpc4_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
     hpc4_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
     hpc4_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
+    hpc4_parser.add_argument('-mem',      required=False, default='60G',          help='memory, default: 60G')
     hpc4_parser.add_argument('-a',        required=False, default='marmolecol',   help='-A, marmolecol or spongeholobiont, default: marmolecol')
     hpc4_parser.add_argument('-q',        required=False, default='amd',          help='queue, select from: amd, intel, gpu-a30, gpu-l20 and gpu-rtx5880, default: amd')
     hpc4_parser.add_argument('-conda',    required=False, default='mybase2',      help='conda environment, default: mybase2')

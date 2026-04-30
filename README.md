@@ -170,9 +170,6 @@ BioSAK modules
         HPC related
            js_cmds                 ->  Put commands in job scripts
            exe_cmds                ->  Execute commands with multiprocessing
-           submitHPC               ->  A wrapper for submitHPC.sh
-           srun                    ->  srun one-line commands on HKUST hpc3
-           js_hpc3                 ->  Put commands in job scripts (HKUST hpc3)
            hpc4                    ->  Submit jobs on HKUST hpc4
     
         Diagram and visualization

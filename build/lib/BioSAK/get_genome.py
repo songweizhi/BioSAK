@@ -5,15 +5,15 @@ import multiprocessing as mp
 from distutils.spawn import find_executable
 
 
-get_genome_NCBI_parser_usage = '''
-===================================== get_genome_NCBI example commands =====================================
+get_genome_parser_usage = '''
+======================================== get_genome example commands ========================================
 
 # Dependency: datasets (https://www.ncbi.nlm.nih.gov/datasets/docs/v1/download-and-install/)
 
 # example command
-BioSAK get_genome_NCBI -i GCA_000006945
-BioSAK get_genome_NCBI -i GCA_009840555.1
-BioSAK get_genome_NCBI -i genome_id.txt -o downloaded_gnm_dir -t 8 -f
+BioSAK get_genome -i GCA_000006945
+BioSAK get_genome -i GCA_009840555.1
+BioSAK get_genome -i genome_id.txt -o downloaded_gnm_dir -t 8 -f
 
 # Format of genome_id.txt
 GCA_009837245
@@ -23,7 +23,7 @@ GCA_000006945.2
 # You can use this link to get the id of genomes from a specific taxon , IDs are in the "Assembly" column.
 https://www.ncbi.nlm.nih.gov/genome/browse#!/prokaryotes/refseq_category:reference
 
-============================================================================================================
+=============================================================================================================
 '''
 
 
@@ -79,7 +79,7 @@ def datasets_worker(arg_list):
         print('Download failed: %s!' % gnm_id)
 
 
-def download_GenBank_genome(args):
+def get_genome(args):
 
     assembly_id     = args['i']
     output_folder   = args['o']
@@ -151,10 +151,10 @@ def download_GenBank_genome(args):
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(usage=get_genome_NCBI_parser_usage)
+    parser = argparse.ArgumentParser(usage=get_genome_parser_usage)
     parser.add_argument('-i',   required=True,                       help='IDs of genomes to download')
     parser.add_argument('-o',   required=False, default=None,        help='output folder')
     parser.add_argument('-t',   required=False, default=1, type=int, help='number of threads')
     parser.add_argument('-f',   required=False, action="store_true", help='force overwrite existing genome directory')
     args = vars(parser.parse_args())
-    download_GenBank_genome(args)
+    get_genome(args)

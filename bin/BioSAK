@@ -36,8 +36,7 @@ def print_main_help():
 
     Databases
        get_GTDB_taxon_gnm      ->  Get id of genomes from specified GTDB taxons
-       get_genome_GTDB         ->  Batch download GTDB genomes
-       get_genome_NCBI         ->  Batch download GenBank genomes
+       get_genome              ->  Batch download GenBank genomes
        sampling_GTDB_gnms      ->  Select GTDB genomes
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
        metaAssembly            ->  Get metadata of NCBI assembly records
@@ -305,32 +304,21 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         magabund.magabund(args)
 
-    elif sys.argv[1] == 'get_genome_NCBI':
-        from BioSAK import get_genome_NCBI
-        get_genome_NCBI_parser = subparsers.add_parser('get_genome_NCBI', description='Batch download NCBI genomes', usage=get_genome_NCBI.get_genome_NCBI_parser_usage)
-        get_genome_NCBI_parser.add_argument('-i',   required=True,                       help='IDs of genomes to download')
-        get_genome_NCBI_parser.add_argument('-o',   required=False, default=None,        help='output folder')
-        get_genome_NCBI_parser.add_argument('-t',   required=False, default=1, type=int, help='number of threads')
-        get_genome_NCBI_parser.add_argument('-f',   required=False, action="store_true", help='force overwrite existing genome directory')
+    elif sys.argv[1] == 'get_genome':
+        from BioSAK import get_genome
+        get_genome_parser = subparsers.add_parser('get_genome', description='Batch download NCBI genomes', usage=get_genome.get_genome_parser_usage)
+        get_genome_parser.add_argument('-i',   required=True,                       help='IDs of genomes to download')
+        get_genome_parser.add_argument('-o',   required=False, default=None,        help='output folder')
+        get_genome_parser.add_argument('-t',   required=False, default=1, type=int, help='number of threads')
+        get_genome_parser.add_argument('-f',   required=False, action="store_true", help='force overwrite existing genome directory')
         args = vars(parser.parse_args())
-        get_genome_NCBI.download_GenBank_genome(args)
-
-    elif sys.argv[1] == 'get_genome_GTDB':
-        from BioSAK import get_genome_GTDB
-        get_genome_GTDB_parser = subparsers.add_parser('get_genome_GTDB', description='Batch download GTDB genomes', usage=get_genome_GTDB.get_genome_GTDB_parser_usage)
-        get_genome_GTDB_parser.add_argument('-i',           required=True,                          help='genome id')
-        get_genome_GTDB_parser.add_argument('-o',           required=True,                          help='output folder')
-        get_genome_GTDB_parser.add_argument('-fastani_dir', required=True,                          help='the "fastani" dir')
-        get_genome_GTDB_parser.add_argument('-force',       required=False, action="store_true",    help='Force overwrite existing results')
-        args = vars(parser.parse_args())
-        get_genome_GTDB.get_genome_GTDB(args)
+        get_genome.get_genome(args)
 
     elif sys.argv[1] == 'get_GTDB_taxon_gnm':
         from BioSAK import get_GTDB_taxon_gnm
         get_GTDB_taxon_gnm_parser = subparsers.add_parser('get_GTDB_taxon_gnm', description='get id of GTDB genomes from specified taxons', usage=get_GTDB_taxon_gnm.get_GTDB_taxon_gnm_parser_usage)
         get_GTDB_taxon_gnm_parser.add_argument('-p',           required=False, default='Genomes',          help='output prefix')
         get_GTDB_taxon_gnm_parser.add_argument('-meta',        required=True,                              help='GTDB reference genome metadata')
-        get_GTDB_taxon_gnm_parser.add_argument('-path',        required=True,                              help='GTDB genome_paths.tsv')
         get_GTDB_taxon_gnm_parser.add_argument('-taxon',       required=True,                              help='interested taxons, one taxon per line')
         get_GTDB_taxon_gnm_parser.add_argument('-cpl',         required=False, default=None, type=float,   help='completeness cutoff (0-100), default: None')
         get_GTDB_taxon_gnm_parser.add_argument('-ctm',         required=False, default=None, type=float,   help='contamination cutoff, default: None')
@@ -844,6 +832,7 @@ if __name__ == '__main__':
         hpc4_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
         hpc4_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
         hpc4_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
+        hpc4_parser.add_argument('-mem',      required=False, default='60G',          help='memory, default: 60G')
         hpc4_parser.add_argument('-a',        required=False, default='marmolecol',   help='-A, marmolecol or spongeholobiont, default: marmolecol')
         hpc4_parser.add_argument('-q',        required=False, default='amd',          help='queue, select from: amd, intel, gpu-a30, gpu-l20 and gpu-rtx5880, default: amd')
         hpc4_parser.add_argument('-conda',    required=False, default='mybase2',      help='conda environment, default: mybase2')

@@ -100,10 +100,7 @@ BioSAK/get_bin_abundance copy.py
 BioSAK/get_data_matrix.py
 BioSAK/get_eu_otu.py
 BioSAK/get_gene_depth.py
-BioSAK/get_genome_GTDB.py
-BioSAK/get_genome_NCBI.py
-BioSAK/get_genome_NCBI_v1.py
-BioSAK/get_genome_NCBI_v2.py
+BioSAK/get_genome.py
 BioSAK/get_gnm_size.py
 BioSAK/get_ko_gene_seqs.py
 BioSAK/get_krona_plot.py

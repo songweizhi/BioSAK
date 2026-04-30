@@ -6,11 +6,10 @@ get_GTDB_taxon_gnm_parser_usage = '''
 ====================================== get_GTDB_taxon_gnm example commands ======================================
 
 # Example commands
-BioSAK get_GTDB_taxon_gnm -p Bac -meta bac120_metadata_r202.tsv -path genome_paths.tsv -taxon taxons.txt -cpl 85 -ctm 5
-BioSAK get_GTDB_taxon_gnm -p Arc -meta ar122_metadata_r202.tsv -path genome_paths.tsv -taxon taxons.txt -cpl 50 -ctm 10
+BioSAK get_GTDB_taxon_gnm -p Bac -meta bac120_metadata_r202.tsv -taxon taxons.txt -cpl 85 -ctm 5
+BioSAK get_GTDB_taxon_gnm -p Arc -meta ar122_metadata_r202.tsv -taxon taxons.txt -cpl 50 -ctm 10
 
 # -meta: bac120_metadata_r202.tsv or ar122_metadata_r202.tsv
-# -path: genome_paths.tsv, in fastani folder from auxillary_files
 # -taxon: one taxon per line, example below:
 p__Thermoproteota
 c__Methanosarcinia
@@ -24,7 +23,6 @@ def get_GTDB_taxon_gnm(args):
 
     output_prefix =             args['p']
     gtdb_gnm_metadata =         args['meta']
-    gtdb_ref_gnm_path_txt =     args['path']
     taxons_to_retrieve_txt =    args['taxon']
     cpl_cutoff =                args['cpl']
     ctm_cutoff =                args['ctm']
@@ -68,14 +66,8 @@ def get_GTDB_taxon_gnm(args):
     for each_taxon in open(taxons_to_retrieve_txt):
         taxons_to_retrieve_set.add(each_taxon.strip())
 
-    # read in gtdb_ref_gnm_path_txt
-    gtdb_ref_gnm_set = set()
-    for each_gnm_path in open(gtdb_ref_gnm_path_txt):
-        gnm_path_split = each_gnm_path.strip().split(' ')
-        gnm_accession = gnm_path_split[0].split('_genomic')[0]
-        gtdb_ref_gnm_set.add(gnm_accession)
-
     # get genomes from interested taxons
+    gtdb_ref_gnm_set = set()
     gnm_cpl_dict = {}
     gnm_ctm_dict = {}
     gnm_size_dict = {}
@@ -90,8 +82,14 @@ def get_GTDB_taxon_gnm(args):
             ref_accession = each_ref_split[0][3:]
             gnm_completeness  = float(each_ref_split[2])
             gnm_contamination = float(each_ref_split[3])
-            gnm_size = each_ref_split[col_index['genome_size']]
-            gtdb_taxonomy = each_ref_split[col_index['gtdb_taxonomy']]
+
+            gnm_size            = each_ref_split[col_index['genome_size']]
+            gtdb_taxonomy       = each_ref_split[col_index['gtdb_taxonomy']]
+            gtdb_representative = each_ref_split[col_index['gtdb_representative']]
+
+            if gtdb_representative == 't':
+                gtdb_ref_gnm_set.add(ref_accession)
+
             for each_interested_taxon in taxons_to_retrieve_set:
                 with_semicolon = '%s;' % each_interested_taxon
                 if with_semicolon in gtdb_taxonomy:
@@ -156,7 +154,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-p',           required=False, default='Genomes',          help='output prefix')
     parser.add_argument('-meta',        required=True,                              help='GTDB reference genome metadata')
-    parser.add_argument('-path',        required=True,                              help='GTDB genome_paths.tsv')
     parser.add_argument('-taxon',       required=True,                              help='interested taxons, one taxon per line')
     parser.add_argument('-cpl',         required=False, default=None, type=float,   help='completeness cutoff (0-100), default: None')
     parser.add_argument('-ctm',         required=False, default=None, type=float,   help='contamination cutoff, default: None')
