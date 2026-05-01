@@ -1,5 +1,8 @@
-1.128.6
+1.129.1
 - fixed bugs
+
+1.129.0
+- new modules added: PebbleScout
 
 1.128.0
 - new modules added: rstudio_color

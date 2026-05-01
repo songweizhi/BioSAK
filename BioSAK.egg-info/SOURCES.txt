@@ -27,6 +27,7 @@ BioSAK/MeanMappingDepth.py
 BioSAK/MetaCHIP_phylo.hmm
 BioSAK/MetaCyc_reactions_with_ec.txt
 BioSAK/NetEnzymes.py
+BioSAK/PebbleScout.py
 BioSAK/Prodigal.py
 BioSAK/Reads_simulator.py
 BioSAK/RunGraphMB.py
@@ -161,7 +162,7 @@ BioSAK/sam2bam.py
 BioSAK/sampling_GTDB_gnms.py
 BioSAK/sankey.R
 BioSAK/sankey.py
-BioSAK/select.py
+BioSAK/select_seqs.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/slice_seq.py
 BioSAK/split_fasta.py

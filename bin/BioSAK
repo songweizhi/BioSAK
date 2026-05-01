@@ -48,7 +48,8 @@ def print_main_help():
        FasterqDump             ->  A wrapper for fasterq-dump
        get_Pfam_hmms           ->  Get Pfam profiles by id
        taxdump                 ->  Parse NCBI Taxonomy database
-
+       PebbleScout             ->  A wrapper for PebbleScout
+       
     Metagenomics
        metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
        metabat2maxbin          ->  convert MetaBAT depth to MaxBin depth
@@ -68,7 +69,7 @@ def print_main_help():
        abd                     ->  get MAG abundance across metagenomes (Wenxiu Wang et al. 2024)
        abd_mask                ->  prepare masked sequence for abd module
        cdb                     ->  reformat dRep Cdb file
-       
+
     Functional annotation
        KEGG                    ->  KEGG annotation
        koala                   ->  Separate the combined BlastKOALA or GhostKOALA output
@@ -107,7 +108,7 @@ def print_main_help():
        slice_seq               ->  Get specified region of a sequence
        rename_seq              ->  Rename sequences in a file
        prefix_seq_by_file_name ->  prefix sequences by file name
-       select                  ->  Select sequences by id
+       select_seqs             ->  Select sequences by id
        split_fasta             ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine fasta files, prefix sequence id with file name
@@ -383,16 +384,16 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         slice_seq.slice_seq(args)
 
-    elif sys.argv[1] == 'select':
-        from BioSAK import select
-        select_parser = subparsers.add_parser('select', description='select sequences', usage=select.select_usage)
-        select_parser.add_argument('-i',  required=True,                          help='fasta file')
-        select_parser.add_argument('-id', required=True,                          help='sequence id,one id per line')
-        select_parser.add_argument('-o',  required=True,                          help='output file')
-        select_parser.add_argument('-e',  required=False, action="store_true",    help='specify to extract sequences except those in -id')
-        select_parser.add_argument('-fq', required=False, action="store_true",    help='in fastq format, default: fa')
+    elif sys.argv[1] == 'select_seqs':
+        from BioSAK import select_seqs
+        select_seqs_parser = subparsers.add_parser('select_seqs', description='select sequences', usage=select_seqs.select_seqs_usage)
+        select_seqs_parser.add_argument('-i',  required=True,                          help='fasta file')
+        select_seqs_parser.add_argument('-id', required=True,                          help='sequence id,one id per line')
+        select_seqs_parser.add_argument('-o',  required=True,                          help='output file')
+        select_seqs_parser.add_argument('-e',  required=False, action="store_true",    help='specify to extract sequences except those in -id')
+        select_seqs_parser.add_argument('-fq', required=False, action="store_true",    help='in fastq format, default: fa')
         args = vars(parser.parse_args())
-        select.select(args)
+        select_seqs.select_seqs(args)
 
     elif sys.argv[1] == 'get_Pfam_hmms':
         from BioSAK import get_Pfam_hmms
@@ -1393,6 +1394,18 @@ if __name__ == '__main__':
         rstudio_color_parser.add_argument('-o', required=True,                          help='output R file')
         args = vars(parser.parse_args())
         rstudio_color.rstudio_color(args)
+
+    elif sys.argv[1] == 'PebbleScout':
+        from BioSAK import PebbleScout
+        PebbleScout_parser = subparsers.add_parser('PebbleScout', usage=PebbleScout.PebbleScout_usage)
+        PebbleScout_parser.add_argument('-i',   required=True,                              help='input fasta file/dir')
+        PebbleScout_parser.add_argument('-x',   required=False, default=None,               help='file extension')
+        PebbleScout_parser.add_argument('-db',  required=False, default='meta,meta_vol2',   help='query database, default is meta and meta_vol2')
+        PebbleScout_parser.add_argument('-t',   required=False, type=int, default=1,        help='number of core, default is 1')
+        PebbleScout_parser.add_argument('-f',   required=False, action="store_true",        help='force overwrite')
+        PebbleScout_parser.add_argument('-o',   required=True,                              help='output directory')
+        args = vars(parser.parse_args())
+        PebbleScout.PebbleScout(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])

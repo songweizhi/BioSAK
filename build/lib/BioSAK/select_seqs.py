@@ -4,21 +4,21 @@ from datetime import datetime
 from BioSAK.global_functions import time_format
 
 
-select_usage = '''
-========================= select example commands =========================
+select_seqs_usage = '''
+========================= select_seqs example commands =========================
 
-BioSAK select -i input.fa -id seq_id.txt -o output.fa
-BioSAK select -i input.fa -id seq_id.txt -o output.fa -e
+BioSAK select_seqs -i input.fa -id seq_id.txt -o output.fa
+BioSAK select_seqs -i input.fa -id seq_id.txt -o output.fa -e
 
 # ID file format (one id per line): 
 seq_1
 seq_2 COI gene
 >seq_3 16S rRNA gene
 
-===============================================================================
+================================================================================
 '''
 
-def select(args):
+def select_seqs(args):
 
     # read in argument
     seq_file        = args['i']
@@ -71,11 +71,11 @@ def select(args):
 
 if __name__ == '__main__':
 
-    select_parser = argparse.ArgumentParser(usage=select_usage)
-    select_parser.add_argument('-i',    required=True,                          help='fasta file')
-    select_parser.add_argument('-id',   required=True,                          help='sequence id,one id per line')
-    select_parser.add_argument('-o',    required=True,                          help='output file')
-    select_parser.add_argument('-e',    required=False, action="store_true",    help='specify to extract sequences except those in -id')
-    select_parser.add_argument('-fq',   required=False, action="store_true",    help='in fastq format, default: fa')
-    args = vars(select_parser.parse_args())
-    select(args)
+    select_seqs_parser = argparse.ArgumentParser(usage=select_seqs_usage)
+    select_seqs_parser.add_argument('-i',    required=True,                          help='fasta file')
+    select_seqs_parser.add_argument('-id',   required=True,                          help='sequence id,one id per line')
+    select_seqs_parser.add_argument('-o',    required=True,                          help='output file')
+    select_seqs_parser.add_argument('-e',    required=False, action="store_true",    help='specify to extract sequences except those in -id')
+    select_seqs_parser.add_argument('-fq',   required=False, action="store_true",    help='in fastq format, default: fa')
+    args = vars(select_seqs_parser.parse_args())
+    select_seqs(args)

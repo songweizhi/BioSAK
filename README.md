@@ -74,7 +74,8 @@ BioSAK modules
            FasterqDump             ->  A wrapper for fasterq-dump
            get_Pfam_hmms           ->  Get Pfam profiles by id
            taxdump                 ->  Parse NCBI Taxonomy database
-    
+           PebbleScout             ->  A wrapper for PebbleScout
+
         Metagenomics
            metabat2concoct         ->  convert MetaBAT depth to CONCOCT depth
            metabat2maxbin          ->  convert MetaBAT depth to MaxBin depth
