@@ -5,10 +5,10 @@ import argparse
 hpc4_usage = '''
 ========================= hpc4 example commands =========================
 
-BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a spongeholobiont -q amd -n iqtree -c "iqtree -h"
-BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a spongeholobiont -q intel -n iqtree -c "iqtree -h"
-BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a marmolecol -q gpu-a30 -tpc 3 -n mcmctree -c mcmctree_cmds.txt
-BioSAK hpc4 -wt 119:59:59 -conda mybase2 -t 12 -a marmolecol -q gpu-l20 -n iqtree_2 -c "iqtree -h"
+BioSAK hpc4 -conda mybase2 -wt 119:59:59 -m 100G -t 12 -a spongeholobiont -q amd -n iqtree -c "iqtree -h"
+BioSAK hpc4 -conda mybase2 -wt 119:59:59 -m 200G -t 12 -a spongeholobiont -q intel -n iqtree -c "iqtree -h"
+BioSAK hpc4 -conda mybase2 -wt 119:59:59 -m 300G -t 12 -a marmolecol -q gpu-a30 -tpc 3 -n mcmctree -c mcmctree_cmds.txt
+BioSAK hpc4 -conda mybase2 -wt 119:59:59 -m 400G -t 12 -a marmolecol -q gpu-l20 -n iqtree_2 -c "iqtree -h"
 
 # To use srun, you commands must NOT contain the double quote symbol (").
 
@@ -27,9 +27,9 @@ def hpc4(args):
 
     cmd                 = args['c']
     job_name            = args['n']
-    email_address       = args['m']
+    email_address       = args['email']
     walltime            = args['wt']
-    memory              = args['mem']
+    memory              = args['m']
     node_num            = args['node']
     core_num            = args['t']
     core_num_per_cmd    = args['tpc']
@@ -92,12 +92,12 @@ if __name__ == '__main__':
     hpc4_parser = argparse.ArgumentParser(usage=hpc4_usage)
     hpc4_parser.add_argument('-c',        required=True,                          help='command to submit')
     hpc4_parser.add_argument('-n',        required=True,                          help='job name')
-    hpc4_parser.add_argument('-m',        required=False, default=None,           help='email address')
+    hpc4_parser.add_argument('-email',    required=False, default=None,           help='email address')
     hpc4_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
     hpc4_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
     hpc4_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
     hpc4_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
-    hpc4_parser.add_argument('-mem',      required=False, default='60G',          help='memory, default: 60G')
+    hpc4_parser.add_argument('-m',        required=False, default='60G',          help='memory, default: 60G')
     hpc4_parser.add_argument('-a',        required=False, default='marmolecol',   help='-A, marmolecol or spongeholobiont, default: marmolecol')
     hpc4_parser.add_argument('-q',        required=False, default='amd',          help='queue, select from: amd, intel, gpu-a30, gpu-l20 and gpu-rtx5880, default: amd')
     hpc4_parser.add_argument('-conda',    required=False, default='mybase2',      help='conda environment, default: mybase2')

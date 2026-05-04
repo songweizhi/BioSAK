@@ -6,8 +6,8 @@ import pandas as pd
 subset_df_usage = '''
 ============================ subset_df example commands ============================
 
-BioSAK subset_df -i demo_df.txt -r row_id.txt -o df_subset.txt
-BioSAK subset_df -i demo_df.txt -c col_id.txt -o df_subset.txt -e
+BioSAK subset_df -i demo_df.txt -r row_id.txt -o df_subset.txt -rm0col
+BioSAK subset_df -i demo_df.txt -c col_id.txt -o df_subset.txt -e -rm0col
 BioSAK subset_df -i demo_df.txt -r row_id.txt -c col_id.txt -o df_subset.txt -e
 BioSAK subset_df -i demo_df.txt -r row_id.txt -c col_id.txt -o df_subset.txt -b -m
 
@@ -31,6 +31,7 @@ def subset_df(args):
     zero_as_minus_one   = args['m']
     skip1row            = args['skip1row']
     exclude_rows_cols   = args['e']
+    rm_zero_col         = args['rm0col']
     column_name_pos     = 0
     row_name_pos        = 0
 
@@ -137,6 +138,9 @@ def subset_df(args):
     if zero_as_minus_one is True:
         subset_df[subset_df == 0] = -1
 
+    if rm_zero_col is True:
+        subset_df = subset_df.loc[:, (subset_df != 0).any(axis=0)]
+
     subset_df.to_csv(file_out, sep=sep_symbol)
 
 
@@ -151,6 +155,7 @@ if __name__ == '__main__':
     subset_df_parser.add_argument('-b',         required=False, action='store_true',    help='write out dataframe in 0/1 format')
     subset_df_parser.add_argument('-e',         required=False, action='store_true',    help='subset df by excluding the specified rows/columns')
     subset_df_parser.add_argument('-m',         required=False, action='store_true',    help='convert 0 to -1')
+    subset_df_parser.add_argument('-rm0col',    required=False, action='store_true',    help='remove columns contain only 0')
     subset_df_parser.add_argument('-skip1row',  required=False, action='store_true',    help='skip the 1st row of the -c/-r file')
     args = vars(subset_df_parser.parse_args())
     subset_df(args)

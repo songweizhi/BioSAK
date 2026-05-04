@@ -828,12 +828,12 @@ if __name__ == '__main__':
         hpc4_parser = subparsers.add_parser('hpc4', usage=hpc4.hpc4_usage)
         hpc4_parser.add_argument('-c',        required=True,                          help='command to submit')
         hpc4_parser.add_argument('-n',        required=True,                          help='job name')
-        hpc4_parser.add_argument('-m',        required=False, default=None,           help='email address')
+        hpc4_parser.add_argument('-email',    required=False, default=None,           help='email address')
         hpc4_parser.add_argument('-wt',       required=False, default='23:59:59',     help='walltime, default: 23:59:59')
         hpc4_parser.add_argument('-node',     required=False, type=int, default=1,    help='number of node, default: 1')
         hpc4_parser.add_argument('-t',        required=False, type=int, default=12,   help='number of core, default: 12')
         hpc4_parser.add_argument('-tpc',      required=False, type=int, default=1,    help='number of core per command, default: 1')
-        hpc4_parser.add_argument('-mem',      required=False, default='60G',          help='memory, default: 60G')
+        hpc4_parser.add_argument('-m',        required=False, default='60G',          help='memory, default: 60G')
         hpc4_parser.add_argument('-a',        required=False, default='marmolecol',   help='-A, marmolecol or spongeholobiont, default: marmolecol')
         hpc4_parser.add_argument('-q',        required=False, default='amd',          help='queue, select from: amd, intel, gpu-a30, gpu-l20 and gpu-rtx5880, default: amd')
         hpc4_parser.add_argument('-conda',    required=False, default='mybase2',      help='conda environment, default: mybase2')
@@ -897,6 +897,7 @@ if __name__ == '__main__':
         subset_df_parser.add_argument('-b',         required=False, action='store_true',    help='write out dataframe in 0/1 format')
         subset_df_parser.add_argument('-e',         required=False, action='store_true',    help='subset df by excluding the specified rows/columns')
         subset_df_parser.add_argument('-m',         required=False, action='store_true',    help='convert 0 to -1')
+        subset_df_parser.add_argument('-rm0col',    required=False, action='store_true',    help='remove columns contain only 0')
         subset_df_parser.add_argument('-skip1row',  required=False, action='store_true',    help='skip the 1st row of the -c/-r file')
         args = vars(parser.parse_args())
         subset_df.subset_df(args)
@@ -1398,12 +1399,15 @@ if __name__ == '__main__':
     elif sys.argv[1] == 'PebbleScout':
         from BioSAK import PebbleScout
         PebbleScout_parser = subparsers.add_parser('PebbleScout', usage=PebbleScout.PebbleScout_usage)
-        PebbleScout_parser.add_argument('-i',   required=True,                              help='input fasta file/dir')
-        PebbleScout_parser.add_argument('-x',   required=False, default=None,               help='file extension')
-        PebbleScout_parser.add_argument('-db',  required=False, default='meta,meta_vol2',   help='query database, default is meta and meta_vol2')
-        PebbleScout_parser.add_argument('-t',   required=False, type=int, default=1,        help='number of core, default is 1')
-        PebbleScout_parser.add_argument('-f',   required=False, action="store_true",        help='force overwrite')
-        PebbleScout_parser.add_argument('-o',   required=True,                              help='output directory')
+        PebbleScout_parser.add_argument('-p',           required=False, default=None,                   help='output prefix')
+        PebbleScout_parser.add_argument('-i',           required=True,                                  help='input fasta file/dir')
+        PebbleScout_parser.add_argument('-x',           required=False, default=None,                   help='file extension')
+        PebbleScout_parser.add_argument('-id',          required=False, default=None,                   help='id of genomes to process')
+        PebbleScout_parser.add_argument('-db',          required=False, default='meta,meta_vol2',       help='query database, default is meta and meta_vol2')
+        # PebbleScout_parser.add_argument('-min_cov',     required=False, type=str, default='1,3,5,10',   help='minimum %coverage to include in the datamatrix, default is 1,3,5,10')
+        PebbleScout_parser.add_argument('-t',           required=False, type=int, default=1,            help='number of core, default is 1')
+        PebbleScout_parser.add_argument('-f',           required=False, action="store_true",            help='force overwrite')
+        PebbleScout_parser.add_argument('-o',           required=True,                                  help='output directory')
         args = vars(parser.parse_args())
         PebbleScout.PebbleScout(args)
 
@@ -1421,6 +1425,6 @@ twine upload dist/*
 
 __token__
 
-pip3 install --upgrade BioSAK        
+pip3 install --upgrade BioSAK
 
 '''
