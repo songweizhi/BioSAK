@@ -32,15 +32,14 @@ def transpose_csv(file_in, file_out, sep_symbol, column_name_pos, row_name_pos):
     transposed_csv.to_csv(file_out, sep=sep_symbol)
 
 
-def pebblescout_results_to_data_matrix(file_list, db_list, pebblescout_op_dir, min_cov_pct, op_txt, op_txt_t, metadata_txt):
+def pebblescout_results_to_data_matrix(file_base_list, db_list, pebblescout_op_dir, min_cov_pct, op_txt, op_txt_t, metadata_txt):
 
     subject_to_biosample_dict = dict()
     biosample_title_dict = dict()
     subject_id_set_all = set()
     biosample_subject_id_set_all = set()
     pebblescout_op_dod = dict()
-    for each_gnm in file_list:
-        f_name, f_path, f_base, f_ext = sep_path_basename_ext(each_gnm)
+    for f_base in file_base_list:
         current_gnm_dict = dict()
         for each_db in db_list:
             op_file = '%s/%s_%s.txt' % (pebblescout_op_dir, f_base, each_db)
@@ -82,14 +81,15 @@ def pebblescout_results_to_data_matrix(file_list, db_list, pebblescout_op_dir, m
     op_txt_handle.close()
 
     transpose_csv(op_txt, op_txt_t, '\t', 0, 0)
+    os.system('rm -r %s' % op_txt)
 
-    metadata_txt_handle = open(metadata_txt, 'w')
-    for each_biosample_subject in subject_id_set_all_with_biosample_sorted:
-        bioSample_id    = each_biosample_subject.split('_')[0]
-        subject_id      = each_biosample_subject.split('_')[1]
-        bioSample_title = biosample_title_dict[bioSample_id]
-        metadata_txt_handle.write('%s\t%s\t%s\n' % (subject_id, bioSample_id, bioSample_title))
-    metadata_txt_handle.close()
+    # metadata_txt_handle = open(metadata_txt, 'w')
+    # for each_biosample_subject in subject_id_set_all_with_biosample_sorted:
+    #     bioSample_id    = each_biosample_subject.split('_')[0]
+    #     subject_id      = each_biosample_subject.split('_')[1]
+    #     bioSample_title = biosample_title_dict[bioSample_id]
+    #     metadata_txt_handle.write('%s\t%s\t%s\n' % (subject_id, bioSample_id, bioSample_title))
+    # metadata_txt_handle.close()
 
 
 def PebbleScout(args):
@@ -135,6 +135,9 @@ def PebbleScout(args):
         if os.path.isfile(gnm_id_txt) is True:
             for each_gnm in open(gnm_id_txt):
                 gnm_id_set.add(each_gnm.strip().split()[0])
+        else:
+            print('%s not found, program exited!' % gnm_id_txt)
+            exit()
 
     # concatenate sequences in input genomes
     file_re = '%s/*.%s' % (file_dir, file_ext)
@@ -180,12 +183,12 @@ def PebbleScout(args):
 
     # get data matrix
     for each_cov_pct in cov_pct_list:
-        df_txt       = '%s/%sPebbleScout_df_all.txt'          % (op_dir, prefix_str)
-        df_txt_t     = '%s/%sPebbleScout_df_all_T.txt'        % (op_dir, prefix_str)
+        df_txt       = '%s/%sPebbleScout_all_tmp.txt'   % (op_dir, prefix_str)
+        df_txt_t     = '%s/%sPebbleScout_all.txt'       % (op_dir, prefix_str)
         if each_cov_pct > 0:
-            df_txt   = '%s/%sPebbleScout_df_min_cov_%s.txt'   % (op_dir, prefix_str, each_cov_pct)
-            df_txt_t = '%s/%sPebbleScout_df_min_cov_%s_T.txt' % (op_dir, prefix_str, each_cov_pct)
-        pebblescout_results_to_data_matrix(file_list, db_list, pebblescout_op_dir, each_cov_pct, df_txt, df_txt_t, metadata_txt)
+            df_txt   = '%s/%sPebbleScout_cov%s_tmp.txt' % (op_dir, prefix_str, each_cov_pct)
+            df_txt_t = '%s/%sPebbleScout_cov%s.txt'     % (op_dir, prefix_str, each_cov_pct)
+        pebblescout_results_to_data_matrix(file_base_list_to_process, db_list, pebblescout_op_dir, each_cov_pct, df_txt, df_txt_t, metadata_txt)
 
     print('Done!')
 

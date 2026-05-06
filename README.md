@@ -66,7 +66,7 @@ BioSAK modules
            sampling_GTDB_gnms      ->  Select GTDB genomes
            subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
            metaAssembly            ->  Get metadata of NCBI assembly records
-           metaBiosample           ->  Get metadata of NCBI biosample records
+           biosample               ->  Get metadata of NCBI biosample records
            sra2biosample           ->  Get Biosample Id of SRA record
            statsTaxa               ->  stats GTDB taxa
            GenBank                 ->  get sequence/organism/voucher info

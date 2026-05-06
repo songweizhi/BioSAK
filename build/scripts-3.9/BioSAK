@@ -40,7 +40,7 @@ def print_main_help():
        sampling_GTDB_gnms      ->  Select GTDB genomes
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
        metaAssembly            ->  Get metadata of NCBI assembly records
-       metaBiosample           ->  Get metadata of NCBI biosample records
+       biosample               ->  Get metadata of NCBI biosample records
        sra2biosample           ->  Get Biosample Id of SRA record
        statsTaxa               ->  stats GTDB taxa
        GenBank                 ->  get sequence/organism/voucher info
@@ -750,15 +750,6 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         SubsampleLongReads.SubsampleLongReads(args)
 
-    elif sys.argv[1] == 'metaBiosample':
-        from BioSAK import metaBiosample
-        metaBiosample_parser = subparsers.add_parser('metaBiosample', usage=metaBiosample.metaBiosample_usage)
-        metaBiosample_parser.add_argument('-i',     required=True,                          help='biosample id file, one id per line')
-        metaBiosample_parser.add_argument('-o',     required=True,                          help='output folder')
-        metaBiosample_parser.add_argument('-f',     required=False, action="store_true",    help='Force overwrite existing results')
-        args = vars(parser.parse_args())
-        metaBiosample.metaBiosample(args)
-
     elif sys.argv[1] == 'metabat2concoct':
         from BioSAK import metabat2concoct
         metabat2concoct_parser = subparsers.add_parser('metabat2concoct', usage=metabat2concoct.metabat2concoct_usage)
@@ -1410,6 +1401,14 @@ if __name__ == '__main__':
         PebbleScout_parser.add_argument('-o',           required=True,                                  help='output directory')
         args = vars(parser.parse_args())
         PebbleScout.PebbleScout(args)
+
+    elif sys.argv[1] == 'biosample':
+        from BioSAK import biosample
+        biosample_parser = subparsers.add_parser('biosample', usage=biosample.biosample_usage)
+        biosample_parser.add_argument('-i', required=True, help='input file')
+        biosample_parser.add_argument('-o', required=True, help='output file')
+        args = vars(parser.parse_args())
+        biosample.biosample(args)
 
     else:
         print('Unrecognized module: %s, program exited' % sys.argv[1])
