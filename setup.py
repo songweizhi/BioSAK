@@ -24,6 +24,6 @@ setup(name="biosak",
       packages=['BioSAK'],
       package_data={'': ['*.r', '*.R', '*.py', '*.pl', 'VERSION', '*.hmm']},
       include_package_data=True,
-      install_requires=['biopython', 'matplotlib', 'numpy', 'scipy', 'itolapi', 'networkx', 'seaborn', 'lxml', 'beautifulsoup4', 'ete3', 'statsmodels'],  # reportlab
+      install_requires=['biopython', 'matplotlib', 'numpy', 'scipy', 'itolapi', 'networkx', 'seaborn', 'lxml', 'beautifulsoup4', 'ete3', 'statsmodels', 'xmltodict'],  # reportlab
       scripts=['bin/BioSAK'])
 

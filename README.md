@@ -135,7 +135,7 @@ BioSAK modules
            rename_seq              ->  Rename sequences in a file
            prefix_seq_by_file_name ->  prefix sequences by file name
            select_seq              ->  Select sequences by id
-           split_fasta             ->  Split one fasta file into multiple files
+           split_fa                ->  Split one fasta file into multiple files
            merge_seq               ->  Merge sequence files, remove duplicated ones if any
            cat_fa                  ->  Combine fasta files, prefix sequence id with file name
            subset_gene_by_gnm      ->  Subset gene by genome

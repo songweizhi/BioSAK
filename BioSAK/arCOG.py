@@ -114,18 +114,50 @@ def arCOG_worker(argument_list):
 
     pwd_input_file =                    argument_list[0]
     pwd_prot2003_2014 =                 argument_list[1]
-    protein_id_to_cog_id_dict =         argument_list[2]
-    cog_id_to_category_dict =           argument_list[3]
-    cog_id_to_description_dict =        argument_list[4]
-    cog_category_list =                 argument_list[5]
-    cog_category_to_description_dict =  argument_list[6]
-    sequence_type =                     argument_list[7]
-    output_folder =                     argument_list[8]
-    thread_num =                        argument_list[9]
-    run_diamond =                       argument_list[10]
-    evalue_cutoff =                     argument_list[11]
-    depth_file =                        argument_list[12]
-    pct_by_all =                        argument_list[13]
+    ar18_ar14_02_csv =                  argument_list[2]
+    cog_des_txt =                       argument_list[3]
+    pwd_fun_20_tab =                    argument_list[4]
+    sequence_type =                     argument_list[5]
+    output_folder =                     argument_list[6]
+    thread_num =                        argument_list[7]
+    run_diamond =                       argument_list[8]
+    evalue_cutoff =                     argument_list[9]
+    depth_file =                        argument_list[10]
+    pct_by_all =                        argument_list[11]
+
+    # get protein_to_cog_dict (ar18_ar14_02_csv)
+    protein_id_to_cog_id_dict = {}
+    for each_line in open(ar18_ar14_02_csv):
+        each_line_split = each_line.strip().split(',')
+        arcog_id = each_line_split[6]
+        seq_id = each_line_split[2]
+        if seq_id not in protein_id_to_cog_id_dict:
+            protein_id_to_cog_id_dict[seq_id] = {arcog_id}
+        else:
+            protein_id_to_cog_id_dict[seq_id].add(arcog_id)
+
+    # get cog_id_to_category_dict and cog_id_to_description_dict (arCOGdef.tab)
+    cog_category_set = set()
+    cog_id_to_category_dict = dict()
+    cog_id_to_description_dict = dict()
+    for each_cog in open(cog_des_txt, encoding="ISO-8859-1"):
+        each_cog_split = each_cog.strip().split('\t')
+        cog_id = each_cog_split[0]
+        cog_cate_str = each_cog_split[1]
+        cog_cate_split = [i for i in cog_cate_str]
+        cog_desc = each_cog_split[3]
+        cog_id_to_description_dict[cog_id] = cog_desc
+        cog_id_to_category_dict[cog_id] = cog_cate_split
+        for each_cate in cog_cate_split:
+            cog_category_set.add(each_cate)
+
+    cog_category_list = sorted([i for i in cog_category_set])
+
+    # get cog_category_to_description_dict (fun-20.tab)
+    cog_category_to_description_dict = {}
+    for cog_category in open(pwd_fun_20_tab):
+        cog_category_split = cog_category.strip().split('\t')
+        cog_category_to_description_dict[cog_category_split[0]] = cog_category_split[2]
 
     input_seq_no_path, input_seq_no_ext, input_seq_ext = sep_path_basename_ext(pwd_input_file)
     current_output_folder = '%s/%s_arCOG_wd' % (output_folder, input_seq_no_ext)
@@ -449,42 +481,6 @@ def arCOG(args):
             print(datetime.now().strftime(time_format) + 'Program exited!')
             exit()
 
-    ################################################# read db into dict ################################################
-
-    # get cog_id_to_category_dict and cog_id_to_description_dict (arCOGdef.tab)
-    cog_category_set = set()
-    cog_id_to_category_dict = dict()
-    cog_id_to_description_dict = dict()
-    for each_cog in open(cog_des_txt, encoding="ISO-8859-1"):
-        each_cog_split = each_cog.strip().split('\t')
-        cog_id = each_cog_split[0]
-        cog_cate_str = each_cog_split[1]
-        cog_cate_split = [i for i in cog_cate_str]
-        cog_desc = each_cog_split[3]
-        cog_id_to_description_dict[cog_id] = cog_desc
-        cog_id_to_category_dict[cog_id] = cog_cate_split
-        for each_cate in cog_cate_split:
-            cog_category_set.add(each_cate)
-
-    cog_category_list = sorted([i for i in cog_category_set])
-
-    # get protein_to_cog_dict (ar18_ar14_02_csv)
-    protein_to_cog_dict = {}
-    for each_line in open(ar18_ar14_02_csv):
-        each_line_split = each_line.strip().split(',')
-        arcog_id = each_line_split[6]
-        seq_id = each_line_split[2]
-        if seq_id not in protein_to_cog_dict:
-            protein_to_cog_dict[seq_id] = {arcog_id}
-        else:
-            protein_to_cog_dict[seq_id].add(arcog_id)
-
-    # get cog_category_to_description_dict (fun-20.tab)
-    cog_category_to_description_dict = {}
-    for cog_category in open(pwd_fun_20_tab):
-        cog_category_split = cog_category.strip().split('\t')
-        cog_category_to_description_dict[cog_category_split[0]] = cog_category_split[2]
-
     ################################################## if input is file ################################################
 
     # if input is file
@@ -499,9 +495,8 @@ def arCOG(args):
         print(datetime.now().strftime(time_format) + 'Running COG annotation for 1 file with %s cores' % (num_threads))
 
         file_in_path, file_in_basename, file_in_ext = sep_path_basename_ext(file_in)
-        arCOG_worker([file_in, ar18_fa, protein_to_cog_dict, cog_id_to_category_dict, cog_id_to_description_dict,
-                      cog_category_list, cog_category_to_description_dict, sequence_type, file_in_path, num_threads,
-                      run_diamond, evalue_cutoff, depth_file, pct_by_all])
+        arCOG_worker([file_in, ar18_fa, ar18_ar14_02_csv, cog_des_txt, pwd_fun_20_tab, sequence_type, file_in_path,
+                      num_threads, run_diamond, evalue_cutoff, depth_file, pct_by_all])
 
     ################################################ if input is folder ################################################
 
@@ -574,15 +569,15 @@ def arCOG(args):
                 else:
                     input_file_depth = '%s/%s.depth' % (depth_file, input_file_basename)
 
-                list_for_multiple_arguments_COG.append([pwd_input_file, ar18_fa, protein_to_cog_dict, cog_id_to_category_dict, cog_id_to_description_dict,
-                                                        cog_category_list, cog_category_to_description_dict, sequence_type, output_folder, 1, run_diamond,
-                                                        evalue_cutoff, input_file_depth, pct_by_all])
+                list_for_multiple_arguments_COG.append([pwd_input_file, ar18_fa, ar18_ar14_02_csv, cog_des_txt, pwd_fun_20_tab, sequence_type, output_folder, 1, run_diamond, evalue_cutoff, input_file_depth, pct_by_all])
 
-            # run COG annotaion files with multiprocessing
-            pool = mp.Pool(processes=num_threads)
-            pool.map(arCOG_worker, list_for_multiple_arguments_COG)
-            pool.close()
-            pool.join()
+            list_for_multiple_arguments_COG_lol = [list_for_multiple_arguments_COG[i:i + 300] for i in range(0, len(list_for_multiple_arguments_COG), 300)]
+
+            for each_arg_list in list_for_multiple_arguments_COG_lol:
+                pool = mp.Pool(processes=num_threads)
+                pool.map(arCOG_worker, each_arg_list)
+                pool.close()
+                pool.join()
 
             ######################################################### get dataframe #########################################################
 

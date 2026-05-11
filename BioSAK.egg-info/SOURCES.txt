@@ -166,7 +166,7 @@ BioSAK/sankey.py
 BioSAK/select_seqs.py
 BioSAK/sep_reads_by_barcode.py
 BioSAK/slice_seq.py
-BioSAK/split_fasta.py
+BioSAK/split_fa.py
 BioSAK/split_folder.py
 BioSAK/split_sam.py
 BioSAK/sra.py

@@ -228,7 +228,7 @@ def biosample(args):
 
 if __name__ == '__main__':
 
-    biosample_parser = argparse.ArgumentParser(usage=bs2csv_usage)
+    biosample_parser = argparse.ArgumentParser(usage=biosample_usage)
     biosample_parser.add_argument('-i',    required=True,  help='input file')
     biosample_parser.add_argument('-o',    required=True,  help='output file')
     args = vars(biosample_parser.parse_args())

@@ -109,7 +109,7 @@ def print_main_help():
        rename_seq              ->  Rename sequences in a file
        prefix_seq_by_file_name ->  prefix sequences by file name
        select_seqs             ->  Select sequences by id
-       split_fasta             ->  Split one fasta file into multiple files
+       split_fa                ->  Split one fasta file into multiple files
        merge_seq               ->  Merge sequence files, remove duplicated ones if any
        cat_fa                  ->  Combine fasta files, prefix sequence id with file name
        subset_gene_by_gnm      ->  Subset gene by genome
@@ -613,15 +613,15 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         exe_cmds.exe_cmds(args)
 
-    elif sys.argv[1] == 'split_fasta':
-        from BioSAK import split_fasta
-        split_fasta_parser = subparsers.add_parser('split_fasta', usage=split_fasta.split_fasta_usage)
-        split_fasta_parser.add_argument('-i',  required=True,                          help='input fasta file')
-        split_fasta_parser.add_argument('-o',  required=True,                          help='output dir')
-        split_fasta_parser.add_argument('-ns', required=False, default=None, type=int, help='number of sequences per file')
-        split_fasta_parser.add_argument('-nf', required=False, default=None, type=int, help='number of files to be generated')
+    elif sys.argv[1] == 'split_fa':
+        from BioSAK import split_fa
+        split_fa_parser = subparsers.add_parser('split_fa', usage=split_fa.split_fa_usage)
+        split_fa_parser.add_argument('-i',  required=True,                          help='input fasta file')
+        split_fa_parser.add_argument('-o',  required=True,                          help='output dir')
+        split_fa_parser.add_argument('-ns', required=False, default=None, type=int, help='number of sequences per file')
+        split_fa_parser.add_argument('-nf', required=False, default=None, type=int, help='number of files to be generated')
         args = vars(parser.parse_args())
-        split_fasta.split_fasta(args)
+        split_fa.split_fa(args)
 
     elif sys.argv[1] == 'split_sam':
         from BioSAK import split_sam
@@ -1395,6 +1395,7 @@ if __name__ == '__main__':
         PebbleScout_parser.add_argument('-x',           required=False, default=None,                   help='file extension')
         PebbleScout_parser.add_argument('-id',          required=False, default=None,                   help='id of genomes to process')
         PebbleScout_parser.add_argument('-db',          required=False, default='meta,meta_vol2',       help='query database, default is meta and meta_vol2')
+        PebbleScout_parser.add_argument('-m',           required=False, action="store_true",            help='retrieve biosample metadata from NCBI')
         # PebbleScout_parser.add_argument('-min_cov',     required=False, type=str, default='1,3,5,10',   help='minimum %coverage to include in the datamatrix, default is 1,3,5,10')
         PebbleScout_parser.add_argument('-t',           required=False, type=int, default=1,            help='number of core, default is 1')
         PebbleScout_parser.add_argument('-f',           required=False, action="store_true",            help='force overwrite')
