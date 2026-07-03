@@ -13,6 +13,8 @@ import multiprocessing as mp
 PebbleScout_usage = '''
 ========================= PebbleScout example commands =========================
 
+BioSAK PebbleScout -f -m -t 12 -db meta -i gnm_dir -x fna -o op_dir
+BioSAK PebbleScout -f -m -t 12 -db meta_vol2 -i gnm_dir -x fna -o op_dir
 BioSAK PebbleScout -f -m -t 12 -db meta,meta_vol2 -i gnm_dir -x fna -o op_dir
 
 # Note
@@ -514,7 +516,7 @@ if __name__ == '__main__':
     PebbleScout_parser.add_argument('-i',           required=True,                                  help='input fasta file/dir')
     PebbleScout_parser.add_argument('-x',           required=False, default=None,                   help='file extension')
     PebbleScout_parser.add_argument('-id',          required=False, default=None,                   help='id of genomes to process')
-    PebbleScout_parser.add_argument('-db',          required=False, default='meta,meta_vol2',       help='query database, default is meta and meta_vol2')
+    PebbleScout_parser.add_argument('-db',          required=False, default='meta,meta_vol2',       help='query database, default is meta and meta_vol2, go to PebbleScout documentation for a full list of available databases')
     PebbleScout_parser.add_argument('-m',           required=False, action="store_true",            help='retrieve biosample metadata from NCBI')
     # PebbleScout_parser.add_argument('-min_cov',     required=False, type=str, default='1,3,5,10',   help='minimum %coverage to include in the datamatrix, default is 1,3,5,10')
     PebbleScout_parser.add_argument('-t',           required=False, type=int, default=1,            help='number of core, default is 1')

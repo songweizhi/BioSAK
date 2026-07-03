@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 
-# Copyright (C) 2017, Shan Zhang, Weizhi Song and Torsten Thomas
+# Copyright (C) 2017, Shan Zhang and Weizhi Song
 # Shan Zhang <zzfanyi@gmail.com>
 # Weizhi Song <songwz03@gmail.com>
-# Torsten Thomas <t.thomas@unsw.edu.au>
 
 # BioSAK is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -41,7 +40,7 @@ def print_main_help():
        subset_GTDB_meta        ->  Subset metadata of GTDB reference genomes
        metaAssembly            ->  Get metadata of NCBI assembly records
        biosample               ->  Get metadata of NCBI biosample records
-       sra2biosample           ->  Get Biosample Id of SRA record
+       sra2biosample           ->  Get Biosample id of SRA record
        statsTaxa               ->  stats GTDB taxa
        GenBank                 ->  get sequence/organism/voucher info
        sra                     ->  Download reads with sratoolkit
@@ -76,7 +75,7 @@ def print_main_help():
        COG2020                 ->  COG annotation (v2020, by blastp/diamond)
        COG2024                 ->  COG annotation (v2024, by blastp/diamond)
        arCOG                   ->  COG annotation for archaea (version ar18)
-       dbCAN                   ->  CAZy annotation with dbCAN
+       dbCAN3                  ->  CAZy annotation with dbCAN3
        Combine_KEGG_arCOG      ->  Combine KEGG and arCOG annotation results
        Combine_KEGG_COG        ->  Combine KEGG and COG annotation results
        enrich                  ->  Functional enrichment analysis
@@ -252,17 +251,17 @@ if __name__ == '__main__':
         args = vars(parser.parse_args())
         KEGG.Annotation_KEGG(args)
 
-    elif sys.argv[1] == 'dbCAN':
-        from BioSAK import dbCAN
-        dbCAN_parser = subparsers.add_parser('dbCAN', description='Wrapper for running dbCAN', usage=dbCAN.dbCAN_parser_usage)
-        dbCAN_parser.add_argument('-i',                     required=True,                                  help='path to input sequences (in multi-fasta format)')
-        dbCAN_parser.add_argument('-x',                     required=False,                                 help='file extension')
-        dbCAN_parser.add_argument('-m',                     required=False, default='P',                    help='The type of input sequences, "N/n" for "nucleotide", "P/p" for "protein"')
-        dbCAN_parser.add_argument('-d',                     required=False, default=None,                   help='gene depth file/folder')
-        dbCAN_parser.add_argument('-db_dir',                required=True,                                  help='db folder')
-        dbCAN_parser.add_argument('-t',                     required=False, type=int, default=1,            help='number of threads')
+    elif sys.argv[1] == 'dbCAN3':
+        from BioSAK import dbCAN3
+        dbCAN3_parser = subparsers.add_parser('dbCAN3', description='Wrapper for running dbCAN3', usage=dbCAN3.dbCAN3_parser_usage)
+        dbCAN3_parser.add_argument('-i',         required=True,                          help='path to input sequences (in multi-fasta format)')
+        dbCAN3_parser.add_argument('-o',         required=True,                          help='output directory')
+        dbCAN3_parser.add_argument('-x',         required=False,                         help='file extension')
+        dbCAN3_parser.add_argument('-db',        required=True,                          help='db folder')
+        dbCAN3_parser.add_argument('-t',         required=False, type=int, default=1,    help='number of threads')
+        dbCAN3_parser.add_argument('-f',         required=False, action="store_true",    help='force overwrite')
         args = vars(parser.parse_args())
-        dbCAN.dbCAN(args)
+        dbCAN3.dbCAN3(args)
 
     elif sys.argv[1] == 'CheckM':
         from BioSAK import CheckM
@@ -882,14 +881,19 @@ if __name__ == '__main__':
         subset_df_parser = subparsers.add_parser('subset_df', usage=subset_df.subset_df_usage)
         subset_df_parser.add_argument('-i',         required=True,                          help='input file')
         subset_df_parser.add_argument('-o',         required=True,                          help='output file')
-        subset_df_parser.add_argument('-c',         required=False, default=None,           help='header of columns to keep')
-        subset_df_parser.add_argument('-r',         required=False, default=None,           help='header of rows to keep')
+        subset_df_parser.add_argument('-c',         required=False, default=None,           help='columns to keep')
+        subset_df_parser.add_argument('-r',         required=False, default=None,           help='rows to keep')
         subset_df_parser.add_argument('-s',         required=False, default='tab',          help='column separator, choose from tab and comma, default: tab')
         subset_df_parser.add_argument('-b',         required=False, action='store_true',    help='write out dataframe in 0/1 format')
         subset_df_parser.add_argument('-e',         required=False, action='store_true',    help='subset df by excluding the specified rows/columns')
         subset_df_parser.add_argument('-m',         required=False, action='store_true',    help='convert 0 to -1')
         subset_df_parser.add_argument('-rm0col',    required=False, action='store_true',    help='remove columns contain only 0')
         subset_df_parser.add_argument('-skip1row',  required=False, action='store_true',    help='skip the 1st row of the -c/-r file')
+        subset_df_parser.add_argument('-sr',        required=False, action='store_true',    help='sort rows')
+        subset_df_parser.add_argument('-sc',        required=False, action='store_true',    help='sort columns')
+        subset_df_parser.add_argument('-col_desc',  required=False, default=None,           help='column description')
+        subset_df_parser.add_argument('-row_desc',  required=False, default=None,           help='row description')
+        subset_df_parser.add_argument('-na',        required=False, action='store_true',    help='replace 0 with NA')
         args = vars(parser.parse_args())
         subset_df.subset_df(args)
 

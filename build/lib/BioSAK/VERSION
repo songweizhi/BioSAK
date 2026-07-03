@@ -1,5 +1,8 @@
-1.129.34
+1.130.1
 - fixed bugs
+
+1.130.0
+- new modules added: dbCAN3
 
 1.129.0
 - new modules added: PebbleScout

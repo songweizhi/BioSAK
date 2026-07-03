@@ -3,6 +3,7 @@ import glob
 import argparse
 import pandas as pd
 from scipy import stats
+from operator import itemgetter
 from statsmodels.stats.multitest import multipletests
 
 
@@ -48,6 +49,43 @@ def remove_0_from_Pandas_Series(Pandas_Series):
     return no_0_num_list
 
 
+def sort_stats_by_diff_value(file_in, file_out, ignore_unknown):
+
+    line_index = 0
+    header_line = ''
+    diff_na_dict = dict()
+    line_to_diff_dict = dict()
+    for each_line in open(file_in):
+
+        if line_index == 0:
+            header_line = each_line.strip()
+        else:
+            each_line_split = each_line.strip().split('\t')
+            mean_diff = each_line_split[4]
+
+            to_ignore = False
+            if ignore_unknown is True:
+                if ('uncharacterized protein' in each_line) or ('Uncharacterized protein' in each_line):
+                    to_ignore = True
+
+            if to_ignore is False:
+                if mean_diff == 'NA':
+                    a_b = float(each_line_split[2]) - float(each_line_split[3])
+                    a_b = abs(a_b)
+                    diff_na_dict[each_line.strip()] = a_b
+                else:
+                    line_to_diff_dict[each_line.strip()] = float(mean_diff)
+        line_index += 1
+
+    file_out_handle = open(file_out, 'w')
+    file_out_handle.write(header_line + '\n')
+    for k, v in sorted(line_to_diff_dict.items(), key=itemgetter(1))[::-1]:
+        file_out_handle.write(k + '\n')
+    for k2, v2 in sorted(diff_na_dict.items(), key=itemgetter(1))[::-1]:
+        file_out_handle.write(k2 + '\n')
+    file_out_handle.close()
+
+
 def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, fun_to_note_dict, file_prefix, output_dir):
 
     fold_diff_big = fold_diff_cutoff
@@ -65,20 +103,24 @@ def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, fun_to_note_dic
             sample_2_id = ko.strip().split('\t')[3]
         line_num_index += 1
 
-    summary_txt_sample_1 = '%s/enriched_in_%s.txt' % (output_dir, sample_1_id)
-    summary_txt_sample_2 = '%s/enriched_in_%s.txt' % (output_dir, sample_2_id)
+    summary_txt_sample_1_tmp        = '%s/enriched_in_%s_tmp.txt'       % (output_dir, sample_1_id)
+    summary_txt_sample_1            = '%s/enriched_in_%s.txt'           % (output_dir, sample_1_id)
+    summary_txt_sample_2_tmp        = '%s/enriched_in_%s_tmp.txt'       % (output_dir, sample_2_id)
+    summary_txt_sample_2            = '%s/enriched_in_%s.txt'           % (output_dir, sample_2_id)
     if file_prefix != '':
-        summary_txt_sample_1 = '%s/%s_enriched_in_%s.txt' % (output_dir, file_prefix, sample_1_id)
-        summary_txt_sample_2 = '%s/%s_enriched_in_%s.txt' % (output_dir, file_prefix, sample_2_id)
+        summary_txt_sample_1_tmp    = '%s/%s_enriched_in_%s_tmp.txt'    % (output_dir, file_prefix, sample_1_id)
+        summary_txt_sample_1        = '%s/%s_enriched_in_%s.txt'        % (output_dir, file_prefix, sample_1_id)
+        summary_txt_sample_2_tmp    = '%s/%s_enriched_in_%s_tmp.txt'    % (output_dir, file_prefix, sample_2_id)
+        summary_txt_sample_2        = '%s/%s_enriched_in_%s.txt'        % (output_dir, file_prefix, sample_2_id)
 
-    summary_txt_sample_1_handle = open(summary_txt_sample_1, 'w')
-    summary_txt_sample_2_handle = open(summary_txt_sample_2, 'w')
+    summary_txt_sample_1_tmp_handle = open(summary_txt_sample_1_tmp, 'w')
+    summary_txt_sample_2_tmp_handle = open(summary_txt_sample_2_tmp, 'w')
     if len(fun_to_note_dict) == 0:
-        summary_txt_sample_1_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n' % (sample_1_id, sample_2_id))
-        summary_txt_sample_2_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n' % (sample_1_id, sample_2_id))
+        summary_txt_sample_1_tmp_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n'       % (sample_1_id, sample_2_id))
+        summary_txt_sample_2_tmp_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\n'       % (sample_1_id, sample_2_id))
     else:
-        summary_txt_sample_1_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\tNote\n' % (sample_1_id, sample_2_id))
-        summary_txt_sample_2_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\tNote\n' % (sample_1_id, sample_2_id))
+        summary_txt_sample_1_tmp_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\tNote\n' % (sample_1_id, sample_2_id))
+        summary_txt_sample_2_tmp_handle.write('ID\tP_value\t%s\t%s\tMean_diff\tDescription\tNote\n' % (sample_1_id, sample_2_id))
     line_num_index = 0
     for ko in open(output_test):
         if line_num_index > 0:
@@ -114,17 +156,23 @@ def summarize_stats(output_test, fold_diff_cutoff, ko_desc_dict, fun_to_note_dic
 
                 if enriched_in == sample_1_id:
                     if len(fun_to_note_dict) == 0:
-                        summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
+                        summary_txt_sample_1_tmp_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
                     else:
-                        summary_txt_sample_1_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na'), fun_to_note_dict.get(ko_id, 'na')))
+                        summary_txt_sample_1_tmp_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na'), fun_to_note_dict.get(ko_id, 'na')))
                 if enriched_in == sample_2_id:
                     if len(fun_to_note_dict) == 0:
-                        summary_txt_sample_2_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
+                        summary_txt_sample_2_tmp_handle.write('%s\t%s\t%s\t%s\t%s\t%s\n'     % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na')))
                     else:
-                        summary_txt_sample_2_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na'), fun_to_note_dict.get(ko_id, 'na')))
+                        summary_txt_sample_2_tmp_handle.write('%s\t%s\t%s\t%s\t%s\t%s\t%s\n' % (ko_id, P_value_adjusted, sample_1_mean, sample_2_mean, mean_diff, ko_desc_dict.get(ko_id, 'na'), fun_to_note_dict.get(ko_id, 'na')))
         line_num_index += 1
-    summary_txt_sample_1_handle.close()
-    summary_txt_sample_2_handle.close()
+    summary_txt_sample_1_tmp_handle.close()
+    summary_txt_sample_2_tmp_handle.close()
+
+    sort_stats_by_diff_value(summary_txt_sample_1_tmp, summary_txt_sample_1, True)
+    sort_stats_by_diff_value(summary_txt_sample_2_tmp, summary_txt_sample_2, True)
+
+    os.system('rm %s' % summary_txt_sample_1_tmp)
+    os.system('rm %s' % summary_txt_sample_2_tmp)
 
 
 def enrich(args):
