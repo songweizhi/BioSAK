@@ -13,7 +13,8 @@ def sep_path_basename_ext(file_in):
     return f_name, f_path, f_base, f_ext
 
 
-def get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc):
+def get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc, op_stats_dir):
+
     # read in CAZyDB.fam-activities.txt
     cazy_desc_dict = {}
     for each_fam in open(cazy_fam_activities_txt):
@@ -100,19 +101,27 @@ def get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_wit
     op_df_txt_handle.close()
     op_df_txt_with_desc_handle.close()
 
+    # write out stats file for each genome
+    for each_gnm in stats_dod:
+        stast_txt = '%s/%s.txt' % (op_stats_dir, each_gnm)
+        current_dict = stats_dod[each_gnm]
+        stast_txt_handle = open(stast_txt, 'w')
+        for each_id in sorted(list(current_dict.keys())):
+            stast_txt_handle.write('%s\t%s\t%s\n' % (each_id, current_dict[each_id], cazy_desc_dict.get(each_id, 'na')))
+        stast_txt_handle.close()
 
 
 file_dir = '/Users/songweizhi/Desktop/overview_files'
 file_ext = 'txt'
 
+
 file_re = '%s/*.%s' % (file_dir, file_ext)
-
 overview_file_list = glob.glob(file_re)
-
 
 
 cazy_fam_activities_txt = '/Users/songweizhi/DB/dbcan3/CAZyDB.fam-activities.txt'
 op_df_txt               = '/Users/songweizhi/Desktop/annotation_dbCAN3_df.txt'
 op_df_txt_with_desc     = '/Users/songweizhi/Desktop/annotation_dbCAN3_df_desc.txt'
+op_stats_dir            = '/Users/songweizhi/Desktop/annotation_dbCAN3_stats'
 
-get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc)
+get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc, op_stats_dir)

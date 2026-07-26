@@ -18,6 +18,8 @@ BioSAK subset_df -i demo_df.txt -r row_id.txt -c col_id.txt -o df_subset.txt -b 
 2. If you want to skip the 1st row in the "-c" or "-r" file, provide "-skip1row".
 3. When the -sr/-sc options are not specified,The order of rows/columns in the 
    output will match that of the -r/-c files, respectively.
+4. File name for the -col_desc is fixed, arCOGdef.tab for arCOG, ko00001.keg for KEGG, 
+   and CAZyDB.fam-activities.txt for CAZy.
 
 ====================================================================================
 '''
@@ -99,6 +101,14 @@ def subset_df(args):
                         current_D_id = each_line_split[6]
                         current_D_desc = ' '.join(each_line_split[7:])
                         col_desc_dict[current_D_id] = '%s__%s' % (current_D_id, current_D_desc)
+        elif col_desc_txt_name == 'CAZyDB.fam-activities.txt':
+            for each_fam in open(col_desc_txt):
+                each_fam_split = each_fam.strip().split('	  ')
+                if len(each_fam_split) == 2:
+                    fam_id = each_fam_split[0]
+                    fam_activities = each_fam_split[1]
+                    col_desc_dict[fam_id] = fam_activities
+                    col_desc_dict[fam_id] = '%s__%s' % (fam_id, fam_activities)
         else:
             for each_line in open(col_desc_txt):
                 each_line_split = each_line.strip().split('\t')
@@ -111,7 +121,6 @@ def subset_df(args):
             print('%s not found, program exited!' % row_desc_txt)
             exit()
         row_desc_txt_name, _, _, _ = sep_path_basename_ext(row_desc_txt)
-
 
     ###################################### get the id of rows and cols to subset #######################################
 

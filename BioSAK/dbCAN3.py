@@ -48,7 +48,7 @@ def dbCAN3_worker(argument_list):
     os.system(dbcan3_cmd)
 
 
-def get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc):
+def get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc, op_stats_dir):
 
     # read in CAZyDB.fam-activities.txt
     cazy_desc_dict = {}
@@ -136,6 +136,15 @@ def get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_wit
     op_df_txt_handle.close()
     op_df_txt_with_desc_handle.close()
 
+    # write out stats file for each genome
+    for each_gnm in stats_dod:
+        stast_txt = '%s/%s.txt' % (op_stats_dir, each_gnm)
+        current_dict = stats_dod[each_gnm]
+        stast_txt_handle = open(stast_txt, 'w')
+        for each_id in sorted(list(current_dict.keys())):
+            stast_txt_handle.write('%s\t%s\t%s\n' % (each_id, current_dict[each_id], cazy_desc_dict.get(each_id, 'na')))
+        stast_txt_handle.close()
+
 
 def dbCAN3(args):
 
@@ -188,6 +197,7 @@ def dbCAN3(args):
             ################################################### define file name ###################################################
 
             tmp_dir             = '%s/tmp'                      % op_dir
+            stats_dir           = '%s/stats_files'              % op_dir
             op_df_txt           = '%s/dbCAN3_df.txt'            % op_dir
             op_df_txt_with_desc = '%s/dbCAN3_df_with_desc.txt'  % op_dir
             os.system('mkdir %s' % tmp_dir)
@@ -206,7 +216,7 @@ def dbCAN3(args):
                 list_for_multiple_arguments_dbCAN3.append([pwd_input_faa, input_file_basename, current_op_dir, DB_dir, 1])
                 overview_file_list.append(overview_file)
 
-            # run COG annotaion files with multiprocessing
+            # run dbCAN3 annotaion files with multiprocessing
             pool = mp.Pool(processes=num_threads)
             pool.map(dbCAN3_worker, list_for_multiple_arguments_dbCAN3)
             pool.close()
@@ -215,7 +225,7 @@ def dbCAN3(args):
             ######################################################### get dataframe #########################################################
 
             # get dataframe
-            get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc)
+            get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc, stats_dir)
 
     print(datetime.now().strftime(time_format) + 'Done!')
 

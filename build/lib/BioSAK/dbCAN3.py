@@ -48,7 +48,16 @@ def dbCAN3_worker(argument_list):
     os.system(dbcan3_cmd)
 
 
-def get_df(overview_file_list, cazy_desc_dict, op_df_txt):
+def get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc):
+
+    # read in CAZyDB.fam-activities.txt
+    cazy_desc_dict = {}
+    for each_fam in open(cazy_fam_activities_txt):
+        each_fam_split = each_fam.strip().split('	  ')
+        if len(each_fam_split) == 2:
+            fam_id = each_fam_split[0]
+            fam_activities = each_fam_split[1]
+            cazy_desc_dict[fam_id] = fam_activities
 
     stats_dod = dict()
     all_detected_cazy_set = set()
@@ -113,7 +122,9 @@ def get_df(overview_file_list, cazy_desc_dict, op_df_txt):
             all_detected_cazy_list_sorted_with_desc.append('%s__%s' % (i, i_desc))
 
     op_df_txt_handle = open(op_df_txt, 'w')
-    op_df_txt_handle.write('\t%s\n' % '\t'.join(all_detected_cazy_list_sorted_with_desc))
+    op_df_txt_handle.write('\t%s\n' % '\t'.join(all_detected_cazy_list_sorted))
+    op_df_txt_with_desc_handle = open(op_df_txt_with_desc, 'w')
+    op_df_txt_with_desc_handle.write('\t%s\n' % '\t'.join(all_detected_cazy_list_sorted_with_desc))
     for each_gnm in sorted(list(stats_dod.keys())):
         current_gnm_stats_dict = stats_dod[each_gnm]
         value_list = [each_gnm]
@@ -121,7 +132,9 @@ def get_df(overview_file_list, cazy_desc_dict, op_df_txt):
             value_list.append(str(current_gnm_stats_dict.get(each_cazy, 0)))
         value_str = '\t'.join(value_list)
         op_df_txt_handle.write(value_str + '\n')
+        op_df_txt_with_desc_handle.write(value_str + '\n')
     op_df_txt_handle.close()
+    op_df_txt_with_desc_handle.close()
 
 
 def dbCAN3(args):
@@ -174,8 +187,9 @@ def dbCAN3(args):
 
             ################################################### define file name ###################################################
 
-            tmp_dir   = '%s/tmp'           % op_dir
-            op_df_txt = '%s/dbCAN3_df.txt' % op_dir
+            tmp_dir             = '%s/tmp'                      % op_dir
+            op_df_txt           = '%s/dbCAN3_df.txt'            % op_dir
+            op_df_txt_with_desc = '%s/dbCAN3_df_with_desc.txt'  % op_dir
             os.system('mkdir %s' % tmp_dir)
 
             ######################################################### main #########################################################
@@ -200,17 +214,8 @@ def dbCAN3(args):
 
             ######################################################### get dataframe #########################################################
 
-            # read in CAZyDB.fam-activities.txt
-            fam_to_activities_dict = {}
-            for each_fam in open(cazy_fam_activities_txt):
-                each_fam_split = each_fam.strip().split('	  ')
-                if len(each_fam_split) == 2:
-                    fam_id = each_fam_split[0]
-                    fam_activities = each_fam_split[1]
-                    fam_to_activities_dict[fam_id] = fam_activities
-
             # get dataframe
-            get_df(overview_file_list, fam_to_activities_dict, op_df_txt)
+            get_df(overview_file_list, cazy_fam_activities_txt, op_df_txt, op_df_txt_with_desc)
 
     print(datetime.now().strftime(time_format) + 'Done!')
 

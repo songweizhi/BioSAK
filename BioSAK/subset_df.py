@@ -102,11 +102,26 @@ def subset_df(args):
                         current_D_desc = ' '.join(each_line_split[7:])
                         col_desc_dict[current_D_id] = '%s__%s' % (current_D_id, current_D_desc)
         elif col_desc_txt_name == 'CAZyDB.fam-activities.txt':
-            for each_fam in open(col_desc_txt_name):
+            for each_fam in open(col_desc_txt):
                 each_fam_split = each_fam.strip().split('	  ')
                 if len(each_fam_split) == 2:
                     fam_id = each_fam_split[0]
                     fam_activities = each_fam_split[1]
+                    fam_activities = fam_activities.replace('\t', '_')
+                    fam_activities = fam_activities.replace(' ', '_')
+                    fam_activities = fam_activities.replace('_/_', '/')
+                    fam_activities = fam_activities.replace(';_', ';')
+                    fam_activities = fam_activities.replace('_(', '(')
+                    fam_activities = fam_activities.replace(');;', ');')
+                    fam_activities = fam_activities.replace('._', '.')
+                    fam_activities = fam_activities.replace('EC_', 'EC')
+                    fam_activities = fam_activities.replace(':_', ':')
+                    fam_activities = fam_activities.replace(';_', ';')
+                    fam_activities = fam_activities.replace(',_', ',')
+                    fam_activities = fam_activities.replace(':', '_')
+                    fam_activities = fam_activities.replace('_;', ';')
+                    fam_activities = fam_activities.replace('_[', '[')
+                    fam_activities = fam_activities.strip()
                     col_desc_dict[fam_id] = fam_activities
                     col_desc_dict[fam_id] = '%s__%s' % (fam_id, fam_activities)
         else:
@@ -228,7 +243,7 @@ def subset_df(args):
     # rename columns
     if len(col_desc_dict) > 0:
         current_columns = subset_df.columns.tolist()
-        new_columns = [col_desc_dict[i] for i in current_columns]
+        new_columns = [col_desc_dict.get(i, i) for i in current_columns]
         subset_df.columns = new_columns
 
     # rename rows

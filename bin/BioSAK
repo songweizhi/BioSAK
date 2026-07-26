@@ -185,7 +185,7 @@ if __name__ == '__main__':
         exit()
 
     elif sys.argv[1] in ['iTOL', 'SliceMSA', 'ConvertMSA', 'fa2phy', 'PhyloBiAssoc', 'OneLineAln']:
-        print('This module has moved to TreeSAK, please run "TreeSAK %s -h" instead, program exited!' % sys.argv[1])
+        print('%s has moved to TreeSAK, program exited!' % sys.argv[1])
         exit()
 
     elif sys.argv[1] == 'COG2020':

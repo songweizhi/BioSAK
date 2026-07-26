@@ -120,6 +120,7 @@ def get_genome(args):
             datasets_worker_arg_lol.append([gnm_id, output_folder])
 
         # run with multiprocessing
+        print('running with multiprocessing')
         pool = mp.Pool(processes=num_threads)
         pool.map(datasets_worker, datasets_worker_arg_lol)
         pool.close()
